@@ -89,6 +89,9 @@ Required M1 documents:
 - [Cross-Repository Dependency Map](docs/architecture/CROSS_REPOSITORY_DEPENDENCY_MAP.md)
 - [Roadmap](docs/product/ROADMAP.md)
 - [Product Health Dashboard](docs/product/PRODUCT_HEALTH_DASHBOARD.md)
+- [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
+- [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
+- [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
 
