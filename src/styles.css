@@ -419,6 +419,43 @@ dd {
   background: linear-gradient(135deg, #ffffff 0%, #f0fbf7 100%);
 }
 
+.quick-start {
+  align-items: start;
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
+}
+
+.quick-start-panel,
+.next-action-card,
+.objective-static,
+.mode-chip {
+  border: 1px solid #c9d5e6;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.quick-start-panel,
+.next-action-card {
+  background: white;
+  box-shadow: var(--shadow-soft);
+}
+
+.objective-static,
+.mode-chip {
+  background: var(--color-surface-muted);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.mode-chip {
+  margin-top: var(--space-4);
+}
+
+.next-action-card {
+  margin: var(--space-4) 0;
+}
+
 .metric-card h3 {
   font-size: 1.3rem;
 }
@@ -440,6 +477,7 @@ dd {
 
   .two-col,
   .three-col,
+  .quick-start,
   .assumption-grid {
     grid-template-columns: 1fr;
   }

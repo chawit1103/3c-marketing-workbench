@@ -44,8 +44,8 @@ export function HomeView() {
   return (
     <section className="view-stack" aria-labelledby="home-title">
       <div className="hero card card-accent">
-        <p className="eyebrow">Guided launch review</p>
-        <h1 id="home-title">Compare marketing scenarios safely before budget decisions.</h1>
+        <p className="eyebrow">Marketing Decision Workbench</p>
+        <h1 id="home-title">Compare product launch decisions safely before budget reviews.</h1>
         <p>
           Start from reviewed sample assumptions, keep outputs aggregate, and use plain executive
           language for human review.
@@ -109,30 +109,49 @@ export function WorkbenchView() {
     setHasRun(true);
   }
 
+  const resultPreview = hasRun
+    ? 'Result preview is ready below: open the dashboard or export-readiness preview after reviewing the top recommendation.'
+    : 'Defaults are prefilled. Run now, or edit up to five visible inputs first.';
+
   return (
     <section className="view-stack" aria-labelledby="workbench-title">
-      <div className="card card-accent">
-        <p className="eyebrow">Guided Product Launch workflow</p>
-        <h1 id="workbench-title">Product Launch Simulation</h1>
-        <p>
-          Complete a reviewed offline sample in minutes. Your entries are shown as assumptions for
-          the review screen; the result itself comes from the generated product sample.
-        </p>
+      <div className="card card-accent quick-start">
+        <div>
+          <p className="eyebrow">Marketing Decision Workbench</p>
+          <h1 id="workbench-title">Product Launch Simulation</h1>
+          <p>
+            Complete a reviewed offline Product Launch sample in under a minute. Your entries are
+            review assumptions; the result comes from the generated product sample.
+          </p>
+          <section className="mode-chip" aria-label="Current workflow">
+            <span className="badge badge-ready">Current workflow</span>
+            <strong>Product Launch mode</strong>
+            <span>Only Product Launch is available in this release.</span>
+          </section>
+        </div>
+        <aside className="quick-start-panel" aria-label="Quick start run action">
+          <p className="eyebrow">Quick start</p>
+          <h2>Run with safe defaults</h2>
+          <p>{resultPreview}</p>
+          <button className="button button-primary" type="button" onClick={runSimulation}>
+            Run offline simulation
+          </button>
+        </aside>
       </div>
 
       <div className="grid two-col align-start">
         <form className="card form-stack" aria-label="Product Launch setup" onSubmit={(event) => event.preventDefault()}>
           <fieldset>
-            <legend>1. Objective</legend>
-            <label htmlFor="objective">Objective</label>
-            <select id="objective" value="Product Launch" disabled aria-label="Objective">
-              <option>Product Launch</option>
-            </select>
-            <p className="help-text">Focused on Product Launch so a non-technical user can finish the review quickly.</p>
+            <legend>1. Workflow</legend>
+            <div className="objective-static" aria-label="Objective: Product Launch">
+              <span className="badge badge-ready">Product Launch mode</span>
+              <strong>Review launch message, offer, audience, and channel assumptions.</strong>
+              <p className="help-text">This is intentionally fixed so you can reach results quickly.</p>
+            </div>
           </fieldset>
 
           <fieldset>
-            <legend>2. Product and message details</legend>
+            <legend>2. Inputs you can edit</legend>
             <label htmlFor="brand">Brand/Product</label>
             <input
               id="brand"
@@ -155,7 +174,7 @@ export function WorkbenchView() {
               value={form.keyMessage}
               onChange={(event) => updateField('keyMessage', event.target.value)}
             />
-            <label htmlFor="context">Optional context</label>
+            <label htmlFor="context">Context notes</label>
             <textarea
               id="context"
               value={form.context}
@@ -241,7 +260,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? productLaunchFixture.runId}</p>
         <h1 id="dashboard-title">Product Launch Results</h1>
-        <p>Marketing-friendly sample dashboard for a reviewed offline product-launch simulation.</p>
+        <p>Marketing-friendly decision dashboard for a reviewed offline product-launch simulation.</p>
       </div>
       <ProductLaunchResults form={defaultForm} fixture={productLaunchFixture} />
     </section>
@@ -253,8 +272,8 @@ export function ExportReviewView({ runId }: { runId?: string }) {
     <section className="view-stack" aria-labelledby="export-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? productLaunchFixture.runId}</p>
-        <h1 id="export-title">Export Review</h1>
-        <p>Review available formats, readiness, summary preview, and safety notes before sharing.</p>
+        <h1 id="export-title">Export Readiness Preview</h1>
+        <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
       </div>
       <ExportReview fixture={productLaunchFixture} />
     </section>
@@ -315,14 +334,19 @@ function ProductLaunchResults({
   return (
     <section className="view-stack" aria-labelledby="results-title">
       <div className="card result-hero">
-        <p className="eyebrow">Marketing result</p>
+        <p className="eyebrow">Result preview</p>
         <h2 id="results-title">{fixture.summary.headline}</h2>
         <p>{fixture.summary.text}</p>
-        <p className="help-text">Synthetic/aggregate/offline result only. Not predictive, not a conversion guarantee, and not production campaign evidence.</p>
+        <section className="next-action-card" aria-label="Recommended next action">
+          <p className="eyebrow">Recommended next action</p>
+          <strong>Use this as a human review prompt, then approve a small evidence-gathering test.</strong>
+          <p>{fixture.recommendedNextTest}</p>
+        </section>
+        <p className="help-text">Safety: synthetic aggregate offline result only; not predictive, not a conversion guarantee, and not production campaign evidence.</p>
         {showActions ? (
           <div className="button-row">
             <a className="button button-secondary" href={`/runs/${fixture.runId}`}>Open result dashboard</a>
-            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>Open export review</a>
+            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>Open export-readiness preview</a>
           </div>
         ) : null}
       </div>
@@ -351,7 +375,7 @@ function ProductLaunchResults({
         <InsightList title="Audience Insights" items={fixture.audienceInsights} />
         <InsightList title="Risks / Caveats" items={fixture.risksCaveats} />
         <div className="card">
-          <p className="eyebrow">Recommended Next Test</p>
+          <p className="eyebrow">Decision support</p>
           <h3>Next reviewed experiment</h3>
           <p>{fixture.recommendedNextTest}</p>
         </div>
@@ -361,18 +385,24 @@ function ProductLaunchResults({
 }
 
 function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
+  const formatLabels: Record<string, string> = {
+    JSON: 'Data preview (JSON)',
+    Markdown: 'Briefing preview (Markdown)',
+    'Executive Summary': 'Executive summary preview',
+  };
+
   return (
     <div className="view-stack">
       <div className="card">
-        <p className="eyebrow">Export status</p>
+        <p className="eyebrow">Export readiness only</p>
         <h2>{fixture.exports.readiness}</h2>
-        <p>{fixture.exports.status}</p>
+        <p>{fixture.exports.status} This screen confirms preview readiness; it is not a download action.</p>
       </div>
       <div className="grid three-col">
         {fixture.exports.formats.map((format) => (
           <div className="card" key={format.label}>
-            <p className="eyebrow">{format.label}</p>
-            <h3>{format.status}</h3>
+            <p className="eyebrow">{formatLabels[format.label] ?? format.label}</p>
+            <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
             <p>{format.detail}</p>
           </div>
         ))}
@@ -396,7 +426,7 @@ function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
             </div>
             <div>
               <dt>Sample source</dt>
-              <dd>{fixture.reviewMetadata.source.sourceLabel}</dd>
+              <dd>Reviewed offline sample, no live data</dd>
             </div>
             <div>
               <dt>Confidence note</dt>

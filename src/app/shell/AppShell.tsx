@@ -22,7 +22,7 @@ export function AppShell({ route, children }: AppShellProps) {
         <a className="brand" href="/" aria-label="3C Marketing Workbench home">
           <span className="brand-mark">3C</span>
           <span>
-            <strong>Marketing Workbench</strong>
+            <strong>Marketing Decision Workbench</strong>
             <small>Executive scenario review</small>
           </span>
         </a>
