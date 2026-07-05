@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M1 PR4 Product Launch vertical slice complete and merged. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export review, and M2 dogfooding readiness.
+Status: M2 private dogfooding review completed for the existing Product Launch vertical slice. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export review, and UX friction backlog readiness.
 
 
 ## M1 PR4 closeout
@@ -12,13 +12,24 @@ Status: M1 PR4 Product Launch vertical slice complete and merged. This dashboard
 - Architecture Gate: not triggered.
 - Next milestone recommendation: M2 — Private Dogfooding and UX Friction Review.
 
+## M2 dogfooding review
+
+- Dogfooding report: `docs/product/M2_DOGFOODING_REPORT.md`
+- UX friction backlog: `docs/product/UX_FRICTION_BACKLOG.md`
+- Scope: existing Product Launch Simulation vertical slice only.
+- Result: GO WITH FRICTION BACKLOG for private dogfooding.
+- Task completion: default sample can complete in under 1 minute; thoughtful edited scenario estimated at 2–4 minutes.
+- Key friction: below-fold run/result, disabled Objective select, dense dashboard/export copy, missing real export action.
+- Safety clarity: Green; labels are trusted and explicit, but repetition should be tuned carefully.
+- Architecture Gate: not triggered.
+
 ## Summary
 
-| Area | Current status | Target for M1 | Notes |
+| Area | Current status | Current target | Notes |
 |---|---|---|---|
-| UX simplicity | Green for guided shell | Green by PR4 | Five route patterns only; low-cognitive-load Product Launch flow. |
-| Workflow completion | Green for PR4 sample | Measured by UI tests | `/workbench` supports Product Launch setup, local run action, result review, and export review links. |
-| Onboarding clarity | Yellow/Green | Green by PR4 | Home and safety labels explain fixture/offline and aggregate-only boundaries. |
+| UX simplicity | Yellow/Green after M2 dogfood | M2 friction triage | Product Launch flow is usable, but below-fold run/result and locked objective need refinement. |
+| Workflow completion | Green for default sample | M2 friction triage | Default sample completes quickly; edited scenario is estimated 2–4 minutes. |
+| Onboarding clarity | Yellow/Green | M2 friction triage | Safety and assumptions are clear; repeated safety copy and fixed-sample explanation add reading load. |
 | SocialSense integration health | Green for PR3 smoke | Green by PR3 | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
 | Export readiness | Green for PR4 sample | Green by PR4 | `/exports/:runId` shows JSON, Markdown, and Executive Summary readiness/status from the generated fixture. |
 | Dashboard readiness | Green for PR4 sample | Green by PR4 | `/runs/:runId` renders marketing-friendly Product Launch cards and caveats from the generated fixture. |
@@ -40,6 +51,10 @@ Status: M1 PR4 Product Launch vertical slice complete and merged. This dashboard
 | Live API usage | 0 | Code review/tests | 0 |
 | PII/CRM/private-data input paths | 0 | Code review/tests | 0 |
 | Production/conversion guarantee claims | 0 intended | Copy review/tests | 0 |
+| Dogfood task completion estimate | <1 min default / 2–4 min edited | M2 dogfood | Reduce below-fold friction before adding workflows |
+| Dashboard readability score | 3.5/5 | M2 dogfood | Add future top-level decision/next-action summary |
+| Safety clarity score | 4.5/5 | M2 dogfood | Preserve clarity while reducing repeated copy load |
+| Export review usefulness score | 3/5 | M2 dogfood | Improve format labels and clarify no download action |
 
 ## Scaffold readiness
 
@@ -186,7 +201,7 @@ Future required:
 | Dashboard implies production prediction | High | 3C | Use directional language and review labels; block unsafe claims. |
 | Export bypasses safety review | High | 3C | Export review is visible in PR4; keep unsupported formats blocked. |
 | PR4 sample overclaims predictive readiness | Medium | 3C | Copy states generated offline sample and no production prediction. |
-| No real dogfooding metrics yet | Medium | Product | Add after PR4 private walkthroughs. |
+| Limited dogfooding metrics | Reduced in M2 | Product | M2 report captures proxy timing estimates, readability scores, safety clarity, and export usefulness; real private-user timed walkthroughs remain future validation. |
 
 ## Technical debt register
 
@@ -206,14 +221,15 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: M2 private dogfooding.
+Next milestone: Continue M2 friction triage for Product Launch only.
 
-M2 should deliver:
+M2 next step should deliver:
 
-- timed private walkthroughs of the Product Launch vertical slice;
-- confusion and completion metrics;
-- executive summary readability review;
-- backlog triage for Campaign Message Test and A/B Message Comparison.
+- small copy/layout fixes for P1 friction items;
+- repeat walkthrough with the same Product Launch scope;
+- no Campaign Message Test or A/B Message Comparison implementation until Product Launch friction is reduced.
+
+Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
 
 ## PR4 acceptance criteria
 
