@@ -2,9 +2,9 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M2 Exit Review complete. Product Launch is the approved reusable workflow pattern; Campaign Message Test remains planning-only until explicitly authorized. PR2 delivered the frontend shell, PR3 added the product-owned adapter over SocialSense public SDK/runtime surfaces, PR4 added the Product Launch vertical slice, and M2 stabilized UX/readability and pattern guidance.
+Status: M3 Campaign Domain Planning in progress. Product Launch is the approved reusable workflow pattern, Campaign Domain now defines the reusable business model for future marketing workflows, and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test and A/B Message Comparison remain planning-only / not implemented until explicitly authorized after domain GO.
 
-Explicit non-goals in PR4:
+Historical PR4 and current M3 non-goals:
 
 - no backend;
 - no live APIs;
@@ -81,7 +81,7 @@ Unknown routes render a not-found state. There is no route for settings, auth, b
 
 ## Docs map
 
-Required M1 documents:
+Product documentation map:
 
 - [Old MarketingSimulation UX Audit](docs/product/OLD_MARKETING_SIMULATION_UX_AUDIT.md)
 - [3C Product Principles](docs/product/3C_PRODUCT_PRINCIPLES.md)
@@ -97,6 +97,12 @@ Required M1 documents:
 - [Workflow Pattern Review](docs/product/WORKFLOW_PATTERN_REVIEW.md)
 - [Workflow Pattern Guidelines](docs/product/WORKFLOW_PATTERN_GUIDELINES.md)
 - [Workflow Pattern Decision](docs/product/WORKFLOW_PATTERN_DECISION.md)
+- [Campaign Domain Analysis](docs/product/CAMPAIGN_DOMAIN_ANALYSIS.md)
+- [Campaign Taxonomy](docs/product/CAMPAIGN_TAXONOMY.md)
+- [Campaign Objectives](docs/product/CAMPAIGN_OBJECTIVES.md)
+- [Campaign Data Model](docs/product/CAMPAIGN_DATA_MODEL.md)
+- [Campaign Workflow Mapping](docs/product/CAMPAIGN_WORKFLOW_MAPPING.md)
+- [Campaign Consumer Mapping](docs/product/CAMPAIGN_CONSUMER_MAPPING.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -127,7 +133,14 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-PR4 validation commands:
+M3 docs-only validation commands:
+
+```bash
+python3 scripts/docs_smoke.py
+git diff --check origin/main...HEAD
+```
+
+Full product regression commands remain available for implementation milestones:
 
 ```bash
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
@@ -147,14 +160,15 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## PR4 quality gates
+## M3 review gates
 
-Before handoff:
+Before M3 handoff:
 
-- run all validation commands above;
-- confirm fixture generation uses `scripts/generate_product_launch_fixture.py` and the PR3 adapter only;
-- confirm `/workbench` is usable as a Product Launch Simulation vertical slice;
-- confirm `/runs/:runId` and `/exports/:runId` render the generated offline sample dashboard and export review;
+- run `python3 scripts/docs_smoke.py`;
+- run `git diff --check origin/main...HEAD`;
+- confirm Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping exist;
+- confirm Product Health Dashboard and Roadmap reflect M3 current state;
+- confirm no Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation was added;
 - confirm no backend, auth, credentials, live API calls, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
 - confirm SocialSense and MarketingSimulation remain unmodified;
-- commit all PR4 changes on `m1-pr4-product-launch-vertical-slice`.
+- commit M3 docs-only changes on `m3-campaign-domain-planning`.
