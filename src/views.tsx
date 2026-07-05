@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
+import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import productLaunchFixture from './product/fixtures/productLaunchResult.json';
 
 const audiencePresets = [
@@ -12,11 +13,15 @@ const audiencePresets = [
 ];
 const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
 
+type WorkflowKey = 'productLaunch' | 'campaignMessageTest';
+
 type LaunchForm = {
   brand: string;
   campaignMessage: string;
   offer: string;
   keyMessage: string;
+  tone: string;
+  claim: string;
   context: string;
   audiences: string[];
   platforms: string[];
@@ -28,16 +33,72 @@ type FixtureCard = {
   detail: string;
 };
 
-type ProductLaunchFixture = typeof productLaunchFixture;
+type ReferenceFixture = typeof productLaunchFixture;
 
-const defaultForm: LaunchForm = {
+type WorkflowConfig = {
+  key: WorkflowKey;
+  objective: string;
+  modeLabel: string;
+  heading: string;
+  shortDescription: string;
+  formLabel: string;
+  objectiveDescription: string;
+  defaultForm: LaunchForm;
+  fixture: ReferenceFixture;
+  workflowSteps: string[];
+};
+
+const productLaunchDefaultForm: LaunchForm = {
   brand: productLaunchFixture.sampleInput.brand,
   campaignMessage: productLaunchFixture.sampleInput.campaign_message,
   offer: productLaunchFixture.sampleInput.offer,
   keyMessage: productLaunchFixture.sampleInput.key_message,
+  tone: 'Helpful and practical',
+  claim: 'Launch offer and convenience benefits require review before external use.',
   context: productLaunchFixture.sampleInput.context,
   audiences: productLaunchFixture.sampleInput.audiences,
   platforms: productLaunchFixture.sampleInput.platforms,
+};
+
+const campaignMessageDefaultForm: LaunchForm = {
+  brand: campaignMessageFixture.sampleInput.brand,
+  campaignMessage: campaignMessageFixture.sampleInput.campaign_message,
+  offer: '',
+  keyMessage: campaignMessageFixture.sampleInput.key_message,
+  tone: campaignMessageFixture.sampleInput.tone,
+  claim: campaignMessageFixture.sampleInput.claim,
+  context: campaignMessageFixture.sampleInput.context,
+  audiences: campaignMessageFixture.sampleInput.audiences,
+  platforms: campaignMessageFixture.sampleInput.platforms,
+};
+
+const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
+  productLaunch: {
+    key: 'productLaunch',
+    objective: 'Product Launch',
+    modeLabel: 'Product Launch mode',
+    heading: 'Product Launch Simulation',
+    shortDescription:
+      'Complete a reviewed offline Product Launch sample in under a minute. Your entries are review assumptions; the result comes from the generated product sample.',
+    formLabel: 'Product Launch setup',
+    objectiveDescription: 'Review launch message, offer, audience, and channel assumptions.',
+    defaultForm: productLaunchDefaultForm,
+    fixture: productLaunchFixture,
+    workflowSteps: ['Campaign Details', 'Audience', 'Platform Mix', 'Review', 'Run', 'Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
+  },
+  campaignMessageTest: {
+    key: 'campaignMessageTest',
+    objective: 'Campaign Message Test',
+    modeLabel: 'Campaign Message Test mode',
+    heading: 'Campaign Message Test',
+    shortDescription:
+      'Review a campaign message, audience, and platform mix with the same offline result, dashboard, and export-review pattern used by Product Launch.',
+    formLabel: 'Campaign Message Test setup',
+    objectiveDescription: 'Review campaign message clarity, tone, claim, audience, and platform assumptions.',
+    defaultForm: campaignMessageDefaultForm,
+    fixture: campaignMessageFixture,
+    workflowSteps: ['Campaign Details', 'Audience', 'Platform Mix', 'Review', 'Run', 'Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
+  },
 };
 
 export function HomeView() {
@@ -45,13 +106,14 @@ export function HomeView() {
     <section className="view-stack" aria-labelledby="home-title">
       <div className="hero card card-accent">
         <p className="eyebrow">Marketing Decision Workbench</p>
-        <h1 id="home-title">Compare product launch decisions safely before budget reviews.</h1>
+        <h1 id="home-title">Compare campaign decisions safely before budget reviews.</h1>
         <p>
           Start from reviewed sample assumptions, keep outputs aggregate, and use plain executive
           language for human review.
         </p>
         <div className="button-row">
           <a className="button button-primary" href="/workbench">Open guided workbench</a>
+          <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
           <a className="button button-secondary" href="/health">View product health</a>
         </div>
       </div>
@@ -62,13 +124,13 @@ export function HomeView() {
           status="ready"
         />
         <ObjectiveCard
-          title="Directional signals only"
-          description="Use synthetic aggregate signals, confidence language, limitations, and evidence gaps instead of outcome guarantees."
-          status="review"
+          title="Campaign Message Test workflow"
+          description="A second reference workflow reuses the same guided pattern, dashboard cards, export review, and safety labels."
+          status="ready"
         />
         <ObjectiveCard
           title="Executive review path"
-          description="Dashboard and export review show a generated sample summary with safety boundaries visible."
+          description="Dashboard and export review show generated sample summaries with safety boundaries visible."
           status="ready"
         />
       </div>
@@ -76,10 +138,11 @@ export function HomeView() {
   );
 }
 
-export function WorkbenchView() {
-  const [form, setForm] = useState<LaunchForm>(defaultForm);
+export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
+  const config = workflowConfigs[workflow];
+  const [form, setForm] = useState<LaunchForm>(config.defaultForm);
   const [hasRun, setHasRun] = useState(false);
-  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(defaultForm);
+  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(config.defaultForm);
   const [errors, setErrors] = useState<string[]>([]);
 
   const selectedAudienceText = form.audiences.join(', ');
@@ -111,23 +174,27 @@ export function WorkbenchView() {
 
   const resultPreview = hasRun
     ? 'Result preview is ready below: open the dashboard or export-readiness preview after reviewing the top recommendation.'
-    : 'Defaults are prefilled. Run now, or edit up to five visible inputs first.';
+    : 'Defaults are prefilled. Run now, or edit the visible inputs first.';
+  const alternateWorkflow = config.key === 'productLaunch' ? workflowConfigs.campaignMessageTest : workflowConfigs.productLaunch;
+  const alternateWorkflowHref = config.key === 'productLaunch' ? '/workbench/campaign-message-test' : '/workbench';
 
   return (
     <section className="view-stack" aria-labelledby="workbench-title">
       <div className="card card-accent quick-start">
         <div>
           <p className="eyebrow">Marketing Decision Workbench</p>
-          <h1 id="workbench-title">Product Launch Simulation</h1>
-          <p>
-            Complete a reviewed offline Product Launch sample in under a minute. Your entries are
-            review assumptions; the result comes from the generated product sample.
-          </p>
+          <h1 id="workbench-title">{config.heading}</h1>
+          <p>{config.shortDescription}</p>
           <section className="mode-chip" aria-label="Current workflow">
             <span className="badge badge-ready">Current workflow</span>
-            <strong>Product Launch mode</strong>
-            <span>Only Product Launch is available in this release.</span>
+            <strong>{config.modeLabel}</strong>
+            <span>Reusable guided workflow pattern with offline review results.</span>
           </section>
+          <div className="button-row" aria-label="Switch workflow">
+            <a className="button button-secondary" href={alternateWorkflowHref}>
+              Switch to {alternateWorkflow.objective}
+            </a>
+          </div>
         </div>
         <aside className="quick-start-panel" aria-label="Quick start run action">
           <p className="eyebrow">Quick start</p>
@@ -139,20 +206,32 @@ export function WorkbenchView() {
         </aside>
       </div>
 
+      <section className="card" aria-label="Reference workflow steps">
+        <p className="eyebrow">Reference workflow</p>
+        <ol className="step-list workflow-step-list">
+          {config.workflowSteps.map((step, index) => (
+            <li className="step-card" key={step}>
+              <span className="step-number">{index + 1}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <div className="grid two-col align-start">
-        <form className="card form-stack" aria-label="Product Launch setup" onSubmit={(event) => event.preventDefault()}>
+        <form className="card form-stack" aria-label={config.formLabel} onSubmit={(event) => event.preventDefault()}>
           <fieldset>
-            <legend>1. Workflow</legend>
-            <div className="objective-static" aria-label="Objective: Product Launch">
-              <span className="badge badge-ready">Product Launch mode</span>
-              <strong>Review launch message, offer, audience, and channel assumptions.</strong>
-              <p className="help-text">This is intentionally fixed so you can reach results quickly.</p>
+            <legend>1. Campaign Details</legend>
+            <div className="objective-static" aria-label={`Objective: ${config.objective}`}>
+              <span className="badge badge-ready">{config.modeLabel}</span>
+              <strong>{config.objectiveDescription}</strong>
+              <p className="help-text">This uses a reviewed offline sample so you can reach results quickly.</p>
             </div>
           </fieldset>
 
           <fieldset>
             <legend>2. Inputs you can edit</legend>
-            <label htmlFor="brand">Brand/Product</label>
+            <label htmlFor="brand">Campaign name or brand</label>
             <input
               id="brand"
               value={form.brand}
@@ -166,14 +245,26 @@ export function WorkbenchView() {
               onChange={(event) => updateField('campaignMessage', event.target.value)}
               rows={3}
             />
-            <label htmlFor="offer">Offer/Promotion</label>
-            <input id="offer" value={form.offer} onChange={(event) => updateField('offer', event.target.value)} />
+            {config.key === 'productLaunch' ? (
+              <>
+                <label htmlFor="offer">Offer/Promotion</label>
+                <input id="offer" value={form.offer} onChange={(event) => updateField('offer', event.target.value)} />
+              </>
+            ) : null}
             <label htmlFor="key-message">Key Message</label>
             <input
               id="key-message"
               value={form.keyMessage}
               onChange={(event) => updateField('keyMessage', event.target.value)}
             />
+            {config.key === 'campaignMessageTest' ? (
+              <>
+                <label htmlFor="tone">Tone</label>
+                <input id="tone" value={form.tone} onChange={(event) => updateField('tone', event.target.value)} />
+                <label htmlFor="claim">Claim to review</label>
+                <input id="claim" value={form.claim} onChange={(event) => updateField('claim', event.target.value)} />
+              </>
+            ) : null}
             <label htmlFor="context">Context notes</label>
             <textarea
               id="context"
@@ -184,7 +275,7 @@ export function WorkbenchView() {
           </fieldset>
 
           <fieldset>
-            <legend>3. Audience presets</legend>
+            <legend>3. Audience</legend>
             <div className="choice-grid" role="group" aria-label="Audience presets">
               {audiencePresets.map((audience) => (
                 <label className="choice-pill" key={audience}>
@@ -200,7 +291,7 @@ export function WorkbenchView() {
           </fieldset>
 
           <fieldset>
-            <legend>4. Platform mix</legend>
+            <legend>4. Platform Mix</legend>
             <div className="choice-grid" role="group" aria-label="Platform mix">
               {platformOptions.map((platform) => (
                 <label className="choice-pill" key={platform}>
@@ -230,12 +321,12 @@ export function WorkbenchView() {
         </form>
 
         <section className="card assumption-panel" aria-label="Current assumptions">
-          <p className="eyebrow">Assumptions preview</p>
+          <p className="eyebrow">Review</p>
           <h2>What will appear in review</h2>
           <dl>
             <dt>Objective</dt>
-            <dd>Product Launch</dd>
-            <dt>Brand/Product</dt>
+            <dd>{config.objective}</dd>
+            <dt>Campaign name or brand</dt>
             <dd>{form.brand || 'Required'}</dd>
             <dt>Audience</dt>
             <dd>{selectedAudienceText || 'General Consumers'}</dd>
@@ -249,33 +340,35 @@ export function WorkbenchView() {
         </section>
       </div>
 
-      {hasRun ? <ProductLaunchResults form={submittedForm} fixture={productLaunchFixture} showActions /> : null}
+      {hasRun ? <ReferenceResults form={submittedForm} config={config} fixture={config.fixture} showActions /> : null}
     </section>
   );
 }
 
 export function RunDashboardView({ runId }: { runId?: string }) {
+  const config = configForRunId(runId);
   return (
     <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="card card-accent">
-        <p className="eyebrow">Run {runId ?? productLaunchFixture.runId}</p>
-        <h1 id="dashboard-title">Product Launch Results</h1>
-        <p>Marketing-friendly decision dashboard for a reviewed offline product-launch simulation.</p>
+        <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
+        <h1 id="dashboard-title">{config.objective} Results</h1>
+        <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
-      <ProductLaunchResults form={defaultForm} fixture={productLaunchFixture} />
+      <ReferenceResults form={config.defaultForm} config={config} fixture={config.fixture} />
     </section>
   );
 }
 
 export function ExportReviewView({ runId }: { runId?: string }) {
+  const config = configForRunId(runId);
   return (
     <section className="view-stack" aria-labelledby="export-title">
       <div className="card card-accent">
-        <p className="eyebrow">Run {runId ?? productLaunchFixture.runId}</p>
+        <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="export-title">Export Readiness Preview</h1>
         <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
       </div>
-      <ExportReview fixture={productLaunchFixture} />
+      <ExportReview fixture={config.fixture} objective={config.objective} />
     </section>
   );
 }
@@ -285,12 +378,12 @@ export function HealthView() {
     <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
-        <h1 id="health-title">Product Launch readiness</h1>
-        <p>Product Launch review provides a tested frontend workflow, generated offline sample result, dashboard, and export review.</p>
+        <h1 id="health-title">M5 Campaign workflow readiness</h1>
+        <p>Product Launch and Campaign Message Test provide tested offline workflows, generated sample results, dashboard reuse, and export review.</p>
       </div>
       <div className="grid three-col">
-        <ObjectiveCard title="Routes" description="Workbench, results, export review, and health routes resolve without route sprawl." status="ready" />
-        <ObjectiveCard title="Product Launch workflow" description="Product Launch can be configured and run locally in the UI with safe assumptions." status="ready" />
+        <ObjectiveCard title="Routes" description="Workbench, Campaign Message Test, results, export review, and health routes resolve without primary navigation changes." status="ready" />
+        <ObjectiveCard title="Component reuse" description="Campaign Message Test reuses the Product Launch workflow pattern, cards, export review, and safety labels." status="ready" />
         <ObjectiveCard title="Safety" description="No live data, credentials, private data, or production campaign claims are introduced." status="review" />
       </div>
     </section>
@@ -302,28 +395,32 @@ export function NotFoundView() {
     <section className="view-stack" aria-labelledby="not-found-title">
       <div className="card error-state">
         <p className="eyebrow">Route not found</p>
-        <h1 id="not-found-title">This page is not part of the guided Product Launch review.</h1>
+        <h1 id="not-found-title">This page is not part of the guided campaign review.</h1>
         <p>Use the main navigation to return to a documented workbench route.</p>
       </div>
     </section>
   );
 }
 
-function ProductLaunchResults({
+function ReferenceResults({
   form,
   fixture,
+  config,
   showActions = false,
 }: {
   form: LaunchForm;
-  fixture: ProductLaunchFixture;
+  fixture: ReferenceFixture;
+  config: WorkflowConfig;
   showActions?: boolean;
 }) {
   const assumptionRows = useMemo(
     () => [
-      ['Brand/Product', form.brand],
+      ['Campaign name or brand', form.brand],
       ['Campaign Message', form.campaignMessage],
-      ['Offer/Promotion', form.offer],
+      ...(form.offer ? [['Offer/Promotion', form.offer]] : []),
       ['Key Message', form.keyMessage],
+      ...(form.tone ? [['Tone', form.tone]] : []),
+      ...(form.claim ? [['Claim to review', form.claim]] : []),
       ['Audience', form.audiences.join(', ') || 'General Consumers'],
       ['Platform mix', form.platforms.join(', ')],
       ['Context', form.context || 'No additional context'],
@@ -334,7 +431,7 @@ function ProductLaunchResults({
   return (
     <section className="view-stack" aria-labelledby="results-title">
       <div className="card result-hero">
-        <p className="eyebrow">Result preview</p>
+        <p className="eyebrow">Dashboard</p>
         <h2 id="results-title">{fixture.summary.headline}</h2>
         <p>{fixture.summary.text}</p>
         <section className="next-action-card" aria-label="Recommended next action">
@@ -375,16 +472,16 @@ function ProductLaunchResults({
         <InsightList title="Audience Insights" items={fixture.audienceInsights} />
         <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} />
         <div className="card">
-          <p className="eyebrow">Decision support</p>
-          <h3>Next reviewed experiment</h3>
-          <p>{fixture.recommendedNextTest}</p>
+          <p className="eyebrow">Executive Summary</p>
+          <h3>{config.objective} executive summary</h3>
+          <p>{fixture.exports.executiveSummaryPreview}</p>
         </div>
       </div>
     </section>
   );
 }
 
-function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
+function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objective: string }) {
   const formatLabels: Record<string, string> = {
     JSON: 'Data preview (JSON)',
     Markdown: 'Briefing preview (Markdown)',
@@ -394,9 +491,9 @@ function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
   return (
     <div className="view-stack">
       <div className="card">
-        <p className="eyebrow">Export readiness only</p>
+        <p className="eyebrow">Export review</p>
         <h2>{fixture.exports.readiness}</h2>
-        <p>{fixture.exports.status} This screen confirms preview readiness; it is not a download action.</p>
+        <p>{fixture.exports.status} This screen confirms JSON, Markdown, and Executive Summary preview readiness; it is not a download action.</p>
       </div>
       <div className="grid three-col">
         {fixture.exports.formats.map((format) => (
@@ -409,7 +506,7 @@ function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
       </div>
       <div className="card">
         <p className="eyebrow">Executive Summary preview</p>
-        <h2>Executive-ready summary</h2>
+        <h2>{objective} executive-ready summary</h2>
         <p>{fixture.exports.executiveSummaryPreview}</p>
       </div>
       <div className="grid two-col align-start">
@@ -470,7 +567,7 @@ function InsightList({ title, items }: { title: string; items: string[] }) {
 function validateForm(form: LaunchForm): string[] {
   const errors: string[] = [];
   if (!form.brand.trim()) {
-    errors.push('Brand/Product is required.');
+    errors.push('Campaign name or brand is required.');
   }
   if (!form.campaignMessage.trim()) {
     errors.push('Campaign Message is required.');
@@ -479,4 +576,11 @@ function validateForm(form: LaunchForm): string[] {
     errors.push('Select at least one platform.');
   }
   return errors;
+}
+
+function configForRunId(runId?: string): WorkflowConfig {
+  if (runId === campaignMessageFixture.runId || runId?.includes('campaign-message')) {
+    return workflowConfigs.campaignMessageTest;
+  }
+  return workflowConfigs.productLaunch;
 }

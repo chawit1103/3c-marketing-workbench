@@ -55,9 +55,15 @@ def run_campaign_message_test(
     seed: str = "3c-pr3-campaign-message-fixture",
     assumptions: Iterable[str] | None = None,
     notes: str = "",
+    export_formats: Iterable[str] = DEFAULT_EXPORT_FORMATS,
     domain: Any | None = None,
 ) -> dict[str, Any]:
-    """Adapter-shaped campaign-response wrapper for later UI integration."""
+    """Run a campaign-message test through the public SocialSense facade.
+
+    The wrapper stays inside the product SDK boundary and returns the same
+    export-readiness bundle as Product Launch: JSON, Markdown, and Executive
+    Summary by default.
+    """
 
     mapped_assumptions = _normalize_assumptions(assumptions)
     mapped_assumptions.append(f"message_theme: {message_theme}")
@@ -67,7 +73,7 @@ def run_campaign_message_test(
         seed=seed,
         assumptions=mapped_assumptions,
         notes=notes,
-        export_formats=("executive_json",),
+        export_formats=export_formats,
         domain=domain,
         adapter_function="run_campaign_message_test",
     )

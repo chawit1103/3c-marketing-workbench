@@ -13,13 +13,19 @@ function renderWorkbench() {
   return screen.getByRole('form', { name: 'Product Launch setup' });
 }
 
+function renderCampaignMessageTest() {
+  renderAt('/workbench/campaign-message-test');
+  return screen.getByRole('form', { name: 'Campaign Message Test setup' });
+}
+
 describe('App shell routes', () => {
   it.each([
-    ['/', 'Compare product launch decisions safely before budget reviews.'],
+    ['/', 'Compare campaign decisions safely before budget reviews.'],
     ['/workbench', 'Product Launch Simulation'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test'],
     ['/runs/run-123', 'Product Launch Results'],
     ['/exports/run-123', 'Export Readiness Preview'],
-    ['/health', 'Product Launch readiness'],
+    ['/health', 'M5 Campaign workflow readiness'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -30,7 +36,7 @@ describe('App shell routes', () => {
     }
   });
 
-  it('renders simple shell navigation', () => {
+  it('renders simple shell navigation without changing the primary navigation model', () => {
     renderAt('/');
 
     const nav = screen.getByRole('navigation', { name: 'Main navigation' });
@@ -39,6 +45,11 @@ describe('App shell routes', () => {
     expect(within(nav).getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/runs/sample-run');
     expect(within(nav).getByRole('link', { name: 'Export review' })).toHaveAttribute('href', '/exports/sample-run');
     expect(within(nav).getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/health');
+    expect(within(nav).queryByRole('link', { name: /Campaign Message Test/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open Campaign Message Test' })).toHaveAttribute(
+      'href',
+      '/workbench/campaign-message-test',
+    );
   });
 
   it('keeps internal platform terms out of visible primary UI', () => {
@@ -49,9 +60,10 @@ describe('App shell routes', () => {
       'domain pack',
       'dashboard contract',
       'registry',
+      'campaign_response',
     ];
 
-    for (const pathname of ['/', '/workbench', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
+    for (const pathname of ['/', '/workbench', '/workbench/campaign-message-test', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
       expect(visibleText).not.toContain('pr4');
@@ -67,7 +79,7 @@ describe('App shell routes', () => {
   });
 });
 
-describe('Product Launch workflow', () => {
+describe('Product Launch workflow regression', () => {
   it('renders the guided Product Launch form with static Product Launch objective', () => {
     const form = renderWorkbench();
 
@@ -77,7 +89,7 @@ describe('Product Launch workflow', () => {
       'Review launch message, offer, audience, and channel assumptions.',
     );
     expect(screen.queryByLabelText('Objective')).not.toBeInTheDocument();
-    expect(within(form).getByLabelText('Brand/Product')).toHaveValue('Nimbus Go');
+    expect(within(form).getByLabelText('Campaign name or brand')).toHaveValue('Nimbus Go');
   });
 
   it('shows the run action in the quick-start area before the full form', () => {
@@ -88,17 +100,17 @@ describe('Product Launch workflow', () => {
     expect(within(quickStart).getByText(/Defaults are prefilled/i)).toBeInTheDocument();
   });
 
-  it('validates brand, campaign message, and platform requirements', () => {
+  it('validates campaign name, campaign message, and platform requirements', () => {
     const form = renderWorkbench();
 
-    fireEvent.change(within(form).getByLabelText('Brand/Product'), { target: { value: '' } });
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: '' } });
     fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: '' } });
     for (const platform of ['Facebook', 'TikTok', 'LINE']) {
       fireEvent.click(within(form).getByLabelText(platform));
     }
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Brand/Product is required.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required.');
     expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required.');
     expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform.');
     expect(screen.queryByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).not.toBeInTheDocument();
@@ -130,10 +142,10 @@ describe('Product Launch workflow', () => {
       'Platform Breakdown',
       'Audience Insights',
       'Risks / Caveats',
-      'Decision support',
     ]) {
       expect(screen.getByText(heading)).toBeInTheDocument();
     }
+    expect(screen.getAllByText('Executive Summary').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Open export-readiness preview')).toBeInTheDocument();
     expect(screen.getAllByText(/Fixture channel cue only/).length).toBeGreaterThanOrEqual(1);
     expect(document.body.textContent?.toLowerCase()).not.toContain('aggregate sample ' + 'interactions');
@@ -141,9 +153,71 @@ describe('Product Launch workflow', () => {
   });
 });
 
+describe('Campaign Message Test workflow', () => {
+  it('is available from the existing workbench area and follows the required step sequence', () => {
+    const form = renderCampaignMessageTest();
+
+    expect(screen.getByRole('heading', { name: 'Campaign Message Test' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Current workflow' })).toHaveTextContent('Campaign Message Test mode');
+    expect(within(form).getByLabelText('Objective: Campaign Message Test')).toHaveTextContent(
+      'Review campaign message clarity, tone, claim, audience, and platform assumptions.',
+    );
+    for (const step of ['Campaign Details', 'Audience', 'Platform Mix', 'Review', 'Run', 'Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action']) {
+      expect(screen.getByRole('region', { name: 'Reference workflow steps' })).toHaveTextContent(step);
+    }
+    expect(within(form).getByLabelText('Tone')).toHaveValue('helpful, practical, trust-first');
+    expect(within(form).getByLabelText('Claim to review')).toHaveValue(
+      'Under 10 minutes is a message assumption for review, not a verified production claim.',
+    );
+  });
+
+  it('validates minimal required fields and reuses platform validation', () => {
+    const form = renderCampaignMessageTest();
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: '' } });
+    fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: '' } });
+    for (const platform of ['Facebook', 'TikTok', 'LINE']) {
+      fireEvent.click(within(form).getByLabelText(platform));
+    }
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform.');
+  });
+
+  it('renders dashboard, safety labels, executive summary, export links, and recommended next action', () => {
+    const form = renderCampaignMessageTest();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('heading', { name: 'Offline campaign-message test ready for executive review' })).toBeInTheDocument();
+    for (const heading of ['Overall Reaction', 'Message Clarity', 'Tone Fit', 'Claim Readiness', 'Platform Fit']) {
+      expect(screen.getByText(heading)).toBeInTheDocument();
+    }
+    expect(screen.getByRole('region', { name: 'Recommended next action' })).toHaveTextContent(
+      'message-readiness test',
+    );
+    expect(screen.getByText('Open result dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Open export-readiness preview')).toBeInTheDocument();
+    expect(document.body.textContent).toContain('Safety: offline fixture for planning only');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('socialsense');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('campaign_response');
+  });
+
+  it('routes Campaign Message Test dashboard and export review from the generated sample run id', () => {
+    renderAt('/runs/3c-m5-campaign-message-test-reference-workflow');
+    expect(screen.getByRole('heading', { name: 'Campaign Message Test Results' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Offline campaign-message test ready for executive review' })).toBeInTheDocument();
+  });
+});
+
 describe('Export review', () => {
-  it('renders supported formats, status, executive preview, and safety limitations', () => {
-    renderAt('/exports/sample-run');
+  it.each([
+    ['/exports/sample-run', 'Product Launch executive-ready summary'],
+    ['/exports/3c-m5-campaign-message-test-reference-workflow', 'Campaign Message Test executive-ready summary'],
+  ])('renders supported formats, status, executive preview, and safety limitations for %s', (pathname, summaryHeading) => {
+    renderAt(pathname);
 
     expect(screen.getByRole('heading', { name: 'Ready for human review' })).toBeInTheDocument();
     for (const format of ['Data preview (JSON)', 'Briefing preview (Markdown)', 'Executive summary preview']) {
@@ -152,16 +226,15 @@ describe('Export review', () => {
     }
     expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
     expect(document.body.textContent?.toLowerCase()).not.toContain('downloadable file is ready');
-    expect(screen.getByRole('heading', { name: 'Executive-ready summary' })).toBeInTheDocument();
-    expect(screen.getByText(/planning prompt for human review/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: summaryHeading })).toBeInTheDocument();
+    expect(screen.getByText(/Executive review:/)).toBeInTheDocument();
     expect(screen.getByText('Review Assumptions')).toBeInTheDocument();
     expect(screen.getByText('Evidence Gaps')).toBeInTheDocument();
     expect(screen.getByText('Limitations')).toBeInTheDocument();
     expect(screen.getByText('Offline sample basis')).toBeInTheDocument();
     expect(screen.getByText('Reviewed offline sample, no live data')).toBeInTheDocument();
     expect(document.body.textContent?.toLowerCase()).not.toContain('socialsense');
-    expect(screen.getByText(/Directional synthetic aggregate sample only/)).toBeInTheDocument();
-    expect(document.body.textContent?.toLowerCase()).not.toContain('socialsense_core_not_executed');
+    expect(screen.getByText(/Directional synthetic aggregate sample/)).toBeInTheDocument();
     expect(screen.getByText(/Synthetic aggregate sample/)).toBeInTheDocument();
     expect(screen.getByText(/No PII, CRM lists, private messages, or voter lists/)).toBeInTheDocument();
   });

@@ -173,6 +173,27 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertIn("message_a", comparison["arms"])
         self.assertIn("message_b", comparison["arms"])
 
+    def test_campaign_message_test_reuses_public_adapter_and_all_export_formats(self) -> None:
+        result = self.adapter.run_campaign_message_test(
+            message_theme="clear benefit message",
+            platform_mix=["LINE", "Facebook"],
+            assumptions=["aggregate message assumption"],
+            notes="message test notes",
+            domain=self.fake_domain,
+        )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertTrue(result["public_sdk_only"])
+        self.assertEqual(result["scenario"], "campaign_response")
+        self.assertEqual(result["adapter_function"], "run_campaign_message_test")
+        self.assertEqual(self.fake_domain.run_calls[0]["scenario"], "campaign_response")
+        self.assertIn("message_theme: clear benefit message", self.fake_domain.run_calls[0]["assumptions"])
+        self.assertEqual(
+            [call["format"] for call in self.fake_domain.export_calls],
+            ["json", "markdown", "executive_json"],
+        )
+        self.assertEqual(sorted(result["exports"].keys()), ["executive_json", "json", "markdown"])
+
 
 if __name__ == "__main__":
     unittest.main()

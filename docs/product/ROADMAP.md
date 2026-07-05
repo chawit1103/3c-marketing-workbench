@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M4 Information Architecture & Design System Review complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, and M4 IA/design-system review are complete. Campaign Message Test remains planning-only / not implemented.
+Status: M5 Campaign Message Test Reference Workflow is implemented and ready for review. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, and M4 IA/design-system review are complete. Campaign Message Test is now the approved second reference workflow implementation; A/B Message Comparison remains planning-only / not implemented.
 
 ## Program
 
@@ -154,11 +154,17 @@ Acceptance criteria:
 - Keep scope documentation-only.
 - Do not implement Campaign Message Test, A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, or SocialSense changes.
 
-### Next: Campaign Message Test Planning — Only after M4 GO
+### M5: Campaign Message Test Reference Workflow — Current
 
-- Map Campaign Message Test to Campaign Domain, the approved workflow pattern, and M4 IA/design-system standards.
-- Define planning-level inputs, review screens, dashboard expectations, export review, recommendation rules, component reuse, navigation/report discoverability, safety criteria, and validation evidence.
-- Do not implement until separately authorized after Information Architecture, Navigation, Design System, and Component Reuse all receive GO.
+- Implement Campaign Message Test as the second reference workflow.
+- Reuse Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, existing dashboard/result/export patterns, safety labels, and public SocialSense adapter boundary.
+- Track dashboard reuse >80%, component reuse >80%, export reuse, navigation consistency, operator learning time, workflow completion time, executive readability, and product consistency.
+- Do not implement A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, live APIs, private data, or SocialSense runtime changes.
+
+### Next: A/B Message Comparison Planning — Only if M5 validates reuse strategy
+
+- Recommend planning only if Campaign Message Test receives GO and demonstrates the reusable workflow strategy.
+- Do not implement A/B Message Comparison automatically.
 
 ### Future: Governance and implementation readiness review
 
@@ -185,8 +191,9 @@ Do not implement until separate review:
 - Completed PR1-PR4 sequencing remains explicit.
 - M2 and M2 Exit Review are marked complete.
 - M3 Campaign Domain Planning is marked complete.
-- M4 Information Architecture & Design System Review is marked current.
-- Next milestone is Campaign Message Test Planning only after M4 GO.
+- M4 Information Architecture & Design System Review is marked complete.
+- M5 Campaign Message Test Reference Workflow is marked current.
+- Next milestone is A/B Message Comparison planning only if M5 validates reuse strategy.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

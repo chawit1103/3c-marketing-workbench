@@ -1,13 +1,15 @@
 {
-  "schemaVersion": "pr4-product-launch-ui-v1",
-  "runId": "workbench-run-0bef4e9865a9",
-  "objective": "Product Launch",
+  "schemaVersion": "m5-campaign-message-test-ui-v1",
+  "runId": "workbench-run-bb88f1990c72",
+  "objective": "Campaign Message Test",
   "sampleInput": {
     "brand": "Nimbus Go",
     "campaign_message": "Healthy lunch decisions in under 10 minutes for busy urban teams.",
-    "offer": "Intro launch bundle: first-week sampler with free delivery threshold.",
+    "offer": "No offer required for message-only review.",
     "key_message": "Save time without sacrificing taste, nutrition, or team convenience.",
-    "context": "Reviewed offline product-launch sample for an executive marketing scenario walkthrough.",
+    "tone": "helpful, practical, trust-first",
+    "claim": "Under 10 minutes is a message assumption for review, not a verified production claim.",
+    "context": "Reviewed offline Campaign Message Test sample for executive message-readiness planning.",
     "audiences": [
       "Working Adults",
       "Urban Consumers",
@@ -20,38 +22,38 @@
     ]
   },
   "summary": {
-    "headline": "Offline product-launch simulation ready for executive review",
-    "text": "The offline Product Launch sample shows a moderate positive signal with light positive signal and strong directional signal. Treat this as a planning prompt for human review, not a forecast.",
-    "sentimentDelta": 0.16,
-    "trustDelta": 0.06,
-    "diffusionReach": 0.39,
+    "headline": "Offline campaign-message test ready for executive review",
+    "text": "The offline Campaign Message Test sample shows light positive signal for message response, light positive signal for trust, and strong directional signal for channel reach. Treat this as a planning prompt for human review, not a forecast.",
+    "sentimentDelta": 0.05,
+    "trustDelta": 0.02,
+    "diffusionReach": 0.36,
     "riskScore": 0
   },
   "cards": [
     {
       "title": "Overall Reaction",
-      "value": "Moderate positive signal",
-      "detail": "Audience response is aggregate and synthetic; use it to decide what to test next."
-    },
-    {
-      "title": "Message Acceptance",
-      "value": "Message is understandable",
-      "detail": "The promise is clearest when the time-saving benefit is paired with trust proof."
-    },
-    {
-      "title": "Brand Perception",
       "value": "Light positive signal",
-      "detail": "Add quality, delivery, and nutrition evidence before scaling the message."
+      "detail": "Audience response is aggregate and synthetic; use it to choose the next approved message test."
     },
     {
-      "title": "Engagement Potential",
+      "title": "Message Clarity",
+      "value": "Main benefit is understandable",
+      "detail": "The message is strongest when the time-saving benefit is stated with plain proof."
+    },
+    {
+      "title": "Tone Fit",
+      "value": "Light positive signal",
+      "detail": "Helpful and practical tone should be paired with evidence before external use."
+    },
+    {
+      "title": "Claim Readiness",
+      "value": "Needs substantiation review",
+      "detail": "Review the under-10-minute claim with product evidence before launch approval."
+    },
+    {
+      "title": "Platform Fit",
       "value": "Strong directional signal",
-      "detail": "Short video and chat-friendly creative are likely better first tests than broad reach claims."
-    },
-    {
-      "title": "Synthetic Purchase Intent",
-      "value": "Directional only",
-      "detail": "This is not a sales forecast or conversion guarantee; validate with approved field data."
+      "detail": "Short video and chat-friendly variants are better first tests than broad campaign scaling."
     }
   ],
   "platformBreakdown": [
@@ -72,10 +74,10 @@
     }
   ],
   "audienceInsights": [
-    "Working Adults: emphasize speed, reliability, and a clear lunch-time use case.",
-    "Urban Consumers: lead with convenience and visible quality proof.",
-    "SME Owners: frame the offer as a simple team perk with budget control.",
-    "Product launch fixture shows stronger synthetic awareness than trust, so analysts should inspect launch-message clarity before using the finding."
+    "Working Adults: emphasize speed, reliability, and proof that the lunch choice is practical.",
+    "Urban Consumers: lead with convenience and visible quality cues.",
+    "SME Owners: frame the message as a simple team convenience benefit, not a guaranteed outcome.",
+    "Campaign response fixture separates aggregate message comprehension from any actionable targeting or persuasion workflow."
   ],
   "risksCaveats": [
     "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
@@ -83,7 +85,7 @@
     "Dashboard signals require human review before executive or public-facing use.",
     "Offline fixture only: no live social data, private data, CRM lists, or production prediction."
   ],
-  "recommendedNextTest": "Run a small approved A/B creative test: time-saving headline versus trust-proof headline, reviewed by a human before launch.",
+  "recommendedNextTest": "Run a small approved message-readiness test: clarity-first headline versus trust-proof headline, reviewed by a human before launch use.",
   "safetyLabels": [
     "Synthetic aggregate sample",
     "Offline review only",
@@ -97,13 +99,13 @@
         "label": "JSON",
         "status": "Available for review",
         "detail": "Prepared from the reviewed offline sample with safety notes attached.",
-        "sizeHint": 11202
+        "sizeHint": 11747
       },
       {
         "label": "Markdown",
         "status": "Available for review",
         "detail": "Prepared from the reviewed offline sample with safety notes attached.",
-        "sizeHint": 2861
+        "sizeHint": 3138
       },
       {
         "label": "Executive Summary",
@@ -113,8 +115,8 @@
       }
     ],
     "readiness": "Ready for human review",
-    "status": "Generated from the reviewed offline sample; review safety notes before reuse.",
-    "executiveSummaryPreview": "Executive review: product-launch response is moderate positive signal, trust is light positive signal, and channel reach is strong directional signal. Confirm assumptions, evidence gaps, and limitations before any launch use."
+    "status": "Generated from the reviewed offline Campaign Message Test sample; review safety notes before reuse.",
+    "executiveSummaryPreview": "Executive review: message response is light positive signal, trust is light positive signal, and channel reach is strong directional signal. Use this to plan a small approved message-readiness test after human review."
   },
   "reviewMetadata": {
     "provenance": {
@@ -127,12 +129,14 @@
       "source_model_label": "socialsense_core_not_executed"
     },
     "assumptions": [
-      "Brand and product is Nimbus Go.",
+      "Brand is Nimbus Go.",
       "Campaign message is Healthy lunch decisions in under 10 minutes for busy urban teams.",
-      "Launch offer is Intro launch bundle: first-week sampler with free delivery threshold.",
       "Key message is Save time without sacrificing taste, nutrition, or team convenience.",
+      "Tone is helpful, practical, trust-first",
+      "Claim to review is Under 10 minutes is a message assumption for review, not a verified production claim.",
       "Audience focus is Working Adults, Urban Consumers, SME Owners.",
       "Use only aggregate, synthetic, offline assumptions with no customer records or private audience data.",
+      "message_theme: Healthy lunch decisions in under 10 minutes for busy urban teams.",
       "The review contract was validated as offline/synthetic/demo-only before conversion.",
       "Audience reactions are aggregate simulation signals, not measured public opinion or individual behavior.",
       "No approved field data or backtest evidence is attached to this bridge output."
@@ -154,7 +158,7 @@
       "sourceModelLabel": "socialsense_core_not_executed",
       "provenanceLabel": "sample_demo",
       "reviewMode": "Offline sample",
-      "sourceLabel": "Reviewed SocialSense sample, no live data"
+      "sourceLabel": "Reviewed offline sample, no live data"
     },
     "uncertainty": "Directional synthetic aggregate sample only; use for human review and next-test planning, not prediction."
   },

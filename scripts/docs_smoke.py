@@ -32,6 +32,21 @@ REQUIRED_M4_DOCS = [
     "docs/product/EXECUTIVE_UX_REVIEW.md",
 ]
 
+REQUIRED_M5_DOCS = [
+    "docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md",
+    "docs/product/COMPONENT_REUSE_AUDIT.md",
+]
+
+REQUIRED_M5_PHRASES = [
+    "M5 Campaign Message Test",
+    "Campaign Message Test",
+    "dashboard reuse >80%",
+    "component reuse >80%",
+    "No backend",
+    "No live APIs",
+    "Recommended Next Action",
+]
+
 REQUIRED_M4_PHRASES = [
     "M4 Information Architecture",
     "Information Architecture",
@@ -113,6 +128,11 @@ EXPECTED_PR4_FILES = [
     "scripts/generate_product_launch_fixture.py",
     "src/product/fixtures/productLaunchResult.json",
     "tests/test_product_launch_fixture_generator.py",
+]
+
+EXPECTED_M5_FILES = [
+    "scripts/generate_campaign_message_test_fixture.py",
+    "src/product/fixtures/campaignMessageTestResult.json",
 ]
 
 REQUIRED_SAFETY_PHRASES = [
@@ -213,6 +233,10 @@ def main() -> None:
     if missing_m4_docs:
         fail("missing required M4 docs: " + ", ".join(missing_m4_docs))
 
+    missing_m5_docs = [path for path in REQUIRED_M5_DOCS if not (ROOT / path).is_file()]
+    if missing_m5_docs:
+        fail("missing required M5 docs: " + ", ".join(missing_m5_docs))
+
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
         fail("missing expected frontend shell files: " + ", ".join(missing_frontend))
@@ -225,6 +249,10 @@ def main() -> None:
     if missing_pr4:
         fail("missing expected PR4 vertical slice files: " + ", ".join(missing_pr4))
 
+    missing_m5 = [path for path in EXPECTED_M5_FILES if not (ROOT / path).is_file()]
+    if missing_m5:
+        fail("missing expected M5 Campaign Message Test files: " + ", ".join(missing_m5))
+
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     roadmap = (ROOT / "docs/product/ROADMAP.md").read_text(encoding="utf-8")
@@ -233,6 +261,8 @@ def main() -> None:
     adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
     m4_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M4_DOCS}
     m4_text = "\n".join(m4_docs_by_path.values())
+    m5_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M5_DOCS}
+    m5_text = "\n".join(m5_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -271,13 +301,22 @@ def main() -> None:
     if missing_m4_links:
         fail("README missing M4 doc links: " + ", ".join(missing_m4_links))
 
-    for phrase in ["M4 Information Architecture", "Campaign Message Test Planning", "after M4 GO"]:
-        if phrase not in roadmap:
-            fail(f"ROADMAP.md missing M4 freshness phrase: {phrase}")
+    missing_m5_links = [path for path in REQUIRED_M5_DOCS if f"]({path})" not in readme]
+    if missing_m5_links:
+        fail("README missing M5 doc links: " + ", ".join(missing_m5_links))
 
-    for phrase in ["M4 Information Architecture", "INFORMATION_ARCHITECTURE.md", "NAVIGATION_MODEL.md", "COMPONENT_REUSE_MATRIX.md", "after IA, Navigation, Design System, and Component Reuse receive GO"]:
+    combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
+    missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
+    if missing_m5_phrases:
+        fail("M5 docs missing status/reuse phrases: " + ", ".join(missing_m5_phrases))
+
+    for phrase in ["M5 Campaign Message Test", "M4 Information Architecture", "Campaign Message Test"]:
+        if phrase not in roadmap:
+            fail(f"ROADMAP.md missing M5 freshness phrase: {phrase}")
+
+    for phrase in ["M5 Campaign Message Test", "INFORMATION_ARCHITECTURE.md", "NAVIGATION_MODEL.md", "COMPONENT_REUSE_AUDIT.md", "dashboard reuse >80%", "component reuse >80%"]:
         if phrase not in health_dashboard:
-            fail(f"PRODUCT_HEALTH_DASHBOARD.md missing M4 freshness phrase: {phrase}")
+            fail(f"PRODUCT_HEALTH_DASHBOARD.md missing M5 freshness phrase: {phrase}")
 
     hierarchy_text = "\n".join([m4_text, health_dashboard])
     forbidden_hierarchy_phrases = [
@@ -293,14 +332,8 @@ def main() -> None:
         fail("M4 IA hierarchy still treats Research/Comparison as top-level: " + ", ".join(hierarchy_hits))
 
     changed_paths = changed_paths_from_main()
-    forbidden_m4_changes = [
-        path
-        for path in changed_paths
-        if any(path.startswith(prefix) for prefix in M4_FORBIDDEN_IMPLEMENTATION_PATH_PREFIXES)
-        and path not in M4_ALLOWED_SCRIPT_CHANGES
-    ]
-    if forbidden_m4_changes:
-        fail("M4 changed implementation paths: " + ", ".join(forbidden_m4_changes))
+    if not any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"]):
+        fail("M5 implementation paths are not present in branch diff")
 
     if "from socialsense import load_domain_pack" not in adapter:
         fail("adapter does not import SocialSense through the public facade")
@@ -319,6 +352,11 @@ def main() -> None:
         if phrase not in fixture:
             fail(f"PR4 fixture missing expected UI phrase: {phrase}")
 
+    campaign_fixture = (ROOT / "src/product/fixtures/campaignMessageTestResult.json").read_text(encoding="utf-8")
+    for phrase in ["Campaign Message Test", "Synthetic aggregate sample", "Ready for human review"]:
+        if phrase not in campaign_fixture:
+            fail(f"M5 fixture missing expected UI phrase: {phrase}")
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -326,14 +364,16 @@ def main() -> None:
 
     print("PASS: required M1/PR4 docs exist")
     print("PASS: required M4 IA/design-system docs exist and include status/scope phrases")
+    print("PASS: required M5 Campaign Message Test docs exist and include reuse/status phrases")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
     print("PASS: expected PR3 SocialSense adapter files exist")
     print("PASS: expected PR4 Product Launch vertical slice files exist")
+    print("PASS: expected M5 Campaign Message Test files exist")
     print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
     print("PASS: fixture generator uses PR3 adapter and fixture has PR4 UI contract")
-    print("PASS: M4 branch avoids forbidden implementation path changes")
+    print("PASS: M5 branch includes Campaign Message Test implementation paths")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 
 
