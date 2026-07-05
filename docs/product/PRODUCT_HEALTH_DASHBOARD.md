@@ -161,7 +161,7 @@ PR3 required and verified:
 
 Future required:
 
-- Adapter contract tests in PR3.
+- UI-level adapter integration tests in PR4.
 - Workflow tests for the 7-step flow in PR4.
 - Export review blocking tests in PR4.
 - Dashboard rendering tests in PR4.
