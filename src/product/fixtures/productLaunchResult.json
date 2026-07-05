@@ -58,17 +58,17 @@
     {
       "platform": "LINE",
       "signal": "Read Post",
-      "detail": "2 aggregate sample interactions; use as a channel planning prompt, not a measured result."
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
     },
     {
       "platform": "Facebook",
       "signal": "Comment",
-      "detail": "1 aggregate sample interactions; use as a channel planning prompt, not a measured result."
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
     },
     {
       "platform": "TikTok",
       "signal": "Watch Video",
-      "detail": "2 aggregate sample interactions; use as a channel planning prompt, not a measured result."
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
     }
   ],
   "audienceInsights": [
@@ -80,10 +80,8 @@
   "risksCaveats": [
     "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
     "Not suitable for persuasion optimization, voter targeting, microtargeting, or guaranteed prediction claims.",
-    "Aggregate dashboard metrics require human review before executive or public-facing interpretation.",
-    "Offline workbench sample only; not a production simulator replacement.",
-    "Synthetic/aggregate/offline result only; not predictive and not production campaign evidence.",
-    "No live social APIs, scraping, private messages, CRM/customer lists, PII, or voter lists were used."
+    "Dashboard signals require human review before executive or public-facing use.",
+    "Offline fixture only: no live social data, private data, CRM lists, or production prediction."
   ],
   "recommendedNextTest": "Run a small approved A/B creative test: time-saving headline versus trust-proof headline, reviewed by a human before launch.",
   "safetyLabels": [
@@ -147,7 +145,7 @@
     "limitations": [
       "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
       "Not suitable for persuasion optimization, voter targeting, microtargeting, or guaranteed prediction claims.",
-      "Aggregate dashboard metrics require human review before executive or public-facing interpretation.",
+      "Dashboard signals require human review before executive or public-facing use.",
       "Offline workbench sample only; not a production simulator replacement.",
       "Deterministic fixtures only by default; no live social APIs, private social data, credentials, PII, voter lists, or CRM data."
     ],

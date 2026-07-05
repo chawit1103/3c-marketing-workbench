@@ -125,7 +125,7 @@ Potentially confusing labels:
 | Synthetic Purchase Intent | May sound like a forecast despite caveat | Consider “Directional purchase-interest signal” |
 | JSON / Markdown / Executive Summary | Technical for executives | Show “Data file”, “Briefing draft”, “Executive summary” while preserving real format metadata |
 | Available for review | May imply downloadable export exists | Clarify “Preview available” until actual export package exists |
-| Platform Breakdown interaction counts | “2 aggregate sample interactions” sounds measured | Reword to “sample signal examples” or “sample platform cues” |
+| Platform Breakdown interaction counts | Former count-style wording sounded measured | Reword to “sample signal examples” or “sample platform cues” |
 
 ### 4. Dashboard readability
 

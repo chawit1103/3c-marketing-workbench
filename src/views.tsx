@@ -342,7 +342,7 @@ function ProductLaunchResults({
           <strong>Use this as a human review prompt, then approve a small evidence-gathering test.</strong>
           <p>{fixture.recommendedNextTest}</p>
         </section>
-        <p className="help-text">Safety: synthetic aggregate offline result only; not predictive, not a conversion guarantee, and not production campaign evidence.</p>
+        <p className="help-text">Safety: offline fixture for planning only; review before using externally.</p>
         {showActions ? (
           <div className="button-row">
             <a className="button button-secondary" href={`/runs/${fixture.runId}`}>Open result dashboard</a>
@@ -373,7 +373,7 @@ function ProductLaunchResults({
       <div className="grid two-col align-start">
         <InsightList title="Platform Breakdown" items={fixture.platformBreakdown.map((item) => `${item.platform}: ${item.signal}. ${item.detail}`)} />
         <InsightList title="Audience Insights" items={fixture.audienceInsights} />
-        <InsightList title="Risks / Caveats" items={fixture.risksCaveats} />
+        <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} />
         <div className="card">
           <p className="eyebrow">Decision support</p>
           <h3>Next reviewed experiment</h3>
@@ -414,8 +414,8 @@ function ExportReview({ fixture }: { fixture: ProductLaunchFixture }) {
       </div>
       <div className="grid two-col align-start">
         <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} />
-        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps} />
-        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations} />
+        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} />
+        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} />
         <div className="card">
           <p className="eyebrow">Review confidence</p>
           <h3>Offline sample basis</h3>

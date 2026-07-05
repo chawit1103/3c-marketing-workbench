@@ -135,6 +135,8 @@ describe('Product Launch workflow', () => {
       expect(screen.getByText(heading)).toBeInTheDocument();
     }
     expect(screen.getByText('Open export-readiness preview')).toBeInTheDocument();
+    expect(screen.getAllByText(/Fixture channel cue only/).length).toBeGreaterThanOrEqual(1);
+    expect(document.body.textContent?.toLowerCase()).not.toContain('aggregate sample ' + 'interactions');
     expect(screen.getByText(/not recalculated from arbitrary browser-entered data/i)).toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2.1 Product Launch UX friction burn-down merged and stabilized on `main`. Final UX Health score: **88/100 — Green/Yellow**. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export readiness preview, and UX friction backlog readiness.
+Status: M2.3 Product Launch copy/readability polish in review. UX Health remains **91/100 target — Green** after platform wording, lower-section density, and repeated safety-copy refinements. Product Launch remains the only workflow in scope.
 
 
 ## M1 PR4 closeout
@@ -39,6 +39,14 @@ Status: M2.1 Product Launch UX friction burn-down merged and stabilized on `main
 - UX KPI assumptions: first run is 1 click with defaults, <=5 visible text inputs, and <=3 top-screen decisions.
 - Architecture Gate: not triggered.
 
+## M2.3 copy/readability polish
+
+- Scope: Product Launch UI/docs copy only; no new workflow.
+- Platform wording: measured-sounding interaction counts replaced with fixture/offline channel cues.
+- Lower-section density: dashboard risks/caveats and export evidence/limitations render fewer, more scannable items.
+- Safety copy: global labels stay visible while the result preview uses a shorter safety note.
+- Architecture Gate: not triggered.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -68,8 +76,8 @@ Status: M2.1 Product Launch UX friction burn-down merged and stabilized on `main
 | PII/CRM/private-data input paths | 0 | Code review/tests | 0 |
 | Production/conversion guarantee claims | 0 intended | Copy review/tests | 0 |
 | Dogfood task completion estimate | <60 sec target / 1-click default | M2.1 UI structure | Top quick-start action supports first result with defaults before scrolling |
-| Dashboard readability score | 3.5/5 baseline | M2.1 burn-down | Recommended next action added; dense lower sections remain future work |
-| Safety clarity score | 4.5/5 baseline | M2.1 burn-down | Safety remains visible with more concise contextual wording |
+| Dashboard readability score | 4/5 target | M2.3 polish | Lower sections are more scannable; accessibility dogfood remains future work |
+| Safety clarity score | 4.5/5 maintained | M2.3 polish | Safety labels remain visible; repeated result/caveat wording is reduced |
 | Export review usefulness score | 3/5 baseline | M2.1 burn-down | Export route now says readiness preview and not a download action |
 
 ## Scaffold readiness
