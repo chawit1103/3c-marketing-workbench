@@ -1,14 +1,13 @@
 # 3C Marketing Workbench
 
-3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs in later PRs, and preparing executive reports after human review.
+3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M1 PR2 frontend shell and design system scaffold. A React/Vite/TypeScript frontend shell now exists with route placeholders, safety labels, design tokens, unit tests, linting, typecheck, and production build. It is still fixture/offline and non-production.
+Status: M1 PR3 SocialSense public SDK adapter smoke. PR2 delivered the React/Vite/TypeScript frontend shell; PR3 adds a product-owned adapter over SocialSense public SDK/runtime surfaces and a local fixture smoke for `product_launch`. UI workflow integration is still deferred to PR4.
 
-Explicit non-goals in PR2:
+Explicit non-goals in PR3:
 
 - no backend;
-- no SocialSense adapter;
-- no real simulation;
+- no UI workflow integration yet;
 - no live APIs;
 - no scraping;
 - no credentials;
@@ -27,8 +26,8 @@ This repository owns the 3C product experience:
 
 - product positioning and user journey;
 - safe React/Vite/TypeScript frontend shell;
+- product-owned SocialSense adapter under `integrations/socialsense/`;
 - future scenario setup workflow;
-- future SocialSense integration adapter over public SDK/runtime surfaces only;
 - future executive dashboard and export review experience;
 - repository-local product, architecture, roadmap, and operating docs.
 
@@ -37,32 +36,32 @@ Adjacent repositories are reference/dependency boundaries, not edit targets for 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-PR2 must not modify SocialSense or MarketingSimulation.
+PR3 must not modify SocialSense or MarketingSimulation.
 
-## M1 PR2 current status
+## M1 PR3 current status
 
-PR2 converts the PR1 product foundation into a minimal, testable frontend shell:
+PR3 adds the first safe adapter layer without wiring the UI:
 
-- React/Vite/TypeScript app scaffold exists;
-- npm package metadata and lockfile exist;
-- five documented route patterns render locally;
-- safety boundary labels are visible across the shell;
-- initial design system tokens, cards, buttons, badges, form states, and responsive layout exist;
-- tests cover route rendering, safety labels, navigation, route resolution, and visible UI copy boundaries;
-- lint, typecheck, test, build, docs smoke, and whitespace checks pass.
+- `integrations/socialsense/adapter.py` imports only `from socialsense import load_domain_pack`;
+- adapter calls only `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`;
+- `run_product_launch_simulation(...)` executes an actual SocialSense Marketing Domain Pack `product_launch` fixture in local smoke;
+- `run_campaign_message_test(...)`, `run_message_comparison(...)`, and `export_executive_report(...)` expose adapter-shaped product functions for later workflow wiring;
+- input mapping is limited to aggregate non-sensitive `scenario`, `platform_mix`, `seed`, `assumptions`, and `notes`;
+- adapter output preserves provenance, safety labels/boundaries, limitations, evidence gaps, dashboard metadata, and export status;
+- smoke output includes `public_sdk_only: true`.
 
-PR2 does not implement backend services, persistence, authentication, live API calls, SocialSense adapter code, or real scenario simulation.
+PR3 does not implement backend services, persistence, authentication, live API calls, credentials, UI workflow integration, CRM/customer data ingestion, or production campaign execution.
 
 ## Route list
 
-Current PR2 frontend routes:
+Current frontend routes remain PR2 shell routes:
 
 | Route | Purpose | Status |
 |---|---|---|
 | `/` | Product home and safe executive positioning | Implemented shell page |
 | `/workbench` | Guided 7-step workflow skeleton | Placeholder only |
-| `/runs/:runId` | Executive dashboard space for a future run | Placeholder only; no real result |
-| `/exports/:runId` | Export review space for a future run | Placeholder only; export disabled |
+| `/runs/:runId` | Executive dashboard space for a future run | Placeholder only; not wired to PR3 adapter |
+| `/exports/:runId` | Export review space for a future run | Placeholder only; export UI disabled |
 | `/health` | Product health/scaffold readiness view | Implemented shell page |
 
 Unknown routes render a not-found state. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
@@ -77,11 +76,12 @@ Required M1 documents:
 - [Cross-Repository Dependency Map](docs/architecture/CROSS_REPOSITORY_DEPENDENCY_MAP.md)
 - [Roadmap](docs/product/ROADMAP.md)
 - [Product Health Dashboard](docs/product/PRODUCT_HEALTH_DASHBOARD.md)
+- [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
 
 ## Safety boundaries
 
-3C Marketing Workbench remains a safe fixture/offline product shell until later reviewed gates approve additional implementation. PR2 and future PRs must not add or imply:
+3C Marketing Workbench remains safe fixture/offline product work until later reviewed gates approve additional implementation. PR3 and future PRs must not add or imply:
 
 - live APIs;
 - scraping;
@@ -99,13 +99,13 @@ Future product copy must also avoid claiming real-world predictive certainty, fi
 
 ## Local setup and verified commands
 
-Install dependencies and generate/update the npm lockfile:
+Install dependencies and maintain the npm lockfile:
 
 ```bash
 npm install
 ```
 
-Verified PR2 validation commands:
+PR3 validation commands:
 
 ```bash
 npm run test
@@ -113,21 +113,24 @@ npm run typecheck
 npm run lint
 npm run build
 python3 scripts/docs_smoke.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 git diff --check
 ```
 
-Development server, for manual review only:
+Development server, for manual frontend shell review only:
 
 ```bash
 npm run dev
 ```
 
-## PR2 quality gates
+## PR3 quality gates
 
 Before handoff:
 
-- run all verified commands above;
-- confirm app remains frontend shell only;
-- confirm no backend, auth, credentials, live API calls, SocialSense adapter, or real simulation were added;
+- run all validation commands above;
+- confirm adapter imports only the SocialSense public SDK facade;
+- confirm local smoke executes `product_launch` through SocialSense Marketing Domain Pack and exports `executive_json` at minimum;
+- confirm no backend, auth, credentials, live API calls, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
 - confirm SocialSense and MarketingSimulation remain unmodified;
-- commit all PR2 changes on `m1-pr2-frontend-shell-design-system`.
+- commit all PR3 changes on `m1-pr3-socialsense-adapter-smoke`.
