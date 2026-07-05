@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2.1 Product Launch UX friction burn-down implemented for the existing Product Launch slice. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export readiness preview, and UX friction backlog readiness.
+Status: M2.1 Product Launch UX friction burn-down merged and stabilized on `main`. Final UX Health score: **88/100 — Green/Yellow**. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export readiness preview, and UX friction backlog readiness.
 
 
 ## M1 PR4 closeout
@@ -26,6 +26,10 @@ Status: M2.1 Product Launch UX friction burn-down implemented for the existing P
 ## M2.1 UX friction burn-down
 
 - Burn-down report: `docs/product/M2_1_UX_FRICTION_BURNDOWN.md`
+- Closeout report: `docs/product/M2_1_CLOSEOUT_REPORT.md`
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/6
+- Merge commit: `e8bfbef16efa8b8e20041727229ef9933fd81716`
+- Final UX Health score: **88/100 — Green/Yellow**
 - Scope: Product Launch only; no new workflows.
 - Positioning: visible copy now uses `Marketing Decision Workbench` while repo/package names remain unchanged.
 - Run visibility: top quick-start panel exposes `Run offline simulation` before the full form.
@@ -233,13 +237,15 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Continue M2 friction triage for Product Launch only.
+Next milestone: Product Launch private walkthrough validation.
 
-M2 next step should deliver:
+Next step should deliver:
 
-- small copy/layout fixes for P1 friction items;
-- repeat walkthrough with the same Product Launch scope;
-- no Campaign Message Test or A/B Message Comparison implementation until Product Launch friction is reduced.
+- one timed private Product Launch walkthrough using the merged M2.1 quick-start flow;
+- confirmation that no P1 friction remains in run visibility, objective clarity, result discoverability, safety clarity, or export-readiness wording;
+- a recommendation on whether to plan the next workflow.
+
+Do not start Campaign Message Test or A/B Message Comparison until Product Launch stabilization is explicitly accepted.
 
 Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
 

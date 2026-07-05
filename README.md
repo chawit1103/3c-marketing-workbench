@@ -92,6 +92,7 @@ Required M1 documents:
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
+- [M2.1 Closeout Report](docs/product/M2_1_CLOSEOUT_REPORT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
