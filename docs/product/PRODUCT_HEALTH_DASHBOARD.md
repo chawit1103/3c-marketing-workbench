@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2 private dogfooding review completed for the existing Product Launch vertical slice. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export review, and UX friction backlog readiness.
+Status: M2.1 Product Launch UX friction burn-down implemented for the existing Product Launch slice. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export readiness preview, and UX friction backlog readiness.
 
 
 ## M1 PR4 closeout
@@ -23,13 +23,25 @@ Status: M2 private dogfooding review completed for the existing Product Launch v
 - Safety clarity: Green; labels are trusted and explicit, but repetition should be tuned carefully.
 - Architecture Gate: not triggered.
 
+## M2.1 UX friction burn-down
+
+- Burn-down report: `docs/product/M2_1_UX_FRICTION_BURNDOWN.md`
+- Scope: Product Launch only; no new workflows.
+- Positioning: visible copy now uses `Marketing Decision Workbench` while repo/package names remain unchanged.
+- Run visibility: top quick-start panel exposes `Run offline simulation` before the full form.
+- Objective clarity: disabled dropdown replaced by static Product Launch mode messaging.
+- Result discoverability: first result includes a visible Recommended next action region.
+- Export clarity: route is now `Export Readiness Preview` and explicitly says it is not a download action.
+- UX KPI assumptions: first run is 1 click with defaults, <=5 visible text inputs, and <=3 top-screen decisions.
+- Architecture Gate: not triggered.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
 |---|---|---|---|
-| UX simplicity | Yellow/Green after M2 dogfood | M2 friction triage | Product Launch flow is usable, but below-fold run/result and locked objective need refinement. |
-| Workflow completion | Green for default sample | M2 friction triage | Default sample completes quickly; edited scenario is estimated 2–4 minutes. |
-| Onboarding clarity | Yellow/Green | M2 friction triage | Safety and assumptions are clear; repeated safety copy and fixed-sample explanation add reading load. |
+| UX simplicity | Green/Yellow after M2.1 burn-down | M2.1 validation | Product Launch flow is easier to start; top quick-start action reduces below-fold run friction. |
+| Workflow completion | Green for default sample | M2.1 validation | Default sample is one click to first result; edited scenario remains bounded by <=5 visible text inputs. |
+| Onboarding clarity | Green/Yellow | M2.1 validation | Static Product Launch mode clarifies the current workflow; fixed-sample explanation remains visible. |
 | SocialSense integration health | Green for PR3 smoke | Green by PR3 | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
 | Export readiness | Green for PR4 sample | Green by PR4 | `/exports/:runId` shows JSON, Markdown, and Executive Summary readiness/status from the generated fixture. |
 | Dashboard readiness | Green for PR4 sample | Green by PR4 | `/runs/:runId` renders marketing-friendly Product Launch cards and caveats from the generated fixture. |
@@ -51,10 +63,10 @@ Status: M2 private dogfooding review completed for the existing Product Launch v
 | Live API usage | 0 | Code review/tests | 0 |
 | PII/CRM/private-data input paths | 0 | Code review/tests | 0 |
 | Production/conversion guarantee claims | 0 intended | Copy review/tests | 0 |
-| Dogfood task completion estimate | <1 min default / 2–4 min edited | M2 dogfood | Reduce below-fold friction before adding workflows |
-| Dashboard readability score | 3.5/5 | M2 dogfood | Add future top-level decision/next-action summary |
-| Safety clarity score | 4.5/5 | M2 dogfood | Preserve clarity while reducing repeated copy load |
-| Export review usefulness score | 3/5 | M2 dogfood | Improve format labels and clarify no download action |
+| Dogfood task completion estimate | <60 sec target / 1-click default | M2.1 UI structure | Top quick-start action supports first result with defaults before scrolling |
+| Dashboard readability score | 3.5/5 baseline | M2.1 burn-down | Recommended next action added; dense lower sections remain future work |
+| Safety clarity score | 4.5/5 baseline | M2.1 burn-down | Safety remains visible with more concise contextual wording |
+| Export review usefulness score | 3/5 baseline | M2.1 burn-down | Export route now says readiness preview and not a download action |
 
 ## Scaffold readiness
 
