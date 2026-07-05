@@ -138,6 +138,8 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
             },
         )
         self.assertEqual(self.fake_domain.export_calls[0]["format"], "executive_json")
+        self.assertIn("export_handle", result)
+        self.assertNotIn("run_payload", result)
         self.assertTrue(result["safety"]["fixture_only"])
         self.assertFalse(result["safety"]["live_api_access"])
         self.assertIn("conversion_prediction", result["safety"]["disallowed_claims"])

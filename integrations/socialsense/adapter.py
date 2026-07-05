@@ -9,12 +9,14 @@ SocialSense internals.
 from __future__ import annotations
 
 from typing import Any, Iterable
+from uuid import uuid4
 
 from socialsense import load_domain_pack
 
 DEFAULT_PLATFORM_MIX = ["LINE", "Facebook", "TikTok"]
 DEFAULT_EXPORT_FORMATS = ("json", "markdown", "executive_json")
 PUBLIC_SDK_ONLY = True
+_RUN_PAYLOADS: dict[str, dict[str, Any]] = {}
 
 
 def run_product_launch_simulation(
@@ -119,7 +121,7 @@ def export_executive_report(
 ) -> dict[str, Any]:
     """Export a SocialSense run payload through the public domain export method."""
 
-    run_payload = run.get("run_payload", run)
+    run_payload = _resolve_run_payload(run)
     marketing = domain or _load_marketing_domain()
     exported = marketing.export(run_payload, format=format)
     return {
@@ -155,11 +157,13 @@ def _run_marketing_fixture(
         notes=notes,
     )
     run_status = run_payload.get("status", "completed")
+    export_handle = _store_run_payload(run_payload)
     exports = _export_bundle(marketing, run_payload, export_formats)
     marketing_research = run_payload.get("marketing_research", {})
     return {
         "status": "ok" if run_status == "completed" else str(run_status),
         "run_status": run_status,
+        "export_handle": export_handle,
         "adapter_function": adapter_function,
         "public_sdk_only": PUBLIC_SDK_ONLY,
         "scenario": run_payload.get("scenario", {}).get("name", scenario),
@@ -179,8 +183,22 @@ def _run_marketing_fixture(
         "evidence_gaps": list(marketing_research.get("evidence_gaps", [])),
         "human_review_questions": list(marketing_research.get("human_review_questions", [])),
         "exports": exports,
-        "run_payload": run_payload,
     }
+
+
+def _store_run_payload(run_payload: dict[str, Any]) -> str:
+    handle = str(run_payload.get("workbench_run_id") or f"3c-adapter-{uuid4()}")
+    _RUN_PAYLOADS[handle] = run_payload
+    return handle
+
+
+def _resolve_run_payload(run: dict[str, Any]) -> dict[str, Any]:
+    handle = run.get("export_handle")
+    if isinstance(handle, str) and handle in _RUN_PAYLOADS:
+        return _RUN_PAYLOADS[handle]
+    if "scenario" in run and "provenance" in run and "marketing_research" in run:
+        return run
+    raise ValueError("export_executive_report requires an adapter export_handle from a completed run.")
 
 
 def _load_marketing_domain() -> Any:

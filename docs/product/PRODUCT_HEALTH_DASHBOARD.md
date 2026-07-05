@@ -180,12 +180,12 @@ Future required:
 
 ## Technical debt register
 
-Current PR2 debt:
+Current PR3 debt:
 
 - No real workflow state yet by design.
-- No adapter contract tests yet by design.
+- Adapter contract tests and local smoke exist; PR4 still needs UI-level adapter integration tests.
 - No accessibility automation beyond current render tests.
-- No manual browser QA record in docs yet.
+- No manual browser QA record for adapter-driven UI yet.
 
 Future debt to watch:
 
