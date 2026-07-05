@@ -2,9 +2,11 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M4 Information Architecture & Design System Review complete and merged. Product Launch is the only available workflow; Campaign Domain and Workflow Pattern are approved; IA/navigation/design-system/component-reuse standards are defined before additional workflows; and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test, A/B Message Comparison, Promotion workflows, backend, and SocialSense changes remain not implemented.
+Status: M5 Campaign Message Test Reference Workflow is implemented and ready for review. Product Launch remains the first reference workflow, Campaign Message Test is the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Promotion workflows, backend, and SocialSense changes remain not implemented.
 
-Historical PR4 and current M4 non-goals:
+Next milestone: A/B Message Comparison Planning only if M5 receives GO; A/B remains not implemented.
+
+Historical PR4 and current M5 non-goals:
 
 - no backend;
 - no live APIs;
@@ -73,8 +75,9 @@ Current frontend routes:
 |---|---|---|
 | `/` | Product home and safe executive positioning | Implemented |
 | `/workbench` | Guided Product Launch Simulation form and local run action | Implemented PR4 vertical slice |
-| `/runs/:runId` | Product Launch results dashboard for generated offline sample | Implemented PR4 vertical slice |
-| `/exports/:runId` | Export review for JSON, Markdown, and Executive Summary readiness/status | Implemented PR4 vertical slice |
+| `/workbench/campaign-message-test` | Guided Campaign Message Test form and local run action | Implemented M5 reference workflow |
+| `/runs/:runId` | Product Launch or Campaign Message Test results dashboard for generated offline samples | Implemented reusable dashboard pattern |
+| `/exports/:runId` | Export review for JSON, Markdown, and Executive Summary readiness/status | Implemented reusable export-review pattern |
 | `/health` | Product health/readiness view | Implemented |
 
 Unknown routes render a not-found state. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
@@ -110,6 +113,8 @@ Product documentation map:
 - [Design Tokens](docs/product/DESIGN_TOKENS.md)
 - [Component Reuse Matrix](docs/product/COMPONENT_REUSE_MATRIX.md)
 - [Executive UX Review](docs/product/EXECUTIVE_UX_REVIEW.md)
+- [Campaign Reference Workflow](docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md)
+- [Component Reuse Audit](docs/product/COMPONENT_REUSE_AUDIT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -140,9 +145,17 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M4 docs-only validation commands:
+M5 implementation validation commands:
 
 ```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_campaign_message_test_fixture.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 python3 scripts/docs_smoke.py
 git diff --check origin/main...HEAD
 ```
@@ -167,15 +180,16 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## M4 review gates
+## M5 review gates
 
-Before M4 handoff:
+Before M5 handoff:
 
-- run `python3 scripts/docs_smoke.py`;
-- run `git diff --check origin/main...HEAD`;
-- confirm Information Architecture, Navigation Model, Workflow Organization, Design System Review, Design Tokens, Component Reuse Matrix, and Executive UX Review exist;
-- confirm Product Health Dashboard and README reflect M4 current state;
-- confirm no Campaign Message Test, A/B comparison, Promotion workflow, frontend workflow, backend, runtime, or SocialSense implementation was added;
-- confirm no backend, auth, credentials, live API calls, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
+- run frontend tests, typecheck, lint, build, Python tests, fixture generators, adapter smoke, docs smoke, and diff check;
+- confirm Campaign Message Test is implemented as the second reference workflow;
+- confirm Workflow Pattern, Campaign Domain, IA, Navigation, Design System, existing cards, dashboard, export review, safety labels, and public adapter are reused;
+- confirm `docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md` and `docs/product/COMPONENT_REUSE_AUDIT.md` exist;
+- confirm dashboard reuse >80% and component reuse >80%;
+- confirm primary navigation remains unchanged;
+- confirm no A/B implementation, Promotion workflow, backend, runtime, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
 - confirm SocialSense and MarketingSimulation remain unmodified;
-- commit M4 docs-only changes on `m4-information-architecture-design-system`.
+- commit M5 implementation changes on `m5-campaign-message-test`.

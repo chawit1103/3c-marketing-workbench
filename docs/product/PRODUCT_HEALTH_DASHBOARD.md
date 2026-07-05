@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M4 Information Architecture & Design System Review complete and merged. Product Launch remains the only available workflow; the approved Campaign Domain and Workflow Pattern are now organized into a scalable product IA and reusable design-system standards. No Campaign Message Test, A/B comparison, Promotion workflow, backend, runtime, or SocialSense implementation is authorized by M4.
+Status: M5 Campaign Message Test Reference Workflow is implemented and ready for review. Product Launch remains the first reference workflow; Campaign Message Test is the second reference workflow and reuses the approved Campaign Domain, Workflow Pattern, Information Architecture, Navigation Model, Design System, dashboard pattern, export review, safety labels, and public SocialSense adapter boundary. No A/B comparison, Promotion workflow, backend, runtime, live APIs, private data, or SocialSense runtime change is authorized by M5.
 
 
 ## M1 PR4 closeout
@@ -99,7 +99,24 @@ Status: M4 Information Architecture & Design System Review complete and merged. 
 - Component strategy: reuse shell, safety labels, cards, forms, assumptions preview, result hero, dashboard panels, executive summary, and export review; define extension needs before A/B/feedback/research implementation.
 - Executive UX: GO candidate; product remains understandable if future workflows are grouped and reports remain discoverable.
 - Architecture Gate: not triggered.
-- Next milestone recommendation: Campaign Message Test Planning only after IA, Navigation, Design System, and Component Reuse receive GO.
+- Next milestone recommendation: Campaign Message Test implementation only after IA, Navigation, Design System, and Component Reuse receive GO.
+
+## M5 Campaign Message Test Reference Workflow
+
+- Reference workflow: `docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md`
+- Component reuse audit: `docs/product/COMPONENT_REUSE_AUDIT.md`
+- UI route: `/workbench/campaign-message-test`
+- Dashboard/export route reuse: `/runs/:runId` and `/exports/:runId` select the generated Product Launch or Campaign Message Test offline fixture by run id.
+- Program decision: Campaign Message Test validates the reusable workflow strategy as the second reference workflow.
+- Workflow Pattern reuse: Input → Review → Run → Dashboard → Executive Summary → Export Review → Recommended Next Action.
+- Campaign Domain reuse: campaign name/brand, message, audience, platform mix, assumptions, evidence, limitations, confidence, and recommendation.
+- Information Architecture reuse: Campaign Message Test lives under the existing Workbench/Campaigns model without primary navigation changes.
+- Design System reuse: forms, cards, badges, buttons, dashboard panels, executive summary, safety labels, and export review are reused.
+- dashboard reuse >80%: M5 audit records 90% reuse.
+- component reuse >80%: M5 audit records 92% reuse.
+- Export reuse: 100%; no new export formats.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: A/B Message Comparison planning only if M5 review gates approve reuse strategy; do not implement A/B automatically.
 
 ## Summary
 
@@ -108,27 +125,28 @@ Status: M4 Information Architecture & Design System Review complete and merged. 
 | UX simplicity | Green after M2 Exit | Maintain Green | Product Launch is reusable pattern with P1 friction cleared; future workflows must preserve quick-start and low cognitive load. |
 | Workflow completion | Green for Product Launch | Reuse pattern | Default Product Launch sample is one-click to first result; future workflows must preserve the Input → Review → Run → Result path. |
 | Onboarding clarity | Green | Reuse pattern | Product Launch mode, assumptions preview, and export-readiness language define the onboarding pattern. |
-| SocialSense integration health | Green | Preserve public boundary | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
+| SocialSense integration health | Green | Preserve public boundary | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke covers Product Launch plus Campaign Message Test fixture generation. |
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
-| Dashboard readiness | Green for Product Launch | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from the generated fixture. |
+| Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
+| Test/build status | Green for M5 review | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, Product Launch and Campaign Message Test fixture generation, local smoke, and diff check pass. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
-| Workflow pattern readiness | GO | M2 Exit Review | Product Launch is official reusable pattern; next milestone may be Campaign Message Test Planning only. |
+| Workflow pattern readiness | GO | M2 Exit Review + M5 validation | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; next milestone may be A/B Message Comparison Planning only if M5 receives GO. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
-| Information Architecture readiness | GO candidate | M4 review gates | Future product areas and workflow homes are defined without implementation. |
-| Design system readiness | GO candidate | M4 review gates | Component inventory, token standards, and reuse matrix are defined before additional workflows. |
+| Information Architecture readiness | GO | M4 review gates | Future product areas and workflow homes are defined; M5 reuses them without primary nav changes. |
+| Design system readiness | GO | M4 review gates | Component inventory, token standards, and reuse matrix are reused by M5. |
+| Campaign Message Test readiness | Review-ready implementation | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
 
 ## KPI baseline
 
 | KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
-| Documented route patterns | 5 | Route resolver and README route list | <=5 until workflow need is proven |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR4 |
+| Documented route patterns | 6 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M5 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
-| Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK plus generated UI fixture in PR4 |
+| Local adapter smoke paths | 2 | Code/smoke review | `product_launch` and Campaign Message Test fixture paths through public SDK/product adapter |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
-| README docs map links | 30 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
+| README docs map links | 32 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -138,6 +156,10 @@ Status: M4 Information Architecture & Design System Review complete and merged. 
 | Dashboard readability score | 4/5 target | M2.3 polish | Lower sections are more scannable; accessibility dogfood remains future work |
 | Safety clarity score | 4.5/5 maintained | M2.3 polish | Safety labels remain visible; repeated result/caveat wording is reduced |
 | Export review usefulness score | 3/5 baseline | M2.1 burn-down | Export route now says readiness preview and not a download action |
+| Workflow Reuse % | 91% | M5 component reuse audit | Target >80% |
+| Component Reuse % | 92% | M5 component reuse audit | Target >80% |
+| Dashboard Reuse % | 90% | M5 component reuse audit | Target >80% |
+| Export Reuse % | 100% | M5 component reuse audit | No new export formats |
 
 ## Scaffold readiness
 
@@ -184,7 +206,7 @@ Mitigation:
 
 ## Workflow completion tracker
 
-Current state: Product Launch is usable end-to-end for a generated offline fixture and is approved as the reusable workflow pattern.
+Current state: Product Launch and Campaign Message Test are usable end-to-end for generated offline fixtures; Product Launch remains the first reference workflow and Campaign Message Test is the second reference workflow.
 
 Current measurement:
 
@@ -265,12 +287,13 @@ Current validation suite includes:
 - `python3 scripts/docs_smoke.py`
 - `python3 -m unittest discover -s tests -p 'test_*.py'`
 - `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py`
+- `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_campaign_message_test_fixture.py`
 - `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py`
 - `git diff --check`
 
 Future required:
 
-- Campaign Message Test Planning only if the workflow-pattern decision remains GO.
+- A/B Message Comparison Planning only if M5 receives GO and confirms the reusable workflow strategy.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -304,20 +327,20 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Campaign Message Test Planning.
+Next milestone: A/B Message Comparison Planning only if M5 receives GO.
 
-Scope must remain planning-only unless the user explicitly authorizes implementation after Information Architecture, Navigation, Design System, and Component Reuse all receive GO.
+Scope must remain planning-only unless the user explicitly authorizes implementation after Campaign Message Test validates the reusable workflow strategy.
 
 Planning should deliver:
 
-- Campaign Message Test placement under Campaigns → Message Testing;
-- Campaign Message Test input/review/run/dashboard/export/recommendation plan using Campaign Domain and the approved workflow pattern;
-- component reuse plan using the M4 Component Reuse Matrix;
-- navigation/report/discoverability plan using the M4 IA and Navigation Model;
+- A/B Message Comparison placement under Campaigns → Comparison;
+- Message A / Message B input, review, dashboard, export, and recommendation plan using Campaign Domain and the approved workflow pattern;
+- component reuse plan using the M5 Campaign Message Test reuse evidence;
+- navigation/report/discoverability plan using the M4 IA and Navigation Model without primary nav changes;
 - validation and safety acceptance criteria;
-- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, A/B implementation, or production campaign claims.
+- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, production campaign optimization, or conversion guarantee claims.
 
-Do not start Campaign Message Test implementation or A/B Message Comparison implementation from this dashboard alone.
+Do not start A/B Message Comparison implementation from this dashboard alone.
 
 Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
 

@@ -134,7 +134,7 @@ def build_ui_fixture(
             ],
             "readiness": "Ready for human review",
             "status": "Generated from the reviewed offline sample; review safety notes before reuse.",
-            "executiveSummaryPreview": executive_preview(summary),
+            "executiveSummaryPreview": executive_summary_preview(summary),
         },
         "reviewMetadata": {
             "provenance": executive.get("provenance", run.get("provenance", {})),
@@ -168,6 +168,16 @@ def executive_preview(summary: dict[str, Any]) -> str:
     return (
         f"The offline Product Launch sample shows a {sentiment.lower()} with {trust.lower()} "
         f"and {reach.lower()}. Treat this as a planning prompt for human review, not a forecast."
+    )
+
+
+def executive_summary_preview(summary: dict[str, Any]) -> str:
+    sentiment = friendly_signal(summary.get("sentiment_delta"), "directional response")
+    trust = friendly_signal(summary.get("trust_delta"), "trust signal needs review")
+    reach = friendly_signal(summary.get("diffusion_reach"), "channel signal needs review")
+    return (
+        f"Executive review: product-launch response is {sentiment.lower()}, trust is {trust.lower()}, "
+        f"and channel reach is {reach.lower()}. Confirm assumptions, evidence gaps, and limitations before any launch use."
     )
 
 

@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M4 Information Architecture & Design System Review, documentation-only.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, and M3 Campaign Domain Planning are complete.
-- M4 defines long-term information architecture, navigation, workflow organization, design-system review, design tokens, component reuse, and executive UX standards before additional workflows are added.
+- Current branch scope: M5 Campaign Message Test Reference Workflow implementation.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, and M4 Information Architecture & Design System Review are complete.
+- M5 implements Campaign Message Test as the second reference workflow by reusing Product Launch pattern, Campaign Domain, IA, Design System, existing dashboard/export/safety patterns, and the product-owned SocialSense public adapter boundary.
 
 ## Repository boundaries
 
