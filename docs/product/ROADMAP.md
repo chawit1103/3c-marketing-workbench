@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M4 Information Architecture & Design System Review in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, and M3 Campaign Domain Planning are complete. M4 defines scalable IA/navigation/workflow organization/design-system standards before any additional workflow implementation. Campaign Message Test remains planning-only / not implemented.
+Status: M4 Information Architecture & Design System Review complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, and M4 IA/design-system review are complete. Campaign Message Test remains planning-only / not implemented.
 
 ## Program
 
@@ -148,7 +148,7 @@ Acceptance criteria:
 - Kept scope documentation-only.
 - Did not implement Campaign Message Test, A/B Message Comparison, frontend workflows, backend behavior, runtime behavior, or SocialSense changes.
 
-### M4: Information Architecture & Design System Review — Current
+### M4: Information Architecture & Design System Review — Complete
 
 - Define long-term product areas, navigation, workflow grouping, design-system inventory, design tokens, component reuse, and executive UX review.
 - Keep scope documentation-only.

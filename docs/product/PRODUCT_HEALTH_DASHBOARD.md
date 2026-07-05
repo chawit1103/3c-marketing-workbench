@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M4 Information Architecture & Design System Review in progress. Product Launch remains the only available workflow; the approved Campaign Domain and Workflow Pattern are now being organized into a scalable product IA and reusable design-system standards. No Campaign Message Test, A/B comparison, Promotion workflow, backend, runtime, or SocialSense implementation is authorized by M4.
+Status: M4 Information Architecture & Design System Review complete and merged. Product Launch remains the only available workflow; the approved Campaign Domain and Workflow Pattern are now organized into a scalable product IA and reusable design-system standards. No Campaign Message Test, A/B comparison, Promotion workflow, backend, runtime, or SocialSense implementation is authorized by M4.
 
 
 ## M1 PR4 closeout

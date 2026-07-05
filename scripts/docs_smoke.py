@@ -271,7 +271,7 @@ def main() -> None:
     if missing_m4_links:
         fail("README missing M4 doc links: " + ", ".join(missing_m4_links))
 
-    for phrase in ["M4 Information Architecture", "Current", "Campaign Message Test Planning", "after M4 GO"]:
+    for phrase in ["M4 Information Architecture", "Campaign Message Test Planning", "after M4 GO"]:
         if phrase not in roadmap:
             fail(f"ROADMAP.md missing M4 freshness phrase: {phrase}")
 
