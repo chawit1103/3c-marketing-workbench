@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2.3 Product Launch copy/readability polish merged and stabilized on `main`. UX Health remains **91/100 — Green** after platform wording, lower-section density, and repeated safety-copy refinements. Product Launch remains the only workflow implemented.
+Status: M2 Exit Review complete. Product Launch is approved as the official reusable workflow pattern with **GO** from Product, UX, Research, and Engineering. Campaign Message Test remains planning-only until explicitly authorized.
 
 
 ## M1 PR4 closeout
@@ -50,29 +50,46 @@ Status: M2.3 Product Launch copy/readability polish merged and stabilized on `ma
 - Safety copy: global labels stay visible while the result preview uses a shorter safety note.
 - Architecture Gate: not triggered.
 
+## M2 Exit Review — Workflow Pattern Review
+
+- Review: `docs/product/WORKFLOW_PATTERN_REVIEW.md`
+- Guidelines: `docs/product/WORKFLOW_PATTERN_GUIDELINES.md`
+- Decision: `docs/product/WORKFLOW_PATTERN_DECISION.md`
+- Decision result: **GO**.
+- Official reusable pattern: Input → Review → Run → Result Preview/Dashboard → Executive Summary → Export Review → Recommended Next Action.
+- Product Review: GO.
+- UX Review: GO.
+- Research Review: GO.
+- Engineering Review: GO.
+- Future workflows: Campaign Message Test, Promotion Response, and Brand Awareness are reusable; A/B Message Comparison and Product Feedback need extension, not redesign.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: Campaign Message Test Planning only.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
 |---|---|---|---|
-| UX simplicity | Green/Yellow after M2.1 burn-down | M2.1 validation | Product Launch flow is easier to start; top quick-start action reduces below-fold run friction. |
-| Workflow completion | Green for default sample | M2.1 validation | Default sample is one click to first result; edited scenario remains bounded by <=5 visible text inputs. |
-| Onboarding clarity | Green/Yellow | M2.1 validation | Static Product Launch mode clarifies the current workflow; fixed-sample explanation remains visible. |
-| SocialSense integration health | Green for PR3 smoke | Green by PR3 | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
-| Export readiness | Green for PR4 sample | Green by PR4 | `/exports/:runId` shows JSON, Markdown, and Executive Summary readiness/status from the generated fixture. |
-| Dashboard readiness | Green for PR4 sample | Green by PR4 | `/runs/:runId` renders marketing-friendly Product Launch cards and caveats from the generated fixture. |
+| UX simplicity | Green after M2 Exit | Maintain Green | Product Launch is reusable pattern with P1 friction cleared; future workflows must preserve quick-start and low cognitive load. |
+| Workflow completion | Green for Product Launch | Reuse pattern | Default Product Launch sample is one-click to first result; future workflows must preserve the Input → Review → Run → Result path. |
+| Onboarding clarity | Green | Reuse pattern | Product Launch mode, assumptions preview, and export-readiness language define the onboarding pattern. |
+| SocialSense integration health | Green | Preserve public boundary | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
+| Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
+| Dashboard readiness | Green for Product Launch | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from the generated fixture. |
 | Design system readiness | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
 | Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
-| Safety posture | Green for PR4 | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
+| Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
+| Workflow pattern readiness | GO | M2 Exit Review | Product Launch is official reusable pattern; next milestone may be Campaign Message Test Planning only. |
 
 ## KPI baseline
 
-| KPI | PR4 value | Measurement method | Next target |
+| KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
 | Documented route patterns | 5 | Route resolver and README route list | <=5 until workflow need is proven |
 | Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR4 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK plus generated UI fixture in PR4 |
-| Required docs complete | 9/9 | Docs smoke | 9/9 |
+| Required smoke docs complete | 9/9 | `scripts/docs_smoke.py` | Keep smoke-required docs passing |
+| README docs map links | 17 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -109,7 +126,7 @@ PR2 intentionally did not deliver:
 
 ## UX simplicity tracker
 
-Current PR4 target:
+Historical PR4 target:
 
 - One primary product concept: executive marketing scenario workbench.
 - One proposed core flow: a guided Product Launch review flow.
@@ -128,7 +145,7 @@ Mitigation:
 
 ## Workflow completion tracker
 
-Current state: PR4 Product Launch sample workflow is usable end-to-end for a generated offline fixture.
+Current state: Product Launch is usable end-to-end for a generated offline fixture and is approved as the reusable workflow pattern.
 
 Current measurement:
 
@@ -144,7 +161,7 @@ Future target:
 
 ## Onboarding clarity tracker
 
-Current PR4 baseline:
+Historical PR4 baseline:
 
 - README explains product purpose and boundaries.
 - Home page starts from safe scenario comparison language.
@@ -158,7 +175,7 @@ Future target:
 
 ## SocialSense integration health
 
-Current PR4 baseline:
+Historical PR4 baseline:
 
 - Product-owned adapter exists at `integrations/socialsense/adapter.py`.
 - Adapter imports only `from socialsense import load_domain_pack` from the SocialSense public SDK facade.
@@ -169,7 +186,7 @@ Current PR4 baseline:
 
 ## Export readiness
 
-Current PR4 baseline:
+Historical PR4 baseline:
 
 - Export route renders JSON, Markdown, and Executive Summary readiness/status from the generated offline fixture.
 - No downloadable report package is generated yet; this is a reviewed export-readiness view.
@@ -184,7 +201,7 @@ Future health checks:
 
 ## Dashboard readiness
 
-Current PR4 baseline:
+Historical PR4 baseline:
 
 - Dashboard route renders the generated Product Launch sample with directional synthetic aggregate signals.
 - The dashboard shows assumptions, source/review context, limitations, evidence gaps, caveats, and recommended next test.
@@ -200,7 +217,7 @@ Future dashboard acceptance:
 
 ## Test status
 
-PR4 required and verified:
+Current validation suite includes:
 
 - `npm run test`
 - `npm run typecheck`
@@ -214,10 +231,10 @@ PR4 required and verified:
 
 Future required:
 
-- Private dogfooding walkthroughs in M2.
-- Workflow timing and confusion metrics in M2.
-- Broader campaign/A-B workflow tests in later PRs.
+- Campaign Message Test Planning only if the workflow-pattern decision remains GO.
+- Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
+- Broader workflow tests only after a future implementation milestone is explicitly authorized.
 
 ## Known risks
 
@@ -232,7 +249,7 @@ Future required:
 
 ## Technical debt register
 
-Current PR4 debt:
+Current Product Launch debt:
 
 - Workflow state is client-only and sample-only by design.
 - Browser-entered values are review assumptions beside the generated fixture, not arbitrary live simulation inputs.
@@ -248,19 +265,22 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Product Launch private walkthrough validation.
+Next milestone: Campaign Message Test Planning.
 
-Next step should deliver:
+Scope must be planning only unless the user explicitly authorizes implementation.
 
-- one timed private Product Launch walkthrough using the merged M2.1 quick-start flow;
-- confirmation that no P1 friction remains in run visibility, objective clarity, result discoverability, safety clarity, or export-readiness wording;
-- a recommendation on whether to plan the next workflow.
+Planning should deliver:
 
-Do not start Campaign Message Test or A/B Message Comparison until Product Launch stabilization is explicitly accepted.
+- Campaign Message Test input/review/run/dashboard/export/recommendation plan using the approved workflow pattern;
+- extensions needed for message-focused fields and evidence categories;
+- validation and safety acceptance criteria;
+- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, or production campaign claims.
+
+Do not start Campaign Message Test implementation or A/B Message Comparison implementation from this dashboard alone.
 
 Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
 
-## PR4 acceptance criteria
+## Historical PR4 acceptance criteria
 
 - Health dashboard reflects Product Launch vertical slice readiness.
 - Route count, tests/build status, generated fixture readiness, and safety posture are explicit.

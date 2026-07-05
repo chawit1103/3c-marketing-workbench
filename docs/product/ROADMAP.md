@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M1 PR4 Product Launch Simulation vertical slice is current. PR1 product architecture/UX audit, PR2 frontend shell, and PR3 SocialSense public SDK adapter smoke are complete.
+Status: M2 Exit Review is complete. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, and M2 Product Launch stabilization are complete. Next recommended milestone is Campaign Message Test Planning only.
 
 ## Program
 
@@ -27,7 +27,7 @@ Program non-goals:
 | PR1 | `m1-pr1-product-architecture-ux-audit` | Product architecture + UX audit + roadmap docs | Docs only. Define product principles, architecture, dependency map, roadmap, health dashboard, README, AGENTS. | Required docs exist, README links resolve, `git diff --check` passes, docs smoke passes, committed. |
 | PR2 | `m1-pr2-frontend-shell-design-system` | Safe frontend shell + design system | Complete. React/Vite/TypeScript shell, route placeholders, safety labels, initial design system, tests/build/docs smoke. No backend, no real simulation. | `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, and `git diff --check` pass; core routes render; safety banner visible. |
 | PR3 | `m1-pr3-socialsense-adapter-smoke` | SocialSense adapter smoke | Complete. Isolated product-owned adapter using public SDK/runtime only, Python unit tests, docs smoke checks, and local `product_launch` fixture smoke. | Adapter tests prove no private imports; local smoke runs SocialSense Marketing Domain Pack and exports JSON/Markdown/Executive Summary; provenance/safety preserved. |
-| PR4 | `m1-pr4-product-launch-vertical-slice` | Product Launch vertical slice | Current. Generate an offline product-launch fixture through the PR3 adapter and render `/workbench`, `/runs/:runId`, and `/exports/:runId` as a usable UX slice. | Workflow usable, result cards render, export review shows JSON/Markdown/Executive Summary readiness, safety labels visible, all gates pass. |
+| PR4 | `m1-pr4-product-launch-vertical-slice` | Product Launch vertical slice | Complete. Generated an offline product-launch fixture through the PR3 adapter and rendered `/workbench`, `/runs/:runId`, and `/exports/:runId` as a usable UX slice. | Workflow usable, result cards render, export review shows JSON/Markdown/Executive Summary readiness, safety labels visible, all gates pass. |
 
 ## PR2 epics, features, tasks
 

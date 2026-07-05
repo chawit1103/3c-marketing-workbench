@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M1 PR4 Product Launch Simulation vertical slice. PR2 delivered the React/Vite/TypeScript frontend shell; PR3 added a product-owned adapter over SocialSense public SDK/runtime surfaces; PR4 adds a generated offline sample fixture consumed by the browser UI for `/workbench`, `/runs/:runId`, and `/exports/:runId`.
+Status: M2 Exit Review complete. Product Launch is the approved reusable workflow pattern; Campaign Message Test remains planning-only until explicitly authorized. PR2 delivered the frontend shell, PR3 added the product-owned adapter over SocialSense public SDK/runtime surfaces, PR4 added the Product Launch vertical slice, and M2 stabilized UX/readability and pattern guidance.
 
 Explicit non-goals in PR4:
 
@@ -38,7 +38,7 @@ Adjacent repositories are reference/dependency boundaries, not edit targets for 
 
 PR4 must not modify SocialSense or MarketingSimulation.
 
-## M1 PR4 current status
+## Historical M1 PR4 delivered status
 
 PR4 adds the first usable browser vertical slice without adding a backend:
 
@@ -94,6 +94,9 @@ Required M1 documents:
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
 - [M2.1 Closeout Report](docs/product/M2_1_CLOSEOUT_REPORT.md)
 - [M2.3 Closeout Report](docs/product/M2_3_CLOSEOUT_REPORT.md)
+- [Workflow Pattern Review](docs/product/WORKFLOW_PATTERN_REVIEW.md)
+- [Workflow Pattern Guidelines](docs/product/WORKFLOW_PATTERN_GUIDELINES.md)
+- [Workflow Pattern Decision](docs/product/WORKFLOW_PATTERN_DECISION.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
