@@ -22,7 +22,7 @@ Status: Initial M1 PR1 baseline. This dashboard tracks product readiness for a d
 | Core workflow steps | 7 proposed | Product principles review | <=7 |
 | Top-level product routes | 0 implemented | PR2 route review | <=5 initial routes |
 | Required docs complete | 8/8 | Docs smoke | 8/8 |
-| README doc links valid | Pending validation | Docs smoke | 100% |
+| README doc links valid | 100% | Docs smoke | 100% |
 | SocialSense public-surface use | Not implemented | PR3 adapter tests | 100% public facade |
 | Unsupported export formats exposed | 0 | PR4 UI/export tests | 0 |
 | Live API usage | 0 | Code review/tests | 0 |
