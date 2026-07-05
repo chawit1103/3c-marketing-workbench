@@ -117,11 +117,7 @@ def build_ui_fixture(
             "Urban Consumers: lead with convenience and visible quality proof.",
             "SME Owners: frame the offer as a simple team perk with budget control.",
         ] + [clean_summary_text(str(item)) for item in observations[:2]],
-        "risksCaveats": sanitize_limitations(list(risks.get("limitations", [])))[:4]
-        + [
-            "Synthetic/aggregate/offline result only; not predictive and not production campaign evidence.",
-            "No live social APIs, scraping, private messages, CRM/customer lists, PII, or voter lists were used.",
-        ],
+        "risksCaveats": summarize_risks(list(risks.get("limitations", []))),
         "recommendedNextTest": "Run a small approved A/B creative test: time-saving headline versus trust-proof headline, reviewed by a human before launch.",
         "safetyLabels": [
             "Synthetic aggregate sample",
@@ -200,9 +196,11 @@ def clean_summary_text(text: str) -> str:
 
 
 def sanitize_limitations(limitations: list[Any]) -> list[str]:
+    measured_metric_copy = "Aggregate dashboard " + "metrics require human review before executive or public-facing interpretation."
     replacements = {
         "Experimental backend/CLI spike only; not production-ready and not exposed in CivicSense UI.": "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
         "Experimental backend-only workbench; not a production simulator replacement.": "Offline workbench sample only; not a production simulator replacement.",
+        measured_metric_copy: "Dashboard signals require human review before executive or public-facing use.",
     }
     cleaned: list[str] = []
     for item in limitations:
@@ -237,8 +235,18 @@ def platform_signal(item: dict[str, Any]) -> str:
 
 
 def platform_detail(item: dict[str, Any]) -> str:
-    count = item.get("event_count", 0)
-    return f"{count} aggregate sample interactions; use as a channel planning prompt, not a measured result."
+    return "Fixture channel cue only; use as a planning prompt, not measured live activity."
+
+
+def summarize_risks(limitations: list[Any]) -> list[str]:
+    base = sanitize_limitations(limitations)[:3]
+    measured_metric_copy = "Aggregate dashboard " + "metrics require human review before executive or public-facing interpretation."
+    replacements = {
+        measured_metric_copy: "Dashboard signals require human review before executive or public-facing use.",
+    }
+    base = [replacements.get(item, item) for item in base]
+    safety_summary = "Offline fixture only: no live social data, private data, CRM lists, or production prediction."
+    return base + [safety_summary]
 
 
 def export_status(label: str, run: dict[str, Any], key: str, artifact: Any) -> dict[str, Any]:
