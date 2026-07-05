@@ -5,8 +5,8 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M1 PR1 product architecture, UX audit, roadmap, and repo guidance.
-- PR1 is docs-only. Do not create application code or scaffold.
+- Current branch scope: M1 PR2 React/Vite/TypeScript frontend shell and design system scaffold.
+- PR2 is frontend shell only: route placeholders, safety labels, initial design system, tests, lint, typecheck, build, and docs smoke.
 
 ## Repository boundaries
 
@@ -15,6 +15,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - Do not modify MarketingSimulation.
 - SocialSense is a dependency boundary: future 3C implementation may use only public SDK/runtime surfaces.
 - MarketingSimulation is reference-only for UX audit evidence. Do not copy UI, routes, state, CSS, API helpers, or architecture.
+- Keep PR2 independent from backend services, live data sources, authentication, credentials, and production campaign systems.
 
 ## Safety rules
 
@@ -32,33 +33,54 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all PR1 language fixture/offline, synthetic, aggregate-only, non-production, and human-review oriented.
+Keep all PR2 language fixture/offline, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid hidden internal platform terms as primary UI copy.
 
-## PR quality gates
+## Real PR2 commands
 
-Before handoff on PR1:
+Install dependencies and maintain the npm lockfile:
 
 ```bash
+npm install
+```
+
+Run validation before handoff:
+
+```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
 python3 scripts/docs_smoke.py
 git diff --check
 git status --short --branch
 ```
 
-The docs smoke must confirm required docs exist, README links resolve, required safety phrases are present, and no app scaffold files are present.
+Optional local manual review:
 
-## Future app command placeholder
+```bash
+npm run dev
+```
 
-App scaffold, install, build, test, and run commands are TBD until PR2. Do not invent npm, Python app, frontend, backend, or framework commands in PR1.
+## Docs smoke expectations
+
+`scripts/docs_smoke.py` is a PR2 check. It must confirm:
+
+- required docs exist;
+- README links resolve;
+- README and AGENTS include required safety phrases;
+- expected React/Vite/TypeScript frontend shell files exist;
+- forbidden backend/live/auth/credential files are absent.
 
 ## Definition of Done
 
-PR1 is done only when:
+PR2 is done only when:
 
-- README is no longer a stub and links to existing PR1 docs;
-- this AGENTS.md exists and is concise/actionable;
-- required PR1 docs exist;
-- safety boundaries are explicit in README and AGENTS;
-- validation commands pass;
-- no app scaffold exists;
+- README and AGENTS describe PR2, not PR1-only docs;
+- React/Vite/TypeScript scaffold files and package lock are present;
+- core routes render and route sprawl remains limited;
+- safety labels are visible in the shell;
+- primary UI copy avoids internal platform terminology;
+- `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, `python3 scripts/docs_smoke.py`, and `git diff --check` pass;
+- no backend, no SocialSense adapter, no live API calls, no credentials/auth, and no real simulation are introduced;
 - SocialSense and MarketingSimulation remain unmodified;
-- all PR1 docs changes are committed.
+- all PR2 changes are committed.
