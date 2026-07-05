@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M3 Campaign Domain Planning in progress. Product Launch remains the reference workflow, and Campaign Domain is now defined as the reusable business model for future marketing workflows. No Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation is authorized by M3.
+Status: M3 Campaign Domain Planning complete and merged. Product Launch remains the reference workflow, and Campaign Domain is approved as the reusable business model for future marketing workflows. No Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation is authorized by M3.
 
 
 ## M1 PR4 closeout
@@ -69,6 +69,8 @@ Status: M3 Campaign Domain Planning in progress. Product Launch remains the refe
 
 ## M3 Campaign Domain Planning
 
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/9
+- Merge commit: `1ac012c6c5a184f7786016419a10b42897711a8f`
 - Domain analysis: `docs/product/CAMPAIGN_DOMAIN_ANALYSIS.md`
 - Taxonomy: `docs/product/CAMPAIGN_TAXONOMY.md`
 - Objectives: `docs/product/CAMPAIGN_OBJECTIVES.md`
@@ -97,7 +99,7 @@ Status: M3 Campaign Domain Planning in progress. Product Launch remains the refe
 | Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review | Product Launch is official reusable pattern; next milestone may be Campaign Message Test Planning only. |
-| Campaign Domain readiness | GO candidate | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
+| Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
 
 ## KPI baseline
 

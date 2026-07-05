@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M3 Campaign Domain Planning in progress. Product Launch is the approved reusable workflow pattern, Campaign Domain now defines the reusable business model for future marketing workflows, and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test and A/B Message Comparison remain planning-only / not implemented until explicitly authorized after domain GO.
+Status: M3 Campaign Domain Planning complete and merged. Product Launch is the approved reusable workflow pattern, Campaign Domain now defines the reusable business model for future marketing workflows, and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test and A/B Message Comparison remain planning-only / not implemented until explicitly authorized after domain GO.
 
 Historical PR4 and current M3 non-goals:
 

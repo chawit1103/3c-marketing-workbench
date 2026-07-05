@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M3 Campaign Domain Planning in progress. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, M2 Product Launch stabilization, and M2 Exit Workflow Pattern Review are complete. M3 defines Campaign Domain as the reusable business model; Campaign Message Test remains planning-only / not implemented.
+Status: M3 Campaign Domain Planning complete and merged. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, M2 Product Launch stabilization, and M2 Exit Workflow Pattern Review are complete. M3 defines Campaign Domain as the reusable business model; Campaign Message Test remains planning-only / not implemented.
 
 ## Program
 
@@ -142,7 +142,7 @@ Acceptance criteria:
 - UX friction was triaged, burned down, and polished through M2.1/M2.3.
 - M2 Exit Review approved Product Launch as the reusable workflow pattern.
 
-### M3: Campaign Domain Planning — Current
+### M3: Campaign Domain Planning — Complete
 
 - Define Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping.
 - Keep scope documentation-only.
