@@ -52,6 +52,8 @@ Status: M2 Exit Review complete. Product Launch is approved as the official reus
 
 ## M2 Exit Review — Workflow Pattern Review
 
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/8
+- Merge commit: `2710376ea134394cc5fc62b01b37000e7022f96f`
 - Review: `docs/product/WORKFLOW_PATTERN_REVIEW.md`
 - Guidelines: `docs/product/WORKFLOW_PATTERN_GUIDELINES.md`
 - Decision: `docs/product/WORKFLOW_PATTERN_DECISION.md`
