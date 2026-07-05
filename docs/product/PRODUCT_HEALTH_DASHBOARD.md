@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2 Exit Review complete. Product Launch is approved as the official reusable workflow pattern with **GO** from Product, UX, Research, and Engineering. Campaign Message Test remains planning-only until explicitly authorized.
+Status: M3 Campaign Domain Planning in progress. Product Launch remains the reference workflow, and Campaign Domain is now defined as the reusable business model for future marketing workflows. No Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation is authorized by M3.
 
 
 ## M1 PR4 closeout
@@ -63,9 +63,25 @@ Status: M2 Exit Review complete. Product Launch is approved as the official reus
 - UX Review: GO.
 - Research Review: GO.
 - Engineering Review: GO.
-- Future workflows: Campaign Message Test, Promotion Response, and Brand Awareness are reusable; A/B Message Comparison and Product Feedback need extension, not redesign.
+- Future workflows: Campaign Message Test, Promotion, Campaign Response, and Brand Awareness are reusable; A/B Message Comparison and Product Feedback need extension, not redesign.
 - Architecture Gate: not triggered.
 - Next milestone recommendation: Campaign Message Test Planning only.
+
+## M3 Campaign Domain Planning
+
+- Domain analysis: `docs/product/CAMPAIGN_DOMAIN_ANALYSIS.md`
+- Taxonomy: `docs/product/CAMPAIGN_TAXONOMY.md`
+- Objectives: `docs/product/CAMPAIGN_OBJECTIVES.md`
+- Data model: `docs/product/CAMPAIGN_DATA_MODEL.md`
+- Workflow mapping: `docs/product/CAMPAIGN_WORKFLOW_MAPPING.md`
+- Consumer mapping: `docs/product/CAMPAIGN_CONSUMER_MAPPING.md`
+- Program decision: Campaign Domain defines the reusable business model for future marketing workflows.
+- Business model completeness: Complete for planning.
+- Workflow mapping completeness: Complete for planning.
+- Domain boundary: 3C owns Campaign, Objective, Message, Audience, Offer, Evidence framing, and Recommendation UX; SocialSense remains a public dependency boundary and is not modified.
+- Consumer mapping: 3C current; Corporate Communication, Healthcare Campaigns, Education Campaigns, and Consumer Research remain future consumers only.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: Campaign Message Test Planning only after M3 receives GO.
 
 ## Summary
 
@@ -81,6 +97,7 @@ Status: M2 Exit Review complete. Product Launch is approved as the official reus
 | Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review | Product Launch is official reusable pattern; next milestone may be Campaign Message Test Planning only. |
+| Campaign Domain readiness | GO candidate | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
 
 ## KPI baseline
 
@@ -90,8 +107,8 @@ Status: M2 Exit Review complete. Product Launch is approved as the official reus
 | Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR4 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK plus generated UI fixture in PR4 |
-| Required smoke docs complete | 9/9 | `scripts/docs_smoke.py` | Keep smoke-required docs passing |
-| README docs map links | 17 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
+| Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
+| README docs map links | 23 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -269,11 +286,12 @@ Future debt to watch:
 
 Next milestone: Campaign Message Test Planning.
 
-Scope must be planning only unless the user explicitly authorizes implementation.
+Scope must remain planning-only unless the user explicitly authorizes implementation after Campaign Domain receives GO.
 
 Planning should deliver:
 
-- Campaign Message Test input/review/run/dashboard/export/recommendation plan using the approved workflow pattern;
+- Campaign Message Test input/review/run/dashboard/export/recommendation plan using Campaign Domain and the approved workflow pattern;
+- Campaign Domain field mapping for message, audience, objective, evidence, limitations, and recommendation;
 - extensions needed for message-focused fields and evidence categories;
 - validation and safety acceptance criteria;
 - no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, or production campaign claims.

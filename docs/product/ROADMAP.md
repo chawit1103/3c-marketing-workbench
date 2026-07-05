@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M2 Exit Review is complete. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, and M2 Product Launch stabilization are complete. Next recommended milestone is Campaign Message Test Planning only.
+Status: M3 Campaign Domain Planning in progress. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, M2 Product Launch stabilization, and M2 Exit Workflow Pattern Review are complete. M3 defines Campaign Domain as the reusable business model; Campaign Message Test remains planning-only / not implemented.
 
 ## Program
 
@@ -134,21 +134,27 @@ Acceptance criteria:
 - Supported formats are JSON, Markdown, and executive JSON unless approved contract changes.
 - No conversion guarantee or production claim appears in product copy.
 
-## Next milestones after PR4
+## Milestone history and forward roadmap
 
-### M2: Private dogfooding
+### M2: Product Launch dogfooding and UX stabilization — Complete
 
-- Run controlled fixture/offline product walkthroughs.
-- Measure workflow completion, confusion points, export readiness, and dashboard clarity.
-- Update health dashboard with real dogfooding observations.
+- Product Launch was reviewed as the reference workflow.
+- UX friction was triaged, burned down, and polished through M2.1/M2.3.
+- M2 Exit Review approved Product Launch as the reusable workflow pattern.
 
-### M3: Scenario comparison and executive polish
+### M3: Campaign Domain Planning — Current
 
-- Improve scenario comparison UX.
-- Add clearer executive summaries and board-style report packaging.
-- Keep safety and provenance mandatory.
+- Define Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping.
+- Keep scope documentation-only.
+- Do not implement Campaign Message Test, A/B Message Comparison, frontend workflows, backend behavior, runtime behavior, or SocialSense changes.
 
-### M4: Governance and release readiness review
+### Next: Campaign Message Test Planning — Only after M3 GO
+
+- Map Campaign Message Test to Campaign Domain and the approved workflow pattern.
+- Define planning-level inputs, review screens, dashboard expectations, export review, recommendation rules, safety criteria, and validation evidence.
+- Do not implement until separately authorized after Campaign Domain receives GO.
+
+### Future: Governance and implementation readiness review
 
 - Define private pilot criteria.
 - Review security/privacy posture.
@@ -170,8 +176,10 @@ Do not implement until separate review:
 
 ## Roadmap acceptance criteria
 
-- PR1-PR4 sequencing is explicit.
-- PR4 is marked current while PR1-PR3 are complete.
-- Each PR has acceptance criteria and quality gates.
+- Completed PR1-PR4 sequencing remains explicit.
+- M2 and M2 Exit Review are marked complete.
+- M3 Campaign Domain Planning is marked current.
+- Next milestone is Campaign Message Test Planning only after M3 GO.
+- Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
-- Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation in M1.
+- Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
