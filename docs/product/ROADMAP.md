@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M1 PR1 roadmap for product architecture, UX audit, and future implementation sequencing. PR1 is docs-only.
+Status: M1 PR2 is current/in progress for the safe frontend shell and design system scaffold. PR1 product architecture/UX audit is complete; PR3 and PR4 remain next.
 
 ## Program
 
@@ -11,12 +11,13 @@ Program goals:
 - Establish 3C as the official product app.
 - Keep SocialSense as the platform dependency.
 - Define UX principles, architecture boundaries, dependency map, roadmap, health dashboard, and agent instructions.
-- Avoid app code until scaffold scope is approved.
+- Add a minimal safe frontend shell before adapter/dashboard work.
 
 Program non-goals:
 
-- No app scaffold in PR1.
-- No SocialSense public API/runtime change.
+- No backend in PR2.
+- No SocialSense adapter until PR3.
+- No real simulation until reviewed adapter/workflow gates.
 - No live APIs, scraping, credentials, PII, CRM/customer lists, private messages/groups, voter lists, microtargeting, persuasion optimization, misinformation workflow, conversion guarantees, or production campaign claims.
 
 ## M1 PR sequence
@@ -24,80 +25,73 @@ Program non-goals:
 | PR | Branch | Theme | Scope | Exit criteria |
 |---|---|---|---|---|
 | PR1 | `m1-pr1-product-architecture-ux-audit` | Product architecture + UX audit + roadmap docs | Docs only. Define product principles, architecture, dependency map, roadmap, health dashboard, README, AGENTS. | Required docs exist, README links resolve, `git diff --check` passes, docs smoke passes, committed. |
-| PR2 | `m1-pr2-app-scaffold-safe-shell` | Safe app scaffold | Create minimal app shell only after PR1 approval. No SocialSense integration beyond mocked contract fixtures unless approved. | Build/test commands exist, core routes render, no live APIs, safety banner visible. |
+| PR2 | `m1-pr2-frontend-shell-design-system` | Safe frontend shell + design system | Current. React/Vite/TypeScript shell, route placeholders, safety labels, initial design system, tests/build/docs smoke. No backend, no SocialSense adapter, no real simulation. | `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, and `git diff --check` pass; core routes render; safety banner visible. |
 | PR3 | `m1-pr3-socialsense-adapter-fixture-contract` | SocialSense adapter | Add isolated adapter using public SDK/runtime only and deterministic fixture/offline contract tests. | Adapter tests prove no private imports, provenance preserved, unsafe/missing metadata fails closed. |
-| PR4 | `m1-pr4-executive-dashboard-export-review` | Dashboard + export review | Render executive dashboard and export review using SocialSense dashboard/export contracts. | 7-step workflow usable, export review blocks unsupported/missing provenance, executive JSON/Markdown/JSON tested. |
+| PR4 | `m1-pr4-executive-dashboard-export-review` | Dashboard + export review | Render executive dashboard and export review using approved dashboard/export contracts. | 7-step workflow usable, export review blocks unsupported/missing provenance, executive JSON/Markdown/JSON tested. |
 
-## PR1 epics, features, tasks
+## PR2 epics, features, tasks
 
-### Epic 1: Old UX audit
+### Epic 1: Safe app scaffold
 
-Feature: Reference-only audit of old MarketingSimulation UX.
-
-Tasks:
-
-- Inspect old repo views/routes/components enough to cite evidence.
-- Identify confusing flows, step overload, technical language, dashboard/export concerns, onboarding friction, and what not to repeat.
-- Document acceptance criteria for 3C UX.
-
-Acceptance criteria:
-
-- Audit cites specific files/views.
-- Audit does not claim analytics/user behavior not evidenced by files.
-- Audit states MarketingSimulation is reference-only and not copied.
-
-### Epic 2: Product principles
-
-Feature: 3C product operating principles.
+Feature: Minimal React/Vite/TypeScript frontend shell.
 
 Tasks:
 
-- Define target users.
-- Define UX-first principles.
-- Define 7-step flow.
-- Define language rules.
-- Define product/platform responsibility test.
-- Define safety/trust principles.
+- Add npm package metadata and lockfile.
+- Add Vite/React/TypeScript entrypoints.
+- Add route resolver and app shell.
+- Keep all behavior frontend-only and fixture/offline.
 
 Acceptance criteria:
 
-- Principles are clear enough to gate PR2.
-- Safety boundaries match SocialSense consumer contract.
+- Install/build/test commands are real and documented.
+- No backend, auth, live API, credential, SocialSense adapter, or real simulation code exists.
 
-### Epic 3: Architecture and dependency boundaries
+### Epic 2: Routes and low-complexity UX
 
-Feature: Product architecture and cross-repo dependency map.
+Feature: Initial route placeholders.
 
 Tasks:
 
-- Define future frontend structure.
-- Define SocialSense integration boundary.
-- Define API/state/routing/export/testing/rollback strategy.
-- Define architecture gate triggers.
-- Define SocialSense -> Marketing Domain Runtime -> 3C Integration Adapter -> 3C UX Workflow -> Dashboard -> Executive Report chain.
+- Implement `/`, `/workbench`, `/runs/:runId`, `/exports/:runId`, and `/health`.
+- Render not-found state for route sprawl.
+- Keep copy executive-facing and avoid internal platform terms in primary UI.
 
 Acceptance criteria:
 
-- No app code is created.
-- No SocialSense or MarketingSimulation changes are required.
-- Allowed/disallowed dependency directions are explicit.
+- Core routes render in tests.
+- Safety boundaries are visible on shell routes.
+- Dashboard/export pages clearly state placeholder status.
 
-### Epic 4: Program operations
+### Epic 3: Design system foundation
 
-Feature: Roadmap, health dashboard, README, AGENTS.
+Feature: Lightweight product UI primitives.
 
 Tasks:
 
-- Document PR1-PR4 sequence.
-- Create product health dashboard baseline.
-- Replace README stub with useful product overview.
-- Add concise repo agent instructions.
+- Add CSS tokens, cards, badges, buttons, forms, responsive grids, and states.
+- Add product cards and placeholder result cards.
 
 Acceptance criteria:
 
-- README links point to existing docs.
-- AGENTS does not invent app commands.
-- Current PR status is docs-only.
+- Shell is readable and consistent.
+- Design system remains local and does not copy old MarketingSimulation implementation.
+
+### Epic 4: PR2 operations
+
+Feature: Docs, smoke, and quality gates.
+
+Tasks:
+
+- Update README, AGENTS, product health dashboard, and roadmap for PR2.
+- Update docs smoke to expect scaffold files and forbid backend/live/auth/credential files.
+- Run and record validation commands.
+
+Acceptance criteria:
+
+- README/AGENTS are no longer stale PR1-only docs.
+- Docs smoke passes with scaffold expected.
+- All validation commands pass.
 
 ## Quality gates by PR
 
@@ -111,11 +105,17 @@ Acceptance criteria:
 
 ### PR2 quality gates
 
-- Scaffold command documented and verified.
+- `npm install` has generated/updated `package-lock.json`.
+- `npm run test` passes.
+- `npm run typecheck` passes.
+- `npm run lint` passes.
+- `npm run build` passes.
+- `python3 scripts/docs_smoke.py` passes.
+- `git diff --check` passes.
 - Minimal routes render.
 - Safety banner appears on initial shell.
 - App code remains independent from SocialSense internals.
-- No live APIs or credentials.
+- No backend, live APIs, auth, credentials, or real simulation.
 
 ### PR3 quality gates
 
@@ -129,7 +129,7 @@ Acceptance criteria:
 - 7-step workflow completion test passes.
 - Dashboard shows provenance, assumptions, limitations, evidence gaps, and human review questions.
 - Export review is mandatory.
-- Supported formats are JSON, Markdown, and executive JSON unless SocialSense public contract changes.
+- Supported formats are JSON, Markdown, and executive JSON unless approved contract changes.
 - No conversion guarantee or production claim appears in product copy.
 
 ## Next milestones after PR4
@@ -169,6 +169,7 @@ Do not implement until separate review:
 ## Roadmap acceptance criteria
 
 - PR1-PR4 sequencing is explicit.
+- PR2 is marked current while PR3/PR4 remain next.
 - Each PR has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
-- Roadmap does not require credentials, live APIs, SocialSense changes, or app scaffold in PR1.
+- Roadmap does not require credentials, live APIs, SocialSense changes, backend, or real simulation in PR2.

@@ -1,56 +1,82 @@
 # Product Health Dashboard
 
-Status: Initial M1 PR1 baseline. This dashboard tracks product readiness for a docs-only PR and establishes the future measurement model.
+Status: M1 PR2 scaffold readiness. This dashboard tracks the current safe frontend shell and keeps later workflow, SocialSense integration, dashboard, and export claims explicitly out of scope until reviewed PRs.
 
 ## Summary
 
 | Area | Current status | Target for M1 | Notes |
 |---|---|---|---|
-| UX simplicity | Yellow | Green by PR4 | PR1 defines 7-step flow; implementation not started. |
-| Workflow completion | Not started | Measured by PR4 | No app scaffold yet. |
-| Onboarding clarity | Yellow | Green by PR2/PR4 | Principles require safe sample scenario and boundary-first onboarding. |
-| SocialSense integration health | Yellow | Green by PR3 | Contract identified; adapter not implemented in PR1. |
-| Export readiness | Yellow | Green by PR4 | Export flow defined; product UI not implemented. |
-| Dashboard readiness | Yellow | Green by PR4 | Executive dashboard requirements documented. |
-| Test status | Green for PR1 | Green every PR | Docs smoke and diff checks only in PR1. |
-| Safety posture | Green for PR1 | Green every PR | No app code, live APIs, credentials, PII, or external dependencies. |
+| UX simplicity | Green for PR2 shell | Green by PR4 | Five route patterns only; low-cognitive-load placeholders. |
+| Workflow completion | Not implemented | Measured by PR4 | `/workbench` shows a 7-step skeleton only; no real run. |
+| Onboarding clarity | Yellow/Green | Green by PR4 | Home and safety labels explain fixture/offline and aggregate-only boundaries. |
+| SocialSense integration health | Not started | Green by PR3 | No adapter exists in PR2. Public boundary remains documented only. |
+| Export readiness | Not started | Green by PR4 | `/exports/:runId` is a disabled placeholder; no files are prepared. |
+| Dashboard readiness | Scaffolded placeholder | Green by PR4 | `/runs/:runId` reserves page structure only; no real result. |
+| Design system readiness | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
+| Test/build status | Green for PR2 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, and diff check pass. |
+| Safety posture | Green for PR2 | Green every PR | Frontend shell only; no backend, live APIs, credentials, PII, auth, or SocialSense adapter. |
 
 ## KPI baseline
 
-| KPI | Baseline | Measurement method | Next target |
+| KPI | PR2 value | Measurement method | Next target |
 |---|---:|---|---:|
-| Core workflow steps | 7 proposed | Product principles review | <=7 |
-| Top-level product routes | 0 implemented | PR2 route review | <=5 initial routes |
+| Documented route patterns | 5 | Route resolver and README route list | <=5 until workflow need is proven |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR2 |
+| SocialSense adapter modules | 0 | Code/docs smoke review | PR3 only |
+| Real simulation paths | 0 | Code/UI review | PR3+ only after review |
 | Required docs complete | 8/8 | Docs smoke | 8/8 |
 | README doc links valid | 100% | Docs smoke | 100% |
-| SocialSense public-surface use | Not implemented | PR3 adapter tests | 100% public facade |
-| Unsupported export formats exposed | 0 | PR4 UI/export tests | 0 |
+| Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
 | PII/CRM/private-data input paths | 0 | Code review/tests | 0 |
-| Production/conversion guarantee claims | 0 intended | Copy review | 0 |
+| Production/conversion guarantee claims | 0 intended | Copy review/tests | 0 |
+
+## Scaffold readiness
+
+PR2 delivered:
+
+- React/Vite/TypeScript frontend shell;
+- package metadata and npm lockfile;
+- route resolver for `/`, `/workbench`, `/runs/:runId`, `/exports/:runId`, and `/health`;
+- app shell navigation;
+- global safety boundary labels;
+- product cards and placeholder result cards;
+- CSS design tokens for color, spacing, typography, cards, badges, forms, buttons, states, and responsive grids;
+- unit tests for rendering, route resolution, safety labels, navigation, and visible UI copy boundaries.
+
+PR2 intentionally did not deliver:
+
+- backend;
+- authentication;
+- credentials or secret management;
+- live APIs;
+- SocialSense adapter;
+- real simulation;
+- persistence;
+- real export generation.
 
 ## UX simplicity tracker
 
-Current PR1 target:
+Current PR2 target:
 
 - One primary product concept: executive marketing scenario workbench.
-- One proposed core flow: seven steps.
+- One proposed core flow: seven steps, represented as a skeleton only.
+- Five route patterns and no settings/admin/auth route sprawl.
 - Technical platform concepts are not primary UX copy.
-- Old MarketingSimulation route sprawl is explicitly not repeated.
 
 Risks:
 
-- PR2 could over-scaffold routes before workflow is proven.
-- Dashboard could become too dense if all SocialSense fields are rendered equally.
+- Later dashboard work could become too dense.
+- PR3 adapter work could leak platform terms into user-facing copy.
 
 Mitigation:
 
-- Use product principles as PR2/PR4 gates.
-- Start with executive summary, assumptions, limitations, confidence/provenance, and export readiness.
+- Keep product principles as PR3/PR4 gates.
+- Preserve executive language: assumptions, limitations, confidence, evidence gaps, and human review.
 
 ## Workflow completion tracker
 
-Current state: no app scaffold in PR1.
+Current state: PR2 route skeleton only. Workflow is not usable end-to-end.
 
 Future measurement:
 
@@ -66,11 +92,12 @@ Future target:
 
 ## Onboarding clarity tracker
 
-Current PR1 baseline:
+Current PR2 baseline:
 
 - README explains product purpose and boundaries.
-- Product principles define boundary-first onboarding.
-- Upload-first onboarding is discouraged.
+- Home page starts from safe scenario comparison language.
+- Safety labels appear globally.
+- Upload/customer-list flows do not exist.
 
 Future target:
 
@@ -79,18 +106,13 @@ Future target:
 
 ## SocialSense integration health
 
-Current PR1 baseline:
+Current PR2 baseline:
 
-- SocialSense is reference-only and not modified.
-- Public consumer contract identified:
-  - `load_domain_pack`
-  - `ConsumerSDK`
-  - `DomainPack.run(...)`
-  - `DomainPack.export(...)`
-  - `runtime_annotation`
-  - `dashboard_contract`
+- No SocialSense adapter exists.
+- No SocialSense imports exist in frontend shell code.
+- SocialSense remains a documented dependency boundary only.
 
-Future health checks:
+Future health checks for PR3:
 
 - Adapter has no private imports.
 - Contract tests use fixture/offline data only.
@@ -99,47 +121,52 @@ Future health checks:
 
 ## Export readiness
 
-Current PR1 baseline:
+Current PR2 baseline:
 
-- Export architecture defined.
-- Supported initial formats: JSON, Markdown, executive JSON.
-- Export review gate required.
+- Export route exists only as a disabled review placeholder.
+- No export file is generated.
+- No unsupported format is presented as available.
 
 Future health checks:
 
-- Export button disabled until run and provenance are available.
+- Export button disabled until run and required review data are available.
 - Export review shows boundaries and limitations.
 - Unsupported formats are not shown.
-- No client-side fallback bypasses SocialSense export safety.
+- No client-side fallback bypasses platform export safety.
 
 ## Dashboard readiness
 
-Current PR1 baseline:
+Current PR2 baseline:
 
-- Dashboard requirements documented.
-- Old dashboard density and false-precision risks identified.
+- Dashboard route exists only as a placeholder.
+- No real scenario result is produced.
+- Placeholder copy states later aggregate review only.
 
 Future dashboard acceptance:
 
 - Shows what was tested.
 - Shows scenario result as directional/synthetic aggregate evidence.
-- Shows source/provenance and fixture/offline mode.
+- Shows source/review context and fixture/offline mode.
 - Shows assumptions, limitations, evidence gaps, and human review questions.
 - Avoids conversion guarantees, live campaign claims, and production certainty.
 
 ## Test status
 
-PR1 required:
+PR2 required and verified:
 
+- `npm run test`
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+- `python3 scripts/docs_smoke.py`
 - `git diff --check`
-- Docs smoke test for required files and README links.
 
 Future required:
 
-- Unit tests for adapter mapping.
-- Workflow tests for the 7-step flow.
-- Export review blocking tests.
-- Dashboard provenance rendering tests.
+- Adapter contract tests in PR3.
+- Workflow tests for the 7-step flow in PR4.
+- Export review blocking tests in PR4.
+- Dashboard rendering tests in PR4.
 - Accessibility checks for core pages.
 
 ## Known risks
@@ -148,41 +175,43 @@ Future required:
 |---|---|---|---|
 | Product copies old MarketingSimulation UX complexity | High | 3C | Audit and principles explicitly ban copying old UI/architecture. |
 | Adapter needs SocialSense API not currently public | High | 3C + SocialSense | Stop and open dependency review; do not import internals. |
-| Dashboard implies production prediction | High | 3C | Use directional language and provenance labels; block unsafe claims. |
-| Export bypasses SocialSense safety | High | 3C | Mandatory export review and SocialSense `DomainPack.export(...)`. |
-| PR2 adds too much scaffold | Medium | 3C | Keep PR2 shell minimal and testable. |
+| Dashboard implies production prediction | High | 3C | Use directional language and review labels; block unsafe claims. |
+| Export bypasses safety review | High | 3C | Mandatory export review in PR4; no real export in PR2. |
+| PR2 shell overclaims workflow readiness | Medium | 3C | Copy states placeholders and no real simulation. |
 | No real dogfooding metrics yet | Medium | Product | Add after PR4 private walkthroughs. |
 
 ## Technical debt register
 
-Current PR1 debt:
+Current PR2 debt:
 
-- No app scaffold or executable product tests yet by design.
+- No real workflow state yet by design.
 - No adapter contract tests yet by design.
-- README quick local plan is provisional until PR2.
+- No accessibility automation beyond current render tests.
+- No manual browser QA record in docs yet.
 
 Future debt to watch:
 
-- Duplicated SocialSense contract models in frontend.
+- Duplicated platform contract models in frontend.
 - Dashboard over-rendering raw platform fields.
-- Export format drift from SocialSense contract.
+- Export format drift from approved contract.
 - Route sprawl.
 
 ## Next milestone
 
-Next milestone: PR2 safe app scaffold.
+Next milestone: PR3 SocialSense adapter fixture contract.
 
-PR2 should deliver:
+PR3 should deliver:
 
-- Minimal app shell.
-- Safety/boundary banner.
-- Initial routes only.
-- Placeholder 7-step workflow skeleton.
-- Verified build/test commands.
-- No SocialSense internals, live APIs, credentials, or production claims.
+- isolated adapter over public surfaces only;
+- deterministic fixture/offline contract tests;
+- no private imports;
+- no live APIs, credentials, customer data, or production claims;
+- no visible UI overclaiming real simulation readiness.
 
-## PR1 acceptance criteria
+PR4 should then deliver the executive dashboard and export review workflow.
 
-- Health dashboard baseline exists.
-- KPIs cover UX simplicity, workflow completion, onboarding, SocialSense integration, export, dashboard, tests, risks, and debt.
-- Dashboard is honest about PR1 docs-only status.
+## PR2 acceptance criteria
+
+- Health dashboard reflects scaffold readiness, not completed workflows.
+- Route count, tests/build status, design system readiness, and safety posture are explicit.
+- Dashboard is honest that SocialSense integration, real simulation, and export generation are not implemented.
