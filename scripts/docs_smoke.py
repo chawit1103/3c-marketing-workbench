@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""M1 PR2 smoke check for 3C Marketing Workbench docs and safe frontend shell."""
+"""M1 PR3 smoke check for 3C Marketing Workbench docs and safe adapter files."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ REQUIRED_DOCS = [
     "docs/architecture/CROSS_REPOSITORY_DEPENDENCY_MAP.md",
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/SOCIALSENSE_INTEGRATION.md",
     "README.md",
     "AGENTS.md",
 ]
@@ -44,6 +45,14 @@ EXPECTED_FRONTEND_FILES = [
     "src/test/setup.ts",
 ]
 
+EXPECTED_PR3_FILES = [
+    "integrations/__init__.py",
+    "integrations/socialsense/__init__.py",
+    "integrations/socialsense/adapter.py",
+    "scripts/socialsense_adapter_smoke.py",
+    "tests/test_socialsense_adapter.py",
+]
+
 REQUIRED_SAFETY_PHRASES = [
     "live APIs",
     "scraping",
@@ -58,13 +67,13 @@ REQUIRED_SAFETY_PHRASES = [
     "production campaign claims",
 ]
 
-REQUIRED_PR2_PHRASES = [
-    "M1 PR2",
-    "React/Vite/TypeScript",
-    "frontend shell",
-    "no backend",
-    "no SocialSense adapter",
-    "no real simulation",
+REQUIRED_PR3_PHRASES = [
+    "M1 PR3",
+    "SocialSense public SDK",
+    "product-owned adapter",
+    "public_sdk_only",
+    "product_launch",
+    "executive_json",
 ]
 
 FORBIDDEN_PATH_PATTERNS = [
@@ -81,7 +90,19 @@ FORBIDDEN_PATH_PATTERNS = [
     r"(^|/)(fastapi|express)\.(ts|tsx|js|jsx|py)$",
 ]
 
-IGNORED_DIRS = {".git", "node_modules", "dist", "coverage"}
+FORBIDDEN_ADAPTER_CONTENT = [
+    "app.civicsense",
+    "socialsense.domain_packs",
+    "socialsense.workbench",
+    "socialsense.bridge",
+    "socialsense.plugins",
+    "socialsense.scenarios",
+    "api_key",
+    "customer_list",
+    "voter_list",
+]
+
+IGNORED_DIRS = {".git", "node_modules", "dist", "coverage", "__pycache__"}
 README_LINK_PATTERN = re.compile(r"\[[^\]]+\]\((?!https?://|mailto:|#)([^)]+)\)")
 
 
@@ -103,14 +124,20 @@ def iter_repo_paths() -> list[str]:
 def main() -> None:
     missing_docs = [path for path in REQUIRED_DOCS if not (ROOT / path).is_file()]
     if missing_docs:
-        fail("missing required PR2 docs: " + ", ".join(missing_docs))
+        fail("missing required PR3 docs: " + ", ".join(missing_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
-        fail("missing expected PR2 frontend files: " + ", ".join(missing_frontend))
+        fail("missing expected frontend shell files: " + ", ".join(missing_frontend))
+
+    missing_pr3 = [path for path in EXPECTED_PR3_FILES if not (ROOT / path).is_file()]
+    if missing_pr3:
+        fail("missing expected PR3 adapter files: " + ", ".join(missing_pr3))
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    integration_doc = (ROOT / "docs/product/SOCIALSENSE_INTEGRATION.md").read_text(encoding="utf-8")
+    adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -125,19 +152,28 @@ def main() -> None:
         if missing_phrases:
             fail(f"{doc_name} missing safety phrases: " + ", ".join(missing_phrases))
 
-    missing_pr2 = [phrase for phrase in REQUIRED_PR2_PHRASES if phrase not in readme]
-    if missing_pr2:
-        fail("README missing PR2 status phrases: " + ", ".join(missing_pr2))
+    combined_pr3_text = "\n".join([readme, agents, integration_doc])
+    missing_pr3_phrases = [phrase for phrase in REQUIRED_PR3_PHRASES if phrase not in combined_pr3_text]
+    if missing_pr3_phrases:
+        fail("PR3 docs missing status phrases: " + ", ".join(missing_pr3_phrases))
+
+    if "from socialsense import load_domain_pack" not in adapter:
+        fail("adapter does not import SocialSense through the public facade")
+    forbidden_adapter_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in adapter]
+    if forbidden_adapter_hits:
+        fail("adapter references forbidden SocialSense/private/live content: " + ", ".join(forbidden_adapter_hits))
 
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
-        fail("forbidden backend/live/auth/credential files present in PR2: " + ", ".join(sorted(forbidden_paths)))
+        fail("forbidden backend/live/auth/credential files present: " + ", ".join(sorted(forbidden_paths)))
 
-    print("PASS: required PR2 docs exist")
+    print("PASS: required PR3 docs exist")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
+    print("PASS: expected PR3 SocialSense adapter files exist")
+    print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 
 

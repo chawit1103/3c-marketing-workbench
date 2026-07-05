@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M1 PR2 is current/in progress for the safe frontend shell and design system scaffold. PR1 product architecture/UX audit is complete; PR3 and PR4 remain next.
+Status: M1 PR3 is current/in progress for the SocialSense public SDK adapter smoke. PR1 product architecture/UX audit and PR2 frontend shell are complete; PR4 remains next.
 
 ## Program
 
@@ -25,8 +25,8 @@ Program non-goals:
 | PR | Branch | Theme | Scope | Exit criteria |
 |---|---|---|---|---|
 | PR1 | `m1-pr1-product-architecture-ux-audit` | Product architecture + UX audit + roadmap docs | Docs only. Define product principles, architecture, dependency map, roadmap, health dashboard, README, AGENTS. | Required docs exist, README links resolve, `git diff --check` passes, docs smoke passes, committed. |
-| PR2 | `m1-pr2-frontend-shell-design-system` | Safe frontend shell + design system | Current. React/Vite/TypeScript shell, route placeholders, safety labels, initial design system, tests/build/docs smoke. No backend, no SocialSense adapter, no real simulation. | `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, and `git diff --check` pass; core routes render; safety banner visible. |
-| PR3 | `m1-pr3-socialsense-adapter-fixture-contract` | SocialSense adapter | Add isolated adapter using public SDK/runtime only and deterministic fixture/offline contract tests. | Adapter tests prove no private imports, provenance preserved, unsafe/missing metadata fails closed. |
+| PR2 | `m1-pr2-frontend-shell-design-system` | Safe frontend shell + design system | Complete. React/Vite/TypeScript shell, route placeholders, safety labels, initial design system, tests/build/docs smoke. No backend, no real simulation. | `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, and `git diff --check` pass; core routes render; safety banner visible. |
+| PR3 | `m1-pr3-socialsense-adapter-smoke` | SocialSense adapter smoke | Current. Add isolated product-owned adapter using public SDK/runtime only, Python unit tests, docs smoke checks, and local `product_launch` fixture smoke. | Adapter tests prove no private imports; local smoke runs SocialSense Marketing Domain Pack and exports `executive_json`; provenance/safety preserved. |
 | PR4 | `m1-pr4-executive-dashboard-export-review` | Dashboard + export review | Render executive dashboard and export review using approved dashboard/export contracts. | 7-step workflow usable, export review blocks unsupported/missing provenance, executive JSON/Markdown/JSON tested. |
 
 ## PR2 epics, features, tasks
@@ -119,9 +119,11 @@ Acceptance criteria:
 
 ### PR3 quality gates
 
-- Adapter imports only public SocialSense facade.
-- Contract tests cover successful run, missing provenance, export request, unsupported mode rejection.
-- Fixture/offline outputs only.
+- Adapter imports only `from socialsense import load_domain_pack` from the SocialSense public facade.
+- Contract tests cover input mapping, export wrapper behavior, static forbidden-import checks, and deterministic comparison wrappers.
+- Local smoke runs `product_launch` through SocialSense Marketing Domain Pack with fixture/offline aggregate inputs.
+- Local smoke verifies export status for `json`, `markdown`, and `executive_json`.
+- Adapter view models preserve provenance, safety boundaries, limitations, evidence gaps, and human review questions.
 - No changes to SocialSense public runtime without separate dependency review.
 
 ### PR4 quality gates
