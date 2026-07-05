@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M5 Campaign Message Test Reference Workflow is implemented and ready for review. Product Launch remains the first reference workflow; Campaign Message Test is the second reference workflow and reuses the approved Campaign Domain, Workflow Pattern, Information Architecture, Navigation Model, Design System, dashboard pattern, export review, safety labels, and public SocialSense adapter boundary. No A/B comparison, Promotion workflow, backend, runtime, live APIs, private data, or SocialSense runtime change is authorized by M5.
+Status: M5 Campaign Message Test Reference Workflow complete and merged. Product Launch remains the first reference workflow; Campaign Message Test is the second reference workflow and reuses the approved Campaign Domain, Workflow Pattern, Information Architecture, Navigation Model, Design System, dashboard pattern, export review, safety labels, and public SocialSense adapter boundary. No A/B comparison, Promotion workflow, backend, runtime, live APIs, private data, or SocialSense runtime change is authorized by M5.
 
 
 ## M1 PR4 closeout

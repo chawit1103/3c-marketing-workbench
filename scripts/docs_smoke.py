@@ -224,6 +224,18 @@ def changed_paths_from_main() -> list[str]:
     return [line.strip() for line in output.splitlines() if line.strip()]
 
 
+def current_branch_name() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "branch", "--show-current"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return ""
+
+
 def main() -> None:
     missing_docs = [path for path in REQUIRED_DOCS if not (ROOT / path).is_file()]
     if missing_docs:
@@ -332,8 +344,10 @@ def main() -> None:
         fail("M4 IA hierarchy still treats Research/Comparison as top-level: " + ", ".join(hierarchy_hits))
 
     changed_paths = changed_paths_from_main()
-    if not any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"]):
-        fail("M5 implementation paths are not present in branch diff")
+    m5_files_present = all((ROOT / path).is_file() for path in EXPECTED_M5_FILES)
+    m5_paths_changed = any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"])
+    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main")):
+        fail("M5 implementation paths are not present in branch diff or merged main")
 
     if "from socialsense import load_domain_pack" not in adapter:
         fail("adapter does not import SocialSense through the public facade")

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M5 Campaign Message Test Reference Workflow is implemented and ready for review. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, and M4 IA/design-system review are complete. Campaign Message Test is now the approved second reference workflow implementation; A/B Message Comparison remains planning-only / not implemented.
+Status: M5 Campaign Message Test Reference Workflow complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison remains planning-only / not implemented.
 
 ## Program
 
@@ -154,7 +154,7 @@ Acceptance criteria:
 - Keep scope documentation-only.
 - Do not implement Campaign Message Test, A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, or SocialSense changes.
 
-### M5: Campaign Message Test Reference Workflow — Current
+### M5: Campaign Message Test Reference Workflow — Complete
 
 - Implement Campaign Message Test as the second reference workflow.
 - Reuse Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, existing dashboard/result/export patterns, safety labels, and public SocialSense adapter boundary.
