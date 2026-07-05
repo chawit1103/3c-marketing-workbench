@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M2.3 Product Launch copy/readability polish in review. UX Health remains **91/100 target — Green** after platform wording, lower-section density, and repeated safety-copy refinements. Product Launch remains the only workflow in scope.
+Status: M2.3 Product Launch copy/readability polish merged and stabilized on `main`. UX Health remains **91/100 — Green** after platform wording, lower-section density, and repeated safety-copy refinements. Product Launch remains the only workflow implemented.
 
 
 ## M1 PR4 closeout
@@ -41,6 +41,9 @@ Status: M2.3 Product Launch copy/readability polish in review. UX Health remains
 
 ## M2.3 copy/readability polish
 
+- Closeout report: `docs/product/M2_3_CLOSEOUT_REPORT.md`
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/7
+- Merge commit: `dbfd4f16fe931b6c9cc83d77cc1a2c4a91520cad`
 - Scope: Product Launch UI/docs copy only; no new workflow.
 - Platform wording: measured-sounding interaction counts replaced with fixture/offline channel cues.
 - Lower-section density: dashboard risks/caveats and export evidence/limitations render fewer, more scannable items.
