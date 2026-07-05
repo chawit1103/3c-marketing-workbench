@@ -1,10 +1,10 @@
 # SocialSense Integration
 
-Status: M1 PR3 product-owned adapter smoke is implemented.
+Status: M1 PR4 consumes a generated Product Launch UI fixture that is produced through the M1 PR3 product-owned SocialSense adapter.
 
 ## Scope
 
-3C Marketing Workbench now has an isolated adapter at `integrations/socialsense/adapter.py` that consumes SocialSense through the public SDK/runtime facade only:
+3C Marketing Workbench has an isolated adapter at `integrations/socialsense/adapter.py` that consumes SocialSense through the public SDK/runtime facade only:
 
 ```python
 from socialsense import load_domain_pack
@@ -17,6 +17,24 @@ The adapter loads the Marketing Domain Pack with `load_domain_pack('marketing')`
 
 It does not modify SocialSense, copy SocialSense internals, import `app.civicsense`, or import private SocialSense modules.
 
+## PR4 fixture flow
+
+PR4 uses this cross-repository flow:
+
+```text
+SocialSense public SDK
+↓
+integrations/socialsense/adapter.py
+↓
+scripts/generate_product_launch_fixture.py
+↓
+src/product/fixtures/productLaunchResult.json
+↓
+React Product Launch workflow, dashboard, and export review
+```
+
+The browser does not call SocialSense, live APIs, or a backend. It renders a reproducible offline sample generated locally from the adapter.
+
 ## Exposed adapter functions
 
 - `run_product_launch_simulation(...)`
@@ -24,7 +42,7 @@ It does not modify SocialSense, copy SocialSense internals, import `app.civicsen
 - `run_message_comparison(...)`
 - `export_executive_report(...)`
 
-`run_product_launch_simulation(...)` is the PR3 smoke path and executes an actual `product_launch` fixture through SocialSense Marketing Domain Pack. Campaign and comparison helpers are adapter-shaped deterministic wrappers for later UI workflow integration.
+`run_product_launch_simulation(...)` is the Product Launch smoke and PR4 fixture-generation path. Campaign and comparison helpers remain adapter-shaped wrappers for later reviewed workflow PRs.
 
 ## Input mapping
 
@@ -40,34 +58,39 @@ No CRM/customer lists, PII, private messages/groups, voter lists, credentials, s
 
 ## Output preservation
 
-Adapter view models preserve SocialSense metadata rather than stripping it:
+Adapter view models and the PR4 fixture preserve SocialSense metadata rather than stripping it:
 
 - provenance;
 - safety labels and boundaries;
-- dashboard contract;
-- domain pack metadata;
+- dashboard/export status;
 - limitations;
 - evidence gaps;
 - human review questions;
-- export status for SocialSense-supported formats.
+- export status for JSON, Markdown, and Executive Summary.
 
-The smoke script prints `public_sdk_only: true` to make the boundary explicit.
+The UI converts those into marketing-friendly language and must not expose internal platform terms as primary user copy.
 
 ## Local commands
 
-Run Python adapter unit tests:
+Run Python adapter and fixture tests:
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
-Run actual local SocialSense smoke, using the local platform repo or an installed `socialsense` package:
+Regenerate the Product Launch UI fixture through the PR3 adapter:
+
+```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
+```
+
+Run actual local SocialSense smoke:
 
 ```bash
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-Expected smoke summary includes:
+Expected smoke/fixture summary includes:
 
 - `status: ok`
 - `scenario: product_launch`
@@ -77,6 +100,7 @@ Expected smoke summary includes:
 
 ## Current limitations
 
-- No UI workflow integration yet; PR4 will wire the product launch vertical slice.
+- PR4 renders one Product Launch vertical slice only.
+- Browser-entered form values are shown as review assumptions beside the generated offline sample; they are not sent to a live SocialSense service.
 - No backend service, auth, persistence, live API, credentials, customer data, or production campaign workflow.
-- Export review UI is deferred to PR4; PR3 only verifies SocialSense public export calls locally.
+- A/B comparison, campaign message test, real workspace persistence, and downloadable report packaging remain future gated work.

@@ -5,7 +5,7 @@ interface ObjectiveCardProps {
 }
 
 const statusText: Record<ObjectiveCardProps['status'], string> = {
-  ready: 'Ready for PR2',
+  ready: 'Ready for review',
   placeholder: 'Placeholder',
   review: 'Human review',
 };

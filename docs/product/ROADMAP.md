@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M1 PR3 is current/in progress for the SocialSense public SDK adapter smoke. PR1 product architecture/UX audit and PR2 frontend shell are complete; PR4 remains next.
+Status: M1 PR4 Product Launch Simulation vertical slice is current. PR1 product architecture/UX audit, PR2 frontend shell, and PR3 SocialSense public SDK adapter smoke are complete.
 
 ## Program
 
@@ -11,13 +11,13 @@ Program goals:
 - Establish 3C as the official product app.
 - Keep SocialSense as the platform dependency.
 - Define UX principles, architecture boundaries, dependency map, roadmap, health dashboard, and agent instructions.
-- Add a minimal safe frontend shell before adapter/dashboard work.
+- Deliver a minimal safe frontend shell, SocialSense public-adapter smoke, and Product Launch vertical slice before broader workflows.
 
 Program non-goals:
 
-- No backend in PR2.
-- No SocialSense adapter until PR3.
-- No real simulation until reviewed adapter/workflow gates.
+- No backend in M1.
+- No live SocialSense calls from the browser.
+- No arbitrary browser-input simulation until a later reviewed architecture gate.
 - No live APIs, scraping, credentials, PII, CRM/customer lists, private messages/groups, voter lists, microtargeting, persuasion optimization, misinformation workflow, conversion guarantees, or production campaign claims.
 
 ## M1 PR sequence
@@ -26,8 +26,8 @@ Program non-goals:
 |---|---|---|---|---|
 | PR1 | `m1-pr1-product-architecture-ux-audit` | Product architecture + UX audit + roadmap docs | Docs only. Define product principles, architecture, dependency map, roadmap, health dashboard, README, AGENTS. | Required docs exist, README links resolve, `git diff --check` passes, docs smoke passes, committed. |
 | PR2 | `m1-pr2-frontend-shell-design-system` | Safe frontend shell + design system | Complete. React/Vite/TypeScript shell, route placeholders, safety labels, initial design system, tests/build/docs smoke. No backend, no real simulation. | `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, and `git diff --check` pass; core routes render; safety banner visible. |
-| PR3 | `m1-pr3-socialsense-adapter-smoke` | SocialSense adapter smoke | Current. Add isolated product-owned adapter using public SDK/runtime only, Python unit tests, docs smoke checks, and local `product_launch` fixture smoke. | Adapter tests prove no private imports; local smoke runs SocialSense Marketing Domain Pack and exports `executive_json`; provenance/safety preserved. |
-| PR4 | `m1-pr4-executive-dashboard-export-review` | Dashboard + export review | Render executive dashboard and export review using approved dashboard/export contracts. | 7-step workflow usable, export review blocks unsupported/missing provenance, executive JSON/Markdown/JSON tested. |
+| PR3 | `m1-pr3-socialsense-adapter-smoke` | SocialSense adapter smoke | Complete. Isolated product-owned adapter using public SDK/runtime only, Python unit tests, docs smoke checks, and local `product_launch` fixture smoke. | Adapter tests prove no private imports; local smoke runs SocialSense Marketing Domain Pack and exports JSON/Markdown/Executive Summary; provenance/safety preserved. |
+| PR4 | `m1-pr4-product-launch-vertical-slice` | Product Launch vertical slice | Current. Generate an offline product-launch fixture through the PR3 adapter and render `/workbench`, `/runs/:runId`, and `/exports/:runId` as a usable UX slice. | Workflow usable, result cards render, export review shows JSON/Markdown/Executive Summary readiness, safety labels visible, all gates pass. |
 
 ## PR2 epics, features, tasks
 
@@ -171,7 +171,7 @@ Do not implement until separate review:
 ## Roadmap acceptance criteria
 
 - PR1-PR4 sequencing is explicit.
-- PR2 is marked current while PR3/PR4 remain next.
+- PR4 is marked current while PR1-PR3 are complete.
 - Each PR has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
-- Roadmap does not require credentials, live APIs, SocialSense changes, backend, or real simulation in PR2.
+- Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation in M1.
