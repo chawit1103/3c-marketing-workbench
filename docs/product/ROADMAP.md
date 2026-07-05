@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M5 Campaign Message Test Reference Workflow complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison remains planning-only / not implemented.
+Status: M6 Experiment Framework Planning in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -161,10 +161,18 @@ Acceptance criteria:
 - Track dashboard reuse >80%, component reuse >80%, export reuse, navigation consistency, operator learning time, workflow completion time, executive readability, and product consistency.
 - Do not implement A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, live APIs, private data, or SocialSense runtime changes.
 
-### Next: A/B Message Comparison Planning — Only if M5 validates reuse strategy
+### M6: Experiment Framework Planning — Current
 
-- Recommend planning only if Campaign Message Test receives GO and demonstrates the reusable workflow strategy.
-- Do not implement A/B Message Comparison automatically.
+- Define Experiment as a reusable capability for future comparison workflows.
+- Create Experiment Domain Analysis, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility docs.
+- Keep scope documentation-only.
+- Do not implement A/B Message Comparison, Multivariate Testing, Creative Comparison, frontend workflows, backend behavior, runtime functionality, live APIs, private data, or SocialSense changes.
+
+### Next: A/B Message Comparison Implementation — Only after M6 GO
+
+- Recommend implementation only if Experiment Framework receives GO.
+- A/B Message Comparison must be one implementation/configuration of Experiment Framework.
+- Do not implement A/B automatically from this roadmap alone.
 
 ### Future: Governance and implementation readiness review
 
@@ -192,8 +200,9 @@ Do not implement until separate review:
 - M2 and M2 Exit Review are marked complete.
 - M3 Campaign Domain Planning is marked complete.
 - M4 Information Architecture & Design System Review is marked complete.
-- M5 Campaign Message Test Reference Workflow is marked current.
-- Next milestone is A/B Message Comparison planning only if M5 validates reuse strategy.
+- M5 Campaign Message Test Reference Workflow is marked complete.
+- M6 Experiment Framework Planning is marked current.
+- Next milestone is A/B Message Comparison implementation only if M6 validates Experiment Framework.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
