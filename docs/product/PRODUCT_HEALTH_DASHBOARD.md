@@ -1,29 +1,29 @@
 # Product Health Dashboard
 
-Status: M1 PR3 adapter smoke readiness. This dashboard tracks the current safe frontend shell plus product-owned SocialSense public SDK adapter smoke; UI workflow, dashboard wiring, and export review remain out of scope until PR4.
+Status: M1 PR4 Product Launch vertical slice readiness. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, and export review.
 
 ## Summary
 
 | Area | Current status | Target for M1 | Notes |
 |---|---|---|---|
-| UX simplicity | Green for PR2 shell | Green by PR4 | Five route patterns only; low-cognitive-load placeholders. |
-| Workflow completion | Not implemented | Measured by PR4 | `/workbench` shows a 7-step skeleton only; no real run. |
+| UX simplicity | Green for guided shell | Green by PR4 | Five route patterns only; low-cognitive-load Product Launch flow. |
+| Workflow completion | Green for PR4 sample | Measured by UI tests | `/workbench` supports Product Launch setup, local run action, result review, and export review links. |
 | Onboarding clarity | Yellow/Green | Green by PR4 | Home and safety labels explain fixture/offline and aggregate-only boundaries. |
 | SocialSense integration health | Green for PR3 smoke | Green by PR3 | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
-| Export readiness | Not started | Green by PR4 | `/exports/:runId` is a disabled placeholder; no files are prepared. |
-| Dashboard readiness | Scaffolded placeholder | Green by PR4 | `/runs/:runId` reserves page structure only; no real result. |
+| Export readiness | Green for PR4 sample | Green by PR4 | `/exports/:runId` shows JSON, Markdown, and Executive Summary readiness/status from the generated fixture. |
+| Dashboard readiness | Green for PR4 sample | Green by PR4 | `/runs/:runId` renders marketing-friendly Product Launch cards and caveats from the generated fixture. |
 | Design system readiness | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for PR3 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter tests, local smoke, and diff check pass. |
-| Safety posture | Green for PR3 | Green every PR | Frontend shell plus public-SDK adapter only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
+| Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
+| Safety posture | Green for PR4 | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 
 ## KPI baseline
 
-| KPI | PR3 value | Measurement method | Next target |
+| KPI | PR4 value | Measurement method | Next target |
 |---|---:|---|---:|
 | Documented route patterns | 5 | Route resolver and README route list | <=5 until workflow need is proven |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR3 |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in PR4 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
-| Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK in PR3 |
+| Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK plus generated UI fixture in PR4 |
 | Required docs complete | 9/9 | Docs smoke | 9/9 |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
@@ -57,10 +57,10 @@ PR2 intentionally did not deliver:
 
 ## UX simplicity tracker
 
-Current PR2 target:
+Current PR4 target:
 
 - One primary product concept: executive marketing scenario workbench.
-- One proposed core flow: seven steps, represented as a skeleton only.
+- One proposed core flow: a guided Product Launch review flow.
 - Five route patterns and no settings/admin/auth route sprawl.
 - Technical platform concepts are not primary UX copy.
 
@@ -76,15 +76,15 @@ Mitigation:
 
 ## Workflow completion tracker
 
-Current state: PR2 route skeleton only. Workflow is not usable end-to-end.
+Current state: PR4 Product Launch sample workflow is usable end-to-end for a generated offline fixture.
 
-Future measurement:
+Current measurement:
 
-- User starts safe sample scenario.
-- User completes 7-step workflow.
-- User reaches dashboard.
-- User opens export review.
-- User exports a supported format.
+- User starts the safe Product Launch sample.
+- User completes required form fields.
+- User runs the local offline review action.
+- User reaches dashboard and export review.
+- User sees supported JSON, Markdown, and Executive Summary readiness.
 
 Future target:
 
@@ -92,7 +92,7 @@ Future target:
 
 ## Onboarding clarity tracker
 
-Current PR2 baseline:
+Current PR4 baseline:
 
 - README explains product purpose and boundaries.
 - Home page starts from safe scenario comparison language.
@@ -106,21 +106,21 @@ Future target:
 
 ## SocialSense integration health
 
-Current PR3 baseline:
+Current PR4 baseline:
 
 - Product-owned adapter exists at `integrations/socialsense/adapter.py`.
 - Adapter imports only `from socialsense import load_domain_pack` from the SocialSense public SDK facade.
 - Adapter maps only aggregate `scenario`, `platform_mix`, `seed`, `assumptions`, and `notes`.
 - Local smoke executes SocialSense Marketing Domain Pack `product_launch` and verifies `json`, `markdown`, and `executive_json` export statuses.
 - Provenance, limitations, evidence gaps, human review questions, and safety boundaries are preserved.
-- UI workflow integration remains deferred to PR4.
+- UI workflow integration is implemented for the Product Launch generated fixture only.
 
 ## Export readiness
 
-Current PR2 baseline:
+Current PR4 baseline:
 
-- Export route exists only as a disabled review placeholder.
-- No export file is generated.
+- Export route renders JSON, Markdown, and Executive Summary readiness/status from the generated offline fixture.
+- No downloadable report package is generated yet; this is a reviewed export-readiness view.
 - No unsupported format is presented as available.
 
 Future health checks:
@@ -132,11 +132,11 @@ Future health checks:
 
 ## Dashboard readiness
 
-Current PR2 baseline:
+Current PR4 baseline:
 
-- Dashboard route exists only as a placeholder.
-- No real scenario result is produced.
-- Placeholder copy states later aggregate review only.
+- Dashboard route renders the generated Product Launch sample with directional synthetic aggregate signals.
+- The dashboard shows assumptions, source/review context, limitations, evidence gaps, caveats, and recommended next test.
+- Copy states the result is an offline sample, not production prediction evidence.
 
 Future dashboard acceptance:
 
@@ -148,7 +148,7 @@ Future dashboard acceptance:
 
 ## Test status
 
-PR3 required and verified:
+PR4 required and verified:
 
 - `npm run test`
 - `npm run typecheck`
@@ -156,15 +156,15 @@ PR3 required and verified:
 - `npm run build`
 - `python3 scripts/docs_smoke.py`
 - `python3 -m unittest discover -s tests -p 'test_*.py'`
+- `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py`
 - `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py`
 - `git diff --check`
 
 Future required:
 
-- UI-level adapter integration tests in PR4.
-- Workflow tests for the 7-step flow in PR4.
-- Export review blocking tests in PR4.
-- Dashboard rendering tests in PR4.
+- Private dogfooding walkthroughs in M2.
+- Workflow timing and confusion metrics in M2.
+- Broader campaign/A-B workflow tests in later PRs.
 - Accessibility checks for core pages.
 
 ## Known risks
@@ -174,18 +174,18 @@ Future required:
 | Product copies old MarketingSimulation UX complexity | High | 3C | Audit and principles explicitly ban copying old UI/architecture. |
 | Adapter needs SocialSense API not currently public | High | 3C + SocialSense | Stop and open dependency review; do not import internals. |
 | Dashboard implies production prediction | High | 3C | Use directional language and review labels; block unsafe claims. |
-| Export bypasses safety review | High | 3C | Mandatory export review in PR4; no real export in PR2. |
-| PR2 shell overclaims workflow readiness | Medium | 3C | Copy states placeholders and no real simulation. |
+| Export bypasses safety review | High | 3C | Export review is visible in PR4; keep unsupported formats blocked. |
+| PR4 sample overclaims predictive readiness | Medium | 3C | Copy states generated offline sample and no production prediction. |
 | No real dogfooding metrics yet | Medium | Product | Add after PR4 private walkthroughs. |
 
 ## Technical debt register
 
-Current PR3 debt:
+Current PR4 debt:
 
-- No real workflow state yet by design.
-- Adapter contract tests and local smoke exist; PR4 still needs UI-level adapter integration tests.
+- Workflow state is client-only and sample-only by design.
+- Browser-entered values are review assumptions beside the generated fixture, not arbitrary live simulation inputs.
 - No accessibility automation beyond current render tests.
-- No manual browser QA record for adapter-driven UI yet.
+- No persistent workspace or downloadable report package yet.
 
 Future debt to watch:
 
@@ -196,17 +196,17 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: PR4 executive dashboard and export review workflow.
+Next milestone: M2 private dogfooding.
 
-PR4 should deliver:
+M2 should deliver:
 
-- product launch workflow wiring over the PR3 adapter;
-- executive dashboard rendering from approved SocialSense contracts;
-- export review using SocialSense-supported formats only;
-- provenance, limitations, and safety boundaries visible before export.
+- timed private walkthroughs of the Product Launch vertical slice;
+- confusion and completion metrics;
+- executive summary readability review;
+- backlog triage for Campaign Message Test and A/B Message Comparison.
 
-## PR3 acceptance criteria
+## PR4 acceptance criteria
 
-- Health dashboard reflects adapter smoke readiness, not completed workflows.
-- Route count, tests/build status, design system readiness, and safety posture are explicit.
-- Dashboard is honest that UI workflow integration and export review are not implemented.
+- Health dashboard reflects Product Launch vertical slice readiness.
+- Route count, tests/build status, generated fixture readiness, and safety posture are explicit.
+- Dashboard is honest that outputs are generated offline samples, not production predictions.

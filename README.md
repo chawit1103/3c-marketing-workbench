@@ -2,12 +2,11 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M1 PR3 SocialSense public SDK adapter smoke. PR2 delivered the React/Vite/TypeScript frontend shell; PR3 adds a product-owned adapter over SocialSense public SDK/runtime surfaces and a local fixture smoke for `product_launch`. UI workflow integration is still deferred to PR4.
+Status: M1 PR4 Product Launch Simulation vertical slice. PR2 delivered the React/Vite/TypeScript frontend shell; PR3 added a product-owned adapter over SocialSense public SDK/runtime surfaces; PR4 adds a generated offline sample fixture consumed by the browser UI for `/workbench`, `/runs/:runId`, and `/exports/:runId`.
 
-Explicit non-goals in PR3:
+Explicit non-goals in PR4:
 
 - no backend;
-- no UI workflow integration yet;
 - no live APIs;
 - no scraping;
 - no credentials;
@@ -26,9 +25,10 @@ This repository owns the 3C product experience:
 
 - product positioning and user journey;
 - safe React/Vite/TypeScript frontend shell;
+- Product Launch Simulation vertical slice backed by `src/product/fixtures/productLaunchResult.json`;
+- product-owned fixture generation through `scripts/generate_product_launch_fixture.py`;
 - product-owned SocialSense adapter under `integrations/socialsense/`;
-- future scenario setup workflow;
-- future executive dashboard and export review experience;
+- executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
 Adjacent repositories are reference/dependency boundaries, not edit targets for this PR:
@@ -36,9 +36,22 @@ Adjacent repositories are reference/dependency boundaries, not edit targets for 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-PR3 must not modify SocialSense or MarketingSimulation.
+PR4 must not modify SocialSense or MarketingSimulation.
 
-## M1 PR3 current status
+## M1 PR4 current status
+
+PR4 adds the first usable browser vertical slice without adding a backend:
+
+- `scripts/generate_product_launch_fixture.py` calls the PR3 adapter, which uses the SocialSense public SDK facade only;
+- `src/product/fixtures/productLaunchResult.json` is the generated offline sample consumed by React;
+- `/workbench` lets a non-technical user choose Product Launch, enter product/message/offer/context, select audiences and platform mix, run a local UI action, and review results;
+- `/runs/:runId` renders the Product Launch results dashboard for the generated sample;
+- `/exports/:runId` renders JSON, Markdown, and Executive Summary readiness/status plus an executive summary preview;
+- visible copy remains synthetic/aggregate/offline, human-review oriented, and non-predictive.
+
+PR4 does not implement backend services, persistence, authentication, live API calls, credentials, arbitrary browser-input simulation, CRM/customer data ingestion, or production campaign execution.
+
+## M1 PR3 adapter status
 
 PR3 adds the first safe adapter layer without wiring the UI:
 
@@ -54,15 +67,15 @@ PR3 does not implement backend services, persistence, authentication, live API c
 
 ## Route list
 
-Current frontend routes remain PR2 shell routes:
+Current frontend routes:
 
 | Route | Purpose | Status |
 |---|---|---|
-| `/` | Product home and safe executive positioning | Implemented shell page |
-| `/workbench` | Guided 7-step workflow skeleton | Placeholder only |
-| `/runs/:runId` | Executive dashboard space for a future run | Placeholder only; not wired to PR3 adapter |
-| `/exports/:runId` | Export review space for a future run | Placeholder only; export UI disabled |
-| `/health` | Product health/scaffold readiness view | Implemented shell page |
+| `/` | Product home and safe executive positioning | Implemented |
+| `/workbench` | Guided Product Launch Simulation form and local run action | Implemented PR4 vertical slice |
+| `/runs/:runId` | Product Launch results dashboard for generated offline sample | Implemented PR4 vertical slice |
+| `/exports/:runId` | Export review for JSON, Markdown, and Executive Summary readiness/status | Implemented PR4 vertical slice |
+| `/health` | Product health/readiness view | Implemented |
 
 Unknown routes render a not-found state. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
 
@@ -105,16 +118,17 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-PR3 validation commands:
+PR4 validation commands:
 
 ```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 npm run test
 npm run typecheck
 npm run lint
 npm run build
 python3 scripts/docs_smoke.py
-python3 -m unittest discover -s tests -p 'test_*.py'
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 git diff --check
 ```
 
@@ -124,13 +138,14 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## PR3 quality gates
+## PR4 quality gates
 
 Before handoff:
 
 - run all validation commands above;
-- confirm adapter imports only the SocialSense public SDK facade;
-- confirm local smoke executes `product_launch` through SocialSense Marketing Domain Pack and exports `executive_json` at minimum;
+- confirm fixture generation uses `scripts/generate_product_launch_fixture.py` and the PR3 adapter only;
+- confirm `/workbench` is usable as a Product Launch Simulation vertical slice;
+- confirm `/runs/:runId` and `/exports/:runId` render the generated offline sample dashboard and export review;
 - confirm no backend, auth, credentials, live API calls, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
 - confirm SocialSense and MarketingSimulation remain unmodified;
-- commit all PR3 changes on `m1-pr3-socialsense-adapter-smoke`.
+- commit all PR4 changes on `m1-pr4-product-launch-vertical-slice`.
