@@ -1,6 +1,16 @@
 # Product Health Dashboard
 
-Status: M1 PR4 Product Launch vertical slice readiness. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, and export review.
+Status: M1 PR4 Product Launch vertical slice complete and merged. This dashboard tracks the safe frontend shell, product-owned SocialSense public SDK adapter smoke, generated offline Product Launch fixture, browser workflow, dashboard, export review, and M2 dogfooding readiness.
+
+
+## M1 PR4 closeout
+
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/4
+- Merge commit: `3fe4300f44869e35c40a427ef8db8b1b5df3bd3d`
+- Closeout report: `docs/product/M1_PR4_CLOSEOUT_REPORT.md`
+- Post-merge validation: PASS on `main`.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: M2 — Private Dogfooding and UX Friction Review.
 
 ## Summary
 
