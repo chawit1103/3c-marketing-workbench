@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M3 Campaign Domain Planning complete and merged. PR1 product architecture/UX audit, PR2 frontend shell, PR3 SocialSense public SDK adapter smoke, PR4 Product Launch vertical slice, M2 Product Launch stabilization, and M2 Exit Workflow Pattern Review are complete. M3 defines Campaign Domain as the reusable business model; Campaign Message Test remains planning-only / not implemented.
+Status: M4 Information Architecture & Design System Review in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, and M3 Campaign Domain Planning are complete. M4 defines scalable IA/navigation/workflow organization/design-system standards before any additional workflow implementation. Campaign Message Test remains planning-only / not implemented.
 
 ## Program
 
@@ -144,15 +144,21 @@ Acceptance criteria:
 
 ### M3: Campaign Domain Planning — Complete
 
-- Define Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping.
+- Defined Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping.
+- Kept scope documentation-only.
+- Did not implement Campaign Message Test, A/B Message Comparison, frontend workflows, backend behavior, runtime behavior, or SocialSense changes.
+
+### M4: Information Architecture & Design System Review — Current
+
+- Define long-term product areas, navigation, workflow grouping, design-system inventory, design tokens, component reuse, and executive UX review.
 - Keep scope documentation-only.
-- Do not implement Campaign Message Test, A/B Message Comparison, frontend workflows, backend behavior, runtime behavior, or SocialSense changes.
+- Do not implement Campaign Message Test, A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, or SocialSense changes.
 
-### Next: Campaign Message Test Planning — Only after M3 GO
+### Next: Campaign Message Test Planning — Only after M4 GO
 
-- Map Campaign Message Test to Campaign Domain and the approved workflow pattern.
-- Define planning-level inputs, review screens, dashboard expectations, export review, recommendation rules, safety criteria, and validation evidence.
-- Do not implement until separately authorized after Campaign Domain receives GO.
+- Map Campaign Message Test to Campaign Domain, the approved workflow pattern, and M4 IA/design-system standards.
+- Define planning-level inputs, review screens, dashboard expectations, export review, recommendation rules, component reuse, navigation/report discoverability, safety criteria, and validation evidence.
+- Do not implement until separately authorized after Information Architecture, Navigation, Design System, and Component Reuse all receive GO.
 
 ### Future: Governance and implementation readiness review
 
@@ -178,8 +184,9 @@ Do not implement until separate review:
 
 - Completed PR1-PR4 sequencing remains explicit.
 - M2 and M2 Exit Review are marked complete.
-- M3 Campaign Domain Planning is marked current.
-- Next milestone is Campaign Message Test Planning only after M3 GO.
+- M3 Campaign Domain Planning is marked complete.
+- M4 Information Architecture & Design System Review is marked current.
+- Next milestone is Campaign Message Test Planning only after M4 GO.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

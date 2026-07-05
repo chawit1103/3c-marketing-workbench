@@ -2,9 +2,9 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M3 Campaign Domain Planning complete and merged. Product Launch is the approved reusable workflow pattern, Campaign Domain now defines the reusable business model for future marketing workflows, and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test and A/B Message Comparison remain planning-only / not implemented until explicitly authorized after domain GO.
+Status: M4 Information Architecture & Design System Review in progress. Product Launch is the only available workflow; Campaign Domain and Workflow Pattern are approved; IA/navigation/design-system/component-reuse standards are being defined before additional workflows; and the product-owned adapter over SocialSense public SDK/runtime surfaces remains the platform boundary. Campaign Message Test, A/B Message Comparison, Promotion workflows, backend, and SocialSense changes remain not implemented.
 
-Historical PR4 and current M3 non-goals:
+Historical PR4 and current M4 non-goals:
 
 - no backend;
 - no live APIs;
@@ -103,6 +103,13 @@ Product documentation map:
 - [Campaign Data Model](docs/product/CAMPAIGN_DATA_MODEL.md)
 - [Campaign Workflow Mapping](docs/product/CAMPAIGN_WORKFLOW_MAPPING.md)
 - [Campaign Consumer Mapping](docs/product/CAMPAIGN_CONSUMER_MAPPING.md)
+- [Information Architecture](docs/product/INFORMATION_ARCHITECTURE.md)
+- [Navigation Model](docs/product/NAVIGATION_MODEL.md)
+- [Workflow Organization](docs/product/WORKFLOW_ORGANIZATION.md)
+- [Design System Review](docs/product/DESIGN_SYSTEM_REVIEW.md)
+- [Design Tokens](docs/product/DESIGN_TOKENS.md)
+- [Component Reuse Matrix](docs/product/COMPONENT_REUSE_MATRIX.md)
+- [Executive UX Review](docs/product/EXECUTIVE_UX_REVIEW.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -133,7 +140,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M3 docs-only validation commands:
+M4 docs-only validation commands:
 
 ```bash
 python3 scripts/docs_smoke.py
@@ -160,15 +167,15 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## M3 review gates
+## M4 review gates
 
-Before M3 handoff:
+Before M4 handoff:
 
 - run `python3 scripts/docs_smoke.py`;
 - run `git diff --check origin/main...HEAD`;
-- confirm Campaign Domain Analysis, Taxonomy, Objectives, Data Model, Workflow Mapping, and Consumer Mapping exist;
-- confirm Product Health Dashboard and Roadmap reflect M3 current state;
-- confirm no Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation was added;
+- confirm Information Architecture, Navigation Model, Workflow Organization, Design System Review, Design Tokens, Component Reuse Matrix, and Executive UX Review exist;
+- confirm Product Health Dashboard and README reflect M4 current state;
+- confirm no Campaign Message Test, A/B comparison, Promotion workflow, frontend workflow, backend, runtime, or SocialSense implementation was added;
 - confirm no backend, auth, credentials, live API calls, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
 - confirm SocialSense and MarketingSimulation remain unmodified;
-- commit M3 docs-only changes on `m3-campaign-domain-planning`.
+- commit M4 docs-only changes on `m4-information-architecture-design-system`.

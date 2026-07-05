@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""M1 PR4 smoke check for 3C Marketing Workbench docs and safe vertical slice files."""
+"""Smoke check for 3C Marketing Workbench docs and safe vertical slice files."""
 
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,6 +21,61 @@ REQUIRED_DOCS = [
     "README.md",
     "AGENTS.md",
 ]
+
+REQUIRED_M4_DOCS = [
+    "docs/product/INFORMATION_ARCHITECTURE.md",
+    "docs/product/NAVIGATION_MODEL.md",
+    "docs/product/WORKFLOW_ORGANIZATION.md",
+    "docs/product/DESIGN_SYSTEM_REVIEW.md",
+    "docs/product/DESIGN_TOKENS.md",
+    "docs/product/COMPONENT_REUSE_MATRIX.md",
+    "docs/product/EXECUTIVE_UX_REVIEW.md",
+]
+
+REQUIRED_M4_PHRASES = [
+    "M4 Information Architecture",
+    "Information Architecture",
+    "Navigation Model",
+    "Workflow Organization",
+    "Design System Review",
+    "Design Tokens",
+    "Component Reuse Matrix",
+    "Executive UX Review",
+    "no implementation",
+    "backend",
+    "SocialSense",
+    "Campaign Message Test",
+]
+
+REQUIRED_M4_DOC_PHRASES = [
+    "Status:",
+    "Scope:",
+    "No",
+    "implementation",
+]
+
+REQUIRED_M4_README_LINKS = [
+    "docs/product/INFORMATION_ARCHITECTURE.md",
+    "docs/product/NAVIGATION_MODEL.md",
+    "docs/product/WORKFLOW_ORGANIZATION.md",
+    "docs/product/DESIGN_SYSTEM_REVIEW.md",
+    "docs/product/DESIGN_TOKENS.md",
+    "docs/product/COMPONENT_REUSE_MATRIX.md",
+    "docs/product/EXECUTIVE_UX_REVIEW.md",
+]
+
+M4_FORBIDDEN_IMPLEMENTATION_PATH_PREFIXES = [
+    "src/",
+    "backend/",
+    "server/",
+    "api/",
+    "auth/",
+    "integrations/",
+]
+
+M4_ALLOWED_SCRIPT_CHANGES = {
+    "scripts/docs_smoke.py",
+}
 
 EXPECTED_FRONTEND_FILES = [
     "package.json",
@@ -135,10 +191,27 @@ def iter_repo_paths() -> list[str]:
     return paths
 
 
+def changed_paths_from_main() -> list[str]:
+    try:
+        output = subprocess.check_output(
+            ["git", "diff", "--name-only", "origin/main...HEAD"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return []
+    return [line.strip() for line in output.splitlines() if line.strip()]
+
+
 def main() -> None:
     missing_docs = [path for path in REQUIRED_DOCS if not (ROOT / path).is_file()]
     if missing_docs:
         fail("missing required M1 docs: " + ", ".join(missing_docs))
+
+    missing_m4_docs = [path for path in REQUIRED_M4_DOCS if not (ROOT / path).is_file()]
+    if missing_m4_docs:
+        fail("missing required M4 docs: " + ", ".join(missing_m4_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -154,8 +227,12 @@ def main() -> None:
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    roadmap = (ROOT / "docs/product/ROADMAP.md").read_text(encoding="utf-8")
+    health_dashboard = (ROOT / "docs/product/PRODUCT_HEALTH_DASHBOARD.md").read_text(encoding="utf-8")
     integration_doc = (ROOT / "docs/product/SOCIALSENSE_INTEGRATION.md").read_text(encoding="utf-8")
     adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
+    m4_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M4_DOCS}
+    m4_text = "\n".join(m4_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -180,6 +257,51 @@ def main() -> None:
     if missing_pr4_phrases:
         fail("PR4 docs missing status phrases: " + ", ".join(missing_pr4_phrases))
 
+    combined_m4_text = "\n".join([readme, agents, m4_text])
+    missing_m4_phrases = [phrase for phrase in REQUIRED_M4_PHRASES if phrase not in combined_m4_text]
+    if missing_m4_phrases:
+        fail("M4 docs missing status/scope phrases: " + ", ".join(missing_m4_phrases))
+
+    for path, content in m4_docs_by_path.items():
+        missing_doc_phrases = [phrase for phrase in REQUIRED_M4_DOC_PHRASES if phrase not in content]
+        if missing_doc_phrases:
+            fail(f"{path} missing M4 doc phrases: " + ", ".join(missing_doc_phrases))
+
+    missing_m4_links = [path for path in REQUIRED_M4_README_LINKS if f"]({path})" not in readme]
+    if missing_m4_links:
+        fail("README missing M4 doc links: " + ", ".join(missing_m4_links))
+
+    for phrase in ["M4 Information Architecture", "Current", "Campaign Message Test Planning", "after M4 GO"]:
+        if phrase not in roadmap:
+            fail(f"ROADMAP.md missing M4 freshness phrase: {phrase}")
+
+    for phrase in ["M4 Information Architecture", "INFORMATION_ARCHITECTURE.md", "NAVIGATION_MODEL.md", "COMPONENT_REUSE_MATRIX.md", "after IA, Navigation, Design System, and Component Reuse receive GO"]:
+        if phrase not in health_dashboard:
+            fail(f"PRODUCT_HEALTH_DASHBOARD.md missing M4 freshness phrase: {phrase}")
+
+    hierarchy_text = "\n".join([m4_text, health_dashboard])
+    forbidden_hierarchy_phrases = [
+        "under Campaigns, Research, Comparison",
+        "Group into Campaigns, Research, Comparison",
+        "Home → Comparison → A/B Message Comparison",
+        "| Product Feedback | Research → Feedback",
+        "| Research Campaign | Research → Research Campaign",
+        "| A/B Message Comparison | Comparison |",
+    ]
+    hierarchy_hits = [phrase for phrase in forbidden_hierarchy_phrases if phrase in hierarchy_text]
+    if hierarchy_hits:
+        fail("M4 IA hierarchy still treats Research/Comparison as top-level: " + ", ".join(hierarchy_hits))
+
+    changed_paths = changed_paths_from_main()
+    forbidden_m4_changes = [
+        path
+        for path in changed_paths
+        if any(path.startswith(prefix) for prefix in M4_FORBIDDEN_IMPLEMENTATION_PATH_PREFIXES)
+        and path not in M4_ALLOWED_SCRIPT_CHANGES
+    ]
+    if forbidden_m4_changes:
+        fail("M4 changed implementation paths: " + ", ".join(forbidden_m4_changes))
+
     if "from socialsense import load_domain_pack" not in adapter:
         fail("adapter does not import SocialSense through the public facade")
     forbidden_adapter_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in adapter]
@@ -203,6 +325,7 @@ def main() -> None:
         fail("forbidden backend/live/auth/credential files present: " + ", ".join(sorted(forbidden_paths)))
 
     print("PASS: required M1/PR4 docs exist")
+    print("PASS: required M4 IA/design-system docs exist and include status/scope phrases")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
@@ -210,6 +333,7 @@ def main() -> None:
     print("PASS: expected PR4 Product Launch vertical slice files exist")
     print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
     print("PASS: fixture generator uses PR3 adapter and fixture has PR4 UI contract")
+    print("PASS: M4 branch avoids forbidden implementation path changes")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 
 

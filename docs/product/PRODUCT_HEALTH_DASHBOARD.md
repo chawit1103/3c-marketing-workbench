@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M3 Campaign Domain Planning complete and merged. Product Launch remains the reference workflow, and Campaign Domain is approved as the reusable business model for future marketing workflows. No Campaign Message Test, A/B comparison, frontend workflow, backend, runtime, or SocialSense implementation is authorized by M3.
+Status: M4 Information Architecture & Design System Review in progress. Product Launch remains the only available workflow; the approved Campaign Domain and Workflow Pattern are now being organized into a scalable product IA and reusable design-system standards. No Campaign Message Test, A/B comparison, Promotion workflow, backend, runtime, or SocialSense implementation is authorized by M4.
 
 
 ## M1 PR4 closeout
@@ -85,6 +85,22 @@ Status: M3 Campaign Domain Planning complete and merged. Product Launch remains 
 - Architecture Gate: not triggered.
 - Next milestone recommendation: Campaign Message Test Planning only after M3 receives GO.
 
+## M4 Information Architecture & Design System Review
+
+- Information Architecture: `docs/product/INFORMATION_ARCHITECTURE.md`
+- Navigation Model: `docs/product/NAVIGATION_MODEL.md`
+- Workflow Organization: `docs/product/WORKFLOW_ORGANIZATION.md`
+- Design System Review: `docs/product/DESIGN_SYSTEM_REVIEW.md`
+- Design Tokens: `docs/product/DESIGN_TOKENS.md`
+- Component Reuse Matrix: `docs/product/COMPONENT_REUSE_MATRIX.md`
+- Executive UX Review: `docs/product/EXECUTIVE_UX_REVIEW.md`
+- Program decision: long-term IA groups workflows under Campaigns, with Research and Comparison as secondary Campaigns groups; Reports, Templates, History, Health, and Settings remain product areas without adding routes now.
+- Product Launch compatibility: preserved; no breaking changes to Product Launch or approved Workflow Pattern are required.
+- Component strategy: reuse shell, safety labels, cards, forms, assumptions preview, result hero, dashboard panels, executive summary, and export review; define extension needs before A/B/feedback/research implementation.
+- Executive UX: GO candidate; product remains understandable if future workflows are grouped and reports remain discoverable.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: Campaign Message Test Planning only after IA, Navigation, Design System, and Component Reuse receive GO.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -95,11 +111,13 @@ Status: M3 Campaign Domain Planning complete and merged. Product Launch remains 
 | SocialSense integration health | Green | Preserve public boundary | Product-owned adapter exists, uses SocialSense public SDK only, and local smoke runs `product_launch`. |
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from the generated fixture. |
-| Design system readiness | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
+| Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
 | Test/build status | Green for PR4 | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, fixture generation, local smoke, and diff check pass. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review | Product Launch is official reusable pattern; next milestone may be Campaign Message Test Planning only. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
+| Information Architecture readiness | GO candidate | M4 review gates | Future product areas and workflow homes are defined without implementation. |
+| Design system readiness | GO candidate | M4 review gates | Component inventory, token standards, and reuse matrix are defined before additional workflows. |
 
 ## KPI baseline
 
@@ -110,7 +128,7 @@ Status: M3 Campaign Domain Planning complete and merged. Product Launch remains 
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 1 | Code/smoke review | `product_launch` fixture through public SDK plus generated UI fixture in PR4 |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
-| README docs map links | 23 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
+| README docs map links | 30 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -288,15 +306,16 @@ Future debt to watch:
 
 Next milestone: Campaign Message Test Planning.
 
-Scope must remain planning-only unless the user explicitly authorizes implementation after Campaign Domain receives GO.
+Scope must remain planning-only unless the user explicitly authorizes implementation after Information Architecture, Navigation, Design System, and Component Reuse all receive GO.
 
 Planning should deliver:
 
+- Campaign Message Test placement under Campaigns → Message Testing;
 - Campaign Message Test input/review/run/dashboard/export/recommendation plan using Campaign Domain and the approved workflow pattern;
-- Campaign Domain field mapping for message, audience, objective, evidence, limitations, and recommendation;
-- extensions needed for message-focused fields and evidence categories;
+- component reuse plan using the M4 Component Reuse Matrix;
+- navigation/report/discoverability plan using the M4 IA and Navigation Model;
 - validation and safety acceptance criteria;
-- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, or production campaign claims.
+- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, A/B implementation, or production campaign claims.
 
 Do not start Campaign Message Test implementation or A/B Message Comparison implementation from this dashboard alone.
 
