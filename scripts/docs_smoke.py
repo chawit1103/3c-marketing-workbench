@@ -156,6 +156,7 @@ M12_ALLOWED_CHANGED_PATHS = {
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
     "docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md",
+    "docs/product/M12_TRUST_VALIDATION_REPORT.md",
     "src/App.test.tsx",
     "src/views.tsx",
 }
@@ -775,9 +776,11 @@ def main() -> None:
             missing_doc_phrases = [phrase for phrase in REQUIRED_M11_DOC_PHRASES if phrase not in content]
             if missing_doc_phrases:
                 fail(f"{path} missing M11 doc phrase: " + ", ".join(missing_doc_phrases))
-        for phrase in ["Product Health Score: 7.4 / 10", "M12 Campaign Workspace Trust & Validation Fixes", "Creative Comparison remains blocked", "no new workflows", "no SocialSense changes"]:
+        for phrase in ["Product Health Score: 7.4 / 10", "Creative Comparison remains blocked", "no new workflows", "no SocialSense changes"]:
             if phrase not in combined_m11_text:
                 fail(f"M11 current-state docs missing phrase: {phrase}")
+        if not any(phrase in combined_m11_text for phrase in ["M12 Campaign Workspace Trust & Validation Fixes", "M12 Campaign Workspace Trust & Validation"]):
+            fail("M11 current-state docs missing M12 Campaign Workspace Trust & Validation guidance")
         for phrase in ["Marketing Director", "First-time user", "Marketing Research Specialist", "Power user", "Governance reviewer", "Future maintainer"]:
             if phrase not in m11_text:
                 fail(f"M11 persona evidence missing role: {phrase}")
@@ -796,7 +799,10 @@ def main() -> None:
             (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
             (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
         ])
-        combined_m12_text = "\n".join([readme, agents, roadmap, health_dashboard, m11_text, src_m12_text])
+        m12_report_text = (ROOT / "docs/product/M12_TRUST_VALIDATION_REPORT.md").read_text(encoding="utf-8")
+        combined_m12_text = "\n".join([readme, agents, roadmap, health_dashboard, m11_text, m12_report_text, src_m12_text])
+        if "](docs/product/M12_TRUST_VALIDATION_REPORT.md)" not in readme:
+            fail("README missing M12 Trust Validation report link")
         missing_m12_phrases = [phrase for phrase in REQUIRED_M12_PHRASES if phrase not in combined_m12_text]
         if missing_m12_phrases:
             fail("M12 docs/source missing trust validation phrases: " + ", ".join(missing_m12_phrases))

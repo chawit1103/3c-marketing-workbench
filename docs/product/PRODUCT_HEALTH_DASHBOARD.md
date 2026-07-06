@@ -411,11 +411,11 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: M12 Campaign Workspace Trust & Validation Fixes only if M11 receives GO.
+Next milestone: future capability planning only if M12 receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review.
 
-Scope must remain blocked unless M12 addresses or explicitly accepts M11 P1 evidence findings: unsupported run/export states, result discoverability, invalid-input feedback, and trust/validation clarity. Creative Comparison remains blocked until that evidence-backed remediation is complete or explicitly accepted.
+Creative Comparison remains blocked until M12 trust validation confirms the P1 findings are resolved or explicitly accepted: unsupported run/export states, result discoverability, invalid-input feedback, fixture transparency, and trust/validation clarity.
 
-M12 should start from:
+Future capability planning should start from:
 
 - M11 Product Validation Report;
 - M11 Persona Evidence Appendix;

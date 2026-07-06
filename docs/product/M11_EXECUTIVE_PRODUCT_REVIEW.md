@@ -29,7 +29,7 @@ Architecture Gate: Not triggered.
 - Blank or invalid inputs can fail silently or provide weak feedback.
 - Signal/confidence labels are safe but not methodologically explained.
 - Campaign Workspace could distinguish fixture-reference evidence from user-executed runs more clearly.
-- Product Health route and current-state copy need to reflect M11 continuous validation posture.
+- Product Health route and current-state copy were identified as trust risks in M11 and are addressed by the M12 `/health` remediation.
 - `src/views.tsx` is becoming a maintainability bottleneck for future workflow additions.
 
 ## Opportunities

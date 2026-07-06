@@ -252,8 +252,8 @@ Do not implement until separate review:
 - M9 Campaign Workspace Foundation is marked complete.
 - M10 Campaign Workspace MVP is marked complete.
 - M11 Continuous Product Validation & Synthetic Dogfooding is marked complete.
-- Next milestone is M12 trust/validation remediation only after M11 review gates approve evidence-backed backlog priorities.
-- Creative Comparison remains blocked until evidence-backed remediation is complete or explicitly accepted.
+- M12 Campaign Workspace Trust & Validation is current and must pass all review gates before any future capability planning.
+- Creative Comparison remains blocked until M12 trust validation receives GO and all P1 trust issues are resolved or explicitly accepted.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

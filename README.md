@@ -143,6 +143,7 @@ Product documentation map:
 - [M11 UX Friction Register](docs/product/M11_UX_FRICTION_REGISTER.md)
 - [M11 Product Backlog](docs/product/M11_PRODUCT_BACKLOG.md)
 - [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)
+- [M12 Campaign Workspace Trust & Validation Report](docs/product/M12_TRUST_VALIDATION_REPORT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
