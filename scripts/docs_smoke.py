@@ -229,6 +229,18 @@ M17_PR2_ALLOWED_CHANGED_PATHS = {
     "src/App.test.tsx",
 }
 
+REQUIRED_M17_PR2_RESEARCH_GUARD_PHRASES = [
+    "Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step",
+    "Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data",
+    "Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision",
+    "Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100",
+    "Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore",
+    "Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used",
+    "Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence",
+    "Readiness evidence tier: E1 synthetic/offline fixture; review readiness only",
+    "Risk evidence tier: E1 synthetic/offline fixture; market risk remains unmeasured",
+]
+
 REQUIRED_M17_PR2_PHRASES = [
     "executive KPI dashboard",
     "Overall Campaign Score",
@@ -1249,6 +1261,12 @@ def main() -> None:
             missing_m17_pr2_phrases = [phrase for phrase in REQUIRED_M17_PR2_PHRASES if phrase not in combined_m17_pr2_text]
             if missing_m17_pr2_phrases:
                 fail("M17 PR2 docs/source missing executive KPI dashboard phrases: " + ", ".join(missing_m17_pr2_phrases))
+            views_m17_pr2_text = (ROOT / "src/views.tsx").read_text(encoding="utf-8")
+            missing_m17_pr2_research_phrases = [
+                phrase for phrase in REQUIRED_M17_PR2_RESEARCH_GUARD_PHRASES if phrase not in views_m17_pr2_text
+            ]
+            if missing_m17_pr2_research_phrases:
+                fail("M17 PR2 source missing Research Review evidence/confidence guard phrases: " + ", ".join(missing_m17_pr2_research_phrases))
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR2_ALLOWED_CHANGED_PATHS]
         elif current_branch_name().startswith("m17-"):
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]

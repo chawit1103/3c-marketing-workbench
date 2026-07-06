@@ -269,11 +269,21 @@ describe('Campaign Workspace MVP', () => {
     expect(audienceComparison).toHaveTextContent('Fixture-rank cue');
     expect(audienceComparison).toHaveTextContent('Formula: audience bar value = clampScore(100 - fixture rank index × 12)');
     expect(audienceComparison).toHaveTextContent('Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy');
+    expect(dashboard).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step');
+    expect(dashboard).toHaveTextContent('Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data');
+    expect(dashboard).toHaveTextContent('Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision');
+    expect(dashboard).toHaveTextContent('Low confidence / E1 downgrade rationale: non-measured directional KPI from synthetic/offline fixture, not observed market behavior');
     const confidenceRisk = within(dashboard).getByRole('region', { name: 'Confidence / risk' });
     expect(confidenceRisk).toHaveTextContent('Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk');
     expect(confidenceRisk).toHaveTextContent('Caution signal');
     expect(confidenceRisk).toHaveTextContent('Readiness signal');
     expect(confidenceRisk).toHaveTextContent('Risk signal');
+    expect(confidenceRisk).toHaveTextContent('Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100');
+    expect(confidenceRisk).toHaveTextContent('Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore');
+    expect(confidenceRisk).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used');
+    expect(confidenceRisk).toHaveTextContent('Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence');
+    expect(confidenceRisk).toHaveTextContent('Readiness evidence tier: E1 synthetic/offline fixture; review readiness only');
+    expect(confidenceRisk).toHaveTextContent('Risk evidence tier: E1 synthetic/offline fixture; market risk remains unmeasured');
     expect(within(dashboard).getByRole('region', { name: 'Journey progress' })).toHaveTextContent('5 of 6 review stages ready');
   });
 

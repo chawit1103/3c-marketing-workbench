@@ -322,6 +322,7 @@ const lowConfidenceScore = creativeComparisonFixture.comparisonMethod.confidence
 const reviewReadinessScore = clampScore((readyExportCount / executiveFixtures.length) * 100);
 const journeyReadyStages = campaignJourneyStages.filter((stage) => stage.status === 'Completed' || stage.status === 'Current').length;
 const journeyProgressScore = clampScore((journeyReadyStages / campaignJourneyStages.length) * 100);
+const lowConfidenceDowngradeRationale = 'Low confidence / E1 downgrade rationale: non-measured directional KPI from synthetic/offline fixture, not observed market behavior.';
 
 const executiveKpis = [
   {
@@ -332,6 +333,7 @@ const executiveKpis = [
       'Formula: average sentiment/trust/reach scores plus completed workflow coverage.',
       'Source: summary fixture scores + completed workflow coverage.',
       'Evidence: E1 synthetic/offline fixture; not live social data or production prediction.',
+      'Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data.',
     ],
   },
   {
@@ -349,7 +351,8 @@ const executiveKpis = [
     detail: 'Light positive brand signal; proof points still need human review.',
     metadata: [
       'Source: Product Launch fixture card “Brand Perception”.',
-      'Evidence: offline directional signal only; quality, delivery, and proof remain review evidence needs.',
+      'Evidence: E1 synthetic/offline fixture; offline directional signal only; quality, delivery, and proof remain review evidence needs.',
+      lowConfidenceDowngradeRationale,
     ],
   },
   {
@@ -358,7 +361,8 @@ const executiveKpis = [
     detail: 'Strong directional planning cue for the reviewed audience mix.',
     metadata: [
       'Source: Product Launch fixture card “Engagement Potential”.',
-      'Evidence: synthetic planning cue, not measured audience engagement or live social activity.',
+      'Evidence: E1 synthetic/offline fixture; synthetic planning cue, not measured audience engagement or live social activity.',
+      lowConfidenceDowngradeRationale,
     ],
   },
   {
@@ -367,7 +371,8 @@ const executiveKpis = [
     detail: 'Directional purchase-interest input; do not treat as forecast.',
     metadata: [
       'Source: Product Launch fixture card “Synthetic Purchase Intent”.',
-      'Evidence: directional planning input only; not a sales forecast or conversion guarantee.',
+      'Evidence: E1 synthetic/offline fixture; directional planning input only; not a sales forecast or conversion guarantee.',
+      lowConfidenceDowngradeRationale,
     ],
   },
   {
@@ -395,8 +400,10 @@ const executiveKpis = [
     value: creativeComparisonFixture.comparisonMethod.confidenceLevel,
     detail: 'Use as a caution signal until approved comparable field evidence exists.',
     metadata: [
+      'Formula: Creative Comparison comparisonMethod.confidenceLevel maps Low directional confidence to 40/100 caution cue.',
       'Source: Creative Comparison comparisonMethod.confidenceLevel.',
       'Evidence: E1 synthetic/offline fixture; confidence stays low until comparable approved field evidence exists.',
+      'Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data.',
     ],
   },
   {
@@ -413,7 +420,12 @@ const executiveKpis = [
     title: 'Recommendation',
     value: 'Approve small reviewed evidence test',
     detail: creativeComparisonFixture.recommendedNextTest,
-    metadata: ['Source: Creative Comparison recommendedNextTest.'],
+    metadata: [
+      'Source: Creative Comparison recommendedNextTest.',
+      'Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step.',
+      'Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data.',
+      'Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision.',
+    ],
   },
 ];
 
@@ -436,19 +448,19 @@ const confidenceRiskSignals = [
     label: 'Confidence',
     value: lowConfidenceScore,
     cue: 'Caution signal',
-    detail: `${creativeComparisonFixture.comparisonMethod.confidenceLevel} maps to ${lowConfidenceScore}/100; lower confidence is a caution cue, not a failure score.`,
+    detail: `${creativeComparisonFixture.comparisonMethod.confidenceLevel} maps to ${lowConfidenceScore}/100. Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence.`,
   },
   {
     label: 'Readiness',
     value: reviewReadinessScore,
     cue: 'Readiness signal',
-    detail: `${readyExportCount} / ${executiveFixtures.length} fixtures are ready for human review; higher bar means stronger review coverage.`,
+    detail: `${readyExportCount} / ${executiveFixtures.length} fixtures are ready for human review. Readiness evidence tier: E1 synthetic/offline fixture; review readiness only.`,
   },
   {
     label: 'Risk',
     value: averageRiskScore,
     cue: 'Risk signal',
-    detail: `Fixture riskScore average only; live data excluded = ${liveDataExcluded ? 'yes' : 'no'}. Not a production risk model or market-risk measure.`,
+    detail: `Fixture riskScore average only; live data excluded = ${liveDataExcluded ? 'yes' : 'no'}. Risk evidence tier: E1 synthetic/offline fixture; market risk remains unmeasured.`,
   },
 ];
 
@@ -577,6 +589,9 @@ export function CampaignWorkspaceView() {
             A/B comparison frame, and Creative Comparison evidence. Treat the evidence as directional planning input only.
           </p>
           <p><strong>Recommended next action:</strong> {recommendedAction}</p>
+          <p className="help-text">
+            Recommendation basis: E1 synthetic/offline fixture, Low directional confidence; use only as a next evidence step before budget or launch decisions.
+          </p>
         </section>
 
         <section className="card" aria-label="Available Workflow Actions">
@@ -658,7 +673,13 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
         'Formula: audience bar value = clampScore(100 - fixture rank index × 12); earlier productLaunchFixture.sampleInput.audiences rows receive higher bars.',
         'Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy; fixture rank only, not measured audience engagement.',
       ]
-      : [];
+      : title === 'Confidence / risk'
+        ? [
+          'Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100.',
+          'Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore.',
+          'Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used.',
+        ]
+        : [];
 
   return (
     <section className="executive-visual-card" aria-label={title}>
