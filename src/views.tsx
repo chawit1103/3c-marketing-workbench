@@ -327,82 +327,126 @@ const executiveKpis = [
   {
     title: 'Overall Campaign Score',
     value: `${overallCampaignScore} / 100`,
-    detail: 'Formula: average sentiment/trust/reach scores plus completed workflow coverage. Source: summary.sentimentDelta, summary.trustDelta, summary.diffusionReach, and 4 / 4 completed workflow fixtures. Evidence tier: E1 synthetic/offline fixture; not live social data or production prediction.',
+    detail: 'Directional campaign health from reviewed response, trust, reach, and workflow coverage signals.',
+    metadata: [
+      'Formula: average sentiment/trust/reach scores plus completed workflow coverage.',
+      'Source: summary fixture scores + completed workflow coverage.',
+      'Evidence: E1 synthetic/offline fixture; not live social data or production prediction.',
+    ],
   },
   {
     title: 'Message Acceptance',
     value: findCard(productLaunchFixture, 'Message Acceptance')?.value ?? 'Review required',
-    detail: 'Source: Product Launch fixture card “Message Acceptance”. Evidence tier: E1 synthetic/offline fixture; human review required before external use.',
+    detail: 'Message is clear enough for internal executive review.',
+    metadata: [
+      'Source: Product Launch fixture card “Message Acceptance”.',
+      'Evidence: E1 synthetic/offline fixture; human review required before external use.',
+    ],
   },
   {
     title: 'Brand Perception',
     value: findCard(productLaunchFixture, 'Brand Perception')?.value ?? 'Review required',
-    detail: 'Source: Product Launch fixture card “Brand Perception”. Offline directional signal only; quality, delivery, and proof remain review evidence needs.',
+    detail: 'Light positive brand signal; proof points still need human review.',
+    metadata: [
+      'Source: Product Launch fixture card “Brand Perception”.',
+      'Evidence: offline directional signal only; quality, delivery, and proof remain review evidence needs.',
+    ],
   },
   {
     title: 'Audience Engagement',
     value: findCard(productLaunchFixture, 'Engagement Potential')?.value ?? 'Review required',
-    detail: 'Source: Product Launch fixture card “Engagement Potential”. This is a synthetic planning cue, not measured audience engagement or live social activity.',
+    detail: 'Strong directional planning cue for the reviewed audience mix.',
+    metadata: [
+      'Source: Product Launch fixture card “Engagement Potential”.',
+      'Evidence: synthetic planning cue, not measured audience engagement or live social activity.',
+    ],
   },
   {
     title: 'Synthetic Purchase Intent',
     value: findCard(productLaunchFixture, 'Synthetic Purchase Intent')?.value ?? 'Directional only',
-    detail: 'Source: Product Launch fixture card “Synthetic Purchase Intent”. Directional planning input only; not a sales forecast or conversion guarantee.',
+    detail: 'Directional purchase-interest input; do not treat as forecast.',
+    metadata: [
+      'Source: Product Launch fixture card “Synthetic Purchase Intent”.',
+      'Evidence: directional planning input only; not a sales forecast or conversion guarantee.',
+    ],
   },
   {
     title: 'Evidence Coverage',
     value: `${workflowCoverageCount} / ${workflowCoverageCount} workflows`,
-    detail: 'Formula: completed fixture coverage from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison. Evidence tier: E1 synthetic/offline fixture; no live APIs, CRM, private, or platform data.',
+    detail: 'All approved offline workflow fixtures are represented in the executive view.',
+    metadata: [
+      'Formula: completed fixture coverage from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison.',
+      'Evidence: E1 synthetic/offline fixture; no live APIs, CRM, private, or platform data.',
+    ],
   },
   {
     title: 'Review Readiness',
     value: `${readyExportCount} / ${executiveFixtures.length} exports ready`,
-    detail: 'Formula: fixtures whose exports.readiness equals “Ready for human review”. Review readiness means preview/handoff review only, not downloadable production export.',
+    detail: 'All export previews are ready for human handoff review.',
+    metadata: [
+      'Formula: fixtures whose exports.readiness equals “Ready for human review”.',
+      'Evidence: preview/handoff review only, not downloadable production export.',
+    ],
   },
   {
     title: 'Confidence',
     value: creativeComparisonFixture.comparisonMethod.confidenceLevel,
-    detail: 'Source: Creative Comparison comparisonMethod.confidenceLevel. Evidence tier: E1 synthetic/offline fixture; confidence stays low until comparable approved field evidence exists.',
+    detail: 'Use as a caution signal until approved comparable field evidence exists.',
+    metadata: [
+      'Source: Creative Comparison comparisonMethod.confidenceLevel.',
+      'Evidence: E1 synthetic/offline fixture; confidence stays low until comparable approved field evidence exists.',
+    ],
   },
   {
     title: 'Risk Level',
-    value: `${averageRiskScore}% fixture risk score`,
-    detail: 'Formula: average summary.riskScore across all four fixtures. Current offline fixture risk is controlled because live data and production campaign systems are excluded.',
+    value: 'Low implementation risk; market risk unmeasured',
+    detail: 'Review-controlled risk only: this dashboard excludes live data and production campaign systems.',
+    metadata: [
+      `Formula: average fixture riskScore = ${averageRiskScore}/100 across all four fixtures.`,
+      'Source: fixture riskScore is not a production risk model.',
+      'Evidence: E1 synthetic/offline fixture; market, compliance, and production performance risk are unmeasured.',
+    ],
   },
   {
     title: 'Recommendation',
     value: 'Approve small reviewed evidence test',
-    detail: `Source: Creative Comparison recommendedNextTest. ${creativeComparisonFixture.recommendedNextTest}`,
+    detail: creativeComparisonFixture.recommendedNextTest,
+    metadata: ['Source: Creative Comparison recommendedNextTest.'],
   },
 ];
 
 const platformComparison = productLaunchFixture.platformBreakdown.map((item, index) => ({
   label: item.platform,
   value: clampScore(100 - index * 12),
-  detail: `Formula: fixture rank coverage from platformBreakdown; not measured engagement. ${item.detail}`,
+  cue: 'Fixture-rank cue',
+  detail: `Higher bar means earlier fixture rank, not measured engagement. ${item.detail}`,
 }));
 
 const audienceComparison = productLaunchFixture.sampleInput.audiences.map((audience, index) => ({
   label: audience,
   value: clampScore(100 - index * 12),
-  detail: `Formula: fixture rank from sampleInput.audiences and audienceInsights; not measured audience engagement. ${productLaunchFixture.audienceInsights[index] ?? 'Review audience assumptions before use.'}`,
+  cue: 'Fixture-rank cue',
+  detail: `Higher bar means earlier fixture rank, not measured audience engagement. ${productLaunchFixture.audienceInsights[index] ?? 'Review audience assumptions before use.'}`,
 }));
 
 const confidenceRiskSignals = [
   {
     label: 'Confidence',
     value: lowConfidenceScore,
-    detail: `Formula: ${creativeComparisonFixture.comparisonMethod.confidenceLevel} mapped to ${lowConfidenceScore}/100 from comparisonMethod.confidenceLevel. Evidence tier: E1 synthetic/offline fixture.`,
+    cue: 'Caution signal',
+    detail: `${creativeComparisonFixture.comparisonMethod.confidenceLevel} maps to ${lowConfidenceScore}/100; lower confidence is a caution cue, not a failure score.`,
   },
   {
     label: 'Readiness',
     value: reviewReadinessScore,
-    detail: `Formula: ${readyExportCount} / ${executiveFixtures.length} fixtures have exports.readiness = Ready for human review; preview/review only.`,
+    cue: 'Readiness signal',
+    detail: `${readyExportCount} / ${executiveFixtures.length} fixtures are ready for human review; higher bar means stronger review coverage.`,
   },
   {
     label: 'Risk',
     value: averageRiskScore,
-    detail: `Formula: average summary.riskScore across fixtures; live data excluded = ${liveDataExcluded ? 'yes' : 'no'}. Not a production risk model.`,
+    cue: 'Risk signal',
+    detail: `Fixture riskScore average only; live data excluded = ${liveDataExcluded ? 'yes' : 'no'}. Not a production risk model or market-risk measure.`,
   },
 ];
 
@@ -565,6 +609,11 @@ function ExecutiveDashboard() {
             <p className="eyebrow">{card.title}</p>
             <h3>{card.value}</h3>
             <p>{card.detail}</p>
+            <div className="kpi-metadata" aria-label={`${card.title} source and evidence`}>
+              {card.metadata.map((metadata) => (
+                <p key={metadata}>{metadata}</p>
+              ))}
+            </div>
           </article>
         ))}
       </div>
@@ -593,10 +642,15 @@ function ExecutiveDashboard() {
   );
 }
 
-function BarList({ title, items }: { title: string; items: { label: string; value: number; detail: string }[] }) {
+function BarList({ title, items }: { title: string; items: { label: string; value: number; cue: string; detail: string }[] }) {
+  const legend = title === 'Confidence / risk'
+    ? 'Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk. Higher readiness bars are better; lower risk bars do not mean no risk.'
+    : 'Legend: Fixture-rank cue; higher bars show directional strength within the offline fixture rank, not measured market performance.';
+
   return (
     <section className="executive-visual-card" aria-label={title}>
       <p className="eyebrow">{title}</p>
+      <p className="bar-legend">{legend}</p>
       <div className="bar-list">
         {items.map((item) => (
           <article className="bar-item" key={item.label}>
@@ -604,6 +658,7 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
               <strong>{item.label}</strong>
               <span>{item.value}/100</span>
             </div>
+            <p className={`semantic-cue semantic-cue-${item.cue.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{item.cue}</p>
             <div className="progress-track" aria-hidden="true">
               <span style={{ width: `${item.value}%` }} />
             </div>

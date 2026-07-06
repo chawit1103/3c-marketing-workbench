@@ -242,7 +242,7 @@ REQUIRED_M17_PR2_PHRASES = [
     "Risk Level",
     "Recommendation",
     "Formula:",
-    "Evidence tier: E1 synthetic/offline fixture",
+    "Evidence: E1 synthetic/offline fixture",
     "Platform comparison",
     "Audience comparison",
     "Journey progress",

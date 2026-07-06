@@ -251,12 +251,20 @@ describe('Campaign Workspace MVP', () => {
     expect(dashboard).toHaveTextContent('Synthetic/offline fixture-backed dashboard');
     expect(dashboard).toHaveTextContent('not live social data');
     expect(dashboard).toHaveTextContent('Formula: average sentiment/trust/reach scores plus completed workflow coverage');
-    expect(dashboard).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture');
+    expect(dashboard).toHaveTextContent('Source: summary fixture scores + completed workflow coverage');
+    expect(dashboard).toHaveTextContent('Evidence: E1 synthetic/offline fixture; not live social data or production prediction');
+    expect(dashboard).toHaveTextContent('Low implementation risk; market risk unmeasured');
+    expect(dashboard).not.toHaveTextContent('0% fixture risk score');
+    expect(dashboard).toHaveTextContent('Source: fixture riskScore is not a production risk model');
     expect(dashboard).toHaveTextContent('4 / 4 workflows');
     expect(dashboard).toHaveTextContent('4 / 4 exports ready');
-    expect(within(dashboard).getByRole('region', { name: 'Platform comparison' })).toHaveTextContent('LINE');
-    expect(within(dashboard).getByRole('region', { name: 'Audience comparison' })).toHaveTextContent('Working Adults');
-    expect(within(dashboard).getByRole('region', { name: 'Confidence / risk' })).toHaveTextContent('Readiness');
+    expect(within(dashboard).getByRole('region', { name: 'Platform comparison' })).toHaveTextContent('Fixture-rank cue');
+    expect(within(dashboard).getByRole('region', { name: 'Audience comparison' })).toHaveTextContent('Fixture-rank cue');
+    const confidenceRisk = within(dashboard).getByRole('region', { name: 'Confidence / risk' });
+    expect(confidenceRisk).toHaveTextContent('Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk');
+    expect(confidenceRisk).toHaveTextContent('Caution signal');
+    expect(confidenceRisk).toHaveTextContent('Readiness signal');
+    expect(confidenceRisk).toHaveTextContent('Risk signal');
     expect(within(dashboard).getByRole('region', { name: 'Journey progress' })).toHaveTextContent('5 of 6 review stages ready');
   });
 
