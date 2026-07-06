@@ -1,6 +1,6 @@
 # Campaign Executive Workspace
 
-Status: M9 Campaign Workspace Foundation in progress.
+Status: M9 Campaign Workspace Foundation complete and merged.
 Scope: Documentation-only executive workspace design. This document does not implement Creative Comparison, additional workflows, frontend routes, backend behavior, runtime functionality, persistence, live APIs, or SocialSense changes.
 
 ## Executive goal

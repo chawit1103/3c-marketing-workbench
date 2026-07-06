@@ -1,6 +1,6 @@
 # Campaign Workspace Analysis
 
-Status: M9 Campaign Workspace Foundation in progress.
+Status: M9 Campaign Workspace Foundation complete and merged.
 Scope: Documentation-only foundation for a campaign-centric workspace model. This document does not implement Creative Comparison, additional workflows, frontend routes, backend behavior, runtime functionality, persistence, live APIs, or SocialSense changes.
 
 ## Purpose

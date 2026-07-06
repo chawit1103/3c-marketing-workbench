@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M9 Campaign Workspace Foundation in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, and M8 Marketing Journey Framework are complete. M9 defines Campaign Workspace as the campaign-centric product foundation for Campaign, Journey, Runs, Reports, Exports, History, Templates, Evidence, and Recommendations. Creative Comparison, additional workflows, backend, frontend implementation, runtime functionality, persistence, live APIs, and SocialSense changes remain not implemented.
+Status: M9 Campaign Workspace Foundation complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, and M8 Marketing Journey Framework are complete. M9 defines Campaign Workspace as the campaign-centric product foundation for Campaign, Journey, Runs, Reports, Exports, History, Templates, Evidence, and Recommendations. Creative Comparison, additional workflows, backend, frontend implementation, runtime functionality, persistence, live APIs, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -186,7 +186,7 @@ Acceptance criteria:
 - Do not implement Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, live APIs, private data, or SocialSense changes.
 - Architecture Gate is not triggered if Journey composes existing Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, and SocialSense boundary.
 
-### M9: Campaign Workspace Foundation — Current
+### M9: Campaign Workspace Foundation — Complete
 
 - Define Campaign Workspace as the campaign-centric foundation that makes workflows tools inside a campaign workspace.
 - Create Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement docs.
@@ -230,7 +230,7 @@ Do not implement until separate review:
 - M6 Experiment Framework Planning is marked complete.
 - M7 A/B Experiment Reference Workflow is marked complete.
 - M8 Marketing Journey Framework is marked complete.
-- M9 Campaign Workspace Foundation is marked current.
+- M9 Campaign Workspace Foundation is marked complete.
 - Next milestone is Creative Comparison only after M9 review gates approve the Campaign Workspace Foundation.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

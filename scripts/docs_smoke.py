@@ -561,14 +561,14 @@ def main() -> None:
         missing_doc_phrases = [phrase for phrase in REQUIRED_M8_DOC_PHRASES if phrase not in content]
         if missing_doc_phrases:
             fail(f"{path} missing M8 scope phrase: " + ", ".join(missing_doc_phrases))
-    if not current_branch_name().startswith("m9-"):
+    if not (current_branch_name().startswith("m9-") or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
         for phrase in ["Marketing Journey", "Workspace", "Executive Journey", "Future Workflow Placement", "Creative Comparison only if M8"]:
             if phrase not in combined_m8_text:
                 fail(f"M8 current-state docs missing phrase: {phrase}")
     for stale_phrase in ["current M6 non-goals", "Before M6 handoff", "0 in M6", "before any A/B implementation"]:
         if stale_phrase in "\n".join([readme, health_dashboard]):
             fail(f"M8 current-state docs contain stale phrase: {stale_phrase}")
-    if not current_branch_name().startswith("m9-"):
+    if not (current_branch_name().startswith("m9-") or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
         for phrase in ["M8 review gates", "Before M8 handoff", "Marketing Journey Framework remains documentation-only"]:
             if phrase not in readme:
                 fail(f"README missing M8 review gate phrase: {phrase}")

@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, A/B Experiment is the third reference workflow, and Marketing Journey Framework is approved. M9 defines the Campaign Workspace that turns workflows into tools within a campaign-centric product. Creative Comparison, additional workflows, frontend implementation, backend, runtime functionality, live APIs, and SocialSense changes remain not implemented.
+Status: M9 Campaign Workspace Foundation complete and merged. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, A/B Experiment is the third reference workflow, and Marketing Journey Framework is approved. M9 defines the Campaign Workspace that turns workflows into tools within a campaign-centric product. Creative Comparison, additional workflows, frontend implementation, backend, runtime functionality, live APIs, and SocialSense changes remain not implemented.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 

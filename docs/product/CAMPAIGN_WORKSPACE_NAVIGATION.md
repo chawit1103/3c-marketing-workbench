@@ -1,6 +1,6 @@
 # Campaign Workspace Navigation
 
-Status: M9 Campaign Workspace Foundation in progress.
+Status: M9 Campaign Workspace Foundation complete and merged.
 Scope: Documentation-only navigation model for a future Campaign Workspace. This document does not implement Creative Comparison, additional workflows, frontend routes, backend behavior, runtime functionality, persistence, live APIs, or SocialSense changes.
 
 ## Navigation principle

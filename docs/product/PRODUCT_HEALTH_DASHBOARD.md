@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework is approved; M9 defines Campaign Workspace as the campaign-centric product foundation. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, runtime functionality, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M9.
+Status: M9 Campaign Workspace Foundation complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework is approved; M9 defines Campaign Workspace as the campaign-centric product foundation. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, runtime functionality, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M9.
 
 
 ## M1 PR4 closeout
@@ -198,7 +198,7 @@ Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the
 | Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
 | Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
 | Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M9 Campaign Workspace Foundation GO. |
-| Campaign Workspace readiness | In planning | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are being defined before Creative Comparison. |
+| Campaign Workspace readiness | Complete | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are complete; Creative Comparison remains gated after M9 GO. |
 
 ## KPI baseline
 
