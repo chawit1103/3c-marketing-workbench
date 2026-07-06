@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M13 Product Trust Readiness & Next Capability Gate is in review. PR1-PR4 and M2-M12 are complete; M13 verifies M12 trust behavior remains stable on `main` and decides whether Creative Comparison may enter a separate planning milestone only. Creative Comparison implementation, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
+Status: M14 Creative Comparison Product Discovery & Specification is in progress. PR1-PR4 and M2-M13 are complete; M14 produces Creative Comparison discovery/specification documentation only. Creative Comparison Planning is GO after M13; Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. Runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, live APIs, SocialSense changes, and MarketingSimulation changes remain not implemented.
 
 ## Program
 
@@ -219,13 +219,21 @@ Acceptance criteria:
 - Creative Comparison remains gated and must be separately planned after evidence-backed remediation.
 - No backend, live APIs, private data, persistence, product redesign, new workflows, MarketingSimulation changes, or SocialSense changes were added.
 
-### M13: Product Trust Readiness & Next Capability Gate — Current branch
+### M13: Product Trust Readiness & Next Capability Gate — Complete
 
-- Verify M12 trust behavior remains stable on `main`: unknown run/export unavailable states, `/health` freshness, run completion visibility, and fixture transparency.
-- Audit README, AGENTS, Roadmap, Product Health Dashboard, M12 Trust Validation Report, and M11 Executive Product Review.
-- Create `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` with explicit Product Trust, UX Clarity, Research Transparency, Regression Stability, and Creative Comparison Planning decisions.
-- Keep scope governance/reporting only; do not implement Creative Comparison or any new capability.
-- Creative Comparison may enter planning only if Product, UX, Research, QA, Code Review, and Safety Review gates approve M13 readiness.
+- Verified M12 trust behavior remained stable on `main`: unknown run/export unavailable states, `/health` freshness, run completion visibility, and fixture transparency.
+- Audited README, AGENTS, Roadmap, Product Health Dashboard, M12 Trust Validation Report, and M11 Executive Product Review.
+- Created `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` with explicit Product Trust, UX Clarity, Research Transparency, Regression Stability, and Creative Comparison Planning decisions.
+- Scope was governance/reporting only; Creative Comparison and new capability implementation remained blocked.
+- Creative Comparison Planning is GO; Creative Comparison Implementation remains HOLD.
+
+### M14: Creative Comparison Product Discovery & Specification — Current branch
+
+- Create six Creative Comparison discovery/specification docs: Discovery, User Stories, UX Flow, Information Architecture, Acceptance Criteria, and Implementation Plan.
+- Keep scope documentation/discovery only: no runtime implementation, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, SocialSense changes, or MarketingSimulation changes.
+- Define problem statement, goals, non-goals, personas, journey, UX/navigation flow, IA, screen inventory, conceptual data model, comparison dimensions, trust boundaries, transparency rules, research constraints, fixture requirements, error/empty states, accessibility notes, success metrics, acceptance criteria, and future API/persistence considerations as conceptual only.
+- Architecture Gate remains not triggered.
+- M14 is complete only after validation, QA, Code Review, Safety Review, Product Review, UX Review, Research Review, PR merge, post-merge KPI commit, and full main validation.
 
 ### Future: Governance and implementation readiness review
 
@@ -261,7 +269,8 @@ Do not implement until separate review:
 - M10 Campaign Workspace MVP is marked complete.
 - M11 Continuous Product Validation & Synthetic Dogfooding is marked complete.
 - M12 Campaign Workspace Trust & Validation is marked complete and merged.
-- M13 Product Trust Readiness & Next Capability Gate is current and must pass all review gates before Creative Comparison planning is considered complete.
+- M13 Product Trust Readiness & Next Capability Gate is marked complete and Creative Comparison Planning is GO.
+- M14 Creative Comparison Product Discovery & Specification is current and must pass all review gates before future M15 implementation planning is recommended.
 - Creative Comparison implementation remains blocked until a separate planning milestone is completed and explicitly approved.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
