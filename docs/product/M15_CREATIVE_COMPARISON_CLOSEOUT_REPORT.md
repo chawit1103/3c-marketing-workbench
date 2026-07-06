@@ -97,7 +97,7 @@ M15 does not add or imply:
 - PR: https://github.com/chawit1103/3c-marketing-workbench/pull/21
 - Merge commit: `b6bd9a447c475c3fd47f802bc627e90bcc06c7b7`
 - Post-merge validation: PASS on `main`.
-- Final main HEAD after closeout update: `aa1efb5a8869bc20d09fee3842c93e5b900207ab`.
+- Final main HEAD after closeout update: use `git rev-parse HEAD` on current `main` for the live final commit.
 
 ## Validation commands
 
