@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M17 Executive Dashboard & Reporting is in PR2 implementation after the PR1 program kickoff docs. This slice adds fixture-backed executive KPI cards and CSS-only dashboard visuals for reviewed offline campaign evidence. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed. PR1 program kickoff docs remain the historical start of the Executive Experience & Marketing Simulation Enhancement program; M17 PR2+ implementation was future work at PR1 and is now limited to the approved dashboard slice.
+Status: M17 Executive Dashboard & Reporting is in PR3 implementation after the PR1 program kickoff docs and merged PR2 KPI slice. This slice adds marketing chart/evidence/confidence visualization, sentiment comparison, evidence tiers, evidence gaps/limitations, and human-review checklist copy for reviewed offline campaign evidence. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed. PR1 program kickoff docs remain the historical start of the Executive Experience & Marketing Simulation Enhancement program; M17 PR2+ implementation was future work at PR1 and is now limited to the approved dashboard slice.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -76,7 +76,7 @@ Current frontend routes:
 |---|---|---|
 | `/` | Product home and safe executive positioning | Implemented |
 | `/workbench` | Guided Product Launch Simulation form and local run action | Implemented PR4 vertical slice |
-| `/campaign-workspace` | Campaign Workspace overview, M17 executive KPI dashboard, journey stage, recent runs, evidence summary, executive summary, next action, and workflow action links from existing fixtures only | Implemented M10 MVP + M17 PR2 dashboard slice |
+| `/campaign-workspace` | Campaign Workspace overview, M17 executive KPI dashboard, sentiment comparison, evidence tier visualization, journey stage, recent runs, evidence gaps/limitations, human review checklist, executive summary, next action, and workflow action links from existing fixtures only | Implemented M10 MVP + M17 PR3 visualization slice |
 | `/workbench/campaign-message-test` | Guided Campaign Message Test form and local run action | Implemented M5 reference workflow |
 | `/workbench/ab-experiment` | Guided A/B Experiment form and local run action | Implemented M7 reference workflow |
 | `/workbench/creative-comparison` | Guided text-only Creative Comparison form and local run action | Implemented M15 vertical slice |
@@ -191,7 +191,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M17 PR2 dashboard slice validation commands:
+M17 PR3 dashboard visualization validation commands:
 
 ```bash
 npm run test
@@ -204,7 +204,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-M17 PR2 adds only fixture-backed executive KPI cards and CSS-only visuals to the existing Campaign Workspace/dashboard patterns. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. PR1 was docs/smoke only and had no source UI/runtime changes.
+M17 PR3 adds only fixture-backed marketing chart/evidence/confidence visuals, sentiment comparison, evidence gaps/limitations, and human-review checklist copy to the existing Campaign Workspace/dashboard patterns. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. PR1 was docs/smoke only and had no source UI/runtime changes.
 
 M15 focused validation commands:
 

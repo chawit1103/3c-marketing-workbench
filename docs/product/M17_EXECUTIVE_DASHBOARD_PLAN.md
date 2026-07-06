@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Plan
 
-Status: M17 PR2 runtime slice is current and complete for this branch after the PR1 program kickoff docs. PR2 delivers fixture-backed Executive KPI cards, Evidence Coverage, Review Readiness, traceable formula/source copy, and CSS-only decision visuals in the existing Campaign Workspace. PR2 does not deliver PR3 marketing charts/evidence/confidence expansion, report/export implementation, backend, persistence, auth, external services, live APIs, SocialSense changes, or MarketingSimulation changes.
+Status: M17 PR3 runtime slice is current for this branch after the PR1 program kickoff docs and merged PR2 KPI slice. PR3 delivers CSS/React-only marketing charts/evidence/confidence expansion in the existing Campaign Workspace: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human-review checklist copy. PR3 does not deliver report/export implementation, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, or new dependencies.
 
 ## M17 objective
 
@@ -34,7 +34,7 @@ Acceptance criteria:
 
 ### PR2: Executive KPI cards
 
-Status: current limited implementation slice on this branch.
+Status: complete prior limited implementation slice.
 
 Scope:
 
@@ -60,10 +60,11 @@ Acceptance criteria:
 
 Scope:
 
-- Future implementation only after PR2 validation.
+- Current limited implementation slice after PR2 validation.
 - Add chart/evidence/confidence visualization using existing fixture fields only.
-- Show evidence gaps, limitations, and human review questions near visual summaries.
+- Show sentiment comparison using summary/card fields, evidence tier visualization, evidence gaps, limitations, and human review questions near visual summaries.
 - Keep chart design within the existing design-system pattern unless Architecture Gate approves otherwise.
+- Keep charts CSS/React only with no new dependencies.
 
 Acceptance criteria:
 
@@ -176,7 +177,7 @@ M17 does not implement:
 
 ## Validation commands
 
-Run before PR2 handoff; PR1 used the same suite as a docs/smoke-only historical guard:
+Run before PR3 handoff; PR1 used the same suite as a docs/smoke-only historical guard:
 
 ```bash
 python3 scripts/docs_smoke.py
