@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M8 Marketing Journey Framework complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; M8 defines Marketing Journey as the product framework that connects existing workflows into a coherent decision platform. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M8.
+Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework is approved; M9 defines Campaign Workspace as the campaign-centric product foundation. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, runtime functionality, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M9.
 
 
 ## M1 PR4 closeout
@@ -162,6 +162,22 @@ Status: M8 Marketing Journey Framework complete and merged. Product Launch remai
 - Architecture Gate: not triggered.
 - Scope: documentation-only; no frontend implementation, backend behavior, additional workflows, live APIs, private data, or SocialSense runtime changes.
 
+## M9 Campaign Workspace Foundation
+
+- Workspace analysis: `docs/product/CAMPAIGN_WORKSPACE_ANALYSIS.md`.
+- Workspace model: `docs/product/CAMPAIGN_WORKSPACE_MODEL.md`.
+- Workspace navigation: `docs/product/CAMPAIGN_WORKSPACE_NAVIGATION.md`.
+- Workspace dashboard: `docs/product/CAMPAIGN_WORKSPACE_DASHBOARD.md`.
+- Workspace journey integration: `docs/product/CAMPAIGN_WORKSPACE_JOURNEY.md`.
+- Executive workspace: `docs/product/CAMPAIGN_EXECUTIVE_WORKSPACE.md`.
+- Future workflow placement: `docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md`.
+- Program decision: Campaign Workspace makes Campaign the product anchor and treats workflows as tools inside a workspace.
+- Workspace contains Campaign, Journey, Runs, Reports, Exports, History, Templates, Evidence, and Recommendations.
+- Current approved workflows map into the workspace as Product Launch, Campaign Message Test, and A/B Experiment tools.
+- Future workflow placement: Creative Comparison, Headline Comparison, Offer Comparison, Promotion, Research Campaign, and Lifecycle are positioned but not implemented.
+- Architecture Gate: not triggered.
+- Scope: documentation-only; no frontend implementation, backend behavior, additional workflows, persistence, workspace storage, live APIs, private data, or SocialSense runtime changes.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -182,17 +198,18 @@ Status: M8 Marketing Journey Framework complete and merged. Product Launch remai
 | Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
 | Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
 | Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M8 GO. |
+| Campaign Workspace readiness | In planning | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are being defined before Creative Comparison. |
 
 ## KPI baseline
 
 | KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
 | Documented route patterns | 6 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M8 |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M9 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 2 | Code/smoke review | `product_launch` and Campaign Message Test fixture paths through public SDK/product adapter |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
-| README docs map links | 44 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
+| README docs map links | 51 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -339,7 +356,7 @@ Current validation suite includes:
 
 Future required:
 
-- Creative Comparison planning/implementation only if M8 receives GO and confirms the reusable Marketing Journey Framework can place future workflows as journey stages without Architecture Gate redesign.
+- Creative Comparison planning/implementation only if M9 receives GO and confirms Campaign Workspace can place future workflows as tools inside a campaign workspace without Architecture Gate redesign.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -373,19 +390,20 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Creative Comparison only if M8 receives GO.
+Next milestone: Creative Comparison only if M9 receives GO.
 
-Scope must remain blocked unless Marketing Journey Framework validates the reusable Journey model, Workflow Composition, Workspace Model, Executive Journey, Future Workflow Placement, Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary.
+Scope must remain blocked unless Campaign Workspace validates the reusable Workspace model, Workspace navigation, Workspace dashboard, Journey integration, Executive Workspace, Future Workflow Placement, Marketing Journey Framework, Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary.
 
 Creative Comparison should start from:
 
+- the Campaign Workspace Foundation;
 - the Marketing Journey Framework;
 - Future Workflow Placement;
 - the Experiment Framework;
 - A/B Experiment reuse audit findings;
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
-- validation and safety acceptance criteria from M6/M7/M8;
-- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, or conversion guarantee claims.
+- validation and safety acceptance criteria from M6/M7/M8/M9;
+- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, or conversion guarantee claims.
 
 Do not start Creative Comparison implementation from this dashboard alone.
 
