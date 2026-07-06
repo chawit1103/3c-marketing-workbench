@@ -118,6 +118,6 @@ Workflow Organization is approved if:
 - every current/future workflow has a group;
 - grouping supports 20+ workflows;
 - Product Launch remains available/reference;
-- Campaign Message Test remains planning-only;
+- Campaign Message Test is complete as the second reference workflow;
 - A/B and Product Feedback extension needs are clear;
 - no implementation changes are required.

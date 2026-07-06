@@ -2,11 +2,11 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M5 Campaign Message Test Reference Workflow complete and merged. Product Launch remains the first reference workflow, Campaign Message Test is the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Promotion workflows, backend, and SocialSense changes remain not implemented.
+Status: M6 Experiment Framework Planning in progress. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflows, backend, runtime functionality, and SocialSense changes remain not implemented.
 
-Next milestone: A/B Message Comparison Planning only if M5 receives GO; A/B remains not implemented.
+Next milestone: A/B Message Comparison implementation may be recommended only after Experiment Framework receives GO; A/B remains not implemented.
 
-Historical PR4 and current M5 non-goals:
+Historical PR4 and current M6 non-goals:
 
 - no backend;
 - no live APIs;
@@ -33,12 +33,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for this PR:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M6:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-PR4 must not modify SocialSense or MarketingSimulation.
+M6 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -115,6 +115,12 @@ Product documentation map:
 - [Executive UX Review](docs/product/EXECUTIVE_UX_REVIEW.md)
 - [Campaign Reference Workflow](docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md)
 - [Component Reuse Audit](docs/product/COMPONENT_REUSE_AUDIT.md)
+- [Experiment Domain Analysis](docs/product/EXPERIMENT_DOMAIN_ANALYSIS.md)
+- [Experiment Taxonomy](docs/product/EXPERIMENT_TAXONOMY.md)
+- [Experiment Data Model](docs/product/EXPERIMENT_DATA_MODEL.md)
+- [Experiment Workflow Mapping](docs/product/EXPERIMENT_WORKFLOW_MAPPING.md)
+- [Experiment Consumer Mapping](docs/product/EXPERIMENT_CONSUMER_MAPPING.md)
+- [Experiment Workflow Compatibility](docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -145,19 +151,19 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M5 implementation validation commands:
+M6 planning validation commands:
 
 ```bash
-npm run test
-npm run typecheck
-npm run lint
-npm run build
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_campaign_message_test_fixture.py
-python3 -m unittest discover -s tests -p 'test_*.py'
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 python3 scripts/docs_smoke.py
 git diff --check origin/main...HEAD
+python3 - <<'PY'
+import subprocess
+files=subprocess.check_output(['git','diff','--name-only','origin/main...HEAD'], text=True).splitlines()
+allowed=lambda p: p in {'README.md','AGENTS.md','scripts/docs_smoke.py'} or p.startswith('docs/product/')
+print('changed_files=', files)
+print('non_docs_or_smoke=', [p for p in files if not allowed(p)])
+assert all(allowed(p) for p in files)
+PY
 ```
 
 Full product regression commands remain available for implementation milestones:
@@ -180,16 +186,15 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## M5 review gates
+## M6 review gates
 
-Before M5 handoff:
+Before M6 handoff:
 
-- run frontend tests, typecheck, lint, build, Python tests, fixture generators, adapter smoke, docs smoke, and diff check;
-- confirm Campaign Message Test is implemented as the second reference workflow;
-- confirm Workflow Pattern, Campaign Domain, IA, Navigation, Design System, existing cards, dashboard, export review, safety labels, and public adapter are reused;
-- confirm `docs/product/CAMPAIGN_REFERENCE_WORKFLOW.md` and `docs/product/COMPONENT_REUSE_AUDIT.md` exist;
-- confirm dashboard reuse >80% and component reuse >80%;
-- confirm primary navigation remains unchanged;
-- confirm no A/B implementation, Promotion workflow, backend, runtime, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims were added;
-- confirm SocialSense and MarketingSimulation remain unmodified;
-- commit M5 implementation changes on `m5-campaign-message-test`.
+- run `python3 scripts/docs_smoke.py`;
+- run `git diff --check origin/main...HEAD`;
+- confirm Experiment Domain Analysis, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility docs exist;
+- confirm Experiment Framework remains planning-only;
+- confirm no A/B Message Comparison, Multivariate Testing, Creative Comparison, frontend workflow, backend, runtime functionality, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes were added;
+- confirm changed files are limited to docs plus README/AGENTS/docs smoke;
+- run QA, code review, safety review, documentation review, Product Review, UX Review, and Research Review;
+- commit M6 planning changes on `m6-experiment-framework-planning`.

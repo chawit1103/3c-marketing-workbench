@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M5 Campaign Message Test Reference Workflow complete and merged. Product Launch remains the first reference workflow; Campaign Message Test is the second reference workflow and reuses the approved Campaign Domain, Workflow Pattern, Information Architecture, Navigation Model, Design System, dashboard pattern, export review, safety labels, and public SocialSense adapter boundary. No A/B comparison, Promotion workflow, backend, runtime, live APIs, private data, or SocialSense runtime change is authorized by M5.
+Status: M6 Experiment Framework Planning in progress. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; Experiment Framework is being defined as the reusable business capability for future comparison workflows. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflow, backend, runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M6.
 
 
 ## M1 PR4 closeout
@@ -118,6 +118,23 @@ Status: M5 Campaign Message Test Reference Workflow complete and merged. Product
 - Architecture Gate: not triggered.
 - Next milestone recommendation: A/B Message Comparison planning only if M5 review gates approve reuse strategy; do not implement A/B automatically.
 
+## M6 Experiment Framework Planning
+
+- Domain analysis: `docs/product/EXPERIMENT_DOMAIN_ANALYSIS.md`
+- Taxonomy: `docs/product/EXPERIMENT_TAXONOMY.md`
+- Data model: `docs/product/EXPERIMENT_DATA_MODEL.md`
+- Workflow mapping: `docs/product/EXPERIMENT_WORKFLOW_MAPPING.md`
+- Consumer mapping: `docs/product/EXPERIMENT_CONSUMER_MAPPING.md`
+- Workflow compatibility: `docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md`
+- Program decision: Experiment is being defined as a reusable capability; A/B Message Comparison should be one future implementation/configuration, not a one-off workflow architecture.
+- Workflow Pattern compatibility: GO candidate; Input → Review → Run → Result Preview / Dashboard → Executive Summary → Export Review → Recommended Next Action is sufficient for planning.
+- Campaign Domain compatibility: preserved; Experiment extends Campaign with variants, hypothesis, evaluation, comparison, decision, evidence, confidence, and recommendation.
+- Information Architecture: preserved; future Experiment workflows remain under Campaigns → Comparison without primary navigation changes.
+- Design System: preserved; future variant inputs and side-by-side comparison cards are bounded extensions, not redesign triggers.
+- SocialSense boundary: preserved; no runtime changes, no new scenario, no private imports, and no SocialSense modification.
+- Architecture Gate: not triggered.
+- Next milestone recommendation: A/B Message Comparison implementation only after M6 receives GO; do not implement A/B automatically.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -129,24 +146,25 @@ Status: M5 Campaign Message Test Reference Workflow complete and merged. Product
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for M5 review | Green every PR | Unit tests, typecheck, lint, build, docs smoke, Python adapter/fixture tests, Product Launch and Campaign Message Test fixture generation, local smoke, and diff check pass. |
+| Test/build status | Green for M6 docs validation | Green every PR | Docs smoke, M6 docs-only diff guard, and diff check pass for planning; implementation regressions remain available for future implementation milestones. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
-| Workflow pattern readiness | GO | M2 Exit Review + M5 validation | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; next milestone may be A/B Message Comparison Planning only if M5 receives GO. |
+| Workflow pattern readiness | GO | M2 Exit Review + M6 compatibility | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; Experiment Framework compatibility is being reviewed before any A/B implementation. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
 | Information Architecture readiness | GO | M4 review gates | Future product areas and workflow homes are defined; M5 reuses them without primary nav changes. |
 | Design system readiness | GO | M4 review gates | Component inventory, token standards, and reuse matrix are reused by M5. |
-| Campaign Message Test readiness | Review-ready implementation | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
+| Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
+| Experiment Framework readiness | In planning | M6 review gates | Experiment Domain, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility are being defined before A/B implementation. |
 
 ## KPI baseline
 
 | KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
 | Documented route patterns | 6 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M5 |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M6 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 2 | Code/smoke review | `product_launch` and Campaign Message Test fixture paths through public SDK/product adapter |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
-| README docs map links | 32 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
+| README docs map links | 38 linked docs | README link scan in docs smoke | Keep all linked docs resolving |
 | README doc links valid | 100% | Docs smoke | 100% |
 | Visible safety labels | 7 labels | Unit test | Present on every shell route |
 | Live API usage | 0 | Code review/tests | 0 |
@@ -293,7 +311,7 @@ Current validation suite includes:
 
 Future required:
 
-- A/B Message Comparison Planning only if M5 receives GO and confirms the reusable workflow strategy.
+- A/B Message Comparison implementation only if M6 receives GO and confirms the reusable Experiment Framework.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -327,18 +345,17 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: A/B Message Comparison Planning only if M5 receives GO.
+Next milestone: A/B Message Comparison implementation only if M6 receives GO.
 
-Scope must remain planning-only unless the user explicitly authorizes implementation after Campaign Message Test validates the reusable workflow strategy.
+Scope must remain blocked unless Experiment Framework validates the reusable Experiment Domain, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility.
 
-Planning should deliver:
+Implementation should deliver:
 
-- A/B Message Comparison placement under Campaigns → Comparison;
-- Message A / Message B input, review, dashboard, export, and recommendation plan using Campaign Domain and the approved workflow pattern;
-- component reuse plan using the M5 Campaign Message Test reuse evidence;
-- navigation/report/discoverability plan using the M4 IA and Navigation Model without primary nav changes;
-- validation and safety acceptance criteria;
-- no implementation, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, production campaign optimization, or conversion guarantee claims.
+- A/B Message Comparison as a configuration/implementation of Experiment Framework;
+- Message A / Message B input, review, dashboard, export, and recommendation using Experiment objects;
+- reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
+- validation and safety acceptance criteria from M6;
+- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, Creative Comparison, production campaign optimization, or conversion guarantee claims.
 
 Do not start A/B Message Comparison implementation from this dashboard alone.
 

@@ -37,6 +37,27 @@ REQUIRED_M5_DOCS = [
     "docs/product/COMPONENT_REUSE_AUDIT.md",
 ]
 
+REQUIRED_M6_DOCS = [
+    "docs/product/EXPERIMENT_DOMAIN_ANALYSIS.md",
+    "docs/product/EXPERIMENT_TAXONOMY.md",
+    "docs/product/EXPERIMENT_DATA_MODEL.md",
+    "docs/product/EXPERIMENT_WORKFLOW_MAPPING.md",
+    "docs/product/EXPERIMENT_CONSUMER_MAPPING.md",
+    "docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md",
+]
+
+REQUIRED_M6_PHRASES = [
+    "M6 Experiment Framework",
+    "Experiment Framework",
+    "A/B Message Comparison",
+    "Multivariate Testing",
+    "No backend",
+    "No live APIs",
+    "No Architecture Gate",
+]
+
+M6_ALLOWED_CHANGED_PATHS = {"README.md", "AGENTS.md", "scripts/docs_smoke.py"}
+
 REQUIRED_M5_PHRASES = [
     "M5 Campaign Message Test",
     "Campaign Message Test",
@@ -249,6 +270,10 @@ def main() -> None:
     if missing_m5_docs:
         fail("missing required M5 docs: " + ", ".join(missing_m5_docs))
 
+    missing_m6_docs = [path for path in REQUIRED_M6_DOCS if not (ROOT / path).is_file()]
+    if missing_m6_docs:
+        fail("missing required M6 docs: " + ", ".join(missing_m6_docs))
+
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
         fail("missing expected frontend shell files: " + ", ".join(missing_frontend))
@@ -275,6 +300,8 @@ def main() -> None:
     m4_text = "\n".join(m4_docs_by_path.values())
     m5_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M5_DOCS}
     m5_text = "\n".join(m5_docs_by_path.values())
+    m6_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M6_DOCS}
+    m6_text = "\n".join(m6_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -317,6 +344,10 @@ def main() -> None:
     if missing_m5_links:
         fail("README missing M5 doc links: " + ", ".join(missing_m5_links))
 
+    missing_m6_links = [path for path in REQUIRED_M6_DOCS if f"]({path})" not in readme]
+    if missing_m6_links:
+        fail("README missing M6 doc links: " + ", ".join(missing_m6_links))
+
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
     if missing_m5_phrases:
@@ -329,6 +360,29 @@ def main() -> None:
     for phrase in ["M5 Campaign Message Test", "INFORMATION_ARCHITECTURE.md", "NAVIGATION_MODEL.md", "COMPONENT_REUSE_AUDIT.md", "dashboard reuse >80%", "component reuse >80%"]:
         if phrase not in health_dashboard:
             fail(f"PRODUCT_HEALTH_DASHBOARD.md missing M5 freshness phrase: {phrase}")
+
+    combined_m6_text = "\n".join([readme, agents, roadmap, health_dashboard, m6_text])
+    missing_m6_phrases = [phrase for phrase in REQUIRED_M6_PHRASES if phrase not in combined_m6_text]
+    if missing_m6_phrases:
+        fail("M6 docs missing framework/scope phrases: " + ", ".join(missing_m6_phrases))
+
+    for path, content in m6_docs_by_path.items():
+        for phrase in ["Status:", "Scope:", "does not implement"]:
+            if phrase not in content:
+                fail(f"{path} missing M6 scope phrase: {phrase}")
+
+    for phrase in ["M6 Experiment Framework", "A/B Message Comparison implementation only after M6", "Multivariate Testing", "SocialSense runtime changes"]:
+        if phrase not in roadmap + health_dashboard + readme:
+            fail(f"M6 current-state docs missing phrase: {phrase}")
+
+    changed_paths = changed_paths_from_main()
+    m6_context_active = any(path in changed_paths for path in REQUIRED_M6_DOCS) or "M6 Experiment Framework" in "\n".join([readme, agents, roadmap, health_dashboard])
+    if m6_context_active:
+        if current_branch_name() != "main" and not changed_paths:
+            fail("M6 planning changed-path guard could not compare against origin/main")
+        non_docs = [path for path in changed_paths if not (path in M6_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
+        if non_docs:
+            fail("M6 planning changed forbidden runtime/frontend/backend paths: " + ", ".join(non_docs))
 
     hierarchy_text = "\n".join([m4_text, health_dashboard])
     forbidden_hierarchy_phrases = [
@@ -346,7 +400,7 @@ def main() -> None:
     changed_paths = changed_paths_from_main()
     m5_files_present = all((ROOT / path).is_file() for path in EXPECTED_M5_FILES)
     m5_paths_changed = any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"])
-    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main")):
+    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-"))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
     if "from socialsense import load_domain_pack" not in adapter:
@@ -357,9 +411,18 @@ def main() -> None:
 
     fixture_generator = (ROOT / "scripts/generate_product_launch_fixture.py").read_text(encoding="utf-8")
     if "from integrations.socialsense import export_executive_report, run_product_launch_simulation" not in fixture_generator:
-        fail("fixture generator does not use the PR3 product adapter")
+        fail("Product Launch fixture generator does not use the PR3 product adapter")
     if "from socialsense" in fixture_generator:
-        fail("fixture generator must not import SocialSense directly")
+        fail("Product Launch fixture generator must not import SocialSense directly")
+
+    campaign_fixture_generator = (ROOT / "scripts/generate_campaign_message_test_fixture.py").read_text(encoding="utf-8")
+    if "from integrations.socialsense import export_executive_report, run_campaign_message_test" not in campaign_fixture_generator:
+        fail("Campaign Message Test fixture generator does not use the PR3 product adapter")
+    if "from socialsense" in campaign_fixture_generator:
+        fail("Campaign Message Test fixture generator must not import SocialSense directly")
+    forbidden_campaign_generator_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in campaign_fixture_generator]
+    if forbidden_campaign_generator_hits:
+        fail("Campaign Message Test fixture generator references forbidden SocialSense/private/live content: " + ", ".join(forbidden_campaign_generator_hits))
 
     fixture = (ROOT / "src/product/fixtures/productLaunchResult.json").read_text(encoding="utf-8")
     for phrase in ["Product Launch", "Synthetic aggregate sample", "Ready for human review"]:
@@ -379,6 +442,7 @@ def main() -> None:
     print("PASS: required M1/PR4 docs exist")
     print("PASS: required M4 IA/design-system docs exist and include status/scope phrases")
     print("PASS: required M5 Campaign Message Test docs exist and include reuse/status phrases")
+    print("PASS: required M6 Experiment Framework docs exist and include scope/status phrases")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
@@ -386,7 +450,7 @@ def main() -> None:
     print("PASS: expected PR4 Product Launch vertical slice files exist")
     print("PASS: expected M5 Campaign Message Test files exist")
     print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
-    print("PASS: fixture generator uses PR3 adapter and fixture has PR4 UI contract")
+    print("PASS: fixture generators use PR3 adapter and fixtures have PR4/M5 UI contracts")
     print("PASS: M5 branch includes Campaign Message Test implementation paths")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 

@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M5 Campaign Message Test Reference Workflow implementation.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, and M4 Information Architecture & Design System Review are complete.
-- M5 implements Campaign Message Test as the second reference workflow by reusing Product Launch pattern, Campaign Domain, IA, Design System, existing dashboard/export/safety patterns, and the product-owned SocialSense public adapter boundary.
+- Current branch scope: M6 Experiment Framework Planning, documentation-only.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, and M5 Campaign Message Test Reference Workflow are complete.
+- M6 defines Experiment as a reusable framework for future comparison workflows. Do not implement A/B Message Comparison, Multivariate Testing, Creative Comparison, runtime behavior, frontend routes, backend behavior, or SocialSense changes.
 
 ## Repository boundaries
 
@@ -17,9 +17,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - SocialSense is a dependency boundary: 3C may use only public SDK/runtime surfaces.
 - Allowed SocialSense import for the product adapter: `from socialsense import load_domain_pack`.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
-- PR4 fixture generation must go through `scripts/generate_product_launch_fixture.py` and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
+- Product Launch and Campaign Message Test fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
-- Keep PR4 independent from backend services, live data sources, authentication, credentials, and production campaign systems.
+- Keep M6 independent from backend services, runtime functionality, live data sources, authentication, credentials, and production campaign systems.
 
 ## Safety rules
 
@@ -37,46 +37,42 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all PR4 language fixture/offline, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M6 language planning-only, fixture/offline-compatible, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
-## PR4 vertical slice expectations
+## M6 Experiment Framework planning expectations
 
-The browser should let a non-technical user complete Product Launch Simulation from `/workbench`:
+M6 must define Experiment as a reusable framework for future comparison workflows without adding product runtime behavior.
 
-- objective locked/defaulted to Product Launch;
-- product/message/offer/key-message/context fields;
-- audience presets and platform mix selection;
-- local run action that reveals the generated offline sample result;
-- `/runs/:runId` dashboard with marketing-friendly cards and caveats;
-- `/exports/:runId` review for JSON, Markdown, and Executive Summary readiness/status;
-- safety labels and limitations visible before interpreting or sharing.
+Required planning artifacts:
 
-The UI consumes `src/product/fixtures/productLaunchResult.json`, generated from SocialSense through the PR3 adapter. It must not claim arbitrary browser-entered data was executed by SocialSense unless that is actually implemented in a later gated PR.
+- `docs/product/EXPERIMENT_DOMAIN_ANALYSIS.md`;
+- `docs/product/EXPERIMENT_TAXONOMY.md`;
+- `docs/product/EXPERIMENT_DATA_MODEL.md`;
+- `docs/product/EXPERIMENT_WORKFLOW_MAPPING.md`;
+- `docs/product/EXPERIMENT_CONSUMER_MAPPING.md`;
+- `docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md`.
 
-## Real PR4 commands
+M6 must keep A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, frontend routes, live APIs, and SocialSense changes out of scope.
 
-Install dependencies and maintain the npm lockfile when needed:
-
-```bash
-npm install
-```
+## M6 validation commands
 
 Run validation before handoff:
 
 ```bash
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_product_launch_fixture.py
-python3 -m unittest discover -s tests -p 'test_*.py'
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
-npm run test
-npm run typecheck
-npm run lint
-npm run build
 python3 scripts/docs_smoke.py
-git diff --check
+git diff --check origin/main...HEAD
+python3 - <<'PY'
+import subprocess
+files=subprocess.check_output(['git','diff','--name-only','origin/main...HEAD'], text=True).splitlines()
+allowed=lambda p: p in {'README.md','AGENTS.md','scripts/docs_smoke.py'} or p.startswith('docs/product/')
+print('changed_files=', files)
+print('non_docs_or_smoke=', [p for p in files if not allowed(p)])
+assert all(allowed(p) for p in files)
+PY
 git status --short --branch
 ```
 
-Optional local manual frontend review:
+Optional local manual frontend review for implementation milestones only:
 
 ```bash
 npm run dev
@@ -87,24 +83,25 @@ npm run dev
 `scripts/docs_smoke.py` must confirm:
 
 - required docs exist, including `docs/product/SOCIALSENSE_INTEGRATION.md`;
-- README links resolve;
+- the six M6 Experiment Framework docs exist and include status/scope/non-implementation boundaries;
+- README links resolve, including M6 docs;
 - README and AGENTS include required safety phrases;
 - expected React/Vite/TypeScript frontend shell files still exist;
 - expected PR3 adapter, smoke, and test files exist;
-- expected PR4 fixture generator, UI fixture, and generator tests exist;
+- expected PR4 and M5 fixture files still exist;
 - adapter uses the SocialSense public facade and avoids forbidden internals;
-- fixture generator uses the PR3 adapter, not private SocialSense imports;
+- fixture generators use the PR3 adapter, not private SocialSense imports;
+- M6 branch changes are limited to docs plus README/AGENTS/docs smoke;
 - forbidden backend/live/auth/credential files are absent.
 
 ## Definition of Done
 
-PR4 is done only when:
+M6 is done only when:
 
-- Product Launch vertical slice is usable from `/workbench`;
-- generated offline sample fixture exists and is reproducible through the PR3 adapter;
-- `/runs/:runId` and `/exports/:runId` render dashboard/export review from the generated sample;
-- UI tests cover workflow, validation, platform selection, results, export review, safety labels, and no internal term leakage;
-- `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, docs smoke, Python tests, fixture generation, SocialSense adapter smoke, and `git diff --check` pass;
-- no backend, live API calls, credentials/auth, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims are introduced;
+- all six Experiment Framework docs exist;
+- Product Health Dashboard and Roadmap reflect M6 as the current planning milestone;
+- no A/B Message Comparison, Multivariate Testing, Creative Comparison, frontend workflow, backend, runtime functionality, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes are introduced;
+- `python3 scripts/docs_smoke.py`, `git diff --check origin/main...HEAD`, and the docs-only diff guard pass;
+- QA, code review, safety review, documentation review, Product Review, UX Review, and Research Review return GO;
 - SocialSense and MarketingSimulation remain unmodified;
-- all PR4 changes are committed.
+- all M6 planning changes are committed.
