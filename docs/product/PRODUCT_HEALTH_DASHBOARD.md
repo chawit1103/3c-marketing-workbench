@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M17 Executive Dashboard & Reporting — Complete for controlled review after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 KPI slice, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 KPI slice, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 post-merge validation on `main`, but M18 implementation must not begin until explicit M18 kickoff. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -257,8 +257,8 @@ Status: M17 Executive Dashboard & Reporting — Complete for controlled review a
 - Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 may be prepared next after M17 review/merge/post-merge validation; M18 implementation must not begin in this PR.
-- Current blocker: none for PR5 docs/status/smoke closeout after validation passes; production launch, budget, and winner decisions remain blocked without human review and field evidence.
+- M18 may be prepared next after M17 post-merge validation on `main`; M18 implementation must not begin until explicit M18 kickoff.
+- Current blocker: none for PR5 docs/status/smoke closeout after post-merge validation passed; production launch, budget, and winner decisions remain blocked without human review and field evidence.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -477,9 +477,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone after M17 is M18 Thai-first Internationalization preparation, only after M17 review/merge/post-merge validation passes. M17 closes with GO WITH CONDITIONS for controlled executive review.
+Next milestone after M17 is M18 Thai-first Internationalization preparation after M17 post-merge validation on `main`. M17 is closed as GO WITH CONDITIONS for controlled executive review.
 
-Recommended option after M17 PR5 validation: prepare M18 Thai-first glossary/content discovery and locale architecture planning. M18 implementation must not begin in this PR.
+Recommended option after M17 PR5 post-merge validation: prepare M18 Thai-first glossary/content discovery and locale architecture planning. M18 implementation must not begin until explicit M18 kickoff.
 
 Alternative options if priorities change:
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M17 Executive Dashboard & Reporting — Complete for controlled review. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 M17 validation/closeout complete updates docs/status/smoke only. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 M17 validation/closeout complete updates docs/status/smoke only. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 post-merge validation on `main`, but M18 implementation must not begin until explicit M18 kickoff. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 
@@ -267,8 +267,8 @@ Acceptance criteria:
 - Program KPI closeout: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, and Known Risks are current in Product Health Dashboard and closeout report.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Triggers remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 may be prepared next after M17 review/merge/post-merge validation; M18 implementation must not begin in this PR.
-- Scope for PR5 remains docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
+- M18 may be prepared next after M17 post-merge validation on `main`; M18 implementation must not begin until explicit M18 kickoff.
+- PR5 scope remained docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
 
 ### M18: Thai-first Internationalization — Planned
 
