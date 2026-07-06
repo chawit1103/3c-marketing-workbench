@@ -230,6 +230,31 @@ describe('Campaign Workspace MVP', () => {
     expect(evidence.textContent?.toLowerCase()).not.toContain('socialsense');
   });
 
+  it('surfaces M17 executive KPI cards and CSS-only decision visuals from offline fixtures', () => {
+    renderAt('/campaign-workspace');
+
+    const dashboard = screen.getByRole('region', { name: 'Executive KPI dashboard' });
+    for (const kpi of [
+      'Overall Campaign Score',
+      'Message Acceptance',
+      'Brand Perception',
+      'Audience Engagement',
+      'Synthetic Purchase Intent',
+      'Confidence',
+      'Risk Level',
+      'Recommendation',
+    ]) {
+      expect(dashboard).toHaveTextContent(kpi);
+    }
+    expect(dashboard).toHaveTextContent('Synthetic/offline fixture-backed dashboard');
+    expect(dashboard).toHaveTextContent('not live social data');
+    expect(dashboard).toHaveTextContent('74 / 100');
+    expect(within(dashboard).getByRole('region', { name: 'Platform comparison' })).toHaveTextContent('LINE');
+    expect(within(dashboard).getByRole('region', { name: 'Audience comparison' })).toHaveTextContent('Working Adults');
+    expect(within(dashboard).getByRole('region', { name: 'Confidence / risk' })).toHaveTextContent('Readiness');
+    expect(within(dashboard).getByRole('region', { name: 'Journey progress' })).toHaveTextContent('5 of 6 review stages ready');
+  });
+
   it('offers approved workflow actions including Creative Comparison without primary navigation changes', () => {
     renderAt('/campaign-workspace');
 

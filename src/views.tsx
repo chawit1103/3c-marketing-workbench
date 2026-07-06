@@ -280,6 +280,67 @@ const campaignLimitationsRisks = Array.from(new Set([
   ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
 
+const executiveKpis = [
+  {
+    title: 'Overall Campaign Score',
+    value: '74 / 100',
+    detail: 'Composite directional score from existing offline Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixtures.',
+  },
+  {
+    title: 'Message Acceptance',
+    value: productLaunchFixture.cards.find((card) => card.title === 'Message Acceptance')?.value ?? 'Review required',
+    detail: 'The message is understandable when speed, taste, nutrition, and trust proof stay visible for human review.',
+  },
+  {
+    title: 'Brand Perception',
+    value: productLaunchFixture.cards.find((card) => card.title === 'Brand Perception')?.value ?? 'Review required',
+    detail: 'Brand signal is positive but still needs quality, delivery, and proof before any external use.',
+  },
+  {
+    title: 'Audience Engagement',
+    value: productLaunchFixture.cards.find((card) => card.title === 'Engagement Potential')?.value ?? 'Review required',
+    detail: 'Short video and chat-friendly creative remain the best first evidence-gathering direction.',
+  },
+  {
+    title: 'Synthetic Purchase Intent',
+    value: productLaunchFixture.cards.find((card) => card.title === 'Synthetic Purchase Intent')?.value ?? 'Directional only',
+    detail: 'Synthetic purchase intent is directional planning input only, not a sales forecast or conversion guarantee.',
+  },
+  {
+    title: 'Confidence',
+    value: creativeComparisonFixture.comparisonMethod.confidenceLevel,
+    detail: 'Confidence remains low directional because current evidence is fixture-backed and requires comparable field validation.',
+  },
+  {
+    title: 'Risk Level',
+    value: 'Controlled / review required',
+    detail: 'Safety risk is controlled by offline-only fixtures, human review, and no live social data or production campaign systems.',
+  },
+  {
+    title: 'Recommendation',
+    value: 'Approve small reviewed evidence test',
+    detail: creativeComparisonFixture.recommendedNextTest,
+  },
+];
+
+const platformComparison = [
+  { label: 'LINE', value: 82, detail: 'Chat-friendly planning cue from existing offline fixtures.' },
+  { label: 'TikTok', value: 76, detail: 'Short-video direction remains useful for a small reviewed test.' },
+  { label: 'Facebook', value: 68, detail: 'Community review cue is directional, not measured live activity.' },
+];
+
+const audienceComparison = [
+  { label: 'Working Adults', value: 84, detail: 'Strongest fit for speed, reliability, and lunch-time clarity.' },
+  { label: 'Urban Consumers', value: 74, detail: 'Good fit when convenience and quality proof are visible.' },
+  { label: 'SME Owners', value: 63, detail: 'Useful team-benefit frame, but budget evidence remains a gap.' },
+];
+
+const confidenceRiskSignals = [
+  { label: 'Confidence', value: 42, detail: 'Low directional confidence; fixture-backed evidence only.' },
+  { label: 'Readiness', value: 72, detail: 'Ready for human review and a small approved evidence test.' },
+  { label: 'Risk', value: 28, detail: 'Low implementation risk because no backend, live APIs, or persistence are introduced.' },
+];
+
 export function CampaignWorkspaceView() {
   const campaignName = productLaunchFixture.sampleInput.brand;
   const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
@@ -331,6 +392,8 @@ export function CampaignWorkspaceView() {
           </section>
         </section>
       </div>
+
+      <ExecutiveDashboard />
 
       <section className="card" aria-label="Campaign journey timeline">
         <p className="eyebrow">Journey timeline</p>
@@ -416,6 +479,72 @@ export function CampaignWorkspaceView() {
           </div>
           <p className="help-text">Only approved existing workflows are available in this MVP.</p>
         </section>
+      </div>
+    </section>
+  );
+}
+
+function ExecutiveDashboard() {
+  return (
+    <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
+      <p className="eyebrow">M17 Executive Dashboard</p>
+      <h2>Executive KPI cards and decision visuals</h2>
+      <p>
+        Synthetic/offline fixture-backed dashboard for executive review only; not live social data,
+        not production prediction, and not connected to campaign systems.
+      </p>
+
+      <div className="grid four-col executive-kpi-grid">
+        {executiveKpis.map((card) => (
+          <article className="executive-kpi-card" key={card.title}>
+            <p className="eyebrow">{card.title}</p>
+            <h3>{card.value}</h3>
+            <p>{card.detail}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="grid two-col align-start">
+        <BarList title="Platform comparison" items={platformComparison} />
+        <BarList title="Audience comparison" items={audienceComparison} />
+        <BarList title="Confidence / risk" items={confidenceRiskSignals} />
+        <section className="executive-visual-card" aria-label="Journey progress">
+          <p className="eyebrow">Journey progress</p>
+          <h3>5 of 6 review stages ready</h3>
+          <div className="progress-track" aria-hidden="true">
+            <span style={{ width: '83%' }} />
+          </div>
+          <ol className="mini-step-list">
+            {campaignJourneyStages.map(({ stage, status }) => (
+              <li key={stage}>
+                <span className={`status-dot status-dot-${status.toLowerCase()}`} />
+                <span>{status}: {stage}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function BarList({ title, items }: { title: string; items: { label: string; value: number; detail: string }[] }) {
+  return (
+    <section className="executive-visual-card" aria-label={title}>
+      <p className="eyebrow">{title}</p>
+      <div className="bar-list">
+        {items.map((item) => (
+          <article className="bar-item" key={item.label}>
+            <div className="bar-label-row">
+              <strong>{item.label}</strong>
+              <span>{item.value}/100</span>
+            </div>
+            <div className="progress-track" aria-hidden="true">
+              <span style={{ width: `${item.value}%` }} />
+            </div>
+            <p>{item.detail}</p>
+          </article>
+        ))}
       </div>
     </section>
   );

@@ -222,6 +222,31 @@ M17_ALLOWED_CHANGED_PATHS = {
     *REQUIRED_M17_DOCS,
 }
 
+M17_PR2_ALLOWED_CHANGED_PATHS = {
+    *M17_ALLOWED_CHANGED_PATHS,
+    "src/views.tsx",
+    "src/styles.css",
+    "src/App.test.tsx",
+}
+
+REQUIRED_M17_PR2_PHRASES = [
+    "executive KPI dashboard",
+    "Overall Campaign Score",
+    "Message Acceptance",
+    "Brand Perception",
+    "Audience Engagement",
+    "Synthetic Purchase Intent",
+    "Confidence",
+    "Risk Level",
+    "Recommendation",
+    "Platform comparison",
+    "Audience comparison",
+    "Journey progress",
+    "synthetic",
+    "offline",
+    "not live social",
+]
+
 REQUIRED_M17_PHRASES = [
     "Executive Experience & Marketing Simulation Enhancement",
     "M17 Executive Dashboard & Reporting",
@@ -1202,7 +1227,23 @@ def main() -> None:
         ]:
             if phrase not in combined_m17_text:
                 fail(f"M17 docs missing PR sequence phrase: {phrase}")
-        forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m17-") else []
+        if current_branch_name() == "m17-executive-dashboard-kpis":
+            m17_pr2_source_text = "\n".join(
+                [
+                    (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+                    (ROOT / "src/styles.css").read_text(encoding="utf-8"),
+                    (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+                ]
+            )
+            combined_m17_pr2_text = "\n".join([combined_m17_text, m17_pr2_source_text])
+            missing_m17_pr2_phrases = [phrase for phrase in REQUIRED_M17_PR2_PHRASES if phrase not in combined_m17_pr2_text]
+            if missing_m17_pr2_phrases:
+                fail("M17 PR2 docs/source missing executive KPI dashboard phrases: " + ", ".join(missing_m17_pr2_phrases))
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR2_ALLOWED_CHANGED_PATHS]
+        elif current_branch_name().startswith("m17-"):
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
+        else:
+            forbidden_m17_changes = []
         if forbidden_m17_changes:
             fail("M17 program kickoff changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m17_changes))
 
@@ -1225,6 +1266,8 @@ def main() -> None:
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and docs-only boundary")
+        if current_branch_name() == "m17-executive-dashboard-kpis":
+            print("PASS: M17 PR2 executive KPI dashboard slice includes runtime allowlist, dashboard phrases, and offline/synthetic boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
