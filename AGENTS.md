@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M6 Experiment Framework Planning, documentation-only.
+- Current branch scope: M7 A/B Experiment Reference Workflow implementation.
 - PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, and M5 Campaign Message Test Reference Workflow are complete.
-- M6 defines Experiment as a reusable framework for future comparison workflows. Do not implement A/B Message Comparison, Multivariate Testing, Creative Comparison, runtime behavior, frontend routes, backend behavior, or SocialSense changes.
+- M7 implements A/B Experiment as the third reference workflow through the existing workbench pattern. Reuse the approved Experiment Framework, Workflow Pattern, Campaign Domain, IA, Navigation, Design System, dashboard/export patterns, and product-owned SocialSense adapter. Do not redesign architecture, add backend behavior, live APIs, private data, or SocialSense changes.
 
 ## Repository boundaries
 
@@ -17,9 +17,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - SocialSense is a dependency boundary: 3C may use only public SDK/runtime surfaces.
 - Allowed SocialSense import for the product adapter: `from socialsense import load_domain_pack`.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
-- Product Launch and Campaign Message Test fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
+- Product Launch, Campaign Message Test, and A/B Experiment fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
-- Keep M6 independent from backend services, runtime functionality, live data sources, authentication, credentials, and production campaign systems.
+- Keep M7 independent from backend services, live data sources, authentication, credentials, and production campaign systems.
 
 ## Safety rules
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M6 language planning-only, fixture/offline-compatible, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M7 language fixture/offline-compatible, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -54,21 +54,19 @@ Required planning artifacts:
 
 M6 must keep A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, frontend routes, live APIs, and SocialSense changes out of scope.
 
-## M6 validation commands
+## M7 validation commands
 
-Run validation before handoff:
+Run focused validation before handoff:
 
 ```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_ab_experiment_fixture.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+npm run test
+npm run typecheck
+npm run lint
+npm run build
 python3 scripts/docs_smoke.py
-git diff --check origin/main...HEAD
-python3 - <<'PY'
-import subprocess
-files=subprocess.check_output(['git','diff','--name-only','origin/main...HEAD'], text=True).splitlines()
-allowed=lambda p: p in {'README.md','AGENTS.md','scripts/docs_smoke.py'} or p.startswith('docs/product/')
-print('changed_files=', files)
-print('non_docs_or_smoke=', [p for p in files if not allowed(p)])
-assert all(allowed(p) for p in files)
-PY
+git diff --check
 git status --short --branch
 ```
 

@@ -2,9 +2,9 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M6 Experiment Framework Planning complete and merged. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflows, backend, runtime functionality, and SocialSense changes remain not implemented.
+Status: M7 A/B Experiment Reference Workflow implemented. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and A/B Experiment is the third reference workflow using the approved Experiment Framework, Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. Multivariate Testing, Creative Comparison, Promotion workflows, backend, live runtime functionality, and SocialSense changes remain not implemented.
 
-Next milestone: A/B Message Comparison implementation may be recommended only after Experiment Framework receives GO; A/B remains not implemented.
+Current milestone: M7 implements A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
 Historical PR4 and current M6 non-goals:
 
@@ -28,17 +28,18 @@ This repository owns the 3C product experience:
 - product positioning and user journey;
 - safe React/Vite/TypeScript frontend shell;
 - Product Launch Simulation vertical slice backed by `src/product/fixtures/productLaunchResult.json`;
+- Campaign Message Test and A/B Experiment reference workflows backed by generated product fixtures;
 - product-owned fixture generation through `scripts/generate_product_launch_fixture.py`;
 - product-owned SocialSense adapter under `integrations/socialsense/`;
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M6:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M7:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M6 must not modify SocialSense or MarketingSimulation.
+M7 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -76,7 +77,8 @@ Current frontend routes:
 | `/` | Product home and safe executive positioning | Implemented |
 | `/workbench` | Guided Product Launch Simulation form and local run action | Implemented PR4 vertical slice |
 | `/workbench/campaign-message-test` | Guided Campaign Message Test form and local run action | Implemented M5 reference workflow |
-| `/runs/:runId` | Product Launch or Campaign Message Test results dashboard for generated offline samples | Implemented reusable dashboard pattern |
+| `/workbench/ab-experiment` | Guided A/B Experiment form and local run action | Implemented M7 reference workflow |
+| `/runs/:runId` | Product Launch, Campaign Message Test, or A/B Experiment results dashboard for generated offline samples | Implemented reusable dashboard pattern |
 | `/exports/:runId` | Export review for JSON, Markdown, and Executive Summary readiness/status | Implemented reusable export-review pattern |
 | `/health` | Product health/readiness view | Implemented |
 
@@ -121,6 +123,7 @@ Product documentation map:
 - [Experiment Workflow Mapping](docs/product/EXPERIMENT_WORKFLOW_MAPPING.md)
 - [Experiment Consumer Mapping](docs/product/EXPERIMENT_CONSUMER_MAPPING.md)
 - [Experiment Workflow Compatibility](docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md)
+- [A/B Experiment Reuse Audit](docs/product/AB_EXPERIMENT_REUSE_AUDIT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -151,19 +154,17 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M6 planning validation commands:
+M7 focused validation commands:
 
 ```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_ab_experiment_fixture.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+npm run test
+npm run typecheck
+npm run lint
+npm run build
 python3 scripts/docs_smoke.py
-git diff --check origin/main...HEAD
-python3 - <<'PY'
-import subprocess
-files=subprocess.check_output(['git','diff','--name-only','origin/main...HEAD'], text=True).splitlines()
-allowed=lambda p: p in {'README.md','AGENTS.md','scripts/docs_smoke.py'} or p.startswith('docs/product/')
-print('changed_files=', files)
-print('non_docs_or_smoke=', [p for p in files if not allowed(p)])
-assert all(allowed(p) for p in files)
-PY
+git diff --check
 ```
 
 Full product regression commands remain available for implementation milestones:

@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M6 Experiment Framework Planning complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; Experiment Framework is defined as the reusable business capability for future comparison workflows. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflow, backend, runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M6.
+Status: M7 A/B Experiment Reference Workflow implemented. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Experiment Framework is reused as the business capability for comparison workflows. Multivariate Testing, Creative Comparison, Promotion workflow, backend, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M7.
 
 
 ## M1 PR4 closeout
@@ -135,6 +135,18 @@ Status: M6 Experiment Framework Planning complete and merged. Product Launch rem
 - Architecture Gate: not triggered.
 - Next milestone recommendation: A/B Message Comparison implementation only after M6 receives GO; do not implement A/B automatically.
 
+## M7 A/B Experiment Reference Workflow
+
+- Reuse audit: `docs/product/AB_EXPERIMENT_REUSE_AUDIT.md`.
+- UI route: `/workbench/ab-experiment`.
+- Generated fixture: `src/product/fixtures/abExperimentResult.json`.
+- Generator: `scripts/generate_ab_experiment_fixture.py`.
+- Adapter boundary: product-owned SocialSense adapter using existing `run_message_comparison` and `export_executive_report`; no SocialSense or MarketingSimulation changes.
+- Workflow reuse: 92%; component reuse: 93%; dashboard reuse: 91%; export reuse: 100%; navigation: unchanged.
+- Dashboard/export route reuse: `/runs/:runId` and `/exports/:runId` now select Product Launch, Campaign Message Test, or A/B Experiment generated offline fixtures by run id.
+- Architecture Gate: not triggered.
+- Safety: synthetic aggregate, offline review only, no live APIs, no credentials, no PII/CRM/private/voter data, no microtargeting, no persuasion optimization, no conversion guarantees, and no production campaign claims.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -146,14 +158,14 @@ Status: M6 Experiment Framework Planning complete and merged. Product Launch rem
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for M6 docs validation | Green every PR | Docs smoke, M6 docs-only diff guard, and diff check pass for planning; implementation regressions remain available for future implementation milestones. |
+| Test/build status | Green for M7 implementation validation | Green every PR | Frontend tests, typecheck, lint, build, Python tests, docs smoke, adapter smoke, public SDK smoke, regression, and diff check pass for the A/B reference workflow. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review + M6 compatibility | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; Experiment Framework compatibility is being reviewed before any A/B implementation. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
 | Information Architecture readiness | GO | M4 review gates | Future product areas and workflow homes are defined; M5 reuses them without primary nav changes. |
 | Design system readiness | GO | M4 review gates | Component inventory, token standards, and reuse matrix are reused by M5. |
 | Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
-| Experiment Framework readiness | In planning | M6 review gates | Experiment Domain, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility are being defined before A/B implementation. |
+| Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
 
 ## KPI baseline
 
@@ -174,10 +186,10 @@ Status: M6 Experiment Framework Planning complete and merged. Product Launch rem
 | Dashboard readability score | 4/5 target | M2.3 polish | Lower sections are more scannable; accessibility dogfood remains future work |
 | Safety clarity score | 4.5/5 maintained | M2.3 polish | Safety labels remain visible; repeated result/caveat wording is reduced |
 | Export review usefulness score | 3/5 baseline | M2.1 burn-down | Export route now says readiness preview and not a download action |
-| Workflow Reuse % | 91% | M5 component reuse audit | Target >80% |
-| Component Reuse % | 92% | M5 component reuse audit | Target >80% |
-| Dashboard Reuse % | 90% | M5 component reuse audit | Target >80% |
-| Export Reuse % | 100% | M5 component reuse audit | No new export formats |
+| Workflow Reuse % | 92% | M7 A/B reuse audit | Target >=90% |
+| Component Reuse % | 93% | M7 A/B reuse audit | Target >=90% |
+| Dashboard Reuse % | 91% | M7 A/B reuse audit | Target >=90% |
+| Export Reuse % | 100% | M7 A/B reuse audit | No new export formats |
 
 ## Scaffold readiness
 
@@ -311,7 +323,7 @@ Current validation suite includes:
 
 Future required:
 
-- A/B Message Comparison implementation only if M6 receives GO and confirms the reusable Experiment Framework.
+- Creative Comparison planning/implementation only if M7 receives GO and confirms the reusable Experiment Framework can produce comparison workflows without Architecture Gate redesign.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -345,19 +357,19 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: A/B Message Comparison implementation only if M6 receives GO.
+Next milestone: Creative Comparison only if M7 receives GO.
 
-Scope must remain blocked unless Experiment Framework validates the reusable Experiment Domain, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility.
+Scope must remain blocked unless A/B Experiment validates the reusable Experiment Framework, Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary.
 
-Implementation should deliver:
+Creative Comparison should start from:
 
-- A/B Message Comparison as a configuration/implementation of Experiment Framework;
-- Message A / Message B input, review, dashboard, export, and recommendation using Experiment objects;
+- the Experiment Framework;
+- A/B Experiment reuse audit findings;
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
-- validation and safety acceptance criteria from M6;
-- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, Creative Comparison, production campaign optimization, or conversion guarantee claims.
+- validation and safety acceptance criteria from M6/M7;
+- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, or conversion guarantee claims.
 
-Do not start A/B Message Comparison implementation from this dashboard alone.
+Do not start Creative Comparison implementation from this dashboard alone.
 
 Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
 

@@ -10,8 +10,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GENERATOR_PATH = ROOT / "scripts" / "generate_product_launch_fixture.py"
 CAMPAIGN_GENERATOR_PATH = ROOT / "scripts" / "generate_campaign_message_test_fixture.py"
+AB_GENERATOR_PATH = ROOT / "scripts" / "generate_ab_experiment_fixture.py"
 FIXTURE_PATH = ROOT / "src" / "product" / "fixtures" / "productLaunchResult.json"
 CAMPAIGN_FIXTURE_PATH = ROOT / "src" / "product" / "fixtures" / "campaignMessageTestResult.json"
+AB_FIXTURE_PATH = ROOT / "src" / "product" / "fixtures" / "abExperimentResult.json"
 
 
 class ProductLaunchFixtureGeneratorTests(unittest.TestCase):
@@ -85,6 +87,39 @@ class ProductLaunchFixtureGeneratorTests(unittest.TestCase):
         self.assertIn("No live APIs or credentials", fixture["safetyLabels"])
         self.assertIn("reviewMetadata", fixture)
         self.assertIn("Campaign Message Test", fixture["summary"]["text"])
+
+    def test_ab_experiment_generator_uses_public_adapter_message_comparison(self) -> None:
+        source = AB_GENERATOR_PATH.read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        import_from_modules = [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)]
+
+        self.assertIn("integrations.socialsense", import_from_modules)
+        self.assertIn("run_message_comparison", source)
+        self.assertIn("export_executive_report", source)
+        self.assertNotIn("from socialsense", source)
+        self.assertNotIn("socialsense.domain_packs", source)
+        self.assertNotIn("app.civicsense", source)
+
+    def test_ab_experiment_fixture_has_m7_ui_contract_and_safety_status(self) -> None:
+        self.assertTrue(AB_FIXTURE_PATH.is_file(), "Run scripts/generate_ab_experiment_fixture.py before tests")
+        fixture = json.loads(AB_FIXTURE_PATH.read_text(encoding="utf-8"))
+
+        self.assertEqual(fixture["schemaVersion"], "m7-ab-experiment-ui-v1")
+        self.assertEqual(fixture["objective"], "A/B Experiment")
+        self.assertEqual(fixture["sourceChecks"]["publicAdapterOnly"], True)
+        self.assertEqual(fixture["sourceChecks"]["adapterFunction"], "run_message_comparison")
+        self.assertEqual(fixture["sourceChecks"]["offlineExecution"], True)
+        self.assertEqual(fixture["sourceChecks"]["liveApiAccess"], False)
+        self.assertEqual(fixture["sourceChecks"]["credentialsRequired"], False)
+        self.assertEqual(fixture["sourceChecks"]["productionReady"], False)
+        self.assertEqual(
+            [item["label"] for item in fixture["exports"]["formats"]],
+            ["JSON", "Markdown", "Executive Summary"],
+        )
+        self.assertGreaterEqual(len(fixture["cards"]), 5)
+        self.assertEqual(len(fixture["comparisonCards"]), 3)
+        self.assertIn("No live APIs or credentials", fixture["safetyLabels"])
+        self.assertIn("Variant A", fixture["comparisonCards"][0]["title"])
 
 
 if __name__ == "__main__":

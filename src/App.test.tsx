@@ -18,14 +18,20 @@ function renderCampaignMessageTest() {
   return screen.getByRole('form', { name: 'Campaign Message Test setup' });
 }
 
+function renderAbExperiment() {
+  renderAt('/workbench/ab-experiment');
+  return screen.getByRole('form', { name: 'A/B Experiment setup' });
+}
+
 describe('App shell routes', () => {
   it.each([
     ['/', 'Compare campaign decisions safely before budget reviews.'],
     ['/workbench', 'Product Launch Simulation'],
     ['/workbench/campaign-message-test', 'Campaign Message Test'],
+    ['/workbench/ab-experiment', 'A/B Experiment'],
     ['/runs/run-123', 'Product Launch Results'],
     ['/exports/run-123', 'Export Readiness Preview'],
-    ['/health', 'M5 Campaign workflow readiness'],
+    ['/health', 'M7 A/B Experiment workflow readiness'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -50,6 +56,7 @@ describe('App shell routes', () => {
       'href',
       '/workbench/campaign-message-test',
     );
+    expect(screen.getByRole('link', { name: 'Open A/B Experiment' })).toHaveAttribute('href', '/workbench/ab-experiment');
   });
 
   it('keeps internal platform terms out of visible primary UI', () => {
@@ -63,7 +70,7 @@ describe('App shell routes', () => {
       'campaign_response',
     ];
 
-    for (const pathname of ['/', '/workbench', '/workbench/campaign-message-test', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
+    for (const pathname of ['/', '/workbench', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
       expect(visibleText).not.toContain('pr4');
@@ -212,10 +219,76 @@ describe('Campaign Message Test workflow', () => {
   });
 });
 
+describe('A/B Experiment workflow', () => {
+  it('is available as the third workbench reference workflow with minimal variant inputs', () => {
+    const form = renderAbExperiment();
+
+    expect(screen.getByRole('heading', { name: 'A/B Experiment' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Current workflow' })).toHaveTextContent('A/B Experiment mode');
+    expect(within(form).getByLabelText('Objective: A/B Experiment')).toHaveTextContent(
+      'Review two campaign message variants with shared audience, platform, and safety assumptions.',
+    );
+    expect(within(form).getByLabelText('Variant A')).toHaveValue('Healthy lunch decisions in under 10 minutes for busy urban teams.');
+    expect(within(form).getByLabelText('Variant B')).toHaveValue('Team lunch made simple with reviewed nutrition cues and dependable delivery windows.');
+    expect(within(form).getByLabelText('Tone')).toHaveValue('helpful, practical, trust-first');
+    for (const step of ['Variant A', 'Variant B', 'Review', 'Run', 'Comparison Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action']) {
+      expect(screen.getByRole('region', { name: 'Reference workflow steps' })).toHaveTextContent(step);
+    }
+    expect(screen.getByRole('region', { name: 'Current assumptions' })).toHaveTextContent('Variant A');
+    expect(screen.getByRole('region', { name: 'Current assumptions' })).toHaveTextContent('Variant B');
+  });
+
+  it('requires both A/B variants before running', () => {
+    const form = renderAbExperiment();
+
+    fireEvent.change(within(form).getByLabelText('Variant A'), { target: { value: '' } });
+    fireEvent.change(within(form).getByLabelText('Variant B'), { target: { value: '' } });
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Both A/B variants are required.');
+    expect(screen.queryByRole('heading', { name: 'Offline A/B experiment ready for executive review' })).not.toBeInTheDocument();
+  });
+
+  it('renders comparison dashboard, reusable export links, and safety labels after run', () => {
+    const form = renderAbExperiment();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('heading', { name: 'Offline A/B experiment ready for executive review' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Variant decision frame');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Inconclusive / needs evidence');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Low directional confidence');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Parity check');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Shared Criteria');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('message clarity');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('Blocked Actions');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('winner selection');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('production launch');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('conversion optimization');
+    expect(screen.getByRole('region', { name: 'Variant comparison' })).toHaveTextContent('automated targeting');
+    for (const heading of ['Overall Reaction', 'Message Clarity', 'Tone Fit', 'Claim Readiness', 'Platform Fit', 'Decision Status']) {
+      expect(screen.getByText(heading)).toBeInTheDocument();
+    }
+    expect(screen.getAllByText('Variant A').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Variant B').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('region', { name: 'Recommended next action' })).toHaveTextContent('A/B message-readiness test');
+    expect(screen.getByText('Open result dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Open export-readiness preview')).toBeInTheDocument();
+    expect(document.body.textContent).toContain('Safety: offline fixture for planning only');
+  });
+
+  it('routes A/B Experiment dashboard from the generated sample run id', () => {
+    renderAt('/runs/3c-m7-ab-experiment-reference-workflow');
+    expect(screen.getByRole('heading', { name: 'A/B Experiment Results' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Offline A/B experiment ready for executive review' })).toBeInTheDocument();
+  });
+});
+
 describe('Export review', () => {
   it.each([
     ['/exports/sample-run', 'Product Launch executive-ready summary'],
     ['/exports/3c-m5-campaign-message-test-reference-workflow', 'Campaign Message Test executive-ready summary'],
+    ['/exports/3c-m7-ab-experiment-reference-workflow', 'A/B Experiment executive-ready summary'],
   ])('renders supported formats, status, executive preview, and safety limitations for %s', (pathname, summaryHeading) => {
     renderAt(pathname);
 

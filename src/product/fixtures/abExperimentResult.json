@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "m7-ab-experiment-ui-v1",
+  "runId": "3c-m7-ab-experiment-reference-workflow",
+  "objective": "A/B Experiment",
+  "sampleInput": {
+    "brand": "Nimbus Go",
+    "campaign_message": "Healthy lunch decisions in under 10 minutes for busy urban teams.",
+    "variant_a": "Healthy lunch decisions in under 10 minutes for busy urban teams.",
+    "variant_b": "Team lunch made simple with reviewed nutrition cues and dependable delivery windows.",
+    "offer": "No offer required for message comparison review.",
+    "key_message": "Compare speed-led clarity against trust-proof reassurance before budget review.",
+    "tone": "helpful, practical, trust-first",
+    "claim": "Variant claims are assumptions for review, not verified production claims.",
+    "context": "Reviewed offline A/B Experiment sample for executive message-comparison planning.",
+    "audiences": [
+      "Working Adults",
+      "Urban Consumers",
+      "SME Owners"
+    ],
+    "platforms": [
+      "Facebook",
+      "TikTok",
+      "LINE"
+    ]
+  },
+  "summary": {
+    "headline": "Offline A/B experiment ready for executive review",
+    "text": "The offline A/B Experiment sample uses the same objective, audience, platform mix, and criteria for both variants. Variant A is the speed-led clarity hypothesis; Variant B is the trust-proof hypothesis. No winner is selected from synthetic evidence; use this as a planning prompt for human review, not a forecast.",
+    "sentimentDelta": 0.05,
+    "trustDelta": 0.02,
+    "diffusionReach": 0.36,
+    "riskScore": 0
+  },
+  "cards": [
+    {
+      "title": "Overall Reaction",
+      "value": "Light positive signal",
+      "detail": "Aggregate synthetic response for Variant A baseline; compare directionally against Variant B."
+    },
+    {
+      "title": "Message Clarity",
+      "value": "Main benefit is understandable",
+      "detail": "Use the same Campaign Message Test card pattern for A/B review."
+    },
+    {
+      "title": "Tone Fit",
+      "value": "Light positive signal",
+      "detail": "Review tone and proof before external use."
+    },
+    {
+      "title": "Claim Readiness",
+      "value": "Needs substantiation review",
+      "detail": "Claims in both variants require human evidence review before launch approval."
+    },
+    {
+      "title": "Platform Fit",
+      "value": "Strong directional signal",
+      "detail": "Start with a small approved channel test, not broad scaling."
+    }
+  ],
+  "comparisonCards": [
+    {
+      "title": "Variant A Clarity Comparison",
+      "value": "Variant A is the clarity hypothesis",
+      "detail": "Same criterion for both variants: speed-led clarity versus trust-proof clarity; no winner is selected from synthetic evidence."
+    },
+    {
+      "title": "Variant B Trust Comparison",
+      "value": "Variant B is the trust-proof hypothesis",
+      "detail": "Same criterion for both variants: trust proof and reassurance; Variant B provides the clearer trust rationale for the next test."
+    },
+    {
+      "title": "Decision Status",
+      "value": "No winner selected",
+      "detail": "Both variants require comparable field evidence; current output supports human-reviewed next-test planning only."
+    }
+  ],
+  "comparisonMethod": {
+    "decisionStatus": "Inconclusive / needs evidence",
+    "confidenceLevel": "Low directional confidence",
+    "humanReviewRequired": true,
+    "rationale": "Same objective, audience, platform mix, context, and criteria are used for both variants; synthetic evidence is not sufficient to select a production winner.",
+    "sharedCriteria": [
+      "message clarity",
+      "trust proof",
+      "tone fit",
+      "platform fit",
+      "claim readiness"
+    ],
+    "parityCheck": "Variant A and Variant B use the same audience, platforms, context, evaluation criteria, and offline evidence basis.",
+    "blockedActions": [
+      "winner selection",
+      "production launch",
+      "conversion optimization",
+      "automated targeting"
+    ]
+  },
+  "platformBreakdown": [
+    {
+      "platform": "LINE",
+      "signal": "Read Post",
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
+    },
+    {
+      "platform": "Facebook",
+      "signal": "Comment",
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
+    },
+    {
+      "platform": "TikTok",
+      "signal": "Watch Video",
+      "detail": "Fixture channel cue only; use as a planning prompt, not measured live activity."
+    }
+  ],
+  "audienceInsights": [
+    "Working Adults: Variant A emphasizes speed; Variant B adds reliability proof.",
+    "Urban Consumers: compare convenience clarity against quality reassurance.",
+    "SME Owners: keep team-benefit framing without guaranteed outcomes.",
+    "Campaign response fixture separates aggregate message comprehension from any actionable targeting or persuasion workflow."
+  ],
+  "risksCaveats": [
+    "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
+    "Not suitable for persuasion optimization, voter targeting, microtargeting, or guaranteed prediction claims.",
+    "Dashboard signals require human review before executive or public-facing use.",
+    "Offline fixture only: no live social data, private data, CRM lists, or production prediction."
+  ],
+  "recommendedNextTest": "Run a small approved A/B message-readiness test after human review: speed-led Variant A versus trust-proof Variant B.",
+  "safetyLabels": [
+    "Synthetic aggregate sample",
+    "Offline review only",
+    "No live APIs or credentials",
+    "No PII, CRM lists, private messages, or voter lists",
+    "No microtargeting, persuasion optimization, or conversion guarantees"
+  ],
+  "exports": {
+    "formats": [
+      {
+        "label": "JSON",
+        "status": "Available for review",
+        "detail": "Prepared from the reviewed offline sample with safety notes attached.",
+        "sizeHint": 11869
+      },
+      {
+        "label": "Markdown",
+        "status": "Available for review",
+        "detail": "Prepared from the reviewed offline sample with safety notes attached.",
+        "sizeHint": 3231
+      },
+      {
+        "label": "Executive Summary",
+        "status": "Available for review",
+        "detail": "Prepared from the reviewed offline sample with safety notes attached.",
+        "sizeHint": 15
+      }
+    ],
+    "readiness": "Ready for human review",
+    "status": "Generated from the reviewed offline A/B Experiment sample; review safety notes before reuse.",
+    "executiveSummaryPreview": "Executive review: Variant A and Variant B are ready for directional human review; Variant A response is light positive signal and Variant B trust is light positive signal. Use this to plan a small approved A/B evidence test."
+  },
+  "reviewMetadata": {
+    "provenance": {
+      "experimental": true,
+      "fixture_only": true,
+      "provenance_label": "sample_demo",
+      "runtime_mode": "fixture",
+      "live_api_access": false,
+      "credentials_required": false,
+      "source_model_label": "socialsense_core_not_executed"
+    },
+    "assumptions": [
+      "Brand is Nimbus Go.",
+      "Variant A is Healthy lunch decisions in under 10 minutes for busy urban teams.",
+      "Variant B is Team lunch made simple with reviewed nutrition cues and dependable delivery windows.",
+      "Key message is Compare speed-led clarity against trust-proof reassurance before budget review.",
+      "Tone is helpful, practical, trust-first",
+      "Claim to review is Variant claims are assumptions for review, not verified production claims.",
+      "Audience focus is Working Adults, Urban Consumers, SME Owners.",
+      "Use only aggregate, synthetic, offline assumptions with no customer records or private audience data.",
+      "message_theme: Healthy lunch decisions in under 10 minutes for busy urban teams.",
+      "The review contract was validated as offline/synthetic/demo-only before conversion.",
+      "Audience reactions are aggregate simulation signals, not measured public opinion or individual behavior.",
+      "No approved field data or backtest evidence is attached to this bridge output."
+    ],
+    "evidenceGaps": [
+      "No real social platform APIs, private social scraping, private groups, CRM records, voter lists, or direct messages were used.",
+      "Treat outputs as synthetic simulation estimates unless separately validated with approved field data or backtests.",
+      "Offline sample mode uses deterministic sample data and is not evidence from the field."
+    ],
+    "limitations": [
+      "Reviewed offline sample only; not production-ready and not connected to production campaign systems.",
+      "Not suitable for persuasion optimization, voter targeting, microtargeting, or guaranteed prediction claims.",
+      "Dashboard signals require human review before executive or public-facing use.",
+      "Offline workbench sample only; not a production simulator replacement.",
+      "Deterministic fixtures only by default; no live social APIs, private social data, credentials, PII, voter lists, or CRM data."
+    ],
+    "source": {
+      "runtimeMode": "fixture",
+      "sourceModelLabel": "socialsense_core_not_executed",
+      "provenanceLabel": "sample_demo",
+      "reviewMode": "Offline sample",
+      "sourceLabel": "Reviewed offline sample, no live data"
+    },
+    "uncertainty": "Directional synthetic aggregate sample only; use for human review and next-test planning, not prediction."
+  },
+  "sourceChecks": {
+    "publicAdapterOnly": true,
+    "adapterFunction": "run_message_comparison",
+    "offlineExecution": true,
+    "liveApiAccess": false,
+    "credentialsRequired": false,
+    "productionReady": false
+  }
+}

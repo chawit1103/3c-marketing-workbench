@@ -20,6 +20,8 @@ export function App() {
         return <WorkbenchView />;
       case 'campaignMessageTest':
         return <WorkbenchView workflow="campaignMessageTest" />;
+      case 'abExperiment':
+        return <WorkbenchView workflow="abExperiment" />;
       case 'runDashboard':
         return <RunDashboardView runId={route.runId} />;
       case 'exportReview':

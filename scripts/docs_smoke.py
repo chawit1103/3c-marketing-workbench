@@ -156,6 +156,12 @@ EXPECTED_M5_FILES = [
     "src/product/fixtures/campaignMessageTestResult.json",
 ]
 
+EXPECTED_M7_FILES = [
+    "scripts/generate_ab_experiment_fixture.py",
+    "src/product/fixtures/abExperimentResult.json",
+    "docs/product/AB_EXPERIMENT_REUSE_AUDIT.md",
+]
+
 REQUIRED_SAFETY_PHRASES = [
     "live APIs",
     "scraping",
@@ -290,6 +296,10 @@ def main() -> None:
     if missing_m5:
         fail("missing expected M5 Campaign Message Test files: " + ", ".join(missing_m5))
 
+    missing_m7 = [path for path in EXPECTED_M7_FILES if not (ROOT / path).is_file()]
+    if missing_m7:
+        fail("missing expected M7 A/B Experiment files: " + ", ".join(missing_m7))
+
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     roadmap = (ROOT / "docs/product/ROADMAP.md").read_text(encoding="utf-8")
@@ -377,7 +387,7 @@ def main() -> None:
 
     changed_paths = changed_paths_from_main()
     m6_context_active = any(path in changed_paths for path in REQUIRED_M6_DOCS) or "M6 Experiment Framework" in "\n".join([readme, agents, roadmap, health_dashboard])
-    if m6_context_active:
+    if m6_context_active and not current_branch_name().startswith("m7-"):
         if current_branch_name() != "main" and not changed_paths:
             fail("M6 planning changed-path guard could not compare against origin/main")
         non_docs = [path for path in changed_paths if not (path in M6_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
@@ -400,7 +410,7 @@ def main() -> None:
     changed_paths = changed_paths_from_main()
     m5_files_present = all((ROOT / path).is_file() for path in EXPECTED_M5_FILES)
     m5_paths_changed = any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"])
-    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-"))):
+    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-") or current_branch_name().startswith("m7-"))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
     if "from socialsense import load_domain_pack" not in adapter:
@@ -434,6 +444,23 @@ def main() -> None:
         if phrase not in campaign_fixture:
             fail(f"M5 fixture missing expected UI phrase: {phrase}")
 
+    ab_generator = (ROOT / "scripts/generate_ab_experiment_fixture.py").read_text(encoding="utf-8")
+    if "from integrations.socialsense import export_executive_report, run_message_comparison" not in ab_generator:
+        fail("A/B Experiment fixture generator does not use the product adapter run_message_comparison")
+    if "from socialsense" in ab_generator:
+        fail("A/B Experiment fixture generator must not import SocialSense directly")
+    ab_fixture = (ROOT / "src/product/fixtures/abExperimentResult.json").read_text(encoding="utf-8")
+    for phrase in ["A/B Experiment", "Synthetic aggregate sample", "Ready for human review", "run_message_comparison"]:
+        if phrase not in ab_fixture:
+            fail(f"M7 fixture missing expected UI phrase: {phrase}")
+    ab_audit = (ROOT / "docs/product/AB_EXPERIMENT_REUSE_AUDIT.md").read_text(encoding="utf-8")
+    for phrase in ["workflow reuse: 92%", "component reuse: 93%", "dashboard reuse: 91%", "export reuse: 100%", "navigation: unchanged"]:
+        if phrase not in ab_audit:
+            fail(f"M7 reuse audit missing required threshold phrase: {phrase}")
+    for phrase in ["M7 A/B Experiment", "A/B Experiment", "abExperimentResult.json", "run_message_comparison"]:
+        if phrase not in "\n".join([readme, agents, roadmap, health_dashboard, ab_audit]):
+            fail(f"M7 freshness docs missing phrase: {phrase}")
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -449,8 +476,10 @@ def main() -> None:
     print("PASS: expected PR3 SocialSense adapter files exist")
     print("PASS: expected PR4 Product Launch vertical slice files exist")
     print("PASS: expected M5 Campaign Message Test files exist")
+    print("PASS: expected M7 A/B Experiment files exist")
     print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
     print("PASS: fixture generators use PR3 adapter and fixtures have PR4/M5 UI contracts")
+    print("PASS: M7 A/B Experiment uses product adapter, generated fixture, and reuse audit thresholds")
     print("PASS: M5 branch includes Campaign Message Test implementation paths")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 
