@@ -2,11 +2,11 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M7 A/B Experiment Reference Workflow complete and merged. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and A/B Experiment is the third reference workflow using the approved Experiment Framework, Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. Multivariate Testing, Creative Comparison, Promotion workflows, backend, live runtime functionality, and SocialSense changes remain not implemented.
+Status: M8 Marketing Journey Framework in progress. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and A/B Experiment is the third reference workflow. M8 defines the reusable Marketing Journey that connects these workflows into a coherent decision platform. Creative Comparison, additional workflows, frontend implementation, backend, live runtime functionality, and SocialSense changes remain not implemented.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
-Historical PR4 and current M6 non-goals:
+Historical PR4 and current M8 non-goals:
 
 - no backend;
 - no live APIs;
@@ -34,12 +34,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M7:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M8:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M7 must not modify SocialSense or MarketingSimulation.
+M8 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -124,6 +124,12 @@ Product documentation map:
 - [Experiment Consumer Mapping](docs/product/EXPERIMENT_CONSUMER_MAPPING.md)
 - [Experiment Workflow Compatibility](docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md)
 - [A/B Experiment Reuse Audit](docs/product/AB_EXPERIMENT_REUSE_AUDIT.md)
+- [Marketing Journey Analysis](docs/product/MARKETING_JOURNEY_ANALYSIS.md)
+- [Marketing Journey Model](docs/product/MARKETING_JOURNEY_MODEL.md)
+- [Journey Workflow Mapping](docs/product/JOURNEY_WORKFLOW_MAPPING.md)
+- [Workspace Model](docs/product/WORKSPACE_MODEL.md)
+- [Executive Journey](docs/product/EXECUTIVE_JOURNEY.md)
+- [Future Workflow Placement](docs/product/FUTURE_WORKFLOW_PLACEMENT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -154,18 +160,14 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M7 focused validation commands:
+M8 focused validation commands:
 
 ```bash
-PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_ab_experiment_fixture.py
-python3 -m unittest discover -s tests -p 'test_*.py'
-npm run test
-npm run typecheck
-npm run lint
-npm run build
 python3 scripts/docs_smoke.py
-git diff --check
+git diff --check origin/main...HEAD
 ```
+
+M8 is documentation-only. Do not run or modify frontend implementation for M8 except to confirm no runtime/frontend files changed.
 
 Full product regression commands remain available for implementation milestones:
 
@@ -187,15 +189,15 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## M6 review gates
+## M8 review gates
 
-Before M6 handoff:
+Before M8 handoff:
 
 - run `python3 scripts/docs_smoke.py`;
 - run `git diff --check origin/main...HEAD`;
-- confirm Experiment Domain Analysis, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility docs exist;
-- confirm Experiment Framework remains planning-only;
-- confirm no A/B Message Comparison, Multivariate Testing, Creative Comparison, frontend workflow, backend, runtime functionality, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes were added;
+- confirm Marketing Journey Analysis, Marketing Journey Model, Journey Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement docs exist;
+- confirm Marketing Journey Framework remains documentation-only;
+- confirm no Creative Comparison, additional workflows, frontend implementation, backend, runtime functionality, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes were added;
 - confirm changed files are limited to docs plus README/AGENTS/docs smoke;
 - run QA, code review, safety review, documentation review, Product Review, UX Review, and Research Review;
-- commit M6 planning changes on `m6-experiment-framework-planning`.
+- commit M8 planning changes on `m8-marketing-journey-framework`.
