@@ -2,11 +2,11 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and A/B Experiment remains the third reference workflow. M10 adds `/campaign-workspace` as a secondary workbench route that manages one campaign from a single screen using existing offline fixtures only. Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, and SocialSense changes remain not implemented.
+Status: M11 Continuous Product Validation & Synthetic Dogfooding complete on branch `m11-continuous-product-validation`. Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated through structured multi-persona synthetic dogfooding. M11 creates evidence reports/backlog only; Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, and SocialSense changes remain not implemented.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
-Historical PR4 and current M10 non-goals:
+Historical PR4 and current M11 non-goals:
 
 - no backend;
 - no live APIs;
@@ -34,12 +34,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M10:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M11:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M10 must not modify SocialSense or MarketingSimulation.
+M11 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -138,6 +138,10 @@ Product documentation map:
 - [Campaign Workspace Journey](docs/product/CAMPAIGN_WORKSPACE_JOURNEY.md)
 - [Campaign Executive Workspace](docs/product/CAMPAIGN_EXECUTIVE_WORKSPACE.md)
 - [Campaign Workspace Placement](docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md)
+- [M11 Product Validation Report](docs/product/M11_PRODUCT_VALIDATION_REPORT.md)
+- [M11 UX Friction Register](docs/product/M11_UX_FRICTION_REGISTER.md)
+- [M11 Product Backlog](docs/product/M11_PRODUCT_BACKLOG.md)
+- [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -168,14 +172,14 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M10 focused validation commands:
+M11 focused validation commands:
 
 ```bash
 python3 scripts/docs_smoke.py
 git diff --check origin/main...HEAD
 ```
 
-M10 is a frontend MVP only. Run the full frontend regression suite and docs smoke; do not add backend endpoints, new workflows, Creative Comparison, or SocialSense changes.
+M11 is a validation/reporting milestone only. Run the full frontend regression suite and docs smoke to prove no runtime regressions; do not add backend endpoints, new workflows, Creative Comparison, product redesign, or SocialSense changes.
 
 Full product regression commands remain available for implementation milestones:
 
@@ -197,9 +201,9 @@ Development server, for manual frontend shell review only:
 npm run dev
 ```
 
-## M10 review gates
+## M11 review gates
 
-Before M10 handoff:
+Before M11 handoff:
 
 - run `npm run test`;
 - run `npm run typecheck`;
@@ -207,8 +211,8 @@ Before M10 handoff:
 - run `npm run build`;
 - run `python3 scripts/docs_smoke.py`;
 - run `git diff --check origin/main...HEAD`;
-- confirm `/campaign-workspace` resolves and remains outside the primary navigation;
-- confirm Campaign Workspace displays Campaign Overview, Current Journey Stage, Recent Runs, Evidence Summary, Executive Summary, Recommended Next Action, and Available Workflow Actions;
-- confirm evidence comes only from Product Launch, Campaign Message Test, and A/B Experiment fixtures;
-- confirm no Creative Comparison, additional workflows, backend, runtime API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes were added;
-- commit M10 MVP changes on `m10-campaign-workspace-mvp`.
+- confirm all M11 validation artifacts exist and are linked from the README;
+- confirm the persona reviews cover Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace;
+- confirm Product Health, Roadmap, and Executive Product Review recommend evidence-backed remediation before Creative Comparison;
+- confirm no Creative Comparison, additional workflows, backend, runtime API, product redesign, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes were added;
+- commit M11 validation artifacts on `m11-continuous-product-validation`.

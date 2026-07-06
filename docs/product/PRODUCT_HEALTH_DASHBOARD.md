@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework and M9 Campaign Workspace Foundation are approved. M10 adds a frontend-only Campaign Workspace at `/campaign-workspace` using existing fixtures only. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M10.
+Status: M11 Continuous Product Validation & Synthetic Dogfooding complete on branch `m11-continuous-product-validation`. Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated through structured multi-persona synthetic dogfooding. Product Health Score is 7.4 / 10. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M11; next work should address evidence-backed trust and validation fixes first.
 
 
 ## M1 PR4 closeout
@@ -189,7 +189,7 @@ Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains t
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for M9 docs validation | Green every PR | M9 docs smoke, docs-only diff guard, and diff check pass for the Campaign Workspace Foundation; implementation regression suites remain available for future runtime milestones. |
+| Test/build status | Green for M11 validation | Green every PR | Frontend tests, typecheck, lint, build, docs smoke, regression/diff guards, and docs-only runtime guard pass for M11 validation artifacts. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review + M8 Journey composition | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; A/B Experiment is the third reference workflow; M8 composes them into Marketing Journey without redesign. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
@@ -200,13 +200,14 @@ Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains t
 | Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M9 Campaign Workspace Foundation GO. |
 | Campaign Workspace readiness | Complete | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are complete; Creative Comparison remains gated after M9 GO. |
 | Campaign Workspace MVP readiness | Complete | M10 frontend + review gates | `/campaign-workspace` provides campaign overview, journey timeline, evidence summary, executive summary, recommended next action, and workflow actions using existing fixtures only. |
+| Continuous Product Validation readiness | Complete | M11 persona dogfooding + review gates | Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated by six personas; Product Health Score is 7.4 / 10; P1/P2 findings are backlog, not implementation in M11. |
 
 ## KPI baseline
 
 | KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
 | Documented route patterns | 7 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M10 |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M11 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 2 | Code/smoke review | `product_launch` and Campaign Message Test fixture paths through public SDK/product adapter |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |
@@ -224,6 +225,12 @@ Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains t
 | Component Reuse % | 93% | M7 A/B reuse audit | Target >=90% |
 | Dashboard Reuse % | 91% | M7 A/B reuse audit | Target >=90% |
 | Export Reuse % | 100% | M7 A/B reuse audit | No new export formats |
+| Overall Product Health | 7.4/10 | M11 Product Validation Report | Improve P1/P2 trust findings before adding new capabilities |
+| Business Value | 8.0/10 | M11 persona dogfooding | Preserve executive campaign decision value |
+| Workflow Clarity | 7.0/10 | M11 persona dogfooding | Improve result focus and validation feedback |
+| Navigation Clarity | 7.0/10 | M11 persona dogfooding | Clarify workspace/export/run routes |
+| Safety Communication | 9.0/10 | M11 persona dogfooding | Maintain strong safety framing |
+| P1 UX friction count | 4 | M11 UX Friction Register | Burn down or explicitly accept before Creative Comparison |
 
 ## Scaffold readiness
 
