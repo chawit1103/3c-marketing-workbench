@@ -220,7 +220,7 @@ Status: M16 Feature Freeze and Demo Readiness is validated for review. Feature F
 - SocialSense changes: 0.
 - Backend endpoints: 0.
 - Architecture Gate: not triggered.
-- Next recommendation: Workspace dogfooding round 2 before starting any additional workflow.
+- Historical M15 next recommendation: Workspace dogfooding round 2 before starting any additional workflow; superseded by M16 Human Dogfooding Sprint recommendation.
 
 ## M16 Feature Freeze and Demo Readiness
 
