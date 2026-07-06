@@ -149,6 +149,55 @@ M11_FORBIDDEN_CHANGED_PREFIXES = (
     "integrations/",
 )
 
+REQUIRED_M15_FILES = [
+    "src/product/fixtures/creativeComparisonResult.json",
+    "scripts/generate_creative_comparison_fixture.py",
+    "tests/test_creative_comparison_fixture_generator.py",
+    "docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md",
+]
+
+M15_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md",
+    "src/App.tsx",
+    "src/App.test.tsx",
+    "src/views.tsx",
+    "src/app/routes/routeResolver.ts",
+    "src/app/routes/routeResolver.test.ts",
+    "src/product/fixtures/creativeComparisonResult.json",
+    "scripts/generate_creative_comparison_fixture.py",
+    "tests/test_creative_comparison_fixture_generator.py",
+}
+
+REQUIRED_M15_PHRASES = [
+    "M15 Creative Comparison Vertical Slice",
+    "/workbench/creative-comparison",
+    "Creative Comparison Dashboard",
+    "Creative A summary",
+    "Creative B summary",
+    "Comparison highlights",
+    "Differentiators",
+    "Audience fit",
+    "Brand fit",
+    "Message clarity",
+    "Risk / caveats",
+    "Evidence notes",
+    "Recommended next action",
+    "No winner selected",
+    "Workflow reuse %",
+    "Component reuse %",
+    "Dashboard reuse %",
+    "Export reuse %",
+    "Navigation changes",
+    "SocialSense changes",
+    "Backend endpoints",
+    "Architecture Gate: Not triggered",
+]
+
 REQUIRED_M14_DOCS = [
     "docs/product/M14_CREATIVE_COMPARISON_DISCOVERY.md",
     "docs/product/M14_CREATIVE_COMPARISON_USER_STORIES.md",
@@ -846,9 +895,11 @@ def main() -> None:
             missing_doc_phrases = [phrase for phrase in REQUIRED_M11_DOC_PHRASES if phrase not in content]
             if missing_doc_phrases:
                 fail(f"{path} missing M11 doc phrase: " + ", ".join(missing_doc_phrases))
-        for phrase in ["Product Health Score: 7.4 / 10", "Creative Comparison remains blocked", "no new workflows", "no SocialSense changes"]:
+        for phrase in ["Product Health Score: 7.4 / 10", "no new workflows", "no SocialSense changes"]:
             if phrase not in combined_m11_text:
                 fail(f"M11 current-state docs missing phrase: {phrase}")
+        if not any(phrase in combined_m11_text for phrase in ["Creative Comparison remains blocked", "M15 Creative Comparison Vertical Slice"]):
+            fail("M11 current-state docs missing Creative Comparison disposition")
         if not any(phrase in combined_m11_text for phrase in ["M12 Campaign Workspace Trust & Validation Fixes", "M12 Campaign Workspace Trust & Validation"]):
             fail("M11 current-state docs missing M12 Campaign Workspace Trust & Validation guidance")
         for phrase in ["Marketing Director", "First-time user", "Marketing Research Specialist", "Power user", "Governance reviewer", "Future maintainer"]:
@@ -916,12 +967,44 @@ def main() -> None:
         missing_m14_phrases = [phrase for phrase in REQUIRED_M14_PHRASES if phrase not in combined_m14_text]
         if missing_m14_phrases:
             fail("M14 docs missing Creative Comparison discovery phrases: " + ", ".join(missing_m14_phrases))
-        for phrase in ["Do NOT implement Creative Comparison", "Implementation remains HOLD", "Architecture Gate: Not triggered", "documentation/discovery only"]:
+        for phrase in ["Implementation remains HOLD", "Architecture Gate: Not triggered", "documentation/discovery only"]:
             if phrase not in combined_m14_text:
                 fail(f"M14 docs missing non-implementation boundary: {phrase}")
+        if not any(phrase in combined_m14_text for phrase in ["Do NOT implement Creative Comparison", "Do not implement Creative Comparison", "no Creative Comparison implementation"]):
+            fail("M14 docs missing non-implementation boundary: Do not implement Creative Comparison")
         forbidden_m14_changes = [path for path in changed_paths if path not in M14_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m14-") else []
         if forbidden_m14_changes:
             fail("M14 changed unexpected implementation paths: " + ", ".join(forbidden_m14_changes))
+
+    if current_branch_name().startswith("m15-") or "M15 Creative Comparison" in "\n".join([readme, agents, roadmap, health_dashboard]):
+        missing_m15_files = [path for path in REQUIRED_M15_FILES if not (ROOT / path).is_file()]
+        if missing_m15_files:
+            fail("missing M15 Creative Comparison implementation files: " + ", ".join(missing_m15_files))
+        m15_text_parts = [
+            readme,
+            agents,
+            roadmap,
+            health_dashboard,
+            (ROOT / "docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md").read_text(encoding="utf-8"),
+            (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+            (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+            (ROOT / "src/app/routes/routeResolver.ts").read_text(encoding="utf-8"),
+            (ROOT / "scripts/generate_creative_comparison_fixture.py").read_text(encoding="utf-8"),
+            (ROOT / "tests/test_creative_comparison_fixture_generator.py").read_text(encoding="utf-8"),
+        ]
+        combined_m15_text = "\n".join(m15_text_parts)
+        if "](docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md)" not in readme:
+            fail("README missing M15 closeout report link")
+        missing_m15_phrases = [phrase for phrase in REQUIRED_M15_PHRASES if phrase not in combined_m15_text]
+        if missing_m15_phrases:
+            fail("M15 docs/source missing Creative Comparison implementation phrases: " + ", ".join(missing_m15_phrases))
+        if "creativeComparison" not in combined_m15_text or "3c-m15-creative-comparison-reference-workflow" not in combined_m15_text:
+            fail("M15 source missing Creative Comparison route/run id wiring")
+        if "run_message_comparison" not in combined_m15_text:
+            fail("M15 generator must document/use closest existing public adapter path")
+        forbidden_m15_changes = [path for path in changed_paths if path not in M15_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m15-") else []
+        if forbidden_m15_changes:
+            fail("M15 changed unexpected paths: " + ", ".join(forbidden_m15_changes))
 
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
@@ -938,6 +1021,7 @@ def main() -> None:
     print("PASS: M12 Campaign Workspace Trust & Validation docs/source include KPI and trust guard phrases")
     print("PASS: M13 Product Trust Readiness docs include capability gate and non-implementation boundaries")
     print("PASS: M14 Creative Comparison discovery docs include required specification content and non-implementation boundaries")
+    print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

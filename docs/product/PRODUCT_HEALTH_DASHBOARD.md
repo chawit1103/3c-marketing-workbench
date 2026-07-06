@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M14 Creative Comparison Product Discovery & Specification is complete and merged. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 completed documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, live APIs, private data, SocialSense changes, or MarketingSimulation changes.
+Status: M15 Creative Comparison Vertical Slice is in product build mode. M14 Creative Comparison discovery/specification is complete and merged; M15 implements Creative Comparison as the fourth usable fixture-backed workflow. Architecture remains frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes are introduced.
 
 
 ## M1 PR4 closeout
@@ -204,6 +204,7 @@ Status: M14 Creative Comparison Product Discovery & Specification is complete an
 | Campaign Workspace Trust & Validation readiness | Complete | M12 P1/P2 remediation | Product Health improved from baseline 7.4; unknown run/export states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes are verified. |
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
+| Creative Comparison Vertical Slice | In progress | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -379,7 +380,7 @@ Current validation suite includes:
 
 Future required:
 
-- Creative Comparison discovery/specification is in progress as M14 documentation-only work.
+- Creative Comparison is implemented in M15 as a text-only, fixture-backed vertical slice using existing patterns.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -413,9 +414,16 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: M15 Creative Comparison Implementation Planning may be recommended only if M14 receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review, and only as planning unless implementation is explicitly authorized.
+Next milestone recommendation after M15 should be evidence-based and must not automatically start another workflow.
 
-Creative Comparison implementation remains blocked during M14. M14 may authorize only discovery/specification handoff, not runtime work, new workflow UI, backend behavior, live APIs, persistence, SocialSense changes, or MarketingSimulation changes.
+Recommended options after M15 validation:
+
+- product demo readiness;
+- workspace dogfooding round 2;
+- UX refinement;
+- next workflow only if evidence supports it and the user explicitly authorizes scope.
+
+Creative Comparison implementation is M15 scope. Further expansion remains blocked unless separately approved.
 
 Future capability planning should start from:
 
@@ -431,9 +439,9 @@ Future capability planning should start from:
 - the Experiment Framework;
 - A/B Experiment reuse audit findings;
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
-- no new workflows, Creative Comparison, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
+- no additional workflows beyond approved Creative Comparison, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
 
-Do not start Creative Comparison implementation from this dashboard alone. Use `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` as the readiness gate for planning-only authorization.
+Do not start any workflow after M15 from this dashboard alone. Use `docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md` plus dogfooding/review evidence for the next scope decision.
 
 Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_FRICTION_REGISTER.md`.
 

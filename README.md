@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M14 Creative Comparison Product Discovery & Specification is complete and merged. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 completed documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, SocialSense changes, or MarketingSimulation changes.
+Status: M15 Creative Comparison Vertical Slice is in product build mode. M14 Creative Comparison discovery/specification is complete and merged; M15 implements Creative Comparison as the fourth usable fixture-backed workflow. Architecture remains frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes are introduced.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -28,18 +28,18 @@ This repository owns the 3C product experience:
 - product positioning and user journey;
 - safe React/Vite/TypeScript frontend shell;
 - Product Launch Simulation vertical slice backed by `src/product/fixtures/productLaunchResult.json`;
-- Campaign Message Test and A/B Experiment reference workflows backed by generated product fixtures;
-- product-owned fixture generation through `scripts/generate_product_launch_fixture.py`;
+- Campaign Message Test, A/B Experiment, and Creative Comparison reference workflows backed by generated product fixtures;
+- product-owned fixture generation through `scripts/generate_product_launch_fixture.py`, `scripts/generate_campaign_message_test_fixture.py`, `scripts/generate_ab_experiment_fixture.py`, and `scripts/generate_creative_comparison_fixture.py`;
 - product-owned adapter under `integrations/socialsense/`;
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M14:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M15:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M14 must not modify SocialSense or MarketingSimulation.
+M15 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -79,8 +79,9 @@ Current frontend routes:
 | `/campaign-workspace` | Campaign Workspace overview, journey stage, recent runs, evidence summary, executive summary, next action, and workflow action links from existing fixtures only | Implemented M10 MVP |
 | `/workbench/campaign-message-test` | Guided Campaign Message Test form and local run action | Implemented M5 reference workflow |
 | `/workbench/ab-experiment` | Guided A/B Experiment form and local run action | Implemented M7 reference workflow |
-| `/runs/:runId` | Product Launch, Campaign Message Test, or A/B Experiment results dashboard for known generated offline samples; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard |
-| `/exports/:runId` | Export review for known generated offline samples; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M12 trust guard |
+| `/workbench/creative-comparison` | Guided text-only Creative Comparison form and local run action | Implemented M15 vertical slice |
+| `/runs/:runId` | Product Launch, Campaign Message Test, A/B Experiment, or Creative Comparison results dashboard for known generated offline samples; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard + M15 Creative Comparison |
+| `/exports/:runId` | Export review for known generated offline samples, including Creative Comparison; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M12 trust guard + M15 reuse |
 | `/health` | M12 Product Health 7.4 baseline, trust validation focus, and KPI dashboard | Implemented |
 
 Unknown routes render a not-found state. Unknown run/export IDs render explicit unavailable states instead of Product Launch fallback content. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
@@ -151,6 +152,7 @@ Product documentation map:
 - [M14 Creative Comparison Information Architecture](docs/product/M14_CREATIVE_COMPARISON_INFORMATION_ARCHITECTURE.md)
 - [M14 Creative Comparison Acceptance Criteria](docs/product/M14_CREATIVE_COMPARISON_ACCEPTANCE_CRITERIA.md)
 - [M14 Creative Comparison Implementation Plan](docs/product/M14_CREATIVE_COMPARISON_IMPLEMENTATION_PLAN.md)
+- [M15 Creative Comparison Closeout Report](docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -180,6 +182,22 @@ Install dependencies and maintain the npm lockfile:
 ```bash
 npm install
 ```
+
+M15 focused validation commands:
+
+```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_creative_comparison_fixture.py
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+```
+
+M15 is a product build milestone for Creative Comparison. It must keep backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, MarketingSimulation changes, production claims, persuasion optimization, microtargeting, and conversion guarantees out of scope.
 
 M11 focused validation commands:
 

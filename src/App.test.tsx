@@ -23,6 +23,11 @@ function renderAbExperiment() {
   return screen.getByRole('form', { name: 'A/B Experiment setup' });
 }
 
+function renderCreativeComparison() {
+  renderAt('/workbench/creative-comparison');
+  return screen.getByRole('form', { name: 'Creative Comparison setup' });
+}
+
 describe('App shell routes', () => {
   it.each([
     ['/', 'Compare campaign decisions safely before budget reviews.'],
@@ -30,6 +35,7 @@ describe('App shell routes', () => {
     ['/campaign-workspace', 'Campaign Workspace'],
     ['/workbench/campaign-message-test', 'Campaign Message Test'],
     ['/workbench/ab-experiment', 'A/B Experiment'],
+    ['/workbench/creative-comparison', 'Creative Comparison'],
     ['/runs/run-123', 'Run unavailable'],
     ['/exports/run-123', 'Export unavailable'],
     ['/health', 'M12 Campaign Workspace Trust & Validation'],
@@ -73,7 +79,7 @@ describe('App shell routes', () => {
       'campaign_response',
     ];
 
-    for (const pathname of ['/', '/workbench', '/campaign-workspace', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
+    for (const pathname of ['/', '/workbench', '/campaign-workspace', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/workbench/creative-comparison', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
       expect(visibleText).not.toContain('pr4');
@@ -89,6 +95,87 @@ describe('App shell routes', () => {
   });
 });
 
+describe('Creative Comparison workflow', () => {
+  it('is available as a fourth workbench workflow with Creative A and Creative B text inputs', () => {
+    const form = renderCreativeComparison();
+
+    expect(screen.getByRole('heading', { name: 'Creative Comparison' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Current workflow' })).toHaveTextContent('Creative Comparison mode');
+    expect(within(form).getByLabelText('Objective: Creative Comparison')).toHaveTextContent(
+      'Review two text-only creative concepts with shared audience, platform, and safety assumptions.',
+    );
+    expect(within(form).getByLabelText('Creative A concept title')).toHaveValue('Speed-first lunch creative');
+    expect(within(form).getByLabelText('Creative A visual idea / copy description')).toHaveValue('A clean desk scene with lunch options resolved quickly and a short benefit-led caption.');
+    expect(within(form).getByLabelText('Creative B concept title')).toHaveValue('Trust-proof lunch creative');
+    expect(within(form).getByLabelText('Creative B visual idea / copy description')).toHaveValue('A team lunch moment with nutrition proof points and dependable delivery reassurance.');
+    for (const step of ['Creative A', 'Creative B', 'Review', 'Run', 'Creative Comparison Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action']) {
+      expect(screen.getByRole('region', { name: 'Reference workflow steps' })).toHaveTextContent(step);
+    }
+  });
+
+  it('validates empty creative comparison inputs before running', () => {
+    const form = renderCreativeComparison();
+
+    for (const label of [
+      'Creative A concept title',
+      'Creative A visual idea / copy description',
+      'Creative B concept title',
+      'Creative B visual idea / copy description',
+      'Key Message',
+    ]) {
+      fireEvent.change(within(form).getByLabelText(label), { target: { value: '' } });
+    }
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Key Message is required because message clarity must be reviewed against an explicit message.');
+    expect(screen.queryByRole('heading', { name: 'Offline creative comparison ready for executive review' })).not.toBeInTheDocument();
+  });
+
+  it('produces result preview, comparison dashboard, executive summary, export review link, and safety labels after run', () => {
+    const form = renderCreativeComparison();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('status', { name: 'Run completion status' })).toHaveTextContent(
+      'Run complete: generated sample results are visible below now.',
+    );
+    expect(screen.getByRole('heading', { name: 'Offline creative comparison ready for executive review' })).toBeInTheDocument();
+    const dashboard = screen.getByRole('region', { name: 'Creative comparison dashboard' });
+    for (const heading of [
+      'Creative A summary',
+      'Creative B summary',
+      'Comparison highlights',
+      'Differentiators',
+      'Audience fit',
+      'Brand fit',
+      'Message clarity',
+      'Risk / caveats',
+      'Evidence notes',
+      'Recommended next action',
+    ]) {
+      expect(dashboard).toHaveTextContent(heading);
+    }
+    expect(dashboard).toHaveTextContent('No winner selected');
+    expect(dashboard).toHaveTextContent('inconclusive');
+    expect(screen.getByRole('heading', { name: 'Creative Comparison executive summary' })).toBeInTheDocument();
+    expect(screen.getByText('Open export-readiness preview')).toHaveAttribute('href', '/exports/3c-m15-creative-comparison-reference-workflow');
+    expect(document.body.textContent).toContain('Safety: offline fixture for planning only');
+  });
+
+  it('routes Creative Comparison dashboard and reuses export review for the generated run id', () => {
+    const runView = renderAt('/runs/3c-m15-creative-comparison-reference-workflow');
+    expect(screen.getByRole('heading', { name: 'Creative Comparison Results' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Creative comparison dashboard' })).toHaveTextContent('No winner selected');
+    runView.unmount();
+
+    renderAt('/exports/3c-m15-creative-comparison-reference-workflow');
+    expect(screen.getByRole('heading', { name: 'Creative Comparison executive-ready summary' })).toBeInTheDocument();
+    expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
+  });
+});
+
 describe('Campaign Workspace MVP', () => {
   it('renders a campaign-centric workspace with the approved journey timeline and executive summary', () => {
     renderAt('/campaign-workspace');
@@ -100,11 +187,11 @@ describe('Campaign Workspace MVP', () => {
 
     const primaryAction = screen.getByRole('link', { name: 'Open executive handoff review' });
     expect(primaryAction).toHaveClass('button-primary');
-    expect(primaryAction).toHaveAttribute('href', '/exports/3c-m7-ab-experiment-reference-workflow');
+    expect(primaryAction).toHaveAttribute('href', '/exports/3c-m15-creative-comparison-reference-workflow');
     expect(screen.queryByRole('link', { name: /Continue next workflow/i })).not.toBeInTheDocument();
 
     const journey = screen.getByRole('region', { name: 'Campaign journey timeline' });
-    for (const stage of ['Completed: Campaign Definition', 'Completed: Campaign Message Test', 'Completed: A/B Experiment', 'Current: Executive Decision', 'Next: Export/Handoff']) {
+    for (const stage of ['Completed: Campaign Definition', 'Completed: Campaign Message Test', 'Completed: A/B Experiment', 'Completed: Creative Comparison', 'Current: Executive Decision', 'Next: Export/Handoff']) {
       expect(journey).toHaveTextContent(stage);
     }
     expect(journey).toHaveTextContent('Handoff readiness: Ready for human review');
@@ -114,7 +201,7 @@ describe('Campaign Workspace MVP', () => {
     renderAt('/campaign-workspace');
 
     const recentRuns = screen.getByRole('region', { name: 'Recent Runs' });
-    for (const objective of ['Product Launch', 'Campaign Message Test', 'A/B Experiment']) {
+    for (const objective of ['Product Launch', 'Campaign Message Test', 'A/B Experiment', 'Creative Comparison']) {
       expect(recentRuns).toHaveTextContent(objective);
     }
 
@@ -123,6 +210,7 @@ describe('Campaign Workspace MVP', () => {
       'Offline product-launch simulation ready for executive review',
       'Offline campaign-message test ready for executive review',
       'Offline A/B experiment ready for executive review',
+      'Offline creative comparison ready for executive review',
     ]) {
       expect(evidence).toHaveTextContent(fixtureHeadline);
     }
@@ -135,19 +223,19 @@ describe('Campaign Workspace MVP', () => {
     expect(evidence).toHaveTextContent('winner selection');
     expect(evidence).toHaveTextContent('Handoff readiness');
     expect(evidence).toHaveTextContent('Ready for human review');
-    expect(evidence.textContent).not.toContain('Creative Comparison');
+    expect(evidence.textContent?.toLowerCase()).toContain('creative comparison');
     expect(evidence.textContent?.toLowerCase()).not.toContain('socialsense');
   });
 
-  it('offers only existing workflow actions and keeps Creative Comparison out of the workspace', () => {
+  it('offers approved workflow actions including Creative Comparison without primary navigation changes', () => {
     renderAt('/campaign-workspace');
 
     const actions = screen.getByRole('region', { name: 'Available Workflow Actions' });
     expect(within(actions).getByRole('link', { name: 'Open Product Launch' })).toHaveAttribute('href', '/workbench');
     expect(within(actions).getByRole('link', { name: 'Open Campaign Message Test' })).toHaveAttribute('href', '/workbench/campaign-message-test');
     expect(within(actions).getByRole('link', { name: 'Open A/B Experiment' })).toHaveAttribute('href', '/workbench/ab-experiment');
-    expect(within(actions).queryByRole('link', { name: /Creative Comparison/i })).not.toBeInTheDocument();
-    expect(document.body.textContent).not.toContain('Creative Comparison');
+    expect(within(actions).getByRole('link', { name: 'Open Creative Comparison' })).toHaveAttribute('href', '/workbench/creative-comparison');
+    expect(document.body.textContent).toContain('Creative Comparison');
   });
 });
 
@@ -416,6 +504,7 @@ describe('Export review', () => {
     ['/exports/sample-run', 'Product Launch executive-ready summary'],
     ['/exports/3c-m5-campaign-message-test-reference-workflow', 'Campaign Message Test executive-ready summary'],
     ['/exports/3c-m7-ab-experiment-reference-workflow', 'A/B Experiment executive-ready summary'],
+    ['/exports/3c-m15-creative-comparison-reference-workflow', 'Creative Comparison executive-ready summary'],
   ])('renders supported formats, status, executive preview, and safety limitations for %s', (pathname, summaryHeading) => {
     renderAt(pathname);
 

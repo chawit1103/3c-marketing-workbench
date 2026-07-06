@@ -10,6 +10,7 @@ describe('resolveRoute', () => {
     ['/campaign-workspace/', 'campaignWorkspace', undefined],
     ['/workbench/campaign-message-test', 'campaignMessageTest', undefined],
     ['/workbench/ab-experiment', 'abExperiment', undefined],
+    ['/workbench/creative-comparison', 'creativeComparison', undefined],
     ['/health', 'health', undefined],
     ['/runs/sample-run', 'runDashboard', 'sample-run'],
     ['/exports/run%201', 'exportReview', 'run 1'],

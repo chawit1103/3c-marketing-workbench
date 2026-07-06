@@ -4,6 +4,7 @@ export type AppRouteName =
   | 'campaignWorkspace'
   | 'campaignMessageTest'
   | 'abExperiment'
+  | 'creativeComparison'
   | 'runDashboard'
   | 'exportReview'
   | 'health'
@@ -50,6 +51,10 @@ export function resolveRoute(pathname: string): AppRoute {
 
   if (normalized === '/workbench/ab-experiment') {
     return { name: 'abExperiment', title: 'A/B Experiment', pathname: '/workbench/ab-experiment' };
+  }
+
+  if (normalized === '/workbench/creative-comparison') {
+    return { name: 'creativeComparison', title: 'Creative Comparison', pathname: '/workbench/creative-comparison' };
   }
 
   if (normalized === '/health') {
