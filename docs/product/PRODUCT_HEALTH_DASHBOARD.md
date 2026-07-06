@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M11 Continuous Product Validation & Synthetic Dogfooding complete and merged. Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated through structured multi-persona synthetic dogfooding. Product Health Score is 7.4 / 10. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M11; next work should address evidence-backed trust and validation fixes first.
+Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. Product Health 7.4 baseline from M11 remains the reference score while P1/P2 trust issues are remediated. M12 focuses on unknown run/export unavailable states, clearer blank/invalid input feedback, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain out of scope.
 
 
 ## M1 PR4 closeout
@@ -201,6 +201,19 @@ Status: M11 Continuous Product Validation & Synthetic Dogfooding complete and me
 | Campaign Workspace readiness | Complete | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are complete; Creative Comparison remains gated after M9 GO. |
 | Campaign Workspace MVP readiness | Complete | M10 frontend + review gates | `/campaign-workspace` provides campaign overview, journey timeline, evidence summary, executive summary, recommended next action, and workflow actions using existing fixtures only. |
 | Continuous Product Validation readiness | Complete | M11 persona dogfooding + review gates | Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated by six personas; Product Health Score is 7.4 / 10; P1/P2 findings are backlog, not implementation in M11. |
+| Campaign Workspace Trust & Validation readiness | In progress | M12 P1/P2 remediation | Product Health baseline 7.4; UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI now focus on unavailable states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes. |
+
+## M12 Campaign Workspace Trust & Validation
+
+- Scope: P1/P2 trust remediation only; no Creative Comparison, no new marketing workflows, no backend/live APIs/persistence/auth/credentials, no product redesign, no SocialSense changes, and no MarketingSimulation changes.
+- Unknown `/runs/:id` and `/exports/:id`: explicit unavailable states with recovery links; no fallback to Product Launch fixture for unsupported IDs.
+- Blank/invalid input feedback: each message explains what is missing, why it matters, and how to fix it without adding fields.
+- Result visibility: local Run action immediately exposes completion status and a jump link to generated sample results.
+- Fixture transparency: results distinguish Reference Fixture from User Review Session, state synthetic generated sample status, show user-provided inputs as assumptions only, and confirm no live execution.
+- `/health`: reflects Product Health 7.4 baseline and M12 trust validation focus; stale M7 heading removed.
+- M12 KPIs: Product Health, UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI.
+- Engineering KPI: regression coverage plus validation gates pass with no Architecture Gate and no SocialSense/MarketingSimulation changes.
+- Optional registry extraction: deferred; exact fixture matching was implemented in-place to avoid redesign risk.
 
 ## KPI baseline
 
@@ -398,11 +411,11 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: M12 Campaign Workspace Trust & Validation Fixes only if M11 receives GO.
+Next milestone: future capability planning only if M12 receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review.
 
-Scope must remain blocked unless M12 addresses or explicitly accepts M11 P1 evidence findings: unsupported run/export states, result discoverability, invalid-input feedback, and trust/validation clarity. Creative Comparison remains blocked until that evidence-backed remediation is complete or explicitly accepted.
+Creative Comparison remains blocked until M12 trust validation confirms the P1 findings are resolved or explicitly accepted: unsupported run/export states, result discoverability, invalid-input feedback, fixture transparency, and trust/validation clarity.
 
-M12 should start from:
+Future capability planning should start from:
 
 - M11 Product Validation Report;
 - M11 Persona Evidence Appendix;

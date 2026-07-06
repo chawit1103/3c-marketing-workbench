@@ -29,7 +29,7 @@ Architecture Gate: Not triggered.
 - Blank or invalid inputs can fail silently or provide weak feedback.
 - Signal/confidence labels are safe but not methodologically explained.
 - Campaign Workspace could distinguish fixture-reference evidence from user-executed runs more clearly.
-- Product Health route and current-state copy need to reflect M11 continuous validation posture.
+- Product Health route and current-state copy were identified as trust risks in M11 and are addressed by the M12 `/health` remediation.
 - `src/views.tsx` is becoming a maintainability bottleneck for future workflow additions.
 
 ## Opportunities
@@ -76,7 +76,7 @@ Scope should be remediation, not new capability:
 5. in-app `/health` route wording;
 6. optional fixture/workflow registry extraction if bundled safely.
 
-Creative Comparison should remain blocked until M12 or equivalent evidence-backed remediation is complete.
+Creative Comparison should remain blocked until M12 or equivalent evidence-backed remediation is complete. M12 must also update in-app `/health` wording so the product reflects the Product Health 7.4 baseline and M12 Campaign Workspace Trust & Validation focus instead of stale milestone language.
 
 ## Product Owner decision support
 

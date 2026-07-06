@@ -395,7 +395,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   }
 
   const resultPreview = hasRun
-    ? 'Result preview is ready below: open the dashboard or export-readiness preview after reviewing the top recommendation.'
+    ? 'Run complete: generated sample results are visible below now.'
     : 'Defaults are prefilled. Run now, or edit the visible inputs first.';
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
@@ -421,7 +421,8 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
         <aside className="quick-start-panel" aria-label="Quick start run action">
           <p className="eyebrow">Quick start</p>
           <h2>Run with safe defaults</h2>
-          <p>{resultPreview}</p>
+          <p aria-label="Run completion status" role={hasRun ? 'status' : undefined}>{resultPreview}</p>
+          {hasRun ? <a className="button button-secondary" href="#results-title">Jump to generated sample results</a> : null}
           <button className="button button-primary" type="button" onClick={runSimulation}>
             Run offline simulation
           </button>
@@ -585,6 +586,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
 
 export function RunDashboardView({ runId }: { runId?: string }) {
   const config = configForRunId(runId);
+  if (!config) {
+    return <UnavailableReferenceView kind="Run" id={runId} />;
+  }
   return (
     <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="card card-accent">
@@ -599,6 +603,9 @@ export function RunDashboardView({ runId }: { runId?: string }) {
 
 export function ExportReviewView({ runId }: { runId?: string }) {
   const config = configForRunId(runId);
+  if (!config) {
+    return <UnavailableReferenceView kind="Export" id={runId} />;
+  }
   return (
     <section className="view-stack" aria-labelledby="export-title">
       <div className="card card-accent">
@@ -606,24 +613,55 @@ export function ExportReviewView({ runId }: { runId?: string }) {
         <h1 id="export-title">Export Readiness Preview</h1>
         <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
       </div>
+      <FixtureTransparency />
       <ExportReview fixture={config.fixture} objective={config.objective} />
     </section>
   );
 }
 
+function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: string }) {
+  return (
+    <section className="view-stack" aria-labelledby="unavailable-title">
+      <div className="card error-state">
+        <p className="eyebrow">{kind} unavailable</p>
+        <h1 id="unavailable-title">{kind} unavailable</h1>
+        <p>
+          We could not match this id to a reviewed reference fixture: {id ?? 'missing id'}.
+          No Product Launch sample is shown as a fallback.
+        </p>
+        <div className="button-row">
+          <a className="button button-primary" href="/campaign-workspace">Return to Campaign Workspace</a>
+          <a className="button button-secondary" href="/workbench">Open Product Launch workbench</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function HealthView() {
+  const kpis = [
+    ['Product Health', '7.4 baseline retained for M12 trust validation.'],
+    ['UX Health', 'Validation focuses on blank input feedback and missed completion recovery.'],
+    ['Trust Score', 'Unknown runs and exports show unavailable states instead of fixture fallback.'],
+    ['Transparency Score', 'Results label Reference Fixture, User Review Session, synthetic sample, and no live execution.'],
+    ['Validation Score', 'Regression coverage protects unknown ids, invalid input, visibility, transparency, and health clarity.'],
+    ['Dashboard Clarity', 'Health copy now reflects current milestone and M12 trust focus.'],
+    ['Overall Readiness', 'Ready for human review with P1/P2 trust issues addressed.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, or live API changes.'],
+  ];
+
   return (
     <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M7 A/B Experiment workflow readiness</h1>
-        <p>Product Launch, Campaign Message Test, and A/B Experiment provide tested offline workflows, generated sample results, dashboard reuse, and export review.</p>
+        <h1 id="health-title">M12 Campaign Workspace Trust &amp; Validation</h1>
+        <p>Product Health 7.4 baseline with M12 focus on trust validation, unavailable states, input clarity, result visibility, and fixture transparency.</p>
       </div>
-      <div className="grid three-col">
-        <ObjectiveCard title="Routes" description="Workbench, Campaign Message Test, A/B Experiment, results, export review, and health routes resolve without primary navigation changes." status="ready" />
-        <ObjectiveCard title="Component reuse" description="A/B Experiment reuses the approved workflow pattern, cards, export review, and safety labels with minimal comparison cards." status="ready" />
-        <ObjectiveCard title="Safety" description="No live data, credentials, private data, or production campaign claims are introduced." status="review" />
-      </div>
+      <section className="grid two-col" aria-label="M12 KPI dashboard">
+        {kpis.map(([title, description]) => (
+          <ObjectiveCard key={title} title={title} description={description} status={title === 'Engineering KPI' ? 'review' : 'ready'} />
+        ))}
+      </section>
     </section>
   );
 }
@@ -702,6 +740,8 @@ function ReferenceResults({
         </dl>
         <p className="help-text">The generated sample result is not recalculated from arbitrary browser-entered data.</p>
       </div>
+
+      <FixtureTransparency />
 
       {'comparisonCards' in fixture ? (
         <section className="card" aria-label="Variant comparison">
@@ -808,6 +848,29 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
   );
 }
 
+function FixtureTransparency() {
+  return (
+    <section className="card" aria-label="Fixture transparency">
+      <p className="eyebrow">Fixture transparency</p>
+      <h2>Reference Fixture vs User Review Session</h2>
+      <dl className="assumption-grid">
+        <div>
+          <dt>Reference Fixture</dt>
+          <dd>Synthetic generated sample, reviewed offline, and not live execution.</dd>
+        </div>
+        <div>
+          <dt>User Review Session</dt>
+          <dd>User-provided inputs are shown as review assumptions only; they do not recalculate the generated sample.</dd>
+        </div>
+        <div>
+          <dt>No live execution</dt>
+          <dd>No backend run, live API, persistence, credential, or production campaign system is invoked.</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
 function MetricCard({ card }: { card: FixtureCard }) {
   return (
     <article className="card metric-card">
@@ -833,29 +896,32 @@ function InsightList({ title, items }: { title: string; items: string[] }) {
 function validateForm(form: LaunchForm, workflow: WorkflowKey): string[] {
   const errors: string[] = [];
   if (!form.brand.trim()) {
-    errors.push('Campaign name or brand is required.');
+    errors.push('Campaign name or brand is required because the review needs a campaign label. Add a brand or campaign name to continue.');
   }
   if (!form.campaignMessage.trim()) {
-    errors.push('Campaign Message is required.');
+    errors.push('Campaign Message is required because the fixture must be reviewed against a visible message. Add the message copy to continue.');
   }
   if (workflow === 'abExperiment' && (!form.variantA.trim() || !form.variantB.trim())) {
-    errors.push('Both A/B variants are required.');
+    errors.push('Both A/B variants are required because the comparison needs two visible alternatives. Add Variant A and Variant B copy to continue.');
   }
   if (workflow !== 'abExperiment' && (form.variantA || form.variantB) && (!form.variantA.trim() || !form.variantB.trim())) {
-    errors.push('Both A/B variants are required.');
+    errors.push('Both A/B variants are required because partial variants would make comparison context unclear. Add both variants or leave both blank.');
   }
   if (form.platforms.length === 0) {
-    errors.push('Select at least one platform.');
+    errors.push('Select at least one platform because channel context changes review interpretation. Choose one or more platform checkboxes.');
   }
   return errors;
 }
 
-function configForRunId(runId?: string): WorkflowConfig {
-  if (runId === campaignMessageFixture.runId || runId?.includes('campaign-message')) {
+function configForRunId(runId?: string): WorkflowConfig | undefined {
+  if (!runId || runId === 'sample-run' || runId === productLaunchFixture.runId) {
+    return workflowConfigs.productLaunch;
+  }
+  if (runId === campaignMessageFixture.runId || runId === '3c-m5-campaign-message-test-reference-workflow') {
     return workflowConfigs.campaignMessageTest;
   }
-  if (runId === abExperimentFixture.runId || runId?.includes('ab-experiment')) {
+  if (runId === abExperimentFixture.runId) {
     return workflowConfigs.abExperiment;
   }
-  return workflowConfigs.productLaunch;
+  return undefined;
 }

@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M11 Continuous Product Validation & Synthetic Dogfooding complete and merged. Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated through structured multi-persona synthetic dogfooding. M11 creates evidence reports/backlog only; Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, and SocialSense changes remain not implemented.
+Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. Product Health 7.4 baseline from M11 remains the reference while P1/P2 trust issues are addressed in-app: unknown run/export unavailable states, clearer input validation, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain not implemented.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -79,11 +79,11 @@ Current frontend routes:
 | `/campaign-workspace` | Campaign Workspace overview, journey stage, recent runs, evidence summary, executive summary, next action, and workflow action links from existing fixtures only | Implemented M10 MVP |
 | `/workbench/campaign-message-test` | Guided Campaign Message Test form and local run action | Implemented M5 reference workflow |
 | `/workbench/ab-experiment` | Guided A/B Experiment form and local run action | Implemented M7 reference workflow |
-| `/runs/:runId` | Product Launch, Campaign Message Test, or A/B Experiment results dashboard for generated offline samples | Implemented reusable dashboard pattern |
-| `/exports/:runId` | Export review for JSON, Markdown, and Executive Summary readiness/status | Implemented reusable export-review pattern |
-| `/health` | Product health/readiness view | Implemented |
+| `/runs/:runId` | Product Launch, Campaign Message Test, or A/B Experiment results dashboard for known generated offline samples; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard |
+| `/exports/:runId` | Export review for known generated offline samples; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M12 trust guard |
+| `/health` | M12 Product Health 7.4 baseline, trust validation focus, and KPI dashboard | Implemented |
 
-Unknown routes render a not-found state. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
+Unknown routes render a not-found state. Unknown run/export IDs render explicit unavailable states instead of Product Launch fallback content. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
 
 ## Docs map
 
@@ -143,6 +143,7 @@ Product documentation map:
 - [M11 UX Friction Register](docs/product/M11_UX_FRICTION_REGISTER.md)
 - [M11 Product Backlog](docs/product/M11_PRODUCT_BACKLOG.md)
 - [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)
+- [M12 Campaign Workspace Trust & Validation Report](docs/product/M12_TRUST_VALIDATION_REPORT.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -201,6 +202,21 @@ Development server, for manual frontend shell review only:
 ```bash
 npm run dev
 ```
+
+## M12 review gates
+
+Before M12 handoff:
+
+- run `npm run test`;
+- run `npm run typecheck`;
+- run `npm run lint`;
+- run `npm run build`;
+- run `python3 scripts/docs_smoke.py`;
+- run `git diff --check origin/main...HEAD`;
+- run `python3 -m unittest discover -s tests -p 'test_*.py'`;
+- run `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py`;
+- confirm Product Health, UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI are documented;
+- confirm no Creative Comparison, additional workflows, backend/live APIs, persistence, auth, credentials, SocialSense changes, or MarketingSimulation changes were added.
 
 ## M11 review gates
 
