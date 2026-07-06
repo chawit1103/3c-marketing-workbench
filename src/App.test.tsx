@@ -287,6 +287,32 @@ describe('Campaign Workspace MVP', () => {
     expect(within(dashboard).getByRole('region', { name: 'Journey progress' })).toHaveTextContent('5 of 6 review stages ready');
   });
 
+  it('adds M17 PR3 sentiment, evidence tier, limitation, and human-review visuals without measured engagement claims', () => {
+    renderAt('/campaign-workspace');
+
+    const dashboard = screen.getByRole('region', { name: 'Executive KPI dashboard' });
+    const sentiment = within(dashboard).getByRole('region', { name: 'Sentiment comparison' });
+    expect(sentiment).toHaveTextContent('Formula: sentiment bar = clampScore(50 + summary.sentimentDelta × 100)');
+    expect(sentiment).toHaveTextContent('Source: summary.sentimentDelta and fixture summary/card fields from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison offline fixtures.');
+    expect(sentiment).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction.');
+    expect(sentiment).toHaveTextContent('Next evidence step: compare against approved field feedback or backtest before any launch, budget, or winner decision.');
+
+    const tiers = within(dashboard).getByRole('region', { name: 'Evidence tier visualization' });
+    expect(tiers).toHaveTextContent('Current tier: E1 synthetic/offline fixture');
+    expect(tiers).toHaveTextContent('Unsupported: live social measurement, CRM/customer data, private data, and production prediction are unavailable in this dashboard.');
+    expect(tiers).toHaveTextContent('Formula: evidence tier is E1 when sourceChecks confirm offlineExecution=true, liveApiAccess=false, credentialsRequired=false, and productionReady=false across all fixtures.');
+
+    const review = within(dashboard).getByRole('region', { name: 'Human review checklist' });
+    expect(review).toHaveTextContent('Have claims been reviewed against approved proof points?');
+    expect(review).toHaveTextContent('Are evidence gaps acceptable before the next small reviewed test?');
+    expect(review).toHaveTextContent('Confidence: Low directional; limitation is synthetic fixture evidence only.');
+
+    const limitations = within(dashboard).getByRole('region', { name: 'Visual evidence gaps and limitations' });
+    expect(limitations).toHaveTextContent('No real social platform APIs, private social scraping, private groups, CRM records, voter lists, or direct messages were used.');
+    expect(limitations).toHaveTextContent('Not measured social platform engagement; not production prediction; not a conversion guarantee.');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+  });
+
   it('offers approved workflow actions including Creative Comparison without primary navigation changes', () => {
     renderAt('/campaign-workspace');
 

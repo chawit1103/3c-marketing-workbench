@@ -229,6 +229,21 @@ M17_PR2_ALLOWED_CHANGED_PATHS = {
     "src/App.test.tsx",
 }
 
+M17_PR3_ALLOWED_CHANGED_PATHS = M17_PR2_ALLOWED_CHANGED_PATHS
+
+REQUIRED_M17_PR3_PHRASES = [
+    "Sentiment comparison",
+    "Formula: sentiment bar = clampScore(50 + summary.sentimentDelta × 100)",
+    "Evidence tier visualization",
+    "Current tier: E1 synthetic/offline fixture",
+    "Visual evidence gaps and limitations",
+    "Human review checklist",
+    "Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction",
+    "Unsupported: live social measurement, CRM/customer data, private data, and production prediction are unavailable in this dashboard.",
+    "Next evidence step: compare against approved field feedback or backtest before any launch, budget, or winner decision.",
+    "not production prediction",
+]
+
 REQUIRED_M17_PR2_RESEARCH_GUARD_PHRASES = [
     "Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step",
     "Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data",
@@ -1268,6 +1283,22 @@ def main() -> None:
             if missing_m17_pr2_research_phrases:
                 fail("M17 PR2 source missing Research Review evidence/confidence guard phrases: " + ", ".join(missing_m17_pr2_research_phrases))
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR2_ALLOWED_CHANGED_PATHS]
+        elif current_branch_name() == "m17-evidence-confidence-visuals":
+            m17_pr3_source_text = "\n".join(
+                [
+                    (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+                    (ROOT / "src/styles.css").read_text(encoding="utf-8"),
+                    (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+                ]
+            )
+            combined_m17_pr3_text = "\n".join([combined_m17_text, m17_pr3_source_text])
+            missing_m17_pr2_phrases = [phrase for phrase in REQUIRED_M17_PR2_PHRASES if phrase not in combined_m17_pr3_text]
+            if missing_m17_pr2_phrases:
+                fail("M17 PR3 source lost PR2 executive KPI dashboard phrases: " + ", ".join(missing_m17_pr2_phrases))
+            missing_m17_pr3_phrases = [phrase for phrase in REQUIRED_M17_PR3_PHRASES if phrase not in combined_m17_pr3_text]
+            if missing_m17_pr3_phrases:
+                fail("M17 PR3 docs/source missing marketing chart/evidence/confidence phrases: " + ", ".join(missing_m17_pr3_phrases))
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR3_ALLOWED_CHANGED_PATHS]
         elif current_branch_name().startswith("m17-"):
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
         else:
@@ -1296,6 +1327,8 @@ def main() -> None:
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         if current_branch_name() == "m17-executive-dashboard-kpis":
             print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
+        if current_branch_name() == "m17-evidence-confidence-visuals":
+            print("PASS: M17 PR3 runtime acceptance includes sentiment comparison, evidence tiers, gaps, limitations, human review checklist, and offline/synthetic boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
