@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
+import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import productLaunchFixture from './product/fixtures/productLaunchResult.json';
 
@@ -13,11 +14,13 @@ const audiencePresets = [
 ];
 const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
 
-type WorkflowKey = 'productLaunch' | 'campaignMessageTest';
+type WorkflowKey = 'productLaunch' | 'campaignMessageTest' | 'abExperiment';
 
 type LaunchForm = {
   brand: string;
   campaignMessage: string;
+  variantA: string;
+  variantB: string;
   offer: string;
   keyMessage: string;
   tone: string;
@@ -33,7 +36,9 @@ type FixtureCard = {
   detail: string;
 };
 
-type ReferenceFixture = typeof productLaunchFixture;
+type ComparisonFixtureCard = FixtureCard;
+
+type ReferenceFixture = typeof productLaunchFixture | typeof campaignMessageFixture | typeof abExperimentFixture;
 
 type WorkflowConfig = {
   key: WorkflowKey;
@@ -51,6 +56,8 @@ type WorkflowConfig = {
 const productLaunchDefaultForm: LaunchForm = {
   brand: productLaunchFixture.sampleInput.brand,
   campaignMessage: productLaunchFixture.sampleInput.campaign_message,
+  variantA: '',
+  variantB: '',
   offer: productLaunchFixture.sampleInput.offer,
   keyMessage: productLaunchFixture.sampleInput.key_message,
   tone: 'Helpful and practical',
@@ -63,6 +70,8 @@ const productLaunchDefaultForm: LaunchForm = {
 const campaignMessageDefaultForm: LaunchForm = {
   brand: campaignMessageFixture.sampleInput.brand,
   campaignMessage: campaignMessageFixture.sampleInput.campaign_message,
+  variantA: '',
+  variantB: '',
   offer: '',
   keyMessage: campaignMessageFixture.sampleInput.key_message,
   tone: campaignMessageFixture.sampleInput.tone,
@@ -70,6 +79,20 @@ const campaignMessageDefaultForm: LaunchForm = {
   context: campaignMessageFixture.sampleInput.context,
   audiences: campaignMessageFixture.sampleInput.audiences,
   platforms: campaignMessageFixture.sampleInput.platforms,
+};
+
+const abExperimentDefaultForm: LaunchForm = {
+  brand: abExperimentFixture.sampleInput.brand,
+  campaignMessage: abExperimentFixture.sampleInput.campaign_message,
+  variantA: abExperimentFixture.sampleInput.variant_a,
+  variantB: abExperimentFixture.sampleInput.variant_b,
+  offer: '',
+  keyMessage: abExperimentFixture.sampleInput.key_message,
+  tone: abExperimentFixture.sampleInput.tone,
+  claim: abExperimentFixture.sampleInput.claim,
+  context: abExperimentFixture.sampleInput.context,
+  audiences: abExperimentFixture.sampleInput.audiences,
+  platforms: abExperimentFixture.sampleInput.platforms,
 };
 
 const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
@@ -99,6 +122,19 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
     fixture: campaignMessageFixture,
     workflowSteps: ['Campaign Details', 'Audience', 'Platform Mix', 'Review', 'Run', 'Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
   },
+  abExperiment: {
+    key: 'abExperiment',
+    objective: 'A/B Experiment',
+    modeLabel: 'A/B Experiment mode',
+    heading: 'A/B Experiment',
+    shortDescription:
+      'Compare Variant A and Variant B with the approved Experiment Framework while reusing the same offline workbench pattern, dashboard, and export review.',
+    formLabel: 'A/B Experiment setup',
+    objectiveDescription: 'Review two campaign message variants with shared audience, platform, and safety assumptions.',
+    defaultForm: abExperimentDefaultForm,
+    fixture: abExperimentFixture,
+    workflowSteps: ['Variant A', 'Variant B', 'Review', 'Run', 'Comparison Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
+  },
 };
 
 export function HomeView() {
@@ -114,6 +150,7 @@ export function HomeView() {
         <div className="button-row">
           <a className="button button-primary" href="/workbench">Open guided workbench</a>
           <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
+          <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
           <a className="button button-secondary" href="/health">View product health</a>
         </div>
       </div>
@@ -129,8 +166,8 @@ export function HomeView() {
           status="ready"
         />
         <ObjectiveCard
-          title="Executive review path"
-          description="Dashboard and export review show generated sample summaries with safety boundaries visible."
+          title="A/B Experiment workflow"
+          description="A third reference workflow reuses Experiment Framework, guided inputs, comparison dashboard, export review, and safety labels."
           status="ready"
         />
       </div>
@@ -162,7 +199,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   }
 
   function runSimulation() {
-    const nextErrors = validateForm(form);
+    const nextErrors = validateForm(form, config.key);
     setErrors(nextErrors);
     if (nextErrors.length > 0) {
       setHasRun(false);
@@ -175,8 +212,8 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const resultPreview = hasRun
     ? 'Result preview is ready below: open the dashboard or export-readiness preview after reviewing the top recommendation.'
     : 'Defaults are prefilled. Run now, or edit the visible inputs first.';
-  const alternateWorkflow = config.key === 'productLaunch' ? workflowConfigs.campaignMessageTest : workflowConfigs.productLaunch;
-  const alternateWorkflowHref = config.key === 'productLaunch' ? '/workbench/campaign-message-test' : '/workbench';
+  const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
+  const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
 
   return (
     <section className="view-stack" aria-labelledby="workbench-title">
@@ -245,6 +282,14 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
               onChange={(event) => updateField('campaignMessage', event.target.value)}
               rows={3}
             />
+            {config.key === 'abExperiment' ? (
+              <>
+                <label htmlFor="variant-a">Variant A</label>
+                <textarea id="variant-a" value={form.variantA} onChange={(event) => updateField('variantA', event.target.value)} rows={3} />
+                <label htmlFor="variant-b">Variant B</label>
+                <textarea id="variant-b" value={form.variantB} onChange={(event) => updateField('variantB', event.target.value)} rows={3} />
+              </>
+            ) : null}
             {config.key === 'productLaunch' ? (
               <>
                 <label htmlFor="offer">Offer/Promotion</label>
@@ -257,7 +302,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
               value={form.keyMessage}
               onChange={(event) => updateField('keyMessage', event.target.value)}
             />
-            {config.key === 'campaignMessageTest' ? (
+            {config.key === 'campaignMessageTest' || config.key === 'abExperiment' ? (
               <>
                 <label htmlFor="tone">Tone</label>
                 <input id="tone" value={form.tone} onChange={(event) => updateField('tone', event.target.value)} />
@@ -328,6 +373,14 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
             <dd>{config.objective}</dd>
             <dt>Campaign name or brand</dt>
             <dd>{form.brand || 'Required'}</dd>
+            {config.key === 'abExperiment' ? (
+              <>
+                <dt>Variant A</dt>
+                <dd>{form.variantA || 'Required'}</dd>
+                <dt>Variant B</dt>
+                <dd>{form.variantB || 'Required'}</dd>
+              </>
+            ) : null}
             <dt>Audience</dt>
             <dd>{selectedAudienceText || 'General Consumers'}</dd>
             <dt>Platform mix</dt>
@@ -378,12 +431,12 @@ export function HealthView() {
     <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M5 Campaign workflow readiness</h1>
-        <p>Product Launch and Campaign Message Test provide tested offline workflows, generated sample results, dashboard reuse, and export review.</p>
+        <h1 id="health-title">M7 A/B Experiment workflow readiness</h1>
+        <p>Product Launch, Campaign Message Test, and A/B Experiment provide tested offline workflows, generated sample results, dashboard reuse, and export review.</p>
       </div>
       <div className="grid three-col">
-        <ObjectiveCard title="Routes" description="Workbench, Campaign Message Test, results, export review, and health routes resolve without primary navigation changes." status="ready" />
-        <ObjectiveCard title="Component reuse" description="Campaign Message Test reuses the Product Launch workflow pattern, cards, export review, and safety labels." status="ready" />
+        <ObjectiveCard title="Routes" description="Workbench, Campaign Message Test, A/B Experiment, results, export review, and health routes resolve without primary navigation changes." status="ready" />
+        <ObjectiveCard title="Component reuse" description="A/B Experiment reuses the approved workflow pattern, cards, export review, and safety labels with minimal comparison cards." status="ready" />
         <ObjectiveCard title="Safety" description="No live data, credentials, private data, or production campaign claims are introduced." status="review" />
       </div>
     </section>
@@ -417,6 +470,8 @@ function ReferenceResults({
     () => [
       ['Campaign name or brand', form.brand],
       ['Campaign Message', form.campaignMessage],
+      ...(form.variantA ? [['Variant A', form.variantA]] : []),
+      ...(form.variantB ? [['Variant B', form.variantB]] : []),
       ...(form.offer ? [['Offer/Promotion', form.offer]] : []),
       ['Key Message', form.keyMessage],
       ...(form.tone ? [['Tone', form.tone]] : []),
@@ -427,6 +482,8 @@ function ReferenceResults({
     ],
     [form],
   );
+
+  const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
   return (
     <section className="view-stack" aria-labelledby="results-title">
@@ -460,6 +517,30 @@ function ReferenceResults({
         </dl>
         <p className="help-text">The generated sample result is not recalculated from arbitrary browser-entered data.</p>
       </div>
+
+      {'comparisonCards' in fixture ? (
+        <section className="card" aria-label="Variant comparison">
+          <p className="eyebrow">A/B comparison</p>
+          <h3>Variant decision frame</h3>
+          {comparisonMethod ? (
+            <div>
+              <p>
+                {comparisonMethod.decisionStatus}: {comparisonMethod.rationale} Confidence: {comparisonMethod.confidenceLevel}.
+              </p>
+              <p className="help-text">Parity check: {comparisonMethod.parityCheck}</p>
+              <div className="grid two-col align-start">
+                <InsightList title="Shared Criteria" items={comparisonMethod.sharedCriteria} />
+                <InsightList title="Blocked Actions" items={comparisonMethod.blockedActions} />
+              </div>
+            </div>
+          ) : null}
+          <div className="grid three-col">
+            {fixture.comparisonCards.map((card: ComparisonFixtureCard) => (
+              <MetricCard key={card.title} card={card} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <div className="grid three-col">
         {fixture.cards.map((card: FixtureCard) => (
@@ -564,13 +645,19 @@ function InsightList({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-function validateForm(form: LaunchForm): string[] {
+function validateForm(form: LaunchForm, workflow: WorkflowKey): string[] {
   const errors: string[] = [];
   if (!form.brand.trim()) {
     errors.push('Campaign name or brand is required.');
   }
   if (!form.campaignMessage.trim()) {
     errors.push('Campaign Message is required.');
+  }
+  if (workflow === 'abExperiment' && (!form.variantA.trim() || !form.variantB.trim())) {
+    errors.push('Both A/B variants are required.');
+  }
+  if (workflow !== 'abExperiment' && (form.variantA || form.variantB) && (!form.variantA.trim() || !form.variantB.trim())) {
+    errors.push('Both A/B variants are required.');
   }
   if (form.platforms.length === 0) {
     errors.push('Select at least one platform.');
@@ -581,6 +668,9 @@ function validateForm(form: LaunchForm): string[] {
 function configForRunId(runId?: string): WorkflowConfig {
   if (runId === campaignMessageFixture.runId || runId?.includes('campaign-message')) {
     return workflowConfigs.campaignMessageTest;
+  }
+  if (runId === abExperimentFixture.runId || runId?.includes('ab-experiment')) {
+    return workflowConfigs.abExperiment;
   }
   return workflowConfigs.productLaunch;
 }

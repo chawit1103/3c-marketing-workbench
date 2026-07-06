@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M6 Experiment Framework Planning complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, and SocialSense changes remain not implemented.
+Status: M7 A/B Experiment Reference Workflow implemented. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, and M6 Experiment Framework Planning are complete. A/B Experiment now exists as the third offline reference workflow. Multivariate Testing, Creative Comparison, backend, live runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -168,11 +168,21 @@ Acceptance criteria:
 - Keep scope documentation-only.
 - Do not implement A/B Message Comparison, Multivariate Testing, Creative Comparison, frontend workflows, backend behavior, runtime functionality, live APIs, private data, or SocialSense changes.
 
-### Next: A/B Message Comparison Implementation — Only after M6 GO
+### M7: A/B Experiment Reference Workflow — Complete
 
-- Recommend implementation only if Experiment Framework receives GO.
-- A/B Message Comparison must be one implementation/configuration of Experiment Framework.
-- Do not implement A/B automatically from this roadmap alone.
+- Implement A/B Experiment as the third reference workflow at `/workbench/ab-experiment`.
+- Reuse the approved Experiment Framework as an implementation/configuration, not a new architecture.
+- Generate `src/product/fixtures/abExperimentResult.json` through product-owned fixture generation and the existing SocialSense adapter `run_message_comparison` path.
+- Reuse dashboard and export review; add only minimal Variant A / Variant B comparison cards.
+- Reuse existing JSON, Markdown, and Executive Summary export readiness formats with export reuse 100%.
+- Keep primary navigation unchanged.
+- Reuse audit: `docs/product/AB_EXPERIMENT_REUSE_AUDIT.md` records workflow reuse: 92%, component reuse: 93%, dashboard reuse: 91%, export reuse: 100%, navigation: unchanged.
+
+### Next: Experiment governance and additional comparison planning
+
+- Review M7 A/B Experiment outcomes before adding more comparison workflows.
+- Multivariate Testing and Creative Comparison require separate review.
+- Do not add backend, live APIs, private data, or SocialSense changes from this roadmap alone.
 
 ### Future: Governance and implementation readiness review
 
@@ -201,8 +211,9 @@ Do not implement until separate review:
 - M3 Campaign Domain Planning is marked complete.
 - M4 Information Architecture & Design System Review is marked complete.
 - M5 Campaign Message Test Reference Workflow is marked complete.
-- M6 Experiment Framework Planning is marked current.
-- Next milestone is A/B Message Comparison implementation only if M6 validates Experiment Framework.
+- M6 Experiment Framework Planning is marked complete.
+- M7 A/B Experiment Reference Workflow is marked complete.
+- Next milestone is governance/additional comparison planning only after M7 review.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

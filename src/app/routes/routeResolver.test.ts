@@ -7,6 +7,7 @@ describe('resolveRoute', () => {
     ['/workbench', 'workbench', undefined],
     ['/workbench/', 'workbench', undefined],
     ['/workbench/campaign-message-test', 'campaignMessageTest', undefined],
+    ['/workbench/ab-experiment', 'abExperiment', undefined],
     ['/health', 'health', undefined],
     ['/runs/sample-run', 'runDashboard', 'sample-run'],
     ['/exports/run%201', 'exportReview', 'run 1'],
