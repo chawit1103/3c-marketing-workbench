@@ -6,74 +6,74 @@ Architecture Gate: Not triggered.
 
 ## Workflows
 
-- [ ] Product Launch route works.
-- [ ] Campaign Message Test route works.
-- [ ] A/B Experiment route works.
-- [ ] Creative Comparison route works.
-- [ ] No new workflow is introduced during M16.
+- [x] Product Launch route works.
+- [x] Campaign Message Test route works.
+- [x] A/B Experiment route works.
+- [x] Creative Comparison route works.
+- [x] No new workflow is introduced during M16.
 
 ## Workspace
 
-- [ ] Campaign Workspace opens.
-- [ ] Current journey stage is understandable.
-- [ ] Recent runs are visible.
-- [ ] Evidence summary is readable.
-- [ ] Recommended next action is visible.
-- [ ] Executive Summary is reachable.
-- [ ] Export Readiness Preview is reachable.
+- [x] Campaign Workspace opens.
+- [x] Current journey stage is understandable.
+- [x] Recent runs are visible.
+- [x] Evidence summary is readable.
+- [x] Recommended next action is visible.
+- [x] Executive Summary is reachable.
+- [x] Export Readiness Preview is reachable.
 
 ## Tests and build
 
-- [ ] `npm run test` passes.
-- [ ] `npm run typecheck` passes.
-- [ ] `npm run lint` passes.
-- [ ] `npm run build` passes.
-- [ ] `python3 scripts/docs_smoke.py` passes.
-- [ ] `git diff --check HEAD` passes.
-- [ ] `python3 -m unittest discover -s tests -p 'test_*.py'` passes.
-- [ ] `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py` passes.
+- [x] `npm run test` passes.
+- [x] `npm run typecheck` passes.
+- [x] `npm run lint` passes.
+- [x] `npm run build` passes.
+- [x] `python3 scripts/docs_smoke.py` passes.
+- [x] `git diff --check HEAD` passes.
+- [x] `python3 -m unittest discover -s tests -p 'test_*.py'` passes.
+- [x] `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py` passes.
 
 ## Documentation
 
-- [ ] Feature Freeze v0.1 is documented.
-- [ ] 5-minute demo script exists.
-- [ ] Demo workspace is documented.
-- [ ] Human dogfooding plan exists.
-- [ ] Feedback capture template exists.
-- [ ] Release candidate checklist exists.
-- [ ] README, Roadmap, Product Health Dashboard, and AGENTS reflect M16 status.
+- [x] Feature Freeze v0.1 is documented.
+- [x] 5-minute demo script exists.
+- [x] Demo workspace is documented.
+- [x] Human dogfooding plan exists.
+- [x] Feedback capture template exists.
+- [x] Release candidate checklist exists.
+- [x] README, Roadmap, Product Health Dashboard, and AGENTS reflect M16 status.
 
 ## Safety
 
-- [ ] Fixture/offline labels remain visible.
-- [ ] Synthetic aggregate outputs remain clear.
-- [ ] No live social data is claimed.
-- [ ] No CRM/customer data is requested.
-- [ ] No private messages are requested.
-- [ ] No prediction guarantee is claimed.
-- [ ] Not production campaign optimization remains clear.
+- [x] Fixture/offline labels remain visible.
+- [x] Synthetic aggregate outputs remain clear.
+- [x] No live social data is claimed.
+- [x] No CRM/customer data is requested.
+- [x] No private messages are requested.
+- [x] No prediction guarantee is claimed.
+- [x] Not production campaign optimization remains clear.
 
 ## Trust
 
-- [ ] Unsupported run/export IDs still show unavailable states.
-- [ ] Export Readiness Preview is not described as a production download.
-- [ ] No workflow declares a winner without evidence.
-- [ ] Creative Comparison remains no-winner/inconclusive when evidence is synthetic.
+- [x] Unsupported run/export IDs still show unavailable states.
+- [x] Export Readiness Preview is not described as a production download.
+- [x] No workflow declares a winner without evidence.
+- [x] Creative Comparison remains no-winner/inconclusive when evidence is synthetic.
 
 ## UX
 
-- [ ] Demo start path is clear from Campaign Workspace.
-- [ ] Current stage is clear.
-- [ ] Recommended next action is visible.
-- [ ] Safety copy does not overwhelm demo flow.
-- [ ] Primary navigation remains unchanged.
+- [x] Demo start path is clear from Campaign Workspace.
+- [x] Current stage is clear.
+- [x] Recommended next action is visible.
+- [x] Safety copy does not overwhelm demo flow.
+- [x] Primary navigation remains unchanged.
 
 ## Demo
 
-- [ ] Five-minute script can be followed.
-- [ ] Demo data is deterministic.
-- [ ] Demo can be repeated without external services.
-- [ ] Presenter can explain fixture/synthetic boundaries.
+- [x] Five-minute script can be followed.
+- [x] Demo data is deterministic.
+- [x] Demo can be repeated without external services.
+- [x] Presenter can explain fixture/synthetic boundaries.
 
 ## Known limitations
 
