@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M12 Campaign Workspace Trust & Validation is complete and merged. PR1-PR4 and M2-M12 are complete; M12 remediated M11 P1/P2 trust issues only: unsupported run/export states, validation feedback, result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
+Status: M13 Product Trust Readiness & Next Capability Gate is in review. PR1-PR4 and M2-M12 are complete; M13 verifies M12 trust behavior remains stable on `main` and decides whether Creative Comparison may enter a separate planning milestone only. Creative Comparison implementation, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
 
 ## Program
 
@@ -210,14 +210,22 @@ Acceptance criteria:
 - Architecture Gate is not triggered; findings become backlog and remediation recommendations.
 - Overall Product Health Score: 7.4 / 10.
 
-### M12: Campaign Workspace Trust & Validation — Current branch
+### M12: Campaign Workspace Trust & Validation — Complete
 
-- Resolve M11 P1/P2 trust findings before adding any future workflow.
+- Resolved M11 P1/P2 trust findings before adding any future workflow.
 - Implemented remediation: unsupported run/export unavailable states, visible validation feedback, run-complete/result visibility, fixture-reference versus user-review-session labeling, and in-app `/health` route wording.
 - M12 KPIs: Product Health, UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI.
-- Optional registry extraction is deferred to avoid redesign; exact fixture matching stays minimal and in-place.
+- Optional registry extraction was deferred to avoid redesign; exact fixture matching stayed minimal and in-place.
 - Creative Comparison remains gated and must be separately planned after evidence-backed remediation.
-- Do not add backend, live APIs, private data, persistence, product redesign, new workflows, MarketingSimulation changes, or SocialSense changes from this roadmap alone.
+- No backend, live APIs, private data, persistence, product redesign, new workflows, MarketingSimulation changes, or SocialSense changes were added.
+
+### M13: Product Trust Readiness & Next Capability Gate — Current branch
+
+- Verify M12 trust behavior remains stable on `main`: unknown run/export unavailable states, `/health` freshness, run completion visibility, and fixture transparency.
+- Audit README, AGENTS, Roadmap, Product Health Dashboard, M12 Trust Validation Report, and M11 Executive Product Review.
+- Create `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` with explicit Product Trust, UX Clarity, Research Transparency, Regression Stability, and Creative Comparison Planning decisions.
+- Keep scope governance/reporting only; do not implement Creative Comparison or any new capability.
+- Creative Comparison may enter planning only if Product, UX, Research, QA, Code Review, and Safety Review gates approve M13 readiness.
 
 ### Future: Governance and implementation readiness review
 
@@ -253,7 +261,8 @@ Do not implement until separate review:
 - M10 Campaign Workspace MVP is marked complete.
 - M11 Continuous Product Validation & Synthetic Dogfooding is marked complete.
 - M12 Campaign Workspace Trust & Validation is marked complete and merged.
-- Creative Comparison remains blocked until M12 trust validation receives GO and all P1 trust issues are resolved or explicitly accepted.
+- M13 Product Trust Readiness & Next Capability Gate is current and must pass all review gates before Creative Comparison planning is considered complete.
+- Creative Comparison implementation remains blocked until a separate planning milestone is completed and explicitly approved.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

@@ -149,6 +149,30 @@ M11_FORBIDDEN_CHANGED_PREFIXES = (
     "integrations/",
 )
 
+M13_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md",
+}
+
+REQUIRED_M13_PHRASES = [
+    "M13 Product Trust Readiness",
+    "Product Trust",
+    "UX Clarity",
+    "Research Transparency",
+    "Regression Stability",
+    "Creative Comparison Planning",
+    "GO — planning only",
+    "Do not implement Creative Comparison",
+    "no new capability",
+    "No live execution",
+    "Run unavailable",
+    "Export unavailable",
+]
+
 M12_ALLOWED_CHANGED_PATHS = {
     "README.md",
     "AGENTS.md",
@@ -816,6 +840,23 @@ def main() -> None:
         if forbidden_m12_changes:
             fail("M12 changed unexpected paths: " + ", ".join(forbidden_m12_changes))
 
+    if current_branch_name().startswith("m13-") or "M13 Product Trust Readiness" in "\n".join([readme, agents, roadmap, health_dashboard]):
+        m13_report_path = ROOT / "docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md"
+        if not m13_report_path.is_file():
+            fail("missing M13 readiness report")
+        m13_text = m13_report_path.read_text(encoding="utf-8")
+        combined_m13_text = "\n".join([readme, agents, roadmap, health_dashboard, m13_text])
+        if "](docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md)" not in readme:
+            fail("README missing M13 readiness report link")
+        missing_m13_phrases = [phrase for phrase in REQUIRED_M13_PHRASES if phrase not in combined_m13_text]
+        if missing_m13_phrases:
+            fail("M13 docs missing product trust readiness phrases: " + ", ".join(missing_m13_phrases))
+        if "Creative Comparison implementation" not in combined_m13_text or "blocked" not in combined_m13_text:
+            fail("M13 docs must keep Creative Comparison implementation blocked")
+        forbidden_m13_changes = [path for path in changed_paths if path not in M13_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m13-") else []
+        if forbidden_m13_changes:
+            fail("M13 changed unexpected implementation paths: " + ", ".join(forbidden_m13_changes))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -829,6 +870,7 @@ def main() -> None:
     print("PASS: required M9 Campaign Workspace Foundation docs exist and include scope/status phrases")
     print("PASS: required M11 Continuous Product Validation docs exist and include evidence/backlog/readiness phrases")
     print("PASS: M12 Campaign Workspace Trust & Validation docs/source include KPI and trust guard phrases")
+    print("PASS: M13 Product Trust Readiness docs include capability gate and non-implementation boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

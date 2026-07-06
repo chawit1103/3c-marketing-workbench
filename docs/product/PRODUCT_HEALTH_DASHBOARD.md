@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M12 Campaign Workspace Trust & Validation is complete and merged. Product Health improved from the M11 7.4 baseline while P1/P2 trust issues were remediated. M12 resolved unknown run/export unavailable states, clearer blank/invalid input feedback, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain blocked unless separately authorized.
+Status: M13 Product Trust Readiness & Next Capability Gate is in review. M12 Campaign Workspace Trust & Validation is complete and merged, and M13 verifies that Product Trust, UX Clarity, Research Transparency, and Regression Stability remain GO before Creative Comparison may enter planning only. Creative Comparison implementation, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain blocked unless separately authorized.
 
 
 ## M1 PR4 closeout
@@ -201,7 +201,8 @@ Status: M12 Campaign Workspace Trust & Validation is complete and merged. Produc
 | Campaign Workspace readiness | Complete | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are complete; Creative Comparison remains gated after M9 GO. |
 | Campaign Workspace MVP readiness | Complete | M10 frontend + review gates | `/campaign-workspace` provides campaign overview, journey timeline, evidence summary, executive summary, recommended next action, and workflow actions using existing fixtures only. |
 | Continuous Product Validation readiness | Complete | M11 persona dogfooding + review gates | Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated by six personas; Product Health Score is 7.4 / 10; P1/P2 findings are backlog, not implementation in M11. |
-| Campaign Workspace Trust & Validation readiness | In progress | M12 P1/P2 remediation | Product Health baseline 7.4; UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI now focus on unavailable states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes. |
+| Campaign Workspace Trust & Validation readiness | Complete | M12 P1/P2 remediation | Product Health improved from baseline 7.4; unknown run/export states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes are verified. |
+| Product Trust Readiness Gate | In review | M13 governance gate | M13 verifies M12 trust stability on `main`, audits current docs, and decides whether Creative Comparison may enter planning only. |
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -411,9 +412,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: future capability planning only if M12 receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review.
+Next milestone: Creative Comparison planning only if M13 Product Trust Readiness receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review.
 
-Creative Comparison remains blocked until M12 trust validation confirms the P1 findings are resolved or explicitly accepted: unsupported run/export states, result discoverability, invalid-input feedback, fixture transparency, and trust/validation clarity.
+Creative Comparison implementation remains blocked. M13 may authorize only a separate planning milestone, not runtime work, new workflow UI, backend behavior, live APIs, persistence, SocialSense changes, or MarketingSimulation changes.
 
 Future capability planning should start from:
 
@@ -431,7 +432,7 @@ Future capability planning should start from:
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
 - no new workflows, Creative Comparison, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
 
-Do not start Creative Comparison implementation from this dashboard alone.
+Do not start Creative Comparison implementation from this dashboard alone. Use `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` as the readiness gate for planning-only authorization.
 
 Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_FRICTION_REGISTER.md`.
 
