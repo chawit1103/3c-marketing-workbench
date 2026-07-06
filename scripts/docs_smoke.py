@@ -238,6 +238,9 @@ REQUIRED_M17_PHRASES = [
     "not delivered in this PR",
     "docs/smoke only",
     "no source UI/runtime changes",
+    "Measurable KPI framework",
+    "Evidence/confidence methodology",
+    "M19 PR3 implementation gate",
 ]
 
 REQUIRED_M17_PROGRAM_KPIS = [

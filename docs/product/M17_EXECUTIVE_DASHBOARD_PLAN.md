@@ -23,7 +23,9 @@ Acceptance criteria:
 - M17-M19 are decomposed into epics/features/tasks/PR order.
 - M17 PR2+ implementation is explicitly future work, not delivered in this PR.
 - Quality gates are listed: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
-- Program KPIs are listed: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+- Program KPIs are measurable and reviewable with definition/formula, baseline/source, target/threshold, owner, cadence, and GO/NO-GO criteria: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+- Evidence/confidence methodology is defined with evidence-quality tiers, confidence levels, minimum evidence requirements, downgrade rules, unsupported-evidence handling, and synthetic/offline evidence mapping.
+- M19 PR3 implementation is blocked until M19 PR2 approves synthetic engagement methodology, metric definitions, fixture assumptions, evidence/confidence rules, and Research/Safety Review GO.
 - Architecture Gate triggers are listed exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
 - Validation commands pass.
 - No source UI/runtime files are changed.
@@ -101,6 +103,35 @@ Acceptance criteria:
 - Architecture Gate status is explicit and any triggers are documented.
 - Validation commands pass on the M17 branch and after merge.
 - SocialSense and MarketingSimulation remain unmodified.
+
+## M17 research KPI and evidence gate
+
+M17 implementation PRs must use the measurable KPI framework and evidence/confidence methodology in `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`. A KPI update is reviewable only when it includes:
+
+- definition or formula;
+- baseline and source;
+- target or threshold;
+- owner;
+- cadence;
+- GO/NO-GO criteria;
+- evidence tier and confidence level;
+- limitation and next evidence step for any Low/None confidence item.
+
+M17 PR2 and PR3 must not render confidence, evidence, or readiness as generic labels. Every visible decision claim must map to an allowed evidence tier. Unsupported evidence must be labelled, downgraded to None, and either removed from the claim or converted into an evidence-gap blocker. Synthetic/offline fixtures default to Low confidence and may rise to Medium only when paired with documented review evidence.
+
+M17 closeout cannot mark Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, or Release Readiness as GO unless validation commands pass and QA, Code, Safety, Product, UX, and Research reviews record GO for the relevant scope.
+
+## M19 sequencing dependency
+
+M19 PR3 frontend implementation is explicitly blocked until M19 PR2 produces approved methodology documentation and review evidence. The required PR2 outputs are:
+
+- approved synthetic engagement methodology;
+- metric definitions/formulas with baselines/sources, targets/thresholds, owners, cadence, and limitations;
+- fixture assumptions for platform/channel abstractions and excluded data sources;
+- evidence/confidence rules, downgrade rules, unsupported-evidence handling, and synthetic/offline mapping;
+- Research Review GO and Safety Review GO.
+
+If any required M19 PR2 output is missing, stale, or REQUEST_CHANGES, M19 PR3 must remain docs-only or stop for Architecture Gate escalation; no frontend implementation may begin.
 
 ## M17 safety and Architecture Gate checks
 
