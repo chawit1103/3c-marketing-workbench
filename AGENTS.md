@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M14 Creative Comparison Product Discovery & Specification, documentation/discovery only.
+- Current branch scope: M14 Creative Comparison Product Discovery & Specification complete and merged.
 - PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, and M13 Product Trust Readiness Gate are complete.
-- M14 produces Creative Comparison discovery/specification docs only. Creative Comparison Planning is GO, but Implementation remains HOLD. Do NOT implement Creative Comparison. Do not create runtime/source files, add workflows, redesign Campaign Workspace, add backend behavior, APIs, live APIs, private data, persistence, auth, credentials, or SocialSense/MarketingSimulation changes.
+- M14 produced Creative Comparison discovery/specification docs only. Creative Comparison Planning is GO, but Implementation remains HOLD. Do NOT implement Creative Comparison. Do not create runtime/source files, add workflows, redesign Campaign Workspace, add backend behavior, APIs, live APIs, private data, persistence, auth, credentials, or SocialSense/MarketingSimulation changes.
 
 ## Repository boundaries
 

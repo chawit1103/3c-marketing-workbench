@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M14 Creative Comparison Product Discovery & Specification is in progress. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 is documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, SocialSense changes, or MarketingSimulation changes.
+Status: M14 Creative Comparison Product Discovery & Specification is complete and merged. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 completed documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, SocialSense changes, or MarketingSimulation changes.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 

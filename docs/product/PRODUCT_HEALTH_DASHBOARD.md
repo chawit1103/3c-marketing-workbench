@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M14 Creative Comparison Product Discovery & Specification is in progress. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 is documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, live APIs, private data, SocialSense changes, or MarketingSimulation changes.
+Status: M14 Creative Comparison Product Discovery & Specification is complete and merged. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 completed documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, live APIs, private data, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -203,7 +203,7 @@ Status: M14 Creative Comparison Product Discovery & Specification is in progress
 | Continuous Product Validation readiness | Complete | M11 persona dogfooding + review gates | Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated by six personas; Product Health Score is 7.4 / 10; P1/P2 findings are backlog, not implementation in M11. |
 | Campaign Workspace Trust & Validation readiness | Complete | M12 P1/P2 remediation | Product Health improved from baseline 7.4; unknown run/export states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes are verified. |
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
-| Creative Comparison Discovery | In progress | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
+| Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 
 ## M12 Campaign Workspace Trust & Validation
 
