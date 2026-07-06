@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M16 Feature Freeze and Demo Readiness is validated for review. Feature Freeze v0.1 is declared: Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, and Product Health Dashboard are frozen for controlled demo, human dogfooding, and release-candidate readiness. No new workflow, backend, persistence, auth, live API, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
+Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Freeze v0.1 is declared: Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, and Product Health Dashboard are frozen for controlled demo, human dogfooding, and release-candidate readiness. No new workflow, backend, persistence, auth, live API, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M16 Feature Freeze and Demo Readiness is validated for review. PR1-PR4 and M2-M15 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M16 Feature Freeze and Demo Readiness is complete and merged. PR1-PR4 and M2-M16 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 
@@ -291,7 +291,7 @@ Do not implement until separate review:
 - M13 Product Trust Readiness & Next Capability Gate is marked complete and Creative Comparison Planning is GO.
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
-- M16 Feature Freeze and Demo Readiness is current and must pass validation plus QA, Code Review, Safety Review, Product Review, UX Review, and Research Review before release-candidate readiness is reported.
+- M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
