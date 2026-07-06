@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
@@ -1347,28 +1347,153 @@ function ReferenceResults({
 }
 
 function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objective: string }) {
-  const formatLabels: Record<string, string> = {
-    JSON: 'Data preview (JSON)',
-    Markdown: 'Briefing preview (Markdown)',
-    'Executive Summary': 'Executive summary preview',
-  };
+  const supportedFormats = fixture.exports.formats
+    .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
+    .map((format) => {
+      const label = format.label === 'JSON' ? 'Executive JSON preview' : 'Markdown briefing preview';
+      return { ...format, label };
+    });
+  const unsupportedFormats = [
+    {
+      label: 'Planning only: PDF',
+      detail: 'Unsupported now; no PDF is generated or downloadable in this frontend-only preview.',
+    },
+    {
+      label: 'Planning only: PowerPoint',
+      detail: 'Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.',
+    },
+  ];
+  const inputRows = reportInputRows(fixture);
+  const decisionConfidence = 'comparisonMethod' in fixture
+    ? fixture.comparisonMethod.confidenceLevel
+    : 'Low directional confidence';
+  const decisionStatus = 'comparisonMethod' in fixture
+    ? fixture.comparisonMethod.decisionStatus
+    : 'Ready for human review';
 
   return (
     <div className="view-stack">
-      <div className="card">
+      <div className="card executive-report-hero">
         <p className="eyebrow">Export review</p>
         <h2>{fixture.exports.readiness}</h2>
-        <p>{fixture.exports.status} This screen confirms JSON, Markdown, and Executive Summary preview readiness; it is not a download action.</p>
+        <p>
+          {fixture.exports.status} This screen previews Executive JSON and Markdown briefing content
+          for human review only; it is not a download action.
+        </p>
+        <div className="kpi-metadata" aria-label="Export readiness formula and source">
+          <p>Formula: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
+          <p>Source: fixture export payload for run {fixture.runId}.</p>
+          <p>Evidence tier: E1 synthetic/offline fixture; preview/handoff review only.</p>
+          <p>Confidence: Low directional; unsupported formats remain planning-only until separately approved.</p>
+        </div>
       </div>
-      <div className="grid three-col">
-        {fixture.exports.formats.map((format) => (
-          <div className="card" key={format.label}>
-            <p className="eyebrow">{formatLabels[format.label] ?? format.label}</p>
-            <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
-            <p>{format.detail}</p>
-          </div>
-        ))}
-      </div>
+
+      <section className="card" aria-label="Export format readiness">
+        <p className="eyebrow">Export format readiness</p>
+        <h2>Supported previews and unsupported future formats</h2>
+        <div className="grid three-col export-format-grid">
+          {supportedFormats.map((format) => (
+            <article className="format-card" key={format.label}>
+              <p className="eyebrow">{format.label}</p>
+              <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
+              <p>{format.detail}</p>
+              <p className="help-text">Evidence tier: E1 synthetic/offline fixture; Source: fixture.exports.formats.</p>
+            </article>
+          ))}
+          {unsupportedFormats.map((format) => (
+            <article className="format-card format-card-unsupported" key={format.label}>
+              <p className="eyebrow">{format.label}</p>
+              <h3>Unsupported now</h3>
+              <p>{format.detail}</p>
+              <p className="help-text">Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="card executive-report-preview" aria-label="Executive report preview">
+        <p className="eyebrow">Executive report preview</p>
+        <h2>{objective} executive handoff report</h2>
+        <p>
+          Decision readiness: human review required before launch, budget, or winner decisions.
+        </p>
+        <p>
+          Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.
+          Evidence tier: E1 synthetic/offline fixture; Confidence: {decisionConfidence}.
+        </p>
+        <div className="report-section-grid">
+          <ReportSection title="Executive Summary">
+            <p>{fixture.exports.executiveSummaryPreview}</p>
+            <p className="help-text">Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: {decisionConfidence}.</p>
+          </ReportSection>
+          <ReportSection title="Objectives">
+            <p>Objective: {objective}. Use the report for executive handoff and human review, not production approval.</p>
+            <p className="help-text">Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.</p>
+          </ReportSection>
+          <ReportSection title="Scenario">
+            <p>{fixture.summary.headline}: {fixture.summary.text}</p>
+            <p className="help-text">Source: fixture.summary. Evidence tier: E1 synthetic/offline fixture; no live social or measured market data.</p>
+          </ReportSection>
+          <ReportSection title="Inputs">
+            <dl className="assumption-grid compact-dl">
+              {inputRows.map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
+          </ReportSection>
+          <ReportSection title="Parameters">
+            <p>Review mode: {fixture.reviewMetadata.source.reviewMode}; runtime mode: {fixture.reviewMetadata.provenance.runtime_mode}; production ready: no.</p>
+            <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
+          </ReportSection>
+          <ReportSection title="Audience">
+            <p>{fixture.sampleInput.audiences.join(', ')}</p>
+            <p className="help-text">Source: fixture.sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.</p>
+          </ReportSection>
+          <ReportSection title="Platform Mix">
+            <p>{fixture.sampleInput.platforms.join(', ')}</p>
+            <p className="help-text">Source: fixture.sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.</p>
+          </ReportSection>
+          <ReportSection title="Dashboard / KPI snapshot">
+            <p>{fixture.cards.map((card) => `${card.title}: ${card.value}`).join('; ')}.</p>
+            <p className="help-text">Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
+          </ReportSection>
+          <ReportSection title="Charts / Evidence / Confidence summary">
+            <p>{decisionStatus}. Confidence: {decisionConfidence}. Evidence gaps remain visible before action.</p>
+            <p className="help-text">Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.</p>
+          </ReportSection>
+          <ReportSection title="Recommendations">
+            <p>{fixture.recommendedNextTest}</p>
+            <p className="help-text">Next review step: {fixture.recommendedNextTest}</p>
+          </ReportSection>
+          <ReportSection title="Next review step">
+            <p>{fixture.recommendedNextTest}</p>
+            <p className="help-text">Evidence tier: E1 synthetic/offline fixture; Confidence: Low directional; review step only, not a launch or budget decision.</p>
+          </ReportSection>
+          <ReportSection title="Assumptions">
+            <ul className="insight-list">
+              {fixture.reviewMetadata.assumptions.slice(0, 5).map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </ReportSection>
+          <ReportSection title="Limitations">
+            <ul className="insight-list">
+              {fixture.reviewMetadata.limitations.slice(0, 4).map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </ReportSection>
+          <ReportSection title="Synthetic-data notice">
+            <p>All report content is generated from a synthetic aggregate offline fixture. It is not field evidence, live social data, measured engagement, or production prediction.</p>
+          </ReportSection>
+          <ReportSection title="Safety notice">
+            <ul className="insight-list">
+              {fixture.safetyLabels.map((label) => <li key={label}>{label}</li>)}
+            </ul>
+          </ReportSection>
+        </div>
+      </section>
+
       <div className="card">
         <p className="eyebrow">Executive Summary preview</p>
         <h2>{objective} executive-ready summary</h2>
@@ -1405,6 +1530,45 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
       </div>
     </div>
   );
+}
+
+function ReportSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="report-section-card">
+      <h3>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function reportInputRows(fixture: ReferenceFixture): string[][] {
+  const rows = [
+    ['Campaign name or brand', fixture.sampleInput.brand],
+    ['Campaign Message', fixture.sampleInput.campaign_message],
+    ['Key Message', fixture.sampleInput.key_message],
+    ['Context', fixture.sampleInput.context],
+  ];
+  if ('offer' in fixture.sampleInput) {
+    rows.splice(2, 0, ['Offer/Promotion', fixture.sampleInput.offer]);
+  }
+  if ('variant_a' in fixture.sampleInput) {
+    rows.splice(2, 0, ['Variant A', fixture.sampleInput.variant_a], ['Variant B', fixture.sampleInput.variant_b]);
+  }
+  if ('creative_a_title' in fixture.sampleInput) {
+    rows.splice(
+      2,
+      0,
+      ['Creative A', `${fixture.sampleInput.creative_a_title} — ${fixture.sampleInput.creative_a_description}`],
+      ['Creative B', `${fixture.sampleInput.creative_b_title} — ${fixture.sampleInput.creative_b_description}`],
+    );
+  }
+  if ('tone' in fixture.sampleInput) {
+    rows.push(['Tone', fixture.sampleInput.tone]);
+  }
+  if ('claim' in fixture.sampleInput) {
+    rows.push(['Claim to review', fixture.sampleInput.claim]);
+  }
+  return rows;
 }
 
 function FixtureTransparency() {

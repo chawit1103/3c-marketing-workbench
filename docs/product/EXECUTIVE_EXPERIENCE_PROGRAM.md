@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M17 Executive Dashboard & Reporting is current on the PR2 runtime branch after the PR1 program kickoff docs. PR2 implements the first limited fixture-backed executive KPI/dashboard slice in the existing Campaign Workspace; M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation remain planned future milestones. PR2 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, or live APIs.
+Status: M17 Executive Dashboard & Reporting is current on the PR4 report/export readability branch after the PR1 program kickoff docs, PR2 executive KPI cards, and PR3 marketing charts/evidence/confidence visualization. PR4 implements fixture-backed executive report preview and export format readiness in the existing frontend/export review flow; PR5 M17 validation/closeout, M18 Thai-first Internationalization, and M19 Synthetic Social Platform Engagement Simulation remain planned future milestones. PR4 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, or actual PDF/PPT generation/download.
 
 ## Program objective
 
@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: PR2 runtime slice is current and complete for this branch; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR3 marketing charts/evidence/confidence visualization remains future work after PR2 review.
+Status: PR4 report/export readability is current and implemented for this branch; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards and PR3 marketing charts/evidence/confidence visualization are complete. PR5 M17 validation/closeout remains future work after PR4 review.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 
@@ -157,9 +157,9 @@ Tasks:
 ### M17 PR order
 
 1. PR1 Program kickoff docs: this docs-only PR.
-2. PR2 Executive KPI cards: current limited implementation slice after PR1 review.
-3. PR3 Marketing charts/evidence/confidence visualization: future implementation after PR2 validation.
-4. PR4 Executive report/export improvements: future implementation after PR3 validation.
+2. PR2 Executive KPI cards: complete limited implementation slice after PR1 review.
+3. PR3 Marketing charts/evidence/confidence visualization: complete implementation after PR2 validation.
+4. PR4 Executive report/export improvements: current implemented runtime slice after PR3 validation.
 5. PR5 M17 validation/closeout: future validation and closeout docs after PR2-PR4 pass review.
 
 ## M18 Thai-first Internationalization

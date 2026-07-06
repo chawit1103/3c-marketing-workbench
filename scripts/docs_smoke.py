@@ -230,6 +230,27 @@ M17_PR2_ALLOWED_CHANGED_PATHS = {
 }
 
 M17_PR3_ALLOWED_CHANGED_PATHS = M17_PR2_ALLOWED_CHANGED_PATHS
+M17_PR4_ALLOWED_CHANGED_PATHS = M17_PR2_ALLOWED_CHANGED_PATHS
+
+REQUIRED_M17_PR4_PHRASES = [
+    "Executive report preview",
+    "Export format readiness",
+    "Markdown briefing preview",
+    "Executive JSON preview",
+    "Planning only: PDF",
+    "Planning only: PowerPoint",
+    "Assumptions",
+    "Limitations",
+    "Synthetic-data notice",
+    "Safety notice",
+    "Formula:",
+    "Source:",
+    "Evidence tier:",
+    "Confidence:",
+    "no PDF is generated or downloadable",
+    "no PowerPoint/PPT file is generated or downloadable",
+    "human review required before launch, budget, or winner decisions",
+]
 
 REQUIRED_M17_PR3_PHRASES = [
     "Sentiment comparison",
@@ -1299,6 +1320,25 @@ def main() -> None:
             if missing_m17_pr3_phrases:
                 fail("M17 PR3 docs/source missing marketing chart/evidence/confidence phrases: " + ", ".join(missing_m17_pr3_phrases))
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR3_ALLOWED_CHANGED_PATHS]
+        elif current_branch_name() == "m17-report-export-readability":
+            m17_pr4_source_text = "\n".join(
+                [
+                    (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+                    (ROOT / "src/styles.css").read_text(encoding="utf-8"),
+                    (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+                ]
+            )
+            combined_m17_pr4_text = "\n".join([combined_m17_text, m17_pr4_source_text])
+            missing_m17_pr2_phrases = [phrase for phrase in REQUIRED_M17_PR2_PHRASES if phrase not in combined_m17_pr4_text]
+            if missing_m17_pr2_phrases:
+                fail("M17 PR4 source lost PR2 executive KPI dashboard phrases: " + ", ".join(missing_m17_pr2_phrases))
+            missing_m17_pr3_phrases = [phrase for phrase in REQUIRED_M17_PR3_PHRASES if phrase not in combined_m17_pr4_text]
+            if missing_m17_pr3_phrases:
+                fail("M17 PR4 source lost PR3 marketing chart/evidence/confidence phrases: " + ", ".join(missing_m17_pr3_phrases))
+            missing_m17_pr4_phrases = [phrase for phrase in REQUIRED_M17_PR4_PHRASES if phrase not in combined_m17_pr4_text]
+            if missing_m17_pr4_phrases:
+                fail("M17 PR4 docs/source missing executive report/export phrases: " + ", ".join(missing_m17_pr4_phrases))
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR4_ALLOWED_CHANGED_PATHS]
         elif current_branch_name().startswith("m17-"):
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
         else:
@@ -1329,6 +1369,8 @@ def main() -> None:
             print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
         if current_branch_name() == "m17-evidence-confidence-visuals":
             print("PASS: M17 PR3 runtime acceptance includes sentiment comparison, evidence tiers, gaps, limitations, human review checklist, and offline/synthetic boundaries")
+        if current_branch_name() == "m17-report-export-readability":
+            print("PASS: M17 PR4 runtime acceptance includes executive report preview, export format readiness, unsupported PDF/PowerPoint planning-only notices, assumptions, limitations, safety, and formula/source/evidence/confidence boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

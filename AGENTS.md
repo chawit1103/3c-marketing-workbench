@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current repository status: M17 Executive Dashboard & Reporting is in PR3 implementation after M16 Feature Freeze and Demo Readiness, the PR1 program kickoff docs, and the PR2 executive KPI dashboard slice.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, M16 Feature Freeze and Demo Readiness, and M17 PR1 Executive Experience program kickoff docs are complete. M17 PR2 implements the first limited executive KPI/dashboard visual slice.
-- M17 PR3 may update the existing Campaign Workspace/dashboard frontend, CSS, tests, docs/status, and docs smoke to add fixture-backed marketing chart/evidence/confidence visuals, sentiment comparison, evidence tiers, visual evidence gaps/limitations, and human-review checklist copy. Do not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, workspace redesign, SocialSense changes, or MarketingSimulation changes.
+- Current repository status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 executive KPI dashboard slice, and PR3 marketing chart/evidence/confidence visualization.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, M16 Feature Freeze and Demo Readiness, M17 PR1 Executive Experience program kickoff docs, M17 PR2 Executive KPI cards, and M17 PR3 marketing charts/evidence/confidence visualization are complete. M17 PR4 report/export readability is the current limited runtime branch; PR5 M17 validation/closeout remains future.
+- M17 PR4 may update the existing export/report frontend, CSS, tests, README, AGENTS, Roadmap, Product Health Dashboard, M17 docs/status, and docs smoke to add fixture-backed executive report preview and export format readiness: Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, Formula/Source/Evidence tier/Confidence copy, and no generated/downloadable PDF or PowerPoint claim. Do not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, workspace redesign, SocialSense changes, or MarketingSimulation changes.
 
 ## Repository boundaries
 
@@ -19,7 +19,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
 - Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
-- Keep M17 PR2 limited to existing frontend/docs/tests and fixture/offline data; do not add backend services, live data sources, authentication, credentials, external services, new workflows, persistence, workspace storage, production campaign systems, SocialSense changes, MarketingSimulation changes, or product redesign.
+- Keep M17 PR2, PR3, and PR4 limited to existing frontend/docs/tests and fixture/offline data; do not add backend services, live data sources, authentication, credentials, external services, new workflows, persistence, workspace storage, production campaign systems, SocialSense changes, MarketingSimulation changes, or product redesign.
 
 ## Safety rules
 
@@ -88,14 +88,14 @@ M9 must keep Creative Comparison, additional workflows, frontend implementation,
 
 ## M17 Executive Dashboard & Reporting expectations
 
-M17 PR1 was docs/smoke only and started the Executive Experience & Marketing Simulation Enhancement program after M16. M17 PR2 was the first limited implementation slice for executive dashboard readability; M17 PR3 is the current visualization enhancement slice.
+M17 PR1 was docs/smoke only and started the Executive Experience & Marketing Simulation Enhancement program after M16. M17 PR2 was the first limited implementation slice for executive dashboard readability; M17 PR3 delivered visualization enhancements; M17 PR4 report/export readability is current and implemented on this branch. PR5 M17 validation/closeout remains future.
 
 Required planning artifacts:
 
 - `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`;
 - `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
 
-M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR3 must stay limited to existing fixture/offline frontend dashboard improvements: sentiment comparison, evidence tier visualization, evidence gaps/limitations, human review checklist, confidence visuals, journey progress, CSS, tests, and docs/status updates.
+M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR4 must stay limited to existing fixture/offline frontend export/report improvements: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, safety notices, Formula/Source/Evidence tier/Confidence copy, CSS, tests, and docs/status updates.
 
 Architecture Gate triggers must remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
 

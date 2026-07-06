@@ -319,7 +319,9 @@ p,
 }
 
 .executive-kpi-card,
-.executive-visual-card {
+.executive-visual-card,
+.format-card,
+.report-section-card {
   background: white;
   border: 1px solid #c9d5e6;
   border-radius: var(--radius-md);
@@ -328,8 +330,34 @@ p,
 }
 
 .executive-kpi-card h3,
-.executive-visual-card h3 {
+.executive-visual-card h3,
+.report-section-card h3 {
   margin-bottom: var(--space-2);
+}
+
+.executive-report-hero,
+.executive-report-preview {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.export-format-grid,
+.report-section-grid {
+  margin-top: var(--space-4);
+}
+
+.report-section-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.format-card-unsupported {
+  background: var(--color-placeholder-bg);
+  border-color: #c9d5e6;
+}
+
+.compact-dl {
+  grid-template-columns: 1fr;
 }
 
 .kpi-metadata {
@@ -720,7 +748,8 @@ dd {
   .four-col,
   .quick-start,
   .assumption-grid,
-  .decision-blocker-grid {
+  .decision-blocker-grid,
+  .report-section-grid {
     grid-template-columns: 1fr;
   }
 }

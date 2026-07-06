@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M17 Executive Dashboard & Reporting is in PR3 implementation after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, and the PR2 KPI slice. M17 PR3 adds CSS/React-only sentiment comparison, evidence tier visualization, evidence gaps/limitations, confidence, and human-review checklist visuals to the existing Campaign Workspace using existing offline data only. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
+Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 KPI slice, and PR3 marketing charts/evidence/confidence visualization. M17 PR4 report/export readability is current and implemented on this branch: Executive report preview, Export format readiness, Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, Formula/Source/Evidence tier/Confidence copy, and explicit no PDF/PowerPoint download generation claim. PR5 M17 validation/closeout remains future. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -206,7 +206,7 @@ Status: M17 Executive Dashboard & Reporting is in PR3 implementation after M16 F
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
-| Executive Dashboard & Reporting | PR3 runtime slice current | M17 PR3 evidence/confidence visuals | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 adds sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist with formula/source/evidence-tier copy. |
+| Executive Dashboard & Reporting | PR4 runtime slice current | M17 PR4 report/export readability | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 adds executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy. |
 | Thai-first Internationalization | Planned | M18 future milestone | Thai-first glossary, locale approach, and validation are planned only after M17 closeout. |
 | Synthetic Social Platform Engagement Simulation | Planned | M19 future milestone | Safe synthetic social engagement scope is planned only after M18 review; no live social APIs, scraping, or production posting. |
 
@@ -249,11 +249,13 @@ Status: M17 Executive Dashboard & Reporting is in PR3 implementation after M16 F
 - Historical PR1 scope: docs/smoke only; no source UI/runtime changes.
 - PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
 - PR2 delivered fixture-backed executive KPI cards, Evidence Coverage, Review Readiness, formula/source/evidence-tier copy, and CSS-only decision visuals in the existing Campaign Workspace.
-- Current PR3 scope: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human-review checklist near chart summaries using existing fixtures only.
+- PR3 delivered sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human-review checklist near chart summaries using existing fixtures only.
+- Current PR4 scope: executive report preview and export format readiness using existing fixtures only; PDF and PowerPoint are planning-only and no PDF/PPT file is generated or downloadable.
+- PR5 M17 validation/closeout remains future.
 - Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- Current blocker: none for docs kickoff; future PR2+ must pass review before implementation.
+- Current blocker: none for PR4 report/export readability; PR5 closeout must pass validation/review before implementation.
 
 ## M12 Campaign Workspace Trust & Validation
 
