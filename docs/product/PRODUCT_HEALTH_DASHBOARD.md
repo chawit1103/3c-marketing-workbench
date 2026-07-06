@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative Comparison is now the fourth usable fixture-backed workflow. Architecture remained frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes were introduced.
+Status: M16 Feature Freeze and Demo Readiness is validated for review. Feature Freeze v0.1 is declared for the four usable workflows and product shell. M16 prepares controlled demo, human dogfooding, and release-candidate readiness without adding workflows, backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -205,6 +205,7 @@ Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative 
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
+| Feature Freeze and Demo Readiness | Validated for review | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -219,7 +220,24 @@ Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative 
 - SocialSense changes: 0.
 - Backend endpoints: 0.
 - Architecture Gate: not triggered.
-- Next recommendation: Workspace dogfooding round 2 before starting any additional workflow.
+- Historical M15 next recommendation: Workspace dogfooding round 2 before starting any additional workflow; superseded by M16 Human Dogfooding Sprint recommendation.
+
+## M16 Feature Freeze and Demo Readiness
+
+- Feature Freeze v0.1: declared in `docs/product/FEATURE_FREEZE_V0_1.md`.
+- Demo script: `docs/product/DEMO_SCRIPT_5_MIN.md`.
+- Demo workspace: `docs/product/DEMO_WORKSPACE.md`.
+- Human dogfooding plan: `docs/product/HUMAN_DOGFOODING_PLAN.md`.
+- Feedback capture template: `docs/product/FEEDBACK_CAPTURE_TEMPLATE.md`.
+- Release candidate checklist: `docs/product/RELEASE_CANDIDATE_CHECKLIST.md`.
+- Demo readiness: validated for controlled executive walkthrough.
+- Executive readability: validated for review; five-minute script centers Campaign Workspace, Executive Summary, and Export Readiness Preview.
+- Human dogfooding readiness: validated for handoff with target roles, tasks, and feedback template.
+- Feature freeze compliance: no new workflow, backend, live API, persistence, auth, private/customer data, SocialSense, or MarketingSimulation changes allowed and docs-only guard passed.
+- Trust readiness: existing M12/M15 trust labels and unavailable-state guard remain required.
+- Export readiness: existing Export Readiness Preview only; no new export formats.
+- Known blockers: none recorded after M16 validation.
+- Release candidate readiness: ready for controlled demo and human dogfooding after review gates.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -308,7 +326,7 @@ Mitigation:
 
 ## Workflow completion tracker
 
-Current state: Product Launch, Campaign Message Test, and A/B Experiment are usable end-to-end for generated offline fixtures; Product Launch remains the first reference workflow, Campaign Message Test is the second reference workflow, and A/B Experiment is the third reference workflow.
+Current state: Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison are usable end-to-end for generated offline fixtures; Product Launch remains the first reference workflow, Campaign Message Test is the second reference workflow, A/B Experiment is the third reference workflow, and Creative Comparison is the fourth usable workflow frozen for v0.1 demo readiness.
 
 Current measurement:
 
@@ -429,34 +447,37 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone recommendation after M15 should be evidence-based and must not automatically start another workflow.
+Next milestone recommendation after M16 should be evidence-based and must not automatically start another workflow.
 
-Recommended options after M15 validation:
+Recommended option after M16 validation: Human Dogfooding Sprint.
 
-- product demo readiness;
-- workspace dogfooding round 2;
-- UX refinement;
-- next workflow only if evidence supports it and the user explicitly authorizes scope.
+Alternative options if priorities change:
 
-Creative Comparison implementation is M15 scope. Further expansion remains blocked unless separately approved.
+- Demo Recording / Walkthrough;
+- UX Polish Sprint;
+- RC Stabilization.
 
-Future capability planning should start from:
+Feature Freeze v0.1 remains active. Further workflow expansion remains blocked unless separately approved after dogfooding evidence.
 
+Future release-readiness and dogfooding planning should start from:
+
+- `docs/product/FEATURE_FREEZE_V0_1.md`;
+- `docs/product/DEMO_SCRIPT_5_MIN.md`;
+- `docs/product/DEMO_WORKSPACE.md`;
+- `docs/product/HUMAN_DOGFOODING_PLAN.md`;
+- `docs/product/FEEDBACK_CAPTURE_TEMPLATE.md`;
+- `docs/product/RELEASE_CANDIDATE_CHECKLIST.md`;
 - M11 Product Validation Report;
 - M11 Persona Evidence Appendix;
 - M11 UX Friction Register;
 - M11 Product Backlog;
 - M11 Executive Product Review;
 - the Campaign Workspace MVP;
-- the Campaign Workspace Foundation;
-- the Marketing Journey Framework;
-- Future Workflow Placement;
-- the Experiment Framework;
-- A/B Experiment reuse audit findings;
+- M15 Creative Comparison Closeout Report;
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
-- no additional workflows beyond approved Creative Comparison, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
+- no additional workflows, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
 
-Do not start any workflow after M15 from this dashboard alone. Use `docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md` plus dogfooding/review evidence for the next scope decision.
+Do not start any workflow after M16 from this dashboard alone. Use M16 release-readiness docs plus dogfooding/review evidence for the next scope decision.
 
 Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_FRICTION_REGISTER.md`.
 

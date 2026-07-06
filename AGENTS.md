@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current repository status: M15 Creative Comparison Vertical Slice complete and merged.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, and M14 Creative Comparison discovery/specification are complete.
-- M15 implements Creative Comparison as the fourth usable fixture-backed workflow by reusing existing workflow, campaign, experiment, workspace, design-system, dashboard, export-review, safety-label, and product adapter patterns. Do not redesign architecture, change SocialSense, change MarketingSimulation, add backend endpoints, persistence, auth, live APIs, credentials, CRM/customer data, PII/private data, production claims, persuasion optimization, microtargeting, or conversion guarantees.
+- Current repository status: M16 Feature Freeze and Demo Readiness validated for review; Feature Freeze v0.1 is declared.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, and M15 Creative Comparison Vertical Slice are complete.
+- M16 freezes Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary for controlled demo, human dogfooding, and release-candidate readiness. Allowed changes are demo readiness, UX/copy polish, bug/trust fixes, docs, test coverage, demo data, dogfooding preparation, and release checks only. Do not add new workflows, backend endpoints, SocialSense capability, live APIs, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Repository boundaries
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M15 language fixture/offline-compatible, synthetic, aggregate-only, non-production, product-build, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M16 language fixture/offline-compatible, synthetic, aggregate-only, non-production, release-readiness, feature-freeze, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -84,6 +84,24 @@ Required planning artifacts:
 - `docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md`.
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
+
+## M16 validation commands
+
+Run focused validation before handoff:
+
+```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+git status --short --branch
+```
+
+M16 may add or update release-readiness docs, docs smoke, README, Roadmap, Product Health Dashboard, and AGENTS only unless a small low-risk polish fix is clearly necessary. Do not add new workflows, backend/server/API/auth/credential files, persistence, live APIs, SocialSense changes, MarketingSimulation changes, private/customer data, production automation, workflow redesign, or workspace redesign.
 
 ## M15 validation commands
 

@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative Comparison is now the fourth usable fixture-backed workflow. Architecture remained frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes were introduced.
+Status: M16 Feature Freeze and Demo Readiness is validated for review. Feature Freeze v0.1 is declared: Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, and Product Health Dashboard are frozen for controlled demo, human dogfooding, and release-candidate readiness. No new workflow, backend, persistence, auth, live API, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -34,12 +34,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M15:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M16:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M15 must not modify SocialSense or MarketingSimulation.
+M16 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -153,6 +153,12 @@ Product documentation map:
 - [M14 Creative Comparison Acceptance Criteria](docs/product/M14_CREATIVE_COMPARISON_ACCEPTANCE_CRITERIA.md)
 - [M14 Creative Comparison Implementation Plan](docs/product/M14_CREATIVE_COMPARISON_IMPLEMENTATION_PLAN.md)
 - [M15 Creative Comparison Closeout Report](docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md)
+- [Feature Freeze v0.1](docs/product/FEATURE_FREEZE_V0_1.md)
+- [5-Minute Executive Demo Script](docs/product/DEMO_SCRIPT_5_MIN.md)
+- [Demo Workspace](docs/product/DEMO_WORKSPACE.md)
+- [Human Dogfooding Plan](docs/product/HUMAN_DOGFOODING_PLAN.md)
+- [Feedback Capture Template](docs/product/FEEDBACK_CAPTURE_TEMPLATE.md)
+- [Release Candidate Readiness Checklist](docs/product/RELEASE_CANDIDATE_CHECKLIST.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
@@ -182,6 +188,21 @@ Install dependencies and maintain the npm lockfile:
 ```bash
 npm install
 ```
+
+M16 release readiness validation commands:
+
+```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+```
+
+M16 declares Feature Freeze v0.1 and prepares demo/human-dogfooding/release-candidate readiness. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, persistence, authentication, CRM/customer data, PII/private data, or production automation.
 
 M15 focused validation commands:
 

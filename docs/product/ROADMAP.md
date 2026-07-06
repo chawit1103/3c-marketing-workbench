@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M15 Creative Comparison Vertical Slice is complete and merged. PR1-PR4 and M2-M15 are complete; Creative Comparison is the fourth usable fixture-backed workflow and reused existing Workflow Pattern, Campaign Domain, Experiment Framework, Campaign Workspace, Design System, dashboard, export review, safety labels, and product adapter boundary. No backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes were introduced.
+Status: M16 Feature Freeze and Demo Readiness is validated for review. PR1-PR4 and M2-M15 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 
@@ -246,6 +246,14 @@ Acceptance criteria:
 - Architecture Gate remained not triggered.
 - PR #21 merged at `b6bd9a447c475c3fd47f802bc627e90bcc06c7b7`.
 
+### M16: Feature Freeze and Demo Readiness — Current branch
+
+- Declares Feature Freeze v0.1 for the four usable workflows and product shell.
+- Creates release-readiness artifacts: Feature Freeze, 5-minute demo script, Demo Workspace, Human Dogfooding Plan, Feedback Capture Template, and Release Candidate Checklist.
+- Keeps scope release-readiness only: demo readiness, UX/copy polish, bug/trust fixes, docs, test coverage, demo data, dogfooding preparation, and release checks.
+- Blocks new workflows, backend, SocialSense capability, live APIs, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, and workspace redesign.
+- Architecture Gate remains not triggered unless release readiness requires blocked architecture or data changes.
+
 ### Future: Governance and implementation readiness review
 
 - Define private pilot criteria.
@@ -283,7 +291,8 @@ Do not implement until separate review:
 - M13 Product Trust Readiness & Next Capability Gate is marked complete and Creative Comparison Planning is GO.
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
-- Additional workflows beyond Creative Comparison remain blocked until evidence supports them and the user explicitly authorizes scope.
+- M16 Feature Freeze and Demo Readiness is current and must pass validation plus QA, Code Review, Safety Review, Product Review, UX Review, and Research Review before release-candidate readiness is reported.
+- Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
