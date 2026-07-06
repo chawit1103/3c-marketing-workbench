@@ -30,9 +30,9 @@ describe('App shell routes', () => {
     ['/campaign-workspace', 'Campaign Workspace'],
     ['/workbench/campaign-message-test', 'Campaign Message Test'],
     ['/workbench/ab-experiment', 'A/B Experiment'],
-    ['/runs/run-123', 'Product Launch Results'],
-    ['/exports/run-123', 'Export Readiness Preview'],
-    ['/health', 'M7 A/B Experiment workflow readiness'],
+    ['/runs/run-123', 'Run unavailable'],
+    ['/exports/run-123', 'Export unavailable'],
+    ['/health', 'M12 Campaign Workspace Trust & Validation'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -182,9 +182,9 @@ describe('Product Launch workflow regression', () => {
     }
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required because the review needs a campaign label. Add a brand or campaign name to continue.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required because the fixture must be reviewed against a visible message. Add the message copy to continue.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform because channel context changes review interpretation. Choose one or more platform checkboxes.');
     expect(screen.queryByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).not.toBeInTheDocument();
   });
 
@@ -223,6 +223,68 @@ describe('Product Launch workflow regression', () => {
     expect(document.body.textContent?.toLowerCase()).not.toContain('aggregate sample ' + 'interactions');
     expect(screen.getByText(/not recalculated from arbitrary browser-entered data/i)).toBeInTheDocument();
   });
+
+  it('makes completion state visible immediately after running', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(screen.getByRole('status', { name: 'Run completion status' })).toHaveTextContent(
+      'Run complete: generated sample results are visible below now.',
+    );
+    expect(screen.getByRole('link', { name: 'Jump to generated sample results' })).toHaveAttribute('href', '#results-title');
+  });
+});
+
+describe('M12 Campaign Workspace trust and validation', () => {
+  it.each([
+    ['/runs/not-a-known-run', 'Run unavailable'],
+    ['/exports/not-a-known-export', 'Export unavailable'],
+  ])('does not fall back to the Product Launch fixture for unknown %s', (pathname, heading) => {
+    renderAt(pathname);
+
+    expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
+    expect(screen.getByText(/We could not match this id to a reviewed reference fixture/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Return to Campaign Workspace' })).toHaveAttribute('href', '/campaign-workspace');
+    expect(screen.getByRole('link', { name: 'Open Product Launch workbench' })).toHaveAttribute('href', '/workbench');
+    expect(screen.queryByRole('heading', { name: 'Product Launch Results' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Product Launch executive-ready summary' })).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ['/runs/sample-run', 'Reference Fixture', 'User Review Session'],
+    ['/exports/sample-run', 'Reference Fixture', 'User Review Session'],
+  ])('clearly labels fixture provenance and user review assumptions for %s', (pathname, fixtureLabel, sessionLabel) => {
+    renderAt(pathname);
+
+    const transparency = screen.getByRole('region', { name: 'Fixture transparency' });
+    expect(transparency).toHaveTextContent(fixtureLabel);
+    expect(transparency).toHaveTextContent(sessionLabel);
+    expect(transparency).toHaveTextContent('Synthetic generated sample');
+    expect(transparency).toHaveTextContent('User-provided inputs are shown as review assumptions only');
+    expect(transparency).toHaveTextContent('No live execution');
+  });
+
+  it('shows M12 health focus, baseline, and readiness KPIs without stale M7 wording', () => {
+    renderAt('/health');
+
+    expect(screen.getByRole('heading', { name: 'M12 Campaign Workspace Trust & Validation' })).toBeInTheDocument();
+    expect(screen.getByText(/Product Health 7.4 baseline/i)).toBeInTheDocument();
+    for (const kpi of [
+      'Product Health',
+      'UX Health',
+      'Trust Score',
+      'Transparency Score',
+      'Validation Score',
+      'Dashboard Clarity',
+      'Overall Readiness',
+      'Engineering KPI',
+    ]) {
+      expect(screen.getByRole('region', { name: 'M12 KPI dashboard' })).toHaveTextContent(kpi);
+    }
+    expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
+  });
 });
 
 describe('Campaign Message Test workflow', () => {
@@ -253,9 +315,9 @@ describe('Campaign Message Test workflow', () => {
     }
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign name or brand is required because the review needs a campaign label. Add a brand or campaign name to continue.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Campaign Message is required because the fixture must be reviewed against a visible message. Add the message copy to continue.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Select at least one platform because channel context changes review interpretation. Choose one or more platform checkboxes.');
   });
 
   it('renders dashboard, safety labels, executive summary, export links, and recommended next action', () => {
@@ -310,7 +372,7 @@ describe('A/B Experiment workflow', () => {
     fireEvent.change(within(form).getByLabelText('Variant B'), { target: { value: '' } });
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Both A/B variants are required.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Both A/B variants are required because the comparison needs two visible alternatives. Add Variant A and Variant B copy to continue.');
     expect(screen.queryByRole('heading', { name: 'Offline A/B experiment ready for executive review' })).not.toBeInTheDocument();
   });
 

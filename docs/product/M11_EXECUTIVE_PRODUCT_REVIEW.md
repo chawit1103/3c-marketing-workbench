@@ -76,7 +76,7 @@ Scope should be remediation, not new capability:
 5. in-app `/health` route wording;
 6. optional fixture/workflow registry extraction if bundled safely.
 
-Creative Comparison should remain blocked until M12 or equivalent evidence-backed remediation is complete.
+Creative Comparison should remain blocked until M12 or equivalent evidence-backed remediation is complete. M12 must also update in-app `/health` wording so the product reflects the Product Health 7.4 baseline and M12 Campaign Workspace Trust & Validation focus instead of stale milestone language.
 
 ## Product Owner decision support
 

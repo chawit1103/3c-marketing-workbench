@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M11 Continuous Product Validation & Synthetic Dogfooding complete and merged.
+- Current branch scope: M12 Campaign Workspace Trust & Validation P1/P2 remediation only.
 - PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, and M10 Campaign Workspace MVP are complete.
-- M11 validates the current product through structured multi-persona synthetic dogfooding and creates evidence reports/backlog only. Reuse the approved Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, Campaign Workspace Foundation, Campaign Workspace MVP, dashboard/export patterns, safety labels, product-owned adapter, and product-owned SocialSense boundary. Do not implement Creative Comparison, add workflows, redesign architecture, add backend behavior, live APIs, private data, persistence, or SocialSense changes.
+- M12 remediates M11 trust findings only: unknown run/export unavailable states, blank/invalid input feedback, immediate result visibility, fixture transparency, and `/health` current wording. Reuse the approved Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, Campaign Workspace Foundation, Campaign Workspace MVP, dashboard/export patterns, safety labels, product-owned adapter, and product-owned SocialSense boundary. Do not implement Creative Comparison, add workflows, redesign architecture, add backend behavior, live APIs, private data, persistence, auth, credentials, or SocialSense changes.
 
 ## Repository boundaries
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M11 language fixture/offline-compatible, synthetic, aggregate-only, non-production, validation/reporting-only, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M12 language fixture/offline-compatible, synthetic, aggregate-only, non-production, validation/reporting-only, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -85,7 +85,7 @@ Required planning artifacts:
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
 
-## M11 validation commands
+## M12 validation commands
 
 Run focused validation before handoff:
 
@@ -99,7 +99,7 @@ git diff --check origin/main...HEAD
 git status --short --branch
 ```
 
-M11 may modify docs and docs smoke only. Do not add backend/server/api/auth/credential files, runtime/frontend implementation, new workflows, Creative Comparison, product redesign, or SocialSense changes.
+M12 may modify focused frontend trust/validation code, regression tests, README/roadmap/product health/AGENTS docs, and docs smoke only. Do not add backend/server/api/auth/credential files, new workflows, Creative Comparison, product redesign, persistence, live APIs, SocialSense changes, or MarketingSimulation changes.
 
 ## Docs smoke expectations
 
@@ -117,17 +117,19 @@ M11 may modify docs and docs smoke only. Do not add backend/server/api/auth/cred
 - expected PR4 and M5 fixture files still exist;
 - adapter uses the SocialSense public facade and avoids forbidden internals;
 - fixture generators use the PR3 adapter, not private SocialSense imports;
-- M11 branch changes are limited to validation reports/backlog, README/roadmap/product health/AGENTS docs, and docs smoke updates;
+- M12 branch changes are limited to focused frontend trust/validation code, regression tests, README/roadmap/product health/AGENTS docs, and docs smoke updates;
 - forbidden backend/live/auth/credential files are absent.
 
 ## Definition of Done
 
-M11 is done only when:
+M12 is done only when:
 
-- all six persona reviews complete Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace scenarios;
-- `docs/product/M11_PRODUCT_VALIDATION_REPORT.md`, `docs/product/M11_PERSONA_EVIDENCE.md`, `docs/product/M11_UX_FRICTION_REGISTER.md`, `docs/product/M11_PRODUCT_BACKLOG.md`, and `docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md` exist and are linked;
-- Product Health, Roadmap, README, and AGENTS reflect M11 validation status and evidence-backed next milestone guidance;
+- unknown `/runs/:id` and `/exports/:id` show explicit unavailable states with recovery links and no Product Launch fallback;
+- blank/invalid input feedback explains what is missing, why it matters, and how to fix it;
+- run completion/result visibility is immediate;
+- all result views distinguish Reference Fixture from User Review Session, synthetic generated sample, user-provided assumptions, and no live execution;
+- Product Health, Roadmap, README, AGENTS, and docs smoke reflect M12 trust validation status and KPIs;
 - no Creative Comparison, additional workflow implementation, backend, runtime API, persistence, workspace storage, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, product redesign, or SocialSense changes are introduced;
 - `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, `python3 scripts/docs_smoke.py`, `git diff --check origin/main...HEAD`, and changed-path guard pass;
 - SocialSense and MarketingSimulation remain unmodified;
-- M11 validation artifacts are merged on main.
+- M12 changes are committed on `m12-campaign-workspace-trust-validation`.

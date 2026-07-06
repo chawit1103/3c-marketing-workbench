@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M10 Campaign Workspace MVP complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, and M9 Campaign Workspace Foundation are complete. M10 adds a first usable Campaign Workspace screen at `/campaign-workspace` using existing Product Launch, Campaign Message Test, and A/B Experiment fixtures only. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, and SocialSense changes remain not implemented.
+Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. PR1-PR4 and M2-M11 are complete; M12 remediates M11 P1/P2 trust issues only: unsupported run/export states, validation feedback, result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
 
 ## Program
 
@@ -210,12 +210,14 @@ Acceptance criteria:
 - Architecture Gate is not triggered; findings become backlog and remediation recommendations.
 - Overall Product Health Score: 7.4 / 10.
 
-### Next: M12 Campaign Workspace Trust & Validation Fixes — Only if M11 receives GO
+### M12: Campaign Workspace Trust & Validation — Current branch
 
-- Resolve or explicitly accept M11 P1 evidence findings before adding any future workflow.
-- Recommended remediation: unsupported run/export states, visible validation feedback, run-complete/result focus, fixture-reference versus user-run labeling, and in-app `/health` route wording.
+- Resolve M11 P1/P2 trust findings before adding any future workflow.
+- Implemented remediation: unsupported run/export unavailable states, visible validation feedback, run-complete/result visibility, fixture-reference versus user-review-session labeling, and in-app `/health` route wording.
+- M12 KPIs: Product Health, UX Health, Trust Score, Transparency Score, Validation Score, Dashboard Clarity, Overall Readiness, and Engineering KPI.
+- Optional registry extraction is deferred to avoid redesign; exact fixture matching stays minimal and in-place.
 - Creative Comparison remains gated and must be separately planned after evidence-backed remediation.
-- Do not add backend, live APIs, private data, persistence, product redesign, new workflows, or SocialSense changes from this roadmap alone.
+- Do not add backend, live APIs, private data, persistence, product redesign, new workflows, MarketingSimulation changes, or SocialSense changes from this roadmap alone.
 
 ### Future: Governance and implementation readiness review
 
