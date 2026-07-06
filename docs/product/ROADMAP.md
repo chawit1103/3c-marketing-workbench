@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M16 Feature Freeze and Demo Readiness is in progress. PR1-PR4 and M2-M15 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M16 Feature Freeze and Demo Readiness is validated for review. PR1-PR4 and M2-M15 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 

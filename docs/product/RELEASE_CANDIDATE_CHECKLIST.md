@@ -87,15 +87,15 @@ Architecture Gate: Not triggered.
 
 | ID | Blocker | Severity | Owner | Status | Notes |
 |---|---|---|---|---|---|
-| RC-001 | None recorded at M16 start | P3 | Orchestrator | Open for validation | Replace with real blockers found during validation/dogfooding. |
+| RC-001 | None recorded after M16 validation | P3 | Orchestrator | Closed | Reopen this row only if QA/review/dogfooding identifies a real release blocker. |
 
 ## RC readiness decision
 
-- Demo readiness:
-- Executive readability:
-- Human dogfooding readiness:
-- Feature freeze compliance:
-- Trust readiness:
-- Export readiness:
-- Known blockers:
-- Release candidate readiness:
+- Demo readiness: Ready for controlled executive walkthrough.
+- Executive readability: Ready for review; demo script and workspace center executive status, summary, next action, and export readiness.
+- Human dogfooding readiness: Ready for controlled human dogfooding using the documented tester roles, tasks, and feedback template.
+- Feature freeze compliance: Compliant; M16 is docs/release-readiness only and blocks new workflow/backend/live/persistence/auth/private-data scope.
+- Trust readiness: Ready for dogfooding; existing safety labels, fixture boundaries, and no-winner language remain required.
+- Export readiness: Ready for preview review; existing Export Readiness Preview only, no new formats or production download.
+- Known blockers: None recorded after validation.
+- Release candidate readiness: Ready for controlled demo and human dogfooding after final review gates.
