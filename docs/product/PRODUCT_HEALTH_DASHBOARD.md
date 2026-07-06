@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M10 Campaign Workspace MVP implemented on branch `m10-campaign-workspace-mvp`. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework and M9 Campaign Workspace Foundation are approved. M10 adds a frontend-only Campaign Workspace at `/campaign-workspace` using existing fixtures only. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M10.
+Status: M10 Campaign Workspace MVP complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework and M9 Campaign Workspace Foundation are approved. M10 adds a frontend-only Campaign Workspace at `/campaign-workspace` using existing fixtures only. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M10.
 
 
 ## M1 PR4 closeout
@@ -199,13 +199,14 @@ Status: M10 Campaign Workspace MVP implemented on branch `m10-campaign-workspace
 | Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
 | Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M9 Campaign Workspace Foundation GO. |
 | Campaign Workspace readiness | Complete | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are complete; Creative Comparison remains gated after M9 GO. |
+| Campaign Workspace MVP readiness | Complete | M10 frontend + review gates | `/campaign-workspace` provides campaign overview, journey timeline, evidence summary, executive summary, recommended next action, and workflow actions using existing fixtures only. |
 
 ## KPI baseline
 
 | KPI | Current value | Measurement method | Next target |
 |---|---:|---|---:|
-| Documented route patterns | 6 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
-| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M9 |
+| Documented route patterns | 7 | Route resolver and README route list | Keep primary navigation unchanged while adding workflow routes only when approved |
+| Implemented backend endpoints | 0 | Code/docs smoke review | 0 in M10 |
 | SocialSense adapter modules | 2 | Code/docs smoke review | Adapter package + public SDK smoke in PR3 |
 | Local adapter smoke paths | 2 | Code/smoke review | `product_launch` and Campaign Message Test fixture paths through public SDK/product adapter |
 | Docs smoke checks | Passing | `scripts/docs_smoke.py` | Keep smoke-required docs and safety checks passing |

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M10 Campaign Workspace MVP implemented on branch `m10-campaign-workspace-mvp`. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, and M9 Campaign Workspace Foundation are complete. M10 adds a first usable Campaign Workspace screen at `/campaign-workspace` using existing Product Launch, Campaign Message Test, and A/B Experiment fixtures only. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, and SocialSense changes remain not implemented.
+Status: M10 Campaign Workspace MVP complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, and M9 Campaign Workspace Foundation are complete. M10 adds a first usable Campaign Workspace screen at `/campaign-workspace` using existing Product Launch, Campaign Message Test, and A/B Experiment fixtures only. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -194,7 +194,7 @@ Acceptance criteria:
 - Do not implement Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, live APIs, private data, or SocialSense changes.
 - Architecture Gate is not triggered if Campaign Workspace composes the existing Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, and SocialSense boundary.
 
-### M10: Campaign Workspace MVP — Current
+### M10: Campaign Workspace MVP — Complete
 
 - Implement `/campaign-workspace` as a secondary/workbench route without changing the primary navigation model.
 - Surface Campaign Overview, Current Journey Stage, Recent Runs, Evidence Summary, Executive Summary, Recommended Next Action, and Available Workflow Actions.
@@ -239,7 +239,8 @@ Do not implement until separate review:
 - M7 A/B Experiment Reference Workflow is marked complete.
 - M8 Marketing Journey Framework is marked complete.
 - M9 Campaign Workspace Foundation is marked complete.
-- Next milestone is Creative Comparison only after M9 review gates approve the Campaign Workspace Foundation.
+- M10 Campaign Workspace MVP is marked complete.
+- Next milestone is Creative Comparison only after M10 review gates approve the Campaign Workspace MVP.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
