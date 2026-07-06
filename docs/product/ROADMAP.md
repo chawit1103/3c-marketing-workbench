@@ -202,11 +202,20 @@ Acceptance criteria:
 - Aggregate evidence only from existing Product Launch, Campaign Message Test, and A/B Experiment fixtures already imported by the frontend.
 - Keep Creative Comparison, additional workflows, backend endpoints, new marketing workflows, SocialSense changes, persistence, and live APIs out of scope.
 
-### Next: Campaign Workspace private review / future workflow gate — Only if M10 receives GO
+### M11: Continuous Product Validation & Synthetic Dogfooding — Complete
 
-- Review M10 Campaign Workspace MVP outcomes before adding any future workflow.
-- Creative Comparison remains gated and must be separately planned before implementation.
-- Do not add backend, live APIs, private data, persistence, or SocialSense changes from this roadmap alone.
+- Validate Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace through six persona reviews.
+- Create Product Validation Report, UX Friction Register, Product Backlog, and Executive Product Review.
+- Treat M11 as validation/reporting only: no new workflows, no Creative Comparison, no runtime changes, no backend endpoints, no product redesign, and no SocialSense changes.
+- Architecture Gate is not triggered; findings become backlog and remediation recommendations.
+- Overall Product Health Score: 7.4 / 10.
+
+### Next: M12 Campaign Workspace Trust & Validation Fixes — Only if M11 receives GO
+
+- Resolve or explicitly accept M11 P1 evidence findings before adding any future workflow.
+- Recommended remediation: unsupported run/export states, visible validation feedback, run-complete/result focus, fixture-reference versus user-run labeling, and in-app `/health` route wording.
+- Creative Comparison remains gated and must be separately planned after evidence-backed remediation.
+- Do not add backend, live APIs, private data, persistence, product redesign, new workflows, or SocialSense changes from this roadmap alone.
 
 ### Future: Governance and implementation readiness review
 
@@ -240,7 +249,9 @@ Do not implement until separate review:
 - M8 Marketing Journey Framework is marked complete.
 - M9 Campaign Workspace Foundation is marked complete.
 - M10 Campaign Workspace MVP is marked complete.
-- Next milestone is Creative Comparison only after M10 review gates approve the Campaign Workspace MVP.
+- M11 Continuous Product Validation & Synthetic Dogfooding is marked complete.
+- Next milestone is M12 trust/validation remediation only after M11 review gates approve evidence-backed backlog priorities.
+- Creative Comparison remains blocked until evidence-backed remediation is complete or explicitly accepted.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
