@@ -280,65 +280,130 @@ const campaignLimitationsRisks = Array.from(new Set([
   ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
 
+const executiveFixtures = [
+  productLaunchFixture,
+  campaignMessageFixture,
+  abExperimentFixture,
+  creativeComparisonFixture,
+];
+
+function clampScore(value: number) {
+  return Math.min(100, Math.max(0, Math.round(value)));
+}
+
+function scoreFromDelta(delta: number) {
+  return clampScore(50 + delta * 100);
+}
+
+function average(values: number[]) {
+  return values.length === 0 ? 0 : values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function findCard(fixture: ReferenceFixture, title: string) {
+  return fixture.cards.find((card) => card.title === title);
+}
+
+const workflowCoverageCount = campaignWorkspaceRuns.length;
+const completedWorkflowCount = campaignJourneyStages.filter((stage) => stage.status === 'Completed').length;
+const completedWorkflowCoverageScore = clampScore((completedWorkflowCount / workflowCoverageCount) * 100);
+const readyExportCount = executiveFixtures.filter((fixture) => fixture.exports.readiness === 'Ready for human review').length;
+const liveDataExcluded = executiveFixtures.every((fixture) => !fixture.sourceChecks.liveApiAccess && fixture.sourceChecks.productionReady === false);
+const averageSentimentScore = average(executiveFixtures.map((fixture) => scoreFromDelta(fixture.summary.sentimentDelta)));
+const averageTrustScore = average(executiveFixtures.map((fixture) => scoreFromDelta(fixture.summary.trustDelta)));
+const averageReachScore = average(executiveFixtures.map((fixture) => scoreFromDelta(fixture.summary.diffusionReach)));
+const overallCampaignScore = clampScore(average([
+  averageSentimentScore,
+  averageTrustScore,
+  averageReachScore,
+  completedWorkflowCoverageScore,
+]));
+const averageRiskScore = clampScore(average(executiveFixtures.map((fixture) => fixture.summary.riskScore * 100)));
+const lowConfidenceScore = creativeComparisonFixture.comparisonMethod.confidenceLevel.toLowerCase().includes('low') ? 40 : 60;
+const reviewReadinessScore = clampScore((readyExportCount / executiveFixtures.length) * 100);
+const journeyReadyStages = campaignJourneyStages.filter((stage) => stage.status === 'Completed' || stage.status === 'Current').length;
+const journeyProgressScore = clampScore((journeyReadyStages / campaignJourneyStages.length) * 100);
+
 const executiveKpis = [
   {
     title: 'Overall Campaign Score',
-    value: '74 / 100',
-    detail: 'Composite directional score from existing offline Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixtures.',
+    value: `${overallCampaignScore} / 100`,
+    detail: 'Formula: average sentiment/trust/reach scores plus completed workflow coverage. Source: summary.sentimentDelta, summary.trustDelta, summary.diffusionReach, and 4 / 4 completed workflow fixtures. Evidence tier: E1 synthetic/offline fixture; not live social data or production prediction.',
   },
   {
     title: 'Message Acceptance',
-    value: productLaunchFixture.cards.find((card) => card.title === 'Message Acceptance')?.value ?? 'Review required',
-    detail: 'The message is understandable when speed, taste, nutrition, and trust proof stay visible for human review.',
+    value: findCard(productLaunchFixture, 'Message Acceptance')?.value ?? 'Review required',
+    detail: 'Source: Product Launch fixture card “Message Acceptance”. Evidence tier: E1 synthetic/offline fixture; human review required before external use.',
   },
   {
     title: 'Brand Perception',
-    value: productLaunchFixture.cards.find((card) => card.title === 'Brand Perception')?.value ?? 'Review required',
-    detail: 'Brand signal is positive but still needs quality, delivery, and proof before any external use.',
+    value: findCard(productLaunchFixture, 'Brand Perception')?.value ?? 'Review required',
+    detail: 'Source: Product Launch fixture card “Brand Perception”. Offline directional signal only; quality, delivery, and proof remain review evidence needs.',
   },
   {
     title: 'Audience Engagement',
-    value: productLaunchFixture.cards.find((card) => card.title === 'Engagement Potential')?.value ?? 'Review required',
-    detail: 'Short video and chat-friendly creative remain the best first evidence-gathering direction.',
+    value: findCard(productLaunchFixture, 'Engagement Potential')?.value ?? 'Review required',
+    detail: 'Source: Product Launch fixture card “Engagement Potential”. This is a synthetic planning cue, not measured audience engagement or live social activity.',
   },
   {
     title: 'Synthetic Purchase Intent',
-    value: productLaunchFixture.cards.find((card) => card.title === 'Synthetic Purchase Intent')?.value ?? 'Directional only',
-    detail: 'Synthetic purchase intent is directional planning input only, not a sales forecast or conversion guarantee.',
+    value: findCard(productLaunchFixture, 'Synthetic Purchase Intent')?.value ?? 'Directional only',
+    detail: 'Source: Product Launch fixture card “Synthetic Purchase Intent”. Directional planning input only; not a sales forecast or conversion guarantee.',
+  },
+  {
+    title: 'Evidence Coverage',
+    value: `${workflowCoverageCount} / ${workflowCoverageCount} workflows`,
+    detail: 'Formula: completed fixture coverage from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison. Evidence tier: E1 synthetic/offline fixture; no live APIs, CRM, private, or platform data.',
+  },
+  {
+    title: 'Review Readiness',
+    value: `${readyExportCount} / ${executiveFixtures.length} exports ready`,
+    detail: 'Formula: fixtures whose exports.readiness equals “Ready for human review”. Review readiness means preview/handoff review only, not downloadable production export.',
   },
   {
     title: 'Confidence',
     value: creativeComparisonFixture.comparisonMethod.confidenceLevel,
-    detail: 'Confidence remains low directional because current evidence is fixture-backed and requires comparable field validation.',
+    detail: 'Source: Creative Comparison comparisonMethod.confidenceLevel. Evidence tier: E1 synthetic/offline fixture; confidence stays low until comparable approved field evidence exists.',
   },
   {
     title: 'Risk Level',
-    value: 'Controlled / review required',
-    detail: 'Safety risk is controlled by offline-only fixtures, human review, and no live social data or production campaign systems.',
+    value: `${averageRiskScore}% fixture risk score`,
+    detail: 'Formula: average summary.riskScore across all four fixtures. Current offline fixture risk is controlled because live data and production campaign systems are excluded.',
   },
   {
     title: 'Recommendation',
     value: 'Approve small reviewed evidence test',
-    detail: creativeComparisonFixture.recommendedNextTest,
+    detail: `Source: Creative Comparison recommendedNextTest. ${creativeComparisonFixture.recommendedNextTest}`,
   },
 ];
 
-const platformComparison = [
-  { label: 'LINE', value: 82, detail: 'Chat-friendly planning cue from existing offline fixtures.' },
-  { label: 'TikTok', value: 76, detail: 'Short-video direction remains useful for a small reviewed test.' },
-  { label: 'Facebook', value: 68, detail: 'Community review cue is directional, not measured live activity.' },
-];
+const platformComparison = productLaunchFixture.platformBreakdown.map((item, index) => ({
+  label: item.platform,
+  value: clampScore(100 - index * 12),
+  detail: `Formula: fixture rank coverage from platformBreakdown; not measured engagement. ${item.detail}`,
+}));
 
-const audienceComparison = [
-  { label: 'Working Adults', value: 84, detail: 'Strongest fit for speed, reliability, and lunch-time clarity.' },
-  { label: 'Urban Consumers', value: 74, detail: 'Good fit when convenience and quality proof are visible.' },
-  { label: 'SME Owners', value: 63, detail: 'Useful team-benefit frame, but budget evidence remains a gap.' },
-];
+const audienceComparison = productLaunchFixture.sampleInput.audiences.map((audience, index) => ({
+  label: audience,
+  value: clampScore(100 - index * 12),
+  detail: `Formula: fixture rank from sampleInput.audiences and audienceInsights; not measured audience engagement. ${productLaunchFixture.audienceInsights[index] ?? 'Review audience assumptions before use.'}`,
+}));
 
 const confidenceRiskSignals = [
-  { label: 'Confidence', value: 42, detail: 'Low directional confidence; fixture-backed evidence only.' },
-  { label: 'Readiness', value: 72, detail: 'Ready for human review and a small approved evidence test.' },
-  { label: 'Risk', value: 28, detail: 'Low implementation risk because no backend, live APIs, or persistence are introduced.' },
+  {
+    label: 'Confidence',
+    value: lowConfidenceScore,
+    detail: `Formula: ${creativeComparisonFixture.comparisonMethod.confidenceLevel} mapped to ${lowConfidenceScore}/100 from comparisonMethod.confidenceLevel. Evidence tier: E1 synthetic/offline fixture.`,
+  },
+  {
+    label: 'Readiness',
+    value: reviewReadinessScore,
+    detail: `Formula: ${readyExportCount} / ${executiveFixtures.length} fixtures have exports.readiness = Ready for human review; preview/review only.`,
+  },
+  {
+    label: 'Risk',
+    value: averageRiskScore,
+    detail: `Formula: average summary.riskScore across fixtures; live data excluded = ${liveDataExcluded ? 'yes' : 'no'}. Not a production risk model.`,
+  },
 ];
 
 export function CampaignWorkspaceView() {
@@ -510,9 +575,9 @@ function ExecutiveDashboard() {
         <BarList title="Confidence / risk" items={confidenceRiskSignals} />
         <section className="executive-visual-card" aria-label="Journey progress">
           <p className="eyebrow">Journey progress</p>
-          <h3>5 of 6 review stages ready</h3>
+          <h3>{journeyReadyStages} of {campaignJourneyStages.length} review stages ready</h3>
           <div className="progress-track" aria-hidden="true">
-            <span style={{ width: '83%' }} />
+            <span style={{ width: `${journeyProgressScore}%` }} />
           </div>
           <ol className="mini-step-list">
             {campaignJourneyStages.map(({ stage, status }) => (

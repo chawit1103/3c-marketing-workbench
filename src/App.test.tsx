@@ -240,6 +240,8 @@ describe('Campaign Workspace MVP', () => {
       'Brand Perception',
       'Audience Engagement',
       'Synthetic Purchase Intent',
+      'Evidence Coverage',
+      'Review Readiness',
       'Confidence',
       'Risk Level',
       'Recommendation',
@@ -248,7 +250,10 @@ describe('Campaign Workspace MVP', () => {
     }
     expect(dashboard).toHaveTextContent('Synthetic/offline fixture-backed dashboard');
     expect(dashboard).toHaveTextContent('not live social data');
-    expect(dashboard).toHaveTextContent('74 / 100');
+    expect(dashboard).toHaveTextContent('Formula: average sentiment/trust/reach scores plus completed workflow coverage');
+    expect(dashboard).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture');
+    expect(dashboard).toHaveTextContent('4 / 4 workflows');
+    expect(dashboard).toHaveTextContent('4 / 4 exports ready');
     expect(within(dashboard).getByRole('region', { name: 'Platform comparison' })).toHaveTextContent('LINE');
     expect(within(dashboard).getByRole('region', { name: 'Audience comparison' })).toHaveTextContent('Working Adults');
     expect(within(dashboard).getByRole('region', { name: 'Confidence / risk' })).toHaveTextContent('Readiness');

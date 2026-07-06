@@ -236,9 +236,13 @@ REQUIRED_M17_PR2_PHRASES = [
     "Brand Perception",
     "Audience Engagement",
     "Synthetic Purchase Intent",
+    "Evidence Coverage",
+    "Review Readiness",
     "Confidence",
     "Risk Level",
     "Recommendation",
+    "Formula:",
+    "Evidence tier: E1 synthetic/offline fixture",
     "Platform comparison",
     "Audience comparison",
     "Journey progress",
@@ -259,7 +263,7 @@ REQUIRED_M17_PHRASES = [
     "Architecture Gate triggers",
     "safety boundaries",
     "validation and review gates",
-    "M17 PR2+ implementation is future work",
+    "M17 PR2+ implementation was explicitly future work",
     "not delivered in this PR",
     "docs/smoke only",
     "no source UI/runtime changes",
@@ -1265,9 +1269,9 @@ def main() -> None:
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
-        print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and docs-only boundary")
+        print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         if current_branch_name() == "m17-executive-dashboard-kpis":
-            print("PASS: M17 PR2 executive KPI dashboard slice includes runtime allowlist, dashboard phrases, and offline/synthetic boundaries")
+            print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

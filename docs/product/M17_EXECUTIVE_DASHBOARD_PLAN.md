@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Plan
 
-Status: M17 started after M16 by PR1 program kickoff docs only. This PR does not deliver Executive KPI cards, marketing charts, confidence visualization, report/export implementation, runtime UI changes, backend, persistence, auth, external services, live APIs, SocialSense changes, or MarketingSimulation changes.
+Status: M17 PR2 runtime slice is current and complete for this branch after the PR1 program kickoff docs. PR2 delivers fixture-backed Executive KPI cards, Evidence Coverage, Review Readiness, traceable formula/source copy, and CSS-only decision visuals in the existing Campaign Workspace. PR2 does not deliver PR3 marketing charts/evidence/confidence expansion, report/export implementation, backend, persistence, auth, external services, live APIs, SocialSense changes, or MarketingSimulation changes.
 
 ## M17 objective
 
@@ -10,18 +10,20 @@ Improve the existing executive dashboard and export-review experience so executi
 
 ### PR1: Program kickoff docs
 
+Historical status: complete. PR1 was docs/smoke only and had no source UI/runtime changes.
+
 Scope:
 
 - Create `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`.
 - Create `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
 - Update README, AGENTS, Roadmap, Product Health Dashboard, and docs smoke.
-- Keep docs/smoke only.
+- Keep docs/smoke only for PR1.
 
 Acceptance criteria:
 
 - Program and M17 plan docs exist and link from README.
 - M17-M19 are decomposed into epics/features/tasks/PR order.
-- M17 PR2+ implementation is explicitly future work, not delivered in this PR.
+- M17 PR2+ implementation was explicitly future work at PR1 time and was not delivered in PR1.
 - Quality gates are listed: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Program KPIs are measurable and reviewable with definition/formula, baseline/source, target/threshold, owner, cadence, and GO/NO-GO criteria: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
 - Evidence/confidence methodology is defined with evidence-quality tiers, confidence levels, minimum evidence requirements, downgrade rules, unsupported-evidence handling, and synthetic/offline evidence mapping.
@@ -32,10 +34,13 @@ Acceptance criteria:
 
 ### PR2: Executive KPI cards
 
+Status: current limited implementation slice on this branch.
+
 Scope:
 
-- Future implementation only after PR1 review.
-- Add or refine executive KPI cards using existing fixture data and existing dashboard patterns.
+- Implement after PR1 review using only existing fixture data and existing dashboard patterns.
+- Add first-class Evidence Coverage and Review Readiness KPI cards.
+- Make Overall Campaign Score, platform/audience scores, readiness, risk, and confidence traceable through visible formula/source/evidence-tier copy.
 - Keep values synthetic aggregate, directional, and review-oriented.
 - Do not add backend, persistence, auth, live APIs, external services, SocialSense changes, MarketingSimulation changes, or new workflows.
 
@@ -43,6 +48,9 @@ Acceptance criteria:
 
 - KPI cards are visible on approved executive dashboard surfaces.
 - Cards cover status, confidence, evidence coverage, risk, recommended next action, and review readiness.
+- Overall Campaign Score is formula-backed from existing summary sentiment/trust/reach fields and completed workflow fixture coverage.
+- Platform and audience visuals disclose fixture-rank formulas and do not imply measured engagement.
+- Confidence, readiness, and risk visuals disclose source/formula/evidence tier.
 - Copy avoids production prediction, conversion guarantees, and persuasion optimization claims.
 - Unit tests cover card rendering and safety copy.
 - Product Health, UX Health, Executive Readiness, Dashboard Quality, Trust, Transparency, and Release Readiness are updated in docs.
@@ -168,7 +176,7 @@ M17 does not implement:
 
 ## Validation commands
 
-Run before PR1 handoff and reuse for later M17 PRs unless a future PR adds a narrower required gate:
+Run before PR2 handoff; PR1 used the same suite as a docs/smoke-only historical guard:
 
 ```bash
 python3 scripts/docs_smoke.py

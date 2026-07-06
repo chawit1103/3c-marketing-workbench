@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M17 program kickoff docs only. M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness. M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation are planned future milestones. This PR does not deliver runtime features, UI changes, backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, or live APIs.
+Status: M17 Executive Dashboard & Reporting is current on the PR2 runtime branch after the PR1 program kickoff docs. PR2 implements the first limited fixture-backed executive KPI/dashboard slice in the existing Campaign Workspace; M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation remain planned future milestones. PR2 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, or live APIs.
 
 ## Program objective
 
@@ -117,7 +117,9 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: started by PR1 program kickoff docs. PR2+ implementation is future work and is not delivered in this PR.
+Status: PR2 runtime slice is current and complete for this branch; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR3 marketing charts/evidence/confidence visualization remains future work after PR2 review.
+
+Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 
 ### Epic 1: Executive KPI cards
 
@@ -155,7 +157,7 @@ Tasks:
 ### M17 PR order
 
 1. PR1 Program kickoff docs: this docs-only PR.
-2. PR2 Executive KPI cards: future implementation after PR1 review.
+2. PR2 Executive KPI cards: current limited implementation slice after PR1 review.
 3. PR3 Marketing charts/evidence/confidence visualization: future implementation after PR2 validation.
 4. PR4 Executive report/export improvements: future implementation after PR3 validation.
 5. PR5 M17 validation/closeout: future validation and closeout docs after PR2-PR4 pass review.
@@ -309,7 +311,7 @@ PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adap
 ## PR sequencing rules
 
 - PR1 is docs-only program kickoff and must not implement runtime features.
-- PR2+ implementation is explicitly future work and not delivered in PR1.
+- PR2+ implementation was explicitly future work and not delivered in PR1; PR2 is now the current limited runtime slice.
 - Each implementation PR must be small enough to review independently.
 - Each PR must update docs smoke if it introduces required docs or durable acceptance criteria.
 - Any Architecture Gate trigger stops implementation until reviewed.
