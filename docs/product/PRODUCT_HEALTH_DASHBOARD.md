@@ -398,24 +398,29 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Creative Comparison only if M9 receives GO.
+Next milestone: M12 Campaign Workspace Trust & Validation Fixes only if M11 receives GO.
 
-Scope must remain blocked unless Campaign Workspace validates the reusable Workspace model, Workspace navigation, Workspace dashboard, Journey integration, Executive Workspace, Future Workflow Placement, Marketing Journey Framework, Workflow Pattern, Campaign Domain, Information Architecture, Navigation Model, Design System, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary.
+Scope must remain blocked unless M12 addresses or explicitly accepts M11 P1 evidence findings: unsupported run/export states, result discoverability, invalid-input feedback, and trust/validation clarity. Creative Comparison remains blocked until that evidence-backed remediation is complete or explicitly accepted.
 
-Creative Comparison should start from:
+M12 should start from:
 
+- M11 Product Validation Report;
+- M11 Persona Evidence Appendix;
+- M11 UX Friction Register;
+- M11 Product Backlog;
+- M11 Executive Product Review;
+- the Campaign Workspace MVP;
 - the Campaign Workspace Foundation;
 - the Marketing Journey Framework;
 - Future Workflow Placement;
 - the Experiment Framework;
 - A/B Experiment reuse audit findings;
 - reuse of existing Workflow Pattern, Campaign Domain, IA, Navigation Model, Design System, dashboard, export review, safety labels, and public adapter boundary;
-- validation and safety acceptance criteria from M6/M7/M8/M9;
-- no backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, or conversion guarantee claims.
+- no new workflows, Creative Comparison, backend, live APIs, CRM/customer data, PII/private data, SocialSense changes, Promotion workflow, Multivariate Testing, production campaign optimization, persistence, workspace storage, product redesign, or conversion guarantee claims.
 
 Do not start Creative Comparison implementation from this dashboard alone.
 
-Backlog source: `docs/product/UX_FRICTION_BACKLOG.md`.
+Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_FRICTION_REGISTER.md`.
 
 ## Historical PR4 acceptance criteria
 

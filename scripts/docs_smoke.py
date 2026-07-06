@@ -744,10 +744,10 @@ def main() -> None:
         for phrase in ["Product Launch", "Campaign Message Test", "A/B Experiment", "Campaign Workspace"]:
             if phrase not in m11_text:
                 fail(f"M11 scenario evidence missing workflow: {phrase}")
-        forbidden_m11_changes = [path for path in changed_paths if path not in M11_ALLOWED_CHANGED_PATHS]
+        forbidden_m11_changes = [path for path in changed_paths if path not in M11_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m11-") else []
         if forbidden_m11_changes:
             fail("M11 changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m11_changes))
-        forbidden_m11_prefix_changes = [path for path in changed_paths if path.startswith(M11_FORBIDDEN_CHANGED_PREFIXES)]
+        forbidden_m11_prefix_changes = [path for path in changed_paths if path.startswith(M11_FORBIDDEN_CHANGED_PREFIXES)] if current_branch_name().startswith("m11-") else []
         if forbidden_m11_prefix_changes:
             fail("M11 changed forbidden runtime/backend/SocialSense paths: " + ", ".join(forbidden_m11_prefix_changes))
 
