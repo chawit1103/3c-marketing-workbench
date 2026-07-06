@@ -1,4 +1,13 @@
-export type AppRouteName = 'home' | 'workbench' | 'campaignMessageTest' | 'abExperiment' | 'runDashboard' | 'exportReview' | 'health' | 'notFound';
+export type AppRouteName =
+  | 'home'
+  | 'workbench'
+  | 'campaignWorkspace'
+  | 'campaignMessageTest'
+  | 'abExperiment'
+  | 'runDashboard'
+  | 'exportReview'
+  | 'health'
+  | 'notFound';
 
 export interface AppRoute {
   name: AppRouteName;
@@ -29,6 +38,10 @@ export function resolveRoute(pathname: string): AppRoute {
 
   if (normalized === '/workbench') {
     return { name: 'workbench', title: 'Guided workbench', pathname: '/workbench' };
+  }
+
+  if (normalized === '/campaign-workspace') {
+    return { name: 'campaignWorkspace', title: 'Campaign Workspace', pathname: '/campaign-workspace' };
   }
 
   if (normalized === '/workbench/campaign-message-test') {

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M9 Campaign Workspace Foundation complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, and M8 Marketing Journey Framework are complete. M9 defines Campaign Workspace as the campaign-centric product foundation for Campaign, Journey, Runs, Reports, Exports, History, Templates, Evidence, and Recommendations. Creative Comparison, additional workflows, backend, frontend implementation, runtime functionality, persistence, live APIs, and SocialSense changes remain not implemented.
+Status: M10 Campaign Workspace MVP implemented on branch `m10-campaign-workspace-mvp`. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, and M9 Campaign Workspace Foundation are complete. M10 adds a first usable Campaign Workspace screen at `/campaign-workspace` using existing Product Launch, Campaign Message Test, and A/B Experiment fixtures only. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -194,10 +194,18 @@ Acceptance criteria:
 - Do not implement Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, live APIs, private data, or SocialSense changes.
 - Architecture Gate is not triggered if Campaign Workspace composes the existing Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, and SocialSense boundary.
 
-### Next: Creative Comparison planning / implementation gate — Only if M9 receives GO
+### M10: Campaign Workspace MVP — Current
 
-- Review M9 Campaign Workspace Foundation outcomes before adding Creative Comparison.
-- Creative Comparison must be positioned as a workspace tool within Campaign Workspace, not an isolated screen.
+- Implement `/campaign-workspace` as a secondary/workbench route without changing the primary navigation model.
+- Surface Campaign Overview, Current Journey Stage, Recent Runs, Evidence Summary, Executive Summary, Recommended Next Action, and Available Workflow Actions.
+- Visualize the journey timeline: Campaign Definition → Campaign Message Test → A/B Experiment → Executive Decision → Export/Handoff.
+- Aggregate evidence only from existing Product Launch, Campaign Message Test, and A/B Experiment fixtures already imported by the frontend.
+- Keep Creative Comparison, additional workflows, backend endpoints, new marketing workflows, SocialSense changes, persistence, and live APIs out of scope.
+
+### Next: Campaign Workspace private review / future workflow gate — Only if M10 receives GO
+
+- Review M10 Campaign Workspace MVP outcomes before adding any future workflow.
+- Creative Comparison remains gated and must be separately planned before implementation.
 - Do not add backend, live APIs, private data, persistence, or SocialSense changes from this roadmap alone.
 
 ### Future: Governance and implementation readiness review

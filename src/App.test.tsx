@@ -27,6 +27,7 @@ describe('App shell routes', () => {
   it.each([
     ['/', 'Compare campaign decisions safely before budget reviews.'],
     ['/workbench', 'Product Launch Simulation'],
+    ['/campaign-workspace', 'Campaign Workspace'],
     ['/workbench/campaign-message-test', 'Campaign Message Test'],
     ['/workbench/ab-experiment', 'A/B Experiment'],
     ['/runs/run-123', 'Product Launch Results'],
@@ -51,7 +52,9 @@ describe('App shell routes', () => {
     expect(within(nav).getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/runs/sample-run');
     expect(within(nav).getByRole('link', { name: 'Export review' })).toHaveAttribute('href', '/exports/sample-run');
     expect(within(nav).getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/health');
+    expect(within(nav).queryByRole('link', { name: /Campaign Workspace/i })).not.toBeInTheDocument();
     expect(within(nav).queryByRole('link', { name: /Campaign Message Test/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open Campaign Workspace' })).toHaveAttribute('href', '/campaign-workspace');
     expect(screen.getByRole('link', { name: 'Open Campaign Message Test' })).toHaveAttribute(
       'href',
       '/workbench/campaign-message-test',
@@ -70,7 +73,7 @@ describe('App shell routes', () => {
       'campaign_response',
     ];
 
-    for (const pathname of ['/', '/workbench', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
+    for (const pathname of ['/', '/workbench', '/campaign-workspace', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
       expect(visibleText).not.toContain('pr4');
@@ -83,6 +86,68 @@ describe('App shell routes', () => {
 
       unmount();
     }
+  });
+});
+
+describe('Campaign Workspace MVP', () => {
+  it('renders a campaign-centric workspace with the approved journey timeline and executive summary', () => {
+    renderAt('/campaign-workspace');
+
+    expect(screen.getByRole('heading', { name: 'Campaign Workspace' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Campaign Overview' })).toHaveTextContent('Nimbus Go');
+    expect(screen.getByRole('region', { name: 'Current Journey Stage' })).toHaveTextContent('Executive Decision');
+    expect(screen.getByRole('region', { name: 'Executive Summary' })).toHaveTextContent('next recommended action');
+
+    const primaryAction = screen.getByRole('link', { name: 'Open executive handoff review' });
+    expect(primaryAction).toHaveClass('button-primary');
+    expect(primaryAction).toHaveAttribute('href', '/exports/3c-m7-ab-experiment-reference-workflow');
+    expect(screen.queryByRole('link', { name: /Continue next workflow/i })).not.toBeInTheDocument();
+
+    const journey = screen.getByRole('region', { name: 'Campaign journey timeline' });
+    for (const stage of ['Completed: Campaign Definition', 'Completed: Campaign Message Test', 'Completed: A/B Experiment', 'Current: Executive Decision', 'Next: Export/Handoff']) {
+      expect(journey).toHaveTextContent(stage);
+    }
+    expect(journey).toHaveTextContent('Handoff readiness: Ready for human review');
+  });
+
+  it('aggregates recent runs and evidence from existing fixtures only', () => {
+    renderAt('/campaign-workspace');
+
+    const recentRuns = screen.getByRole('region', { name: 'Recent Runs' });
+    for (const objective of ['Product Launch', 'Campaign Message Test', 'A/B Experiment']) {
+      expect(recentRuns).toHaveTextContent(objective);
+    }
+
+    const evidence = screen.getByRole('region', { name: 'Evidence Summary' });
+    for (const fixtureHeadline of [
+      'Offline product-launch simulation ready for executive review',
+      'Offline campaign-message test ready for executive review',
+      'Offline A/B experiment ready for executive review',
+    ]) {
+      expect(evidence).toHaveTextContent(fixtureHeadline);
+    }
+    expect(evidence).toHaveTextContent('Decision evidence quality');
+    expect(evidence).toHaveTextContent('Low directional confidence');
+    expect(evidence).toHaveTextContent('Evidence gaps');
+    expect(evidence).toHaveTextContent('No approved field data or backtest evidence is attached to this bridge output.');
+    expect(evidence).toHaveTextContent('Limitations / risks');
+    expect(evidence).toHaveTextContent('Blocked actions');
+    expect(evidence).toHaveTextContent('winner selection');
+    expect(evidence).toHaveTextContent('Handoff readiness');
+    expect(evidence).toHaveTextContent('Ready for human review');
+    expect(evidence.textContent).not.toContain('Creative Comparison');
+    expect(evidence.textContent?.toLowerCase()).not.toContain('socialsense');
+  });
+
+  it('offers only existing workflow actions and keeps Creative Comparison out of the workspace', () => {
+    renderAt('/campaign-workspace');
+
+    const actions = screen.getByRole('region', { name: 'Available Workflow Actions' });
+    expect(within(actions).getByRole('link', { name: 'Open Product Launch' })).toHaveAttribute('href', '/workbench');
+    expect(within(actions).getByRole('link', { name: 'Open Campaign Message Test' })).toHaveAttribute('href', '/workbench/campaign-message-test');
+    expect(within(actions).getByRole('link', { name: 'Open A/B Experiment' })).toHaveAttribute('href', '/workbench/ab-experiment');
+    expect(within(actions).queryByRole('link', { name: /Creative Comparison/i })).not.toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('Creative Comparison');
   });
 });
 

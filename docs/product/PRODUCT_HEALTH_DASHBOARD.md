@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M9 Campaign Workspace Foundation complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework is approved; M9 defines Campaign Workspace as the campaign-centric product foundation. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, runtime functionality, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M9.
+Status: M10 Campaign Workspace MVP implemented on branch `m10-campaign-workspace-mvp`. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Marketing Journey Framework and M9 Campaign Workspace Foundation are approved. M10 adds a frontend-only Campaign Workspace at `/campaign-workspace` using existing fixtures only. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, persistence, live APIs, private data, and SocialSense runtime changes are not authorized by M10.
 
 
 ## M1 PR4 closeout

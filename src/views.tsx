@@ -148,6 +148,7 @@ export function HomeView() {
           language for human review.
         </p>
         <div className="button-row">
+          <a className="button button-primary" href="/campaign-workspace">Open Campaign Workspace</a>
           <a className="button button-primary" href="/workbench">Open guided workbench</a>
           <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
           <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
@@ -170,6 +171,190 @@ export function HomeView() {
           description="A third reference workflow reuses Experiment Framework, guided inputs, comparison dashboard, export review, and safety labels."
           status="ready"
         />
+      </div>
+    </section>
+  );
+}
+
+const campaignWorkspaceRuns = [
+  { config: workflowConfigs.productLaunch, href: `/runs/${productLaunchFixture.runId}`, stage: 'Campaign Definition' },
+  { config: workflowConfigs.campaignMessageTest, href: `/runs/${campaignMessageFixture.runId}`, stage: 'Campaign Message Test' },
+  { config: workflowConfigs.abExperiment, href: `/runs/${abExperimentFixture.runId}`, stage: 'A/B Experiment' },
+];
+
+const campaignJourneyStages = [
+  {
+    stage: 'Campaign Definition',
+    status: 'Completed',
+    detail: 'Product-launch assumptions and executive summary are ready for review.',
+  },
+  {
+    stage: 'Campaign Message Test',
+    status: 'Completed',
+    detail: 'Message-readiness evidence is available from the approved fixture.',
+  },
+  {
+    stage: 'A/B Experiment',
+    status: 'Completed',
+    detail: 'A/B decision frame is ready, with no production winner selected.',
+  },
+  {
+    stage: 'Executive Decision',
+    status: 'Current',
+    detail: 'Review confidence, risks, gaps, and blocked actions before handoff.',
+  },
+  {
+    stage: 'Export/Handoff',
+    status: 'Next',
+    detail: `Handoff readiness: ${abExperimentFixture.exports.readiness}.`,
+  },
+];
+
+const campaignEvidenceGaps = [
+  abExperimentFixture.reviewMetadata.assumptions.find((item) => item.includes('No approved field data')),
+  ...abExperimentFixture.reviewMetadata.evidenceGaps,
+].filter((item): item is string => Boolean(item));
+
+const campaignLimitationsRisks = Array.from(new Set([
+  ...abExperimentFixture.reviewMetadata.limitations.slice(0, 2),
+  ...abExperimentFixture.risksCaveats.slice(0, 2),
+]));
+
+export function CampaignWorkspaceView() {
+  const campaignName = productLaunchFixture.sampleInput.brand;
+  const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
+  const recommendedAction = abExperimentFixture.recommendedNextTest;
+
+  return (
+    <section className="view-stack" aria-labelledby="campaign-workspace-title">
+      <div className="card card-accent hero">
+        <p className="eyebrow">Campaign Workspace</p>
+        <h1 id="campaign-workspace-title">Campaign Workspace</h1>
+        <p>
+          Manage one campaign from definition through message testing, A/B evidence review,
+          executive decision, and handoff using the existing offline workflow results.
+        </p>
+        <div className="button-row">
+          <a className="button button-primary" href={`/exports/${abExperimentFixture.runId}`}>Open executive handoff review</a>
+          <a className="button button-secondary" href={`/runs/${abExperimentFixture.runId}`}>Review A/B evidence</a>
+        </div>
+      </div>
+
+      <div className="grid two-col align-start">
+        <section className="card" aria-label="Campaign Overview">
+          <p className="eyebrow">Campaign Overview</p>
+          <h2>{campaignName}</h2>
+          <dl className="assumption-grid">
+            <div>
+              <dt>Campaign message</dt>
+              <dd>{campaignMessage}</dd>
+            </div>
+            <div>
+              <dt>Audience</dt>
+              <dd>{campaignMessageFixture.sampleInput.audiences.join(', ')}</dd>
+            </div>
+            <div>
+              <dt>Platform mix</dt>
+              <dd>{campaignMessageFixture.sampleInput.platforms.join(', ')}</dd>
+            </div>
+          </dl>
+          <p className="help-text">Offline fixture-based workspace; no persistence, live data, or new workflow runtime.</p>
+        </section>
+
+        <section className="card next-action-card" aria-label="Current Journey Stage">
+          <p className="eyebrow">Current Journey Stage</p>
+          <h2>Executive Decision</h2>
+          <p>Definition, message readiness, and A/B comparison evidence are ready for human review.</p>
+          <section aria-label="Recommended Next Action">
+            <p className="eyebrow">Recommended Next Action</p>
+            <strong>{recommendedAction}</strong>
+          </section>
+        </section>
+      </div>
+
+      <section className="card" aria-label="Campaign journey timeline">
+        <p className="eyebrow">Journey timeline</p>
+        <ol className="step-list workflow-step-list journey-timeline">
+          {campaignJourneyStages.map(({ stage, status, detail }, index) => (
+            <li className={`step-card journey-step journey-step-${status.toLowerCase()}`} key={stage}>
+              <span className="step-number">{index + 1}</span>
+              <div>
+                <strong>{status}: {stage}</strong>
+                <p>{detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div className="grid two-col align-start">
+        <section className="card" aria-label="Recent Runs">
+          <p className="eyebrow">Recent Runs</p>
+          <div className="run-list">
+            {campaignWorkspaceRuns.map(({ config, href, stage }) => (
+              <article className="run-row" key={config.key}>
+                <div>
+                  <h3>{config.objective}</h3>
+                  <p>{stage} · {config.fixture.exports.readiness}</p>
+                </div>
+                <a className="button button-secondary" href={href}>Open run</a>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="card" aria-label="Evidence Summary">
+          <p className="eyebrow">Evidence Summary</p>
+          <div className="evidence-stack">
+            {campaignWorkspaceRuns.map(({ config }) => (
+              <article className="evidence-item" key={config.key}>
+                <h3>{config.fixture.summary.headline}</h3>
+                <p>{config.fixture.exports.executiveSummaryPreview}</p>
+                <p className="help-text">Handoff readiness: {config.fixture.exports.readiness}</p>
+              </article>
+            ))}
+          </div>
+          <div className="evidence-critical-grid">
+            <section className="evidence-critical-card" aria-label="Decision evidence quality">
+              <p className="eyebrow">Decision evidence quality</p>
+              <h3>{abExperimentFixture.comparisonMethod.decisionStatus}</h3>
+              <p>{abExperimentFixture.comparisonMethod.rationale}</p>
+              <p><strong>Confidence:</strong> {abExperimentFixture.comparisonMethod.confidenceLevel}</p>
+            </section>
+            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
+            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
+            <InsightList title="Blocked actions" items={abExperimentFixture.comparisonMethod.blockedActions} />
+            <section className="evidence-critical-card" aria-label="Handoff readiness">
+              <p className="eyebrow">Handoff readiness</p>
+              <h3>{abExperimentFixture.exports.readiness}</h3>
+              <p>{abExperimentFixture.exports.status}</p>
+              <p className="help-text">Open executive handoff review before using this directional evidence externally.</p>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <div className="grid two-col align-start">
+        <section className="card" aria-label="Executive Summary">
+          <p className="eyebrow">Executive Summary</p>
+          <h2>Campaign status and next recommended action</h2>
+          <p>
+            {campaignName} has a reviewed campaign definition, a message-readiness signal, and an
+            A/B comparison frame. Treat the evidence as directional planning input only.
+          </p>
+          <p><strong>Recommended next action:</strong> {recommendedAction}</p>
+        </section>
+
+        <section className="card" aria-label="Available Workflow Actions">
+          <p className="eyebrow">Available Workflow Actions</p>
+          <h2>Use existing workflows</h2>
+          <div className="button-row stacked-actions">
+            <a className="button button-secondary" href="/workbench">Open Product Launch</a>
+            <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
+            <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
+          </div>
+          <p className="help-text">Only approved existing workflows are available in this MVP.</p>
+        </section>
       </div>
     </section>
   );
