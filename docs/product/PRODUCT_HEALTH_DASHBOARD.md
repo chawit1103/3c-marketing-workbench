@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M8 Marketing Journey Framework in progress. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; M8 defines Marketing Journey as the product framework that connects existing workflows into a coherent decision platform. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M8.
+Status: M8 Marketing Journey Framework complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; M8 defines Marketing Journey as the product framework that connects existing workflows into a coherent decision platform. Creative Comparison, additional workflows, Promotion workflow, backend, frontend implementation, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M8.
 
 
 ## M1 PR4 closeout
@@ -181,7 +181,7 @@ Status: M8 Marketing Journey Framework in progress. Product Launch remains the f
 | Design system readiness | GO | M4 review gates | Component inventory, token standards, and reuse matrix are reused by M5. |
 | Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
 | Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
-| Marketing Journey readiness | In planning | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are being defined before Creative Comparison. |
+| Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M8 GO. |
 
 ## KPI baseline
 

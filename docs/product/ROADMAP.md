@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M8 Marketing Journey Framework in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, and M7 A/B Experiment Reference Workflow are complete. M8 defines the reusable Marketing Journey that connects Product Launch, Campaign Message Test, and A/B Experiment into a coherent decision platform. Creative Comparison, additional workflows, backend, frontend implementation, live runtime functionality, and SocialSense changes remain not implemented.
+Status: M8 Marketing Journey Framework complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, and M7 A/B Experiment Reference Workflow are complete. M8 defines the reusable Marketing Journey that connects Product Launch, Campaign Message Test, and A/B Experiment into a coherent decision platform. Creative Comparison, additional workflows, backend, frontend implementation, live runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -178,7 +178,7 @@ Acceptance criteria:
 - Keep primary navigation unchanged.
 - Reuse audit: `docs/product/AB_EXPERIMENT_REUSE_AUDIT.md` records workflow reuse: 92%, component reuse: 93%, dashboard reuse: 91%, export reuse: 100%, navigation: unchanged.
 
-### M8: Marketing Journey Framework — Current
+### M8: Marketing Journey Framework — Complete
 
 - Define the Marketing Journey that connects Product Launch, Campaign Message Test, and A/B Experiment into one coherent marketing decision platform.
 - Create Marketing Journey Analysis, Marketing Journey Model, Journey Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement docs.
@@ -221,7 +221,7 @@ Do not implement until separate review:
 - M5 Campaign Message Test Reference Workflow is marked complete.
 - M6 Experiment Framework Planning is marked complete.
 - M7 A/B Experiment Reference Workflow is marked complete.
-- M8 Marketing Journey Framework is marked current.
+- M8 Marketing Journey Framework is marked complete.
 - Next milestone is Creative Comparison only after M8 review gates approve the Marketing Journey Framework.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

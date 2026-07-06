@@ -1,6 +1,6 @@
 # Workspace Model
 
-Status: M8 Marketing Journey Framework in progress.
+Status: M8 Marketing Journey Framework complete and merged.
 Scope: Documentation-only future workspace concept. This document does not implement workspace persistence, Creative Comparison, additional workflows, frontend routes, backend behavior, runtime functionality, live APIs, or SocialSense changes.
 
 ## Purpose

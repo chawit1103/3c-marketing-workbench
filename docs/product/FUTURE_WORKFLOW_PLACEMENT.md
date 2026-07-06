@@ -1,6 +1,6 @@
 # Future Workflow Placement
 
-Status: M8 Marketing Journey Framework in progress.
+Status: M8 Marketing Journey Framework complete and merged.
 Scope: Documentation-only placement of future workflows inside the Marketing Journey. This document does not implement Creative Comparison, additional workflows, frontend routes, backend behavior, runtime functionality, live APIs, or SocialSense changes.
 
 ## Placement principle
