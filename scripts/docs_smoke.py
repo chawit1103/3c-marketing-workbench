@@ -211,6 +211,44 @@ REQUIRED_M16_PHRASES = [
 REQUIRED_M17_DOCS = [
     "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
     "docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md",
+    "docs/product/M17_CLOSEOUT_REPORT.md",
+]
+
+REQUIRED_M17_CLOSEOUT_SECTIONS = [
+    "Executive Summary",
+    "Completed Deliverables",
+    "Review Gate Outcomes",
+    "Validation Summary",
+    "Regression Summary",
+    "Known Risks",
+    "Technical Debt",
+    "Architecture Gate Status",
+    "Product KPI",
+    "UX KPI",
+    "Research KPI",
+    "Dashboard KPI",
+    "Report KPI",
+    "Trust KPI",
+    "Transparency KPI",
+    "Executive Readiness",
+    "Executive Readiness Assessment",
+    "Recommendation",
+]
+
+REQUIRED_M17_CLOSEOUT_PHRASES = [
+    "Current readiness: GO WITH CONDITIONS",
+    "Architecture Gate: Not Triggered",
+    "E1 synthetic/offline fixture",
+    "Low directional confidence",
+    "human review",
+    "field evidence",
+    "before launch, budget, or winner decisions",
+    "Can an executive understand the dashboard within approximately 30 seconds?",
+    "Can an executive understand the Executive Summary without additional explanation?",
+    "Can the report be presented in a management meeting?",
+    "Which sections still require expert interpretation?",
+    "M18 Thai-first Internationalization may be prepared next",
+    "M18 implementation must not begin in this PR",
 ]
 
 M17_ALLOWED_CHANGED_PATHS = {
@@ -1285,7 +1323,43 @@ def main() -> None:
         ]:
             if phrase not in combined_m17_text:
                 fail(f"M17 docs missing PR sequence phrase: {phrase}")
-        if current_branch_name() == "m17-executive-dashboard-kpis":
+        if current_branch_name() == "m17-closeout":
+            closeout = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").read_text(encoding="utf-8")
+            missing_closeout_sections = [section for section in REQUIRED_M17_CLOSEOUT_SECTIONS if f"## {section}" not in closeout]
+            if missing_closeout_sections:
+                fail("M17 closeout report missing sections: " + ", ".join(missing_closeout_sections))
+            missing_closeout_phrases = [phrase for phrase in REQUIRED_M17_CLOSEOUT_PHRASES if phrase not in closeout]
+            if missing_closeout_phrases:
+                fail("M17 closeout report missing required readiness phrases: " + ", ".join(missing_closeout_phrases))
+            m17_status_text = "\n".join([readme, agents, roadmap, health_dashboard, *m17_docs.values()])
+            for phrase in [
+                "M17 Executive Dashboard & Reporting — Complete",
+                "PR5 M17 validation/closeout complete",
+                "Executive Readiness",
+                "Dashboard Quality",
+                "Report Quality",
+                "Trust",
+                "Transparency",
+                "Release Readiness",
+                "Known Risks",
+                "M18 may be prepared next",
+            ]:
+                if phrase not in m17_status_text:
+                    fail(f"M17 closeout status docs missing phrase: {phrase}")
+            stale_m17_phrases = [
+                "PR5 M17 validation/closeout remains future",
+                "PR5 closeout remains future",
+                "PR5 remains future",
+                "PR4 report/export readability is current",
+                "M17 Executive Dashboard & Reporting is in PR4 implementation",
+            ]
+            stale_hits = [phrase for phrase in stale_m17_phrases if phrase in "\n".join([readme, agents, roadmap, health_dashboard])]
+            if stale_hits:
+                fail("M17 closeout status docs contain stale PR4/PR5 phrase: " + ", ".join(stale_hits))
+            if "M18 implementation must not begin in this PR" not in m17_status_text:
+                fail("M17 closeout status docs missing M18 implementation block")
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
+        elif current_branch_name() == "m17-executive-dashboard-kpis":
             m17_pr2_source_text = "\n".join(
                 [
                     (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
@@ -1365,6 +1439,8 @@ def main() -> None:
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
+        if current_branch_name() == "m17-closeout":
+            print("PASS: M17 PR5 closeout report includes required sections, GO WITH CONDITIONS readiness, Not Triggered Architecture Gate, KPI/status updates, stale-status guards, and M18 preparation-only gate")
         if current_branch_name() == "m17-executive-dashboard-kpis":
             print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
         if current_branch_name() == "m17-evidence-confidence-visuals":

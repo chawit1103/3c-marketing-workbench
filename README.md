@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M17 Executive Dashboard & Reporting is in PR4 implementation after the PR1 program kickoff docs, PR2 executive KPI slice, and PR3 marketing charts/evidence/confidence visualization. This slice improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed. PR1 program kickoff docs remain the historical start of the Executive Experience & Marketing Simulation Enhancement program; PR5 M17 validation/closeout remains future work.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review after PR1 program kickoff docs, PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. The milestone improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Current readiness is GO WITH CONDITIONS: evidence remains E1 synthetic/offline fixture scope with Low directional confidence, so human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -98,6 +98,7 @@ Product documentation map:
 - [Product Health Dashboard](docs/product/PRODUCT_HEALTH_DASHBOARD.md)
 - [Executive Experience & Marketing Simulation Enhancement Program](docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md)
 - [M17 Executive Dashboard & Reporting Plan](docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md)
+- [M17 Executive Dashboard & Reporting Closeout Report](docs/product/M17_CLOSEOUT_REPORT.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
@@ -191,7 +192,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M17 PR4 report/export readability validation commands:
+M17 PR5 closeout validation commands:
 
 ```bash
 npm run test
@@ -204,7 +205,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-M17 PR4 adds only fixture-backed executive report/export readability improvements to existing export review patterns: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, Formula/Source/Evidence tier/Confidence copy, and no generated/downloadable PDF or PowerPoint claim. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. PR1 was docs/smoke only and had no source UI/runtime changes; PR5 closeout remains future.
+M17 PR5 closes M17 with docs/status/smoke only. M17 readiness is GO WITH CONDITIONS for controlled executive review: dashboard/report surfaces are not production launch evidence, and human review plus field evidence are required before launch, budget, or winner decisions. M18 may be prepared next only after M17 review/merge/post-merge validation; M18 implementation must not begin in this PR. PR5 must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, or runtime product changes outside docs smoke.
 
 M15 focused validation commands:
 

@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current repository status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 executive KPI dashboard slice, and PR3 marketing chart/evidence/confidence visualization.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, M16 Feature Freeze and Demo Readiness, M17 PR1 Executive Experience program kickoff docs, M17 PR2 Executive KPI cards, and M17 PR3 marketing charts/evidence/confidence visualization are complete. M17 PR4 report/export readability is the current limited runtime branch; PR5 M17 validation/closeout remains future.
-- M17 PR4 may update the existing export/report frontend, CSS, tests, README, AGENTS, Roadmap, Product Health Dashboard, M17 docs/status, and docs smoke to add fixture-backed executive report preview and export format readiness: Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, Formula/Source/Evidence tier/Confidence copy, and no generated/downloadable PDF or PowerPoint claim. Do not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, workspace redesign, SocialSense changes, or MarketingSimulation changes.
+- Current repository status: M17 Executive Dashboard & Reporting — Complete for PR5 closeout after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 executive KPI dashboard slice, PR3 marketing chart/evidence/confidence visualization, and PR4 report/export readability.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, M16 Feature Freeze and Demo Readiness, M17 PR1 Executive Experience program kickoff docs, M17 PR2 Executive KPI cards, M17 PR3 marketing charts/evidence/confidence visualization, M17 PR4 report/export readability, and PR5 M17 validation/closeout complete are the current record.
+- M17 PR5 may update docs/status/smoke only: README, AGENTS, Roadmap, Product Health Dashboard, M17 closeout report, and docs smoke. Current readiness is GO WITH CONDITIONS for controlled executive review because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. Do not add new workflows, runtime product changes, backend endpoints, SocialSense capability, live APIs, external services, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, workspace redesign, SocialSense changes, or MarketingSimulation changes.
 
 ## Repository boundaries
 
@@ -88,18 +88,19 @@ M9 must keep Creative Comparison, additional workflows, frontend implementation,
 
 ## M17 Executive Dashboard & Reporting expectations
 
-M17 PR1 was docs/smoke only and started the Executive Experience & Marketing Simulation Enhancement program after M16. M17 PR2 was the first limited implementation slice for executive dashboard readability; M17 PR3 delivered visualization enhancements; M17 PR4 report/export readability is current and implemented on this branch. PR5 M17 validation/closeout remains future.
+M17 PR1 was docs/smoke only and started the Executive Experience & Marketing Simulation Enhancement program after M16. M17 PR2 was the first limited implementation slice for executive dashboard readability; M17 PR3 delivered visualization enhancements; M17 PR4 delivered report/export readability; PR5 M17 validation/closeout is current and docs/status/smoke only.
 
 Required planning artifacts:
 
 - `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`;
-- `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
+- `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`;
+- `docs/product/M17_CLOSEOUT_REPORT.md`.
 
-M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR4 must stay limited to existing fixture/offline frontend export/report improvements: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, safety notices, Formula/Source/Evidence tier/Confidence copy, CSS, tests, and docs/status updates.
+M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR5 must close M17 with docs/status/smoke only and preserve PR2-PR4 as historical limited implementation slices. Current readiness is GO WITH CONDITIONS for controlled executive review; M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR.
 
 Architecture Gate triggers must remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
 
-Program KPIs must include: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+Program KPIs must include: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness, and closeout Known Risks.
 
 Run focused validation before handoff:
 
