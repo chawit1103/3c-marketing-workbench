@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M17 Executive Dashboard & Reporting is in PR3 implementation after M16 Feature Freeze and Demo Readiness. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, and M17 PR3 is limited to CSS/React-only marketing charts, evidence tiers, confidence, gaps, limitations, and human-review checklist visuals. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 Feature Freeze and Demo Readiness. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, and M17 PR4 report/export readability is current and implemented on this branch. PR5 M17 validation/closeout remains future. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 
@@ -258,14 +258,15 @@ Acceptance criteria:
 
 - PR1 started the Executive Experience & Marketing Simulation Enhancement program with docs only.
 - PR2 implemented the first dashboard slice: executive KPI cards, platform comparison, audience comparison, confidence/risk, and journey progress visuals using existing offline fixtures and React/CSS only.
-- PR3 implements marketing charts/evidence/confidence visualization: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human review checklist using existing offline fixture fields only.
+- PR3 implemented marketing charts/evidence/confidence visualization: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human review checklist using existing offline fixture fields only.
+- PR4 report/export readability is current and implemented: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. No PDF/PPT file is generated or downloadable.
 - Program docs: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md` and `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
 - M17 PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
-- M17 PR1 did not deliver source UI/runtime changes; PR2 is the approved limited implementation slice.
+- M17 PR1 did not deliver source UI/runtime changes; PR2, PR3, and PR4 are approved limited implementation slices; PR5 M17 validation/closeout remains future.
 - Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- Scope for PR3 remains existing frontend/docs/tests only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, or chart dependencies.
+- Scope for PR4 remains existing frontend/docs/tests only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, or export-generation dependencies.
 
 ### M18: Thai-first Internationalization — Planned
 
@@ -318,7 +319,7 @@ Do not implement until separate review:
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
 - M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
-- M17 Executive Dashboard & Reporting is in progress: PR1 program kickoff docs are complete, PR2 implemented the first fixture-backed executive KPI/dashboard visual slice, and PR3 implements marketing chart/evidence/confidence visuals.
+- M17 Executive Dashboard & Reporting is in progress: PR1 program kickoff docs are complete, PR2 implemented the first fixture-backed executive KPI/dashboard visual slice, PR3 implemented marketing chart/evidence/confidence visuals, and PR4 report/export readability is current/implemented; PR5 closeout remains future.
 - M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation are planned future milestones, not implemented.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.

@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M17 Executive Dashboard & Reporting is in PR3 implementation after the PR1 program kickoff docs and merged PR2 KPI slice. This slice adds marketing chart/evidence/confidence visualization, sentiment comparison, evidence tiers, evidence gaps/limitations, and human-review checklist copy for reviewed offline campaign evidence. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed. PR1 program kickoff docs remain the historical start of the Executive Experience & Marketing Simulation Enhancement program; M17 PR2+ implementation was future work at PR1 and is now limited to the approved dashboard slice.
+Status: M17 Executive Dashboard & Reporting is in PR4 implementation after the PR1 program kickoff docs, PR2 executive KPI slice, and PR3 marketing charts/evidence/confidence visualization. This slice improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed. PR1 program kickoff docs remain the historical start of the Executive Experience & Marketing Simulation Enhancement program; PR5 M17 validation/closeout remains future work.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -81,7 +81,7 @@ Current frontend routes:
 | `/workbench/ab-experiment` | Guided A/B Experiment form and local run action | Implemented M7 reference workflow |
 | `/workbench/creative-comparison` | Guided text-only Creative Comparison form and local run action | Implemented M15 vertical slice |
 | `/runs/:runId` | Product Launch, Campaign Message Test, A/B Experiment, or Creative Comparison results dashboard for known generated offline samples; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard + M15 Creative Comparison |
-| `/exports/:runId` | Export review for known generated offline samples, including Creative Comparison; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M12 trust guard + M15 reuse |
+| `/exports/:runId` | Export review for known generated offline samples, including Creative Comparison; PR4 adds executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, and explicit planning-only PDF/PowerPoint unsupported notices; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M17 PR4 report/export readability |
 | `/health` | M12 Product Health 7.4 baseline, trust validation focus, and KPI dashboard | Implemented |
 
 Unknown routes render a not-found state. Unknown run/export IDs render explicit unavailable states instead of Product Launch fallback content. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
@@ -191,7 +191,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M17 PR3 dashboard visualization validation commands:
+M17 PR4 report/export readability validation commands:
 
 ```bash
 npm run test
@@ -204,7 +204,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-M17 PR3 adds only fixture-backed marketing chart/evidence/confidence visuals, sentiment comparison, evidence gaps/limitations, and human-review checklist copy to the existing Campaign Workspace/dashboard patterns. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. PR1 was docs/smoke only and had no source UI/runtime changes.
+M17 PR4 adds only fixture-backed executive report/export readability improvements to existing export review patterns: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, Formula/Source/Evidence tier/Confidence copy, and no generated/downloadable PDF or PowerPoint claim. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. PR1 was docs/smoke only and had no source UI/runtime changes; PR5 closeout remains future.
 
 M15 focused validation commands:
 

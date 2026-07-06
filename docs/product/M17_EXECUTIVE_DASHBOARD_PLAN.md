@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Plan
 
-Status: M17 PR3 runtime slice is current for this branch after the PR1 program kickoff docs and merged PR2 KPI slice. PR3 delivers CSS/React-only marketing charts/evidence/confidence expansion in the existing Campaign Workspace: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human-review checklist copy. PR3 does not deliver report/export implementation, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, or new dependencies.
+Status: M17 PR4 report/export readability is current and implemented for this branch after the PR1 program kickoff docs, merged PR2 KPI slice, and PR3 CSS/React-only marketing charts/evidence/confidence expansion. PR4 delivers executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. PR4 does not deliver actual PDF/PPT generation/download, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, or new dependencies. PR5 M17 validation/closeout remains future.
 
 ## M17 objective
 
@@ -60,7 +60,7 @@ Acceptance criteria:
 
 Scope:
 
-- Current limited implementation slice after PR2 validation.
+- Complete limited implementation slice after PR2 validation.
 - Add chart/evidence/confidence visualization using existing fixture fields only.
 - Show sentiment comparison using summary/card fields, evidence tier visualization, evidence gaps, limitations, and human review questions near visual summaries.
 - Keep chart design within the existing design-system pattern unless Architecture Gate approves otherwise.
@@ -80,10 +80,10 @@ Acceptance criteria:
 
 Scope:
 
-- Future implementation only after PR3 validation.
+- Current implemented limited runtime slice after PR3 validation.
 - Improve executive report narrative, headings, review checklist, and export-review readability.
 - Preserve export review safety boundaries; do not claim real downloadable production report unless separately approved.
-- Keep supported export semantics aligned with existing JSON, Markdown, and Executive Summary readiness unless a reviewed contract change approves otherwise.
+- Keep supported export semantics aligned with existing JSON and Markdown previews plus fixture executive_json readiness; PDF and PowerPoint remain planning-only and unsupported unless a reviewed contract change approves actual generation/download.
 
 Acceptance criteria:
 
@@ -177,7 +177,7 @@ M17 does not implement:
 
 ## Validation commands
 
-Run before PR3 handoff; PR1 used the same suite as a docs/smoke-only historical guard:
+Run before PR4 handoff; PR1 used the same suite as a docs/smoke-only historical guard:
 
 ```bash
 python3 scripts/docs_smoke.py

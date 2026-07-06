@@ -626,22 +626,62 @@ describe('Export review', () => {
     renderAt(pathname);
 
     expect(screen.getByRole('heading', { name: 'Ready for human review' })).toBeInTheDocument();
-    for (const format of ['Data preview (JSON)', 'Briefing preview (Markdown)', 'Executive summary preview']) {
-      expect(screen.getByText(format)).toBeInTheDocument();
+    const formats = screen.getByRole('region', { name: 'Export format readiness' });
+    for (const format of ['Executive JSON preview', 'Markdown briefing preview']) {
+      expect(formats).toHaveTextContent(format);
       expect(screen.getAllByText('Preview ready for review').length).toBeGreaterThanOrEqual(1);
     }
+    expect(formats).not.toHaveTextContent('Data preview (JSON)');
+    expect(formats).not.toHaveTextContent('Executive summary preview');
+    expect(formats).toHaveTextContent('Planning only: PDF');
+    expect(formats).toHaveTextContent('Unsupported now; no PDF is generated or downloadable in this frontend-only preview.');
+    expect(formats).toHaveTextContent('Planning only: PowerPoint');
+    expect(formats).toHaveTextContent('Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('pdf ready');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('powerpoint ready');
     expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
     expect(document.body.textContent?.toLowerCase()).not.toContain('downloadable file is ready');
     expect(screen.getByRole('heading', { name: summaryHeading })).toBeInTheDocument();
-    expect(screen.getByText(/Executive review:/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Executive review:/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Review Assumptions')).toBeInTheDocument();
     expect(screen.getByText('Evidence Gaps')).toBeInTheDocument();
-    expect(screen.getByText('Limitations')).toBeInTheDocument();
+    expect(screen.getAllByText('Limitations').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Offline sample basis')).toBeInTheDocument();
     expect(screen.getByText('Reviewed offline sample, no live data')).toBeInTheDocument();
     expect(document.body.textContent?.toLowerCase()).not.toContain('socialsense');
     expect(screen.getByText(/Directional synthetic aggregate sample/)).toBeInTheDocument();
-    expect(screen.getByText(/Synthetic aggregate sample/)).toBeInTheDocument();
-    expect(screen.getByText(/No PII, CRM lists, private messages, or voter lists/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Synthetic aggregate sample/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/No PII, CRM lists, private messages, or voter lists/).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders an executive-first report preview with required sections, evidence basis, and notices', () => {
+    renderAt('/exports/3c-m15-creative-comparison-reference-workflow');
+
+    const report = screen.getByRole('region', { name: 'Executive report preview' });
+    for (const section of [
+      'Executive Summary',
+      'Objectives',
+      'Scenario',
+      'Inputs',
+      'Parameters',
+      'Audience',
+      'Platform Mix',
+      'Dashboard / KPI snapshot',
+      'Charts / Evidence / Confidence summary',
+      'Recommendations',
+      'Assumptions',
+      'Limitations',
+      'Synthetic-data notice',
+      'Safety notice',
+      'Next review step',
+    ]) {
+      expect(within(report).getByRole('heading', { name: section })).toBeInTheDocument();
+    }
+    expect(report).toHaveTextContent('Decision readiness: human review required before launch, budget, or winner decisions.');
+    expect(report).toHaveTextContent('Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.');
+    expect(report).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture');
+    expect(report).toHaveTextContent('Confidence: Low directional confidence');
+    expect(report).toHaveTextContent('Next review step: Run a small human-reviewed creative feedback test');
+    expect(report).toHaveTextContent('no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting');
   });
 });
