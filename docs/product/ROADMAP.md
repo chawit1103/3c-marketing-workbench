@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M6 Experiment Framework Planning in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, and SocialSense changes remain not implemented.
+Status: M6 Experiment Framework Planning complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, and M5 Campaign Message Test are complete. A/B Message Comparison, Multivariate Testing, Creative Comparison, backend, runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -161,7 +161,7 @@ Acceptance criteria:
 - Track dashboard reuse >80%, component reuse >80%, export reuse, navigation consistency, operator learning time, workflow completion time, executive readability, and product consistency.
 - Do not implement A/B Message Comparison, Promotion workflows, backend behavior, runtime behavior, live APIs, private data, or SocialSense runtime changes.
 
-### M6: Experiment Framework Planning — Current
+### M6: Experiment Framework Planning — Complete
 
 - Define Experiment as a reusable capability for future comparison workflows.
 - Create Experiment Domain Analysis, Taxonomy, Data Model, Workflow Mapping, Consumer Mapping, and Workflow Compatibility docs.

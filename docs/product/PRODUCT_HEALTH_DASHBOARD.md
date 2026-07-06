@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M6 Experiment Framework Planning in progress. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; Experiment Framework is being defined as the reusable business capability for future comparison workflows. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflow, backend, runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M6.
+Status: M6 Experiment Framework Planning complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; Experiment Framework is defined as the reusable business capability for future comparison workflows. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflow, backend, runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M6.
 
 
 ## M1 PR4 closeout

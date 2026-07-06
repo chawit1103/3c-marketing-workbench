@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M6 Experiment Framework Planning in progress. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflows, backend, runtime functionality, and SocialSense changes remain not implemented.
+Status: M6 Experiment Framework Planning complete and merged. Product Launch remains the first reference workflow, Campaign Message Test remains the second reference workflow, and both use the approved Workflow Pattern, Campaign Domain, IA, Design System, and product-owned adapter over SocialSense public SDK/runtime surfaces. A/B Message Comparison, Multivariate Testing, Creative Comparison, Promotion workflows, backend, runtime functionality, and SocialSense changes remain not implemented.
 
 Next milestone: A/B Message Comparison implementation may be recommended only after Experiment Framework receives GO; A/B remains not implemented.
 
