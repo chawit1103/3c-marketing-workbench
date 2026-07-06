@@ -11,9 +11,10 @@ M11 used structured multi-persona synthetic dogfooding across the current 3C Mar
 - persona reviews mapped to existing Hermes roles;
 - browser route checks and console checks;
 - existing frontend regression commands;
-- static route/source review.
+- static route/source review;
+- committed persona evidence appendix: `docs/product/M11_PERSONA_EVIDENCE.md`.
 
-Timing is operator/proxy timing, not private-user analytics.
+Timing is operator/proxy timing, not private-user analytics. Scores use the ordinal rubric and simple-average method documented in `docs/product/M11_PERSONA_EVIDENCE.md`.
 
 ## Personas and responsibilities
 
@@ -35,7 +36,7 @@ Timing is operator/proxy timing, not private-user analytics.
 | 3 | Open A/B Experiment, compare variants, interpret confidence | Completed | A/B result clearly shows low directional confidence, no winner, parity check, and blocked actions. |
 | 4 | Navigate Campaign Workspace, understand stage/next step/reports/exports | Completed | Workspace shows Executive Decision stage, Export/Handoff next, recent runs, evidence, executive summary, and workflow actions. |
 
-All personas completed all four scenarios. Some completions carried P1/P2 friction but did not require implementation during M11.
+All personas completed all four scenarios. Some completions carried P1/P2 friction but did not require implementation during M11. Detailed per-persona scenario records, timing caveats, route observations, edge cases, and scoring rubric are committed in `docs/product/M11_PERSONA_EVIDENCE.md`.
 
 ## Measurement summary
 
@@ -56,7 +57,7 @@ All personas completed all four scenarios. Some completions carried P1/P2 fricti
 
 ## Product Health score
 
-Scores use a 1-10 scale and are evidence-backed synthetic dogfooding scores.
+Scores use a 1-10 ordinal rubric and simple average documented in `docs/product/M11_PERSONA_EVIDENCE.md`. They are evidence-backed synthetic dogfooding scores for prioritization, not statistically significant private-user metrics.
 
 | Category | Score | Evidence basis |
 |---|---:|---|

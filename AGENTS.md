@@ -109,7 +109,7 @@ M11 may modify docs and docs smoke only. Do not add backend/server/api/auth/cred
 - the six M6 Experiment Framework docs exist and include status/scope/non-implementation boundaries;
 - the six M8 Marketing Journey Framework docs exist and include status/scope/non-implementation boundaries;
 - the seven M9 Campaign Workspace Foundation docs exist and include status/scope/non-implementation boundaries;
-- the four M11 continuous product validation docs exist and include evidence/backlog/readiness boundaries;
+- the five M11 continuous product validation docs exist and include evidence/backlog/readiness boundaries;
 - README links resolve, including M6, M8, M9, and M11 docs;
 - README and AGENTS include required safety phrases;
 - expected React/Vite/TypeScript frontend shell files still exist;
@@ -125,7 +125,7 @@ M11 may modify docs and docs smoke only. Do not add backend/server/api/auth/cred
 M11 is done only when:
 
 - all six persona reviews complete Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace scenarios;
-- `docs/product/M11_PRODUCT_VALIDATION_REPORT.md`, `docs/product/M11_UX_FRICTION_REGISTER.md`, `docs/product/M11_PRODUCT_BACKLOG.md`, and `docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md` exist and are linked;
+- `docs/product/M11_PRODUCT_VALIDATION_REPORT.md`, `docs/product/M11_PERSONA_EVIDENCE.md`, `docs/product/M11_UX_FRICTION_REGISTER.md`, `docs/product/M11_PRODUCT_BACKLOG.md`, and `docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md` exist and are linked;
 - Product Health, Roadmap, README, and AGENTS reflect M11 validation status and evidence-backed next milestone guidance;
 - no Creative Comparison, additional workflow implementation, backend, runtime API, persistence, workspace storage, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, product redesign, or SocialSense changes are introduced;
 - `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, `python3 scripts/docs_smoke.py`, `git diff --check origin/main...HEAD`, and changed-path guard pass;

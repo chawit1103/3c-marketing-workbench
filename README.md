@@ -139,6 +139,7 @@ Product documentation map:
 - [Campaign Executive Workspace](docs/product/CAMPAIGN_EXECUTIVE_WORKSPACE.md)
 - [Campaign Workspace Placement](docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md)
 - [M11 Product Validation Report](docs/product/M11_PRODUCT_VALIDATION_REPORT.md)
+- [M11 Persona Evidence Appendix](docs/product/M11_PERSONA_EVIDENCE.md)
 - [M11 UX Friction Register](docs/product/M11_UX_FRICTION_REGISTER.md)
 - [M11 Product Backlog](docs/product/M11_PRODUCT_BACKLOG.md)
 - [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)

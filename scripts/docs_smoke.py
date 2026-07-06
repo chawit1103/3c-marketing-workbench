@@ -105,6 +105,7 @@ M10_ALLOWED_CHANGED_PATHS = {
 
 REQUIRED_M11_DOCS = [
     "docs/product/M11_PRODUCT_VALIDATION_REPORT.md",
+    "docs/product/M11_PERSONA_EVIDENCE.md",
     "docs/product/M11_UX_FRICTION_REGISTER.md",
     "docs/product/M11_PRODUCT_BACKLOG.md",
     "docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md",

@@ -5,11 +5,11 @@ Scope: Executive synthesis only. No implementation changes are authorized by thi
 
 ## Executive summary
 
-M11 validated 3C Marketing Workbench through structured multi-persona synthetic dogfooding. The product now demonstrates a coherent campaign-centric experience across Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace.
+M11 validated 3C Marketing Workbench through structured multi-persona synthetic dogfooding. The product shows a coherent campaign-centric experience across Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace, with P1 trust/usability findings captured as blockers for future capability expansion. Evidence details are committed in `docs/product/M11_PERSONA_EVIDENCE.md`.
 
-Overall Product Health Score: 7.4 / 10.
+Overall Product Health Score: 7.4 / 10 synthetic dogfooding score, using the ordinal/simple-average method documented in `docs/product/M11_PERSONA_EVIDENCE.md`.
 
-Decision: GO for continued controlled dogfooding; NO-GO for adding Creative Comparison until P1 findings are resolved or explicitly accepted.
+Decision: GO for M11 validation/reporting completion and continued controlled dogfooding; NO-GO for adding Creative Comparison or other new capabilities until P1 findings are resolved or explicitly accepted.
 
 Architecture Gate: Not triggered.
 
@@ -56,7 +56,7 @@ Architecture Gate: Not triggered.
 
 | Dimension | Readiness |
 |---|---|
-| Controlled internal dogfooding | GO |
+| Controlled internal dogfooding | GO WITH P1 BACKLOG VISIBLE |
 | Executive demo with caveats | GO WITH CONDITIONS |
 | Adding Creative Comparison | NO-GO until P1s are resolved or explicitly accepted |
 | SocialSense runtime change | Not needed |
