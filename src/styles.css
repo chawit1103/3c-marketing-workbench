@@ -228,6 +228,40 @@ p,
   margin-top: var(--space-5);
 }
 
+.stacked-actions {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.journey-timeline .step-card {
+  min-height: 100%;
+}
+
+.run-list,
+.evidence-stack {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.run-row,
+.evidence-item {
+  border: 1px solid #dce5f2;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.run-row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.run-row h3,
+.evidence-item h3 {
+  margin-bottom: var(--space-1);
+}
+
 .button {
   border: 1px solid transparent;
   border-radius: 999px;

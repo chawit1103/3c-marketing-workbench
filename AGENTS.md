@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M9 Campaign Workspace Foundation complete and merged, documentation-only.
+- Current branch scope: M10 Campaign Workspace MVP implementation on `m10-campaign-workspace-mvp`.
 - PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, and M8 Marketing Journey Framework are complete.
-- M9 defines Campaign Workspace as the campaign-centric product foundation that makes Product Launch, Campaign Message Test, and A/B Experiment tools inside a campaign workspace. Reuse the approved Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, dashboard/export patterns, safety labels, product-owned adapter, and product-owned SocialSense boundary. Do not implement Creative Comparison, add workflows, redesign architecture, add frontend behavior, backend behavior, live APIs, private data, persistence, or SocialSense changes.
+- M10 implements the first usable Campaign Workspace screen using existing Product Launch, Campaign Message Test, and A/B Experiment workflows/fixtures only. Reuse the approved Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, Campaign Workspace Foundation, dashboard/export patterns, safety labels, product-owned adapter, and product-owned SocialSense boundary. Do not implement Creative Comparison, add workflows, redesign architecture, add backend behavior, live APIs, private data, persistence, or SocialSense changes.
 
 ## Repository boundaries
 
@@ -19,7 +19,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
 - Product Launch, Campaign Message Test, and A/B Experiment fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
-- Keep M9 independent from backend services, frontend implementation, live data sources, authentication, credentials, additional workflows, Creative Comparison, persistence, workspace storage, and production campaign systems.
+- Keep M10 independent from backend services, live data sources, authentication, credentials, additional workflows, Creative Comparison, persistence, workspace storage, and production campaign systems.
 
 ## Safety rules
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M9 language documentation-only, fixture/offline-compatible, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M10 language fixture/offline-compatible, synthetic, aggregate-only, non-production, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -85,17 +85,21 @@ Required planning artifacts:
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
 
-## M9 validation commands
+## M10 validation commands
 
 Run focused validation before handoff:
 
 ```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
 python3 scripts/docs_smoke.py
 git diff --check origin/main...HEAD
 git status --short --branch
 ```
 
-Do not run or modify the frontend implementation for M9 except to verify no runtime/frontend files changed.
+M10 may modify frontend files for `/campaign-workspace` only. Do not add backend/server/api/auth/credential files, new workflows, Creative Comparison, or SocialSense changes.
 
 ## Docs smoke expectations
 
@@ -112,17 +116,17 @@ Do not run or modify the frontend implementation for M9 except to verify no runt
 - expected PR4 and M5 fixture files still exist;
 - adapter uses the SocialSense public facade and avoids forbidden internals;
 - fixture generators use the PR3 adapter, not private SocialSense imports;
-- M9 branch changes are limited to docs plus README/AGENTS/docs smoke;
+- M10 branch changes are limited to the Campaign Workspace frontend MVP, tests, docs, and docs smoke updates;
 - forbidden backend/live/auth/credential files are absent.
 
 ## Definition of Done
 
-M9 is done only when:
+M10 is done only when:
 
-- all seven Campaign Workspace Foundation docs exist;
-- Product Health Dashboard and Roadmap reflect M9 as the current documentation-only milestone;
-- no Creative Comparison, additional workflow implementation, frontend implementation, backend, runtime functionality, persistence, workspace storage, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes are introduced;
-- `python3 scripts/docs_smoke.py`, `git diff --check origin/main...HEAD`, and the docs-only diff guard pass;
-- QA, code review, safety review, documentation review, Product Review, UX Review, and Research Review return GO;
+- `/campaign-workspace` resolves as a secondary/workbench route without primary navigation redesign;
+- Campaign Workspace shows overview, current stage, timeline, recent runs, evidence summary, executive summary, recommended next action, and existing workflow actions;
+- evidence is aggregated only from Product Launch, Campaign Message Test, and A/B Experiment fixtures;
+- no Creative Comparison, additional workflow implementation, backend, runtime API, persistence, workspace storage, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, or SocialSense changes are introduced;
+- `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, `python3 scripts/docs_smoke.py`, `git diff --check origin/main...HEAD`, and changed-path guard pass;
 - SocialSense and MarketingSimulation remain unmodified;
-- all M9 planning changes are committed.
+- M10 MVP changes are committed.

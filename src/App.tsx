@@ -1,6 +1,7 @@
 import { AppShell } from './app/shell/AppShell';
 import { resolveRoute } from './app/routes/routeResolver';
 import {
+  CampaignWorkspaceView,
   ExportReviewView,
   HealthView,
   HomeView,
@@ -18,6 +19,8 @@ export function App() {
         return <HomeView />;
       case 'workbench':
         return <WorkbenchView />;
+      case 'campaignWorkspace':
+        return <CampaignWorkspaceView />;
       case 'campaignMessageTest':
         return <WorkbenchView workflow="campaignMessageTest" />;
       case 'abExperiment':

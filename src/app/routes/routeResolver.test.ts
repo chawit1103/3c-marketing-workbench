@@ -6,6 +6,8 @@ describe('resolveRoute', () => {
     ['/', 'home', undefined],
     ['/workbench', 'workbench', undefined],
     ['/workbench/', 'workbench', undefined],
+    ['/campaign-workspace', 'campaignWorkspace', undefined],
+    ['/campaign-workspace/', 'campaignWorkspace', undefined],
     ['/workbench/campaign-message-test', 'campaignMessageTest', undefined],
     ['/workbench/ab-experiment', 'abExperiment', undefined],
     ['/health', 'health', undefined],
