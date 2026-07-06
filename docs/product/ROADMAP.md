@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. PR1-PR4 and M2-M11 are complete; M12 remediates M11 P1/P2 trust issues only: unsupported run/export states, validation feedback, result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
+Status: M12 Campaign Workspace Trust & Validation is complete and merged. PR1-PR4 and M2-M12 are complete; M12 remediated M11 P1/P2 trust issues only: unsupported run/export states, validation feedback, result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, runtime APIs, persistence, live APIs, auth, credentials, SocialSense changes, and MarketingSimulation changes remain not implemented.
 
 ## Program
 
@@ -252,7 +252,7 @@ Do not implement until separate review:
 - M9 Campaign Workspace Foundation is marked complete.
 - M10 Campaign Workspace MVP is marked complete.
 - M11 Continuous Product Validation & Synthetic Dogfooding is marked complete.
-- M12 Campaign Workspace Trust & Validation is current and must pass all review gates before any future capability planning.
+- M12 Campaign Workspace Trust & Validation is marked complete and merged.
 - Creative Comparison remains blocked until M12 trust validation receives GO and all P1 trust issues are resolved or explicitly accepted.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

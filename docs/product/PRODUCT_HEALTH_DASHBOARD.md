@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. Product Health 7.4 baseline from M11 remains the reference score while P1/P2 trust issues are remediated. M12 focuses on unknown run/export unavailable states, clearer blank/invalid input feedback, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain out of scope.
+Status: M12 Campaign Workspace Trust & Validation is complete and merged. Product Health improved from the M11 7.4 baseline while P1/P2 trust issues were remediated. M12 resolved unknown run/export unavailable states, clearer blank/invalid input feedback, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain blocked unless separately authorized.
 
 
 ## M1 PR4 closeout

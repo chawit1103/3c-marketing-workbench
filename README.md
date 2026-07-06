@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M12 Campaign Workspace Trust & Validation is implemented on the current branch. Product Health 7.4 baseline from M11 remains the reference while P1/P2 trust issues are addressed in-app: unknown run/export unavailable states, clearer input validation, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain not implemented.
+Status: M12 Campaign Workspace Trust & Validation is complete and merged. Product Health improved from the M11 7.4 baseline while P1/P2 trust issues were addressed in-app: unknown run/export unavailable states, clearer input validation, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain out of scope.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
