@@ -596,7 +596,7 @@ def main() -> None:
     for phrase in ["Campaign Workspace", "Workspace model", "Workspace navigation", "Workspace dashboard", "Executive Workspace", "Creative Comparison only if M9"]:
         if phrase not in combined_m9_text:
             fail(f"M9 current-state docs missing phrase: {phrase}")
-    for stale_phrase in ["current M8 non-goals", "Before M8 handoff", "0 in M8", "Creative Comparison only if M8"]:
+    for stale_phrase in ["current M8 non-goals", "Before M8 handoff", "0 in M8", "Creative Comparison only if M8", "after M8 GO", "M8 docs validation", "M8 docs smoke"]:
         if stale_phrase in "\n".join([readme, health_dashboard, roadmap]):
             fail(f"M9 current-state docs contain stale phrase: {stale_phrase}")
     for phrase in ["M9 review gates", "Before M9 handoff", "Campaign Workspace Foundation remains documentation-only"]:

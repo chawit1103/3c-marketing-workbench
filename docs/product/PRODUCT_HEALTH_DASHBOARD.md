@@ -189,7 +189,7 @@ Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for M8 docs validation | Green every PR | M8 docs smoke, docs-only diff guard, and diff check pass for the Marketing Journey Framework; implementation regression suites remain available for future implementation milestones. |
+| Test/build status | Green for M9 docs validation | Green every PR | M9 docs smoke, docs-only diff guard, and diff check pass for the Campaign Workspace Foundation; implementation regression suites remain available for future runtime milestones. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample only; no backend, live APIs, credentials, PII, auth, private data, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review + M8 Journey composition | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; A/B Experiment is the third reference workflow; M8 composes them into Marketing Journey without redesign. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
@@ -197,7 +197,7 @@ Status: M9 Campaign Workspace Foundation in progress. Product Launch remains the
 | Design system readiness | GO | M4 review gates | Component inventory, token standards, and reuse matrix are reused by M5. |
 | Campaign Message Test readiness | Complete | M5 review gates | Second reference workflow implemented with dashboard reuse >80% and component reuse >80%. |
 | Experiment Framework readiness | Complete | M6 review gates + M7 validation | Experiment Framework is approved and reused by A/B Experiment without Architecture Gate redesign. |
-| Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M8 GO. |
+| Marketing Journey readiness | Complete | M8 review gates | Journey Analysis, Journey Model, Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement are complete; Creative Comparison remains gated after M9 Campaign Workspace Foundation GO. |
 | Campaign Workspace readiness | In planning | M9 review gates | Campaign Workspace Analysis, Model, Navigation, Dashboard, Journey, Executive Workspace, and Placement are being defined before Creative Comparison. |
 
 ## KPI baseline
