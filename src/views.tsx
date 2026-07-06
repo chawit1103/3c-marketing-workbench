@@ -501,6 +501,12 @@ const humanReviewChecklist = [
   'Is the next evidence step small, reviewed, and non-production before any launch or budget decision?',
 ];
 
+const decisionBlockersBeforeAction = [
+  `Evidence gap: ${campaignEvidenceGaps[0] ?? 'Evidence gap review is required before action.'}`,
+  `Human review required: ${humanReviewChecklist[0]}`,
+  `Blocked action: ${creativeComparisonFixture.comparisonMethod.blockedActions[0] ?? 'launch approval'}`,
+];
+
 export function CampaignWorkspaceView() {
   const campaignName = productLaunchFixture.sampleInput.brand;
   const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
@@ -552,6 +558,8 @@ export function CampaignWorkspaceView() {
           </section>
         </section>
       </div>
+
+      <DecisionBlockersBeforeAction />
 
       <ExecutiveDashboard />
 
@@ -647,6 +655,28 @@ export function CampaignWorkspaceView() {
   );
 }
 
+function DecisionBlockersBeforeAction() {
+  return (
+    <section className="card decision-blockers-card" aria-label="Decision blockers before action">
+      <p className="eyebrow">Decision blockers before action</p>
+      <h2>Evidence gaps + human review required before action</h2>
+      <p>
+        Do not approve launch, budget, or winner decisions from these visuals until evidence gaps and human review are cleared.
+      </p>
+      <div className="decision-blocker-grid">
+        <section className="evidence-critical-card" aria-label="Top evidence confidence blocker">
+          <p className="eyebrow">Confidence gate</p>
+          <h3>{creativeComparisonFixture.comparisonMethod.confidenceLevel}</h3>
+          <p>{creativeComparisonFixture.comparisonMethod.rationale}</p>
+        </section>
+        <ul className="insight-list decision-blocker-list">
+          {decisionBlockersBeforeAction.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
   return (
     <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
@@ -681,9 +711,6 @@ function ExecutiveDashboard() {
         <section className="executive-visual-card" aria-label="Journey progress">
           <p className="eyebrow">Journey progress</p>
           <h3>{journeyReadyStages} of {campaignJourneyStages.length} review stages ready</h3>
-          <p className="bar-legend">
-            Formula: ready stages = Completed or Current campaignJourneyStages / total stages. Source: existing campaignJourneyStages fixture-derived workspace state. Evidence tier: E1 synthetic/offline fixture; not production prediction.
-          </p>
           <div className="progress-track" aria-hidden="true">
             <span style={{ width: `${journeyProgressScore}%` }} />
           </div>
@@ -695,6 +722,9 @@ function ExecutiveDashboard() {
               </li>
             ))}
           </ol>
+          <div className="kpi-metadata" aria-label="Journey progress formula and source">
+            <p>Formula: ready stages = Completed or Current campaignJourneyStages / total stages. Source: existing campaignJourneyStages fixture-derived workspace state. Evidence tier: E1 synthetic/offline fixture; not production prediction.</p>
+          </div>
         </section>
         <VisualEvidenceGaps />
         <HumanReviewChecklist />
@@ -707,13 +737,7 @@ function EvidenceTierVisualization() {
   return (
     <section className="executive-visual-card" aria-label="Evidence tier visualization">
       <p className="eyebrow">Evidence tier visualization</p>
-      <h3>Current tier: E1 synthetic/offline fixture</h3>
-      <div className="kpi-metadata" aria-label="Evidence tier formula and source">
-        <p>Formula: evidence tier is E1 when sourceChecks confirm offlineExecution=true, liveApiAccess=false, credentialsRequired=false, and productionReady=false across all fixtures.</p>
-        <p>Source: productLaunchFixture.sourceChecks, campaignMessageFixture.sourceChecks, abExperimentFixture.sourceChecks, and creativeComparisonFixture.sourceChecks.</p>
-        <p>Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction.</p>
-        <p>Confidence/limitation/next evidence step: Low directional; compare against approved field feedback or backtest before any launch, budget, or winner decision.</p>
-      </div>
+      <h3>Notice: current evidence is E1 only; E2 evidence is required before budget or launch decisions.</h3>
       <ol className="tier-list">
         {evidenceTierItems.map((item) => (
           <li key={item.label}>
@@ -722,6 +746,12 @@ function EvidenceTierVisualization() {
           </li>
         ))}
       </ol>
+      <div className="kpi-metadata" aria-label="Evidence tier formula and source">
+        <p>Formula: evidence tier is E1 when sourceChecks confirm offlineExecution=true, liveApiAccess=false, credentialsRequired=false, and productionReady=false across all fixtures.</p>
+        <p>Source: productLaunchFixture.sourceChecks, campaignMessageFixture.sourceChecks, abExperimentFixture.sourceChecks, and creativeComparisonFixture.sourceChecks.</p>
+        <p>Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction.</p>
+        <p>Confidence/limitation/next evidence step: Low directional; compare against approved field feedback or backtest before any launch, budget, or winner decision.</p>
+      </div>
     </section>
   );
 }
@@ -731,15 +761,15 @@ function VisualEvidenceGaps() {
     <section className="executive-visual-card" aria-label="Visual evidence gaps and limitations">
       <p className="eyebrow">Visual evidence gaps and limitations</p>
       <h3>Gaps stay visible beside the charts</h3>
+      <ul className="insight-list">
+        {visualEvidenceLimitations.map((item) => <li key={item}>{item}</li>)}
+      </ul>
       <div className="kpi-metadata" aria-label="Visual gaps formula and source">
         <p>Formula: show first reviewMetadata.evidenceGaps plus required blocked-claim limitation near visual summaries.</p>
         <p>Source: creativeComparisonFixture.reviewMetadata.evidenceGaps and approved safety boundaries.</p>
         <p>Evidence tier: E1 synthetic/offline fixture; unsupported evidence is treated as a blocker, not hidden.</p>
         <p>Confidence/limitation/next evidence step: Low directional; collect approved field feedback or backtest evidence before external use.</p>
       </div>
-      <ul className="insight-list">
-        {visualEvidenceLimitations.map((item) => <li key={item}>{item}</li>)}
-      </ul>
     </section>
   );
 }
@@ -749,15 +779,15 @@ function HumanReviewChecklist() {
     <section className="executive-visual-card" aria-label="Human review checklist">
       <p className="eyebrow">Human review checklist</p>
       <h3>Questions before action</h3>
+      <ul className="insight-list">
+        {humanReviewChecklist.map((item) => <li key={item}>{item}</li>)}
+      </ul>
       <div className="kpi-metadata" aria-label="Human review formula and source">
         <p>Formula: checklist questions are required when confidence is Low directional and evidence tier is E1.</p>
         <p>Source: M17 evidence/confidence methodology plus fixture reviewMetadata limitations and evidence gaps.</p>
         <p>Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction.</p>
         <p>Confidence: Low directional; limitation is synthetic fixture evidence only.</p>
       </div>
-      <ul className="insight-list">
-        {humanReviewChecklist.map((item) => <li key={item}>{item}</li>)}
-      </ul>
     </section>
   );
 }
@@ -768,6 +798,15 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
     : title === 'Sentiment comparison'
       ? 'Legend: Sentiment bar shows transformed summary.sentimentDelta only; higher bars are directional fixture sentiment, not measured social platform engagement.'
       : 'Legend: Fixture-rank cue; higher bars show directional strength within the offline fixture rank, not measured market performance.';
+  const executiveSignal = title === 'Sentiment comparison'
+    ? 'Notice: sentiment is directionally positive, but still synthetic.'
+    : title === 'Platform comparison'
+      ? 'Notice: LINE leads the fixture rank; treat it as a channel hypothesis.'
+      : title === 'Audience comparison'
+        ? 'Notice: Working Adults are first-ranked; validate before segmentation.'
+        : title === 'Confidence / risk'
+          ? 'Notice: confidence remains low even though review readiness is complete.'
+          : 'Notice the strongest directional signal before reviewing source metadata.';
   const sourceMapping = title === 'Sentiment comparison'
     ? [
       'Formula: sentiment bar = clampScore(50 + summary.sentimentDelta × 100).',
@@ -802,14 +841,7 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   return (
     <section className="executive-visual-card" aria-label={title}>
       <p className="eyebrow">{title}</p>
-      <p className="bar-legend">{legend}</p>
-      {sourceMapping.length > 0 ? (
-        <div className="kpi-metadata" aria-label={`${title} formula and source`}>
-          {sourceMapping.map((metadata) => (
-            <p key={metadata}>{metadata}</p>
-          ))}
-        </div>
-      ) : null}
+      <h3>{executiveSignal}</h3>
       <div className="bar-list">
         {items.map((item) => (
           <article className="bar-item" key={item.label}>
@@ -825,6 +857,14 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
           </article>
         ))}
       </div>
+      {sourceMapping.length > 0 ? (
+        <div className="kpi-metadata" aria-label={`${title} formula and source`}>
+          <p className="bar-legend">{legend}</p>
+          {sourceMapping.map((metadata) => (
+            <p key={metadata}>{metadata}</p>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

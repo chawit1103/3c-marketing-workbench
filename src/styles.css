@@ -274,7 +274,8 @@ p,
 
 .run-list,
 .evidence-stack,
-.evidence-critical-grid {
+.evidence-critical-grid,
+.decision-blocker-grid {
   display: grid;
   gap: var(--space-3);
 }
@@ -289,6 +290,23 @@ p,
 
 .executive-dashboard {
   background: linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
+}
+
+.decision-blockers-card {
+  background: linear-gradient(135deg, #fff9ec 0%, #ffffff 100%);
+  border-color: #f0c977;
+}
+
+.decision-blocker-grid {
+  grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+  margin-top: var(--space-4);
+}
+
+.decision-blocker-list {
+  background: white;
+  border: 1px solid #f0c977;
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
 }
 
 .executive-dashboard > p:not(.eyebrow) {
@@ -701,7 +719,8 @@ dd {
   .three-col,
   .four-col,
   .quick-start,
-  .assumption-grid {
+  .assumption-grid,
+  .decision-blocker-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -200,6 +200,20 @@ describe('Campaign Workspace MVP', () => {
     expect(journey).toHaveTextContent('Handoff readiness: Ready for human review');
   });
 
+  it('places a decision blockers panel before the executive dashboard visuals', () => {
+    renderAt('/campaign-workspace');
+
+    const blockers = screen.getByRole('region', { name: 'Decision blockers before action' });
+    expect(blockers).toHaveTextContent('Evidence gaps + human review required before action');
+    expect(blockers).toHaveTextContent('Evidence gap: Creative Comparison MVP is text-only');
+    expect(blockers).toHaveTextContent('Human review required: Have claims been reviewed against approved proof points?');
+    expect(blockers).toHaveTextContent('Blocked action: winner selection');
+    expect(blockers).toHaveTextContent('Low directional confidence');
+
+    const dashboard = screen.getByRole('region', { name: 'Executive KPI dashboard' });
+    expect(blockers.compareDocumentPosition(dashboard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('aggregates recent runs and evidence from existing fixtures only', () => {
     renderAt('/campaign-workspace');
 
@@ -262,23 +276,35 @@ describe('Campaign Workspace MVP', () => {
     expect(dashboard).toHaveTextContent('4 / 4 exports ready');
     expect(dashboard).toHaveTextContent('Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness');
     const platformComparison = within(dashboard).getByRole('region', { name: 'Platform comparison' });
+    expect(platformComparison).toHaveTextContent('Notice: LINE leads the fixture rank; treat it as a channel hypothesis.');
     expect(platformComparison).toHaveTextContent('Fixture-rank cue');
     expect(platformComparison).toHaveTextContent('Formula: platform bar value = clampScore(100 - fixture rank index × 12)');
     expect(platformComparison).toHaveTextContent('Source: productLaunchFixture.platformBreakdown fields platform, signal, and detail');
+    const platformText = platformComparison.textContent ?? '';
+    expect(platformText.indexOf('Notice: LINE leads the fixture rank; treat it as a channel hypothesis.')).toBeLessThan(platformText.indexOf('LINE'));
+    expect(platformText.indexOf('LINE')).toBeLessThan(platformText.indexOf('Formula: platform bar value'));
     const audienceComparison = within(dashboard).getByRole('region', { name: 'Audience comparison' });
+    expect(audienceComparison).toHaveTextContent('Notice: Working Adults are first-ranked; validate before segmentation.');
     expect(audienceComparison).toHaveTextContent('Fixture-rank cue');
     expect(audienceComparison).toHaveTextContent('Formula: audience bar value = clampScore(100 - fixture rank index × 12)');
     expect(audienceComparison).toHaveTextContent('Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy');
+    const audienceText = audienceComparison.textContent ?? '';
+    expect(audienceText.indexOf('Notice: Working Adults are first-ranked; validate before segmentation.')).toBeLessThan(audienceText.indexOf('Working Adults'));
+    expect(audienceText.indexOf('Working Adults')).toBeLessThan(audienceText.indexOf('Formula: audience bar value'));
     expect(dashboard).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step');
     expect(dashboard).toHaveTextContent('Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data');
     expect(dashboard).toHaveTextContent('Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision');
     expect(dashboard).toHaveTextContent('Low confidence / E1 downgrade rationale: non-measured directional KPI from synthetic/offline fixture, not observed market behavior');
     const confidenceRisk = within(dashboard).getByRole('region', { name: 'Confidence / risk' });
+    expect(confidenceRisk).toHaveTextContent('Notice: confidence remains low even though review readiness is complete.');
     expect(confidenceRisk).toHaveTextContent('Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk');
     expect(confidenceRisk).toHaveTextContent('Caution signal');
     expect(confidenceRisk).toHaveTextContent('Readiness signal');
     expect(confidenceRisk).toHaveTextContent('Risk signal');
     expect(confidenceRisk).toHaveTextContent('Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100');
+    const confidenceText = confidenceRisk.textContent ?? '';
+    expect(confidenceText.indexOf('Notice: confidence remains low even though review readiness is complete.')).toBeLessThan(confidenceText.indexOf('Confidence40/100'));
+    expect(confidenceText.indexOf('Confidence40/100')).toBeLessThan(confidenceText.indexOf('Formula: Confidence maps'));
     expect(confidenceRisk).toHaveTextContent('Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore');
     expect(confidenceRisk).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used');
     expect(confidenceRisk).toHaveTextContent('Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence');
@@ -292,12 +318,17 @@ describe('Campaign Workspace MVP', () => {
 
     const dashboard = screen.getByRole('region', { name: 'Executive KPI dashboard' });
     const sentiment = within(dashboard).getByRole('region', { name: 'Sentiment comparison' });
+    expect(sentiment).toHaveTextContent('Notice: sentiment is directionally positive, but still synthetic.');
     expect(sentiment).toHaveTextContent('Formula: sentiment bar = clampScore(50 + summary.sentimentDelta × 100)');
     expect(sentiment).toHaveTextContent('Source: summary.sentimentDelta and fixture summary/card fields from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison offline fixtures.');
     expect(sentiment).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture; not live social data, not measured social platform engagement, not production prediction.');
     expect(sentiment).toHaveTextContent('Next evidence step: compare against approved field feedback or backtest before any launch, budget, or winner decision.');
+    const sentimentText = sentiment.textContent ?? '';
+    expect(sentimentText.indexOf('Notice: sentiment is directionally positive, but still synthetic.')).toBeLessThan(sentimentText.indexOf('Product Launch'));
+    expect(sentimentText.indexOf('Product Launch')).toBeLessThan(sentimentText.indexOf('Formula: sentiment bar'));
 
     const tiers = within(dashboard).getByRole('region', { name: 'Evidence tier visualization' });
+    expect(tiers).toHaveTextContent('Notice: current evidence is E1 only; E2 evidence is required before budget or launch decisions.');
     expect(tiers).toHaveTextContent('Current tier: E1 synthetic/offline fixture');
     expect(tiers).toHaveTextContent('Unsupported: live social measurement, CRM/customer data, private data, and production prediction are unavailable in this dashboard.');
     expect(tiers).toHaveTextContent('Formula: evidence tier is E1 when sourceChecks confirm offlineExecution=true, liveApiAccess=false, credentialsRequired=false, and productionReady=false across all fixtures.');
