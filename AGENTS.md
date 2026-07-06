@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M12 Campaign Workspace Trust & Validation complete and merged.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, and M10 Campaign Workspace MVP are complete.
-- M12 remediates M11 trust findings only: unknown run/export unavailable states, blank/invalid input feedback, immediate result visibility, fixture transparency, and `/health` current wording. Reuse the approved Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, Marketing Journey Framework, Campaign Workspace Foundation, Campaign Workspace MVP, dashboard/export patterns, safety labels, product-owned adapter, and product-owned SocialSense boundary. Do not implement Creative Comparison, add workflows, redesign architecture, add backend behavior, live APIs, private data, persistence, auth, credentials, or SocialSense changes.
+- Current branch scope: M13 Product Trust Readiness & Next Capability Gate, governance/reporting only.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, and M12 Campaign Workspace Trust & Validation are complete.
+- M13 verifies M12 trust behavior remains stable on `main` and decides whether Creative Comparison may enter a separate planning milestone. Do not implement Creative Comparison, add workflows, redesign Campaign Workspace, add backend behavior, live APIs, private data, persistence, auth, credentials, or SocialSense/MarketingSimulation changes.
 
 ## Repository boundaries
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M12 language fixture/offline-compatible, synthetic, aggregate-only, non-production, validation/reporting-only, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M13 language fixture/offline-compatible, synthetic, aggregate-only, non-production, governance/reporting-only, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -85,6 +85,24 @@ Required planning artifacts:
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
 
+## M13 validation commands
+
+Run focused validation before handoff:
+
+```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+git status --short --branch
+```
+
+M13 may modify documentation and docs smoke only. Do not add runtime/source implementation, backend/server/api/auth/credential files, new workflows, Creative Comparison implementation, product redesign, persistence, live APIs, SocialSense changes, or MarketingSimulation changes.
+
 ## M12 validation commands
 
 Run focused validation before handoff:
@@ -110,17 +128,30 @@ M12 may modify focused frontend trust/validation code, regression tests, README/
 - the six M8 Marketing Journey Framework docs exist and include status/scope/non-implementation boundaries;
 - the seven M9 Campaign Workspace Foundation docs exist and include status/scope/non-implementation boundaries;
 - the five M11 continuous product validation docs exist and include evidence/backlog/readiness boundaries;
-- README links resolve, including M6, M8, M9, and M11 docs;
+- README links resolve, including M6, M8, M9, M11, M12, and M13 docs;
 - README and AGENTS include required safety phrases;
 - expected React/Vite/TypeScript frontend shell files still exist;
 - expected PR3 adapter, smoke, and test files exist;
 - expected PR4 and M5 fixture files still exist;
 - adapter uses the SocialSense public facade and avoids forbidden internals;
 - fixture generators use the PR3 adapter, not private SocialSense imports;
-- M12 branch changes are limited to focused frontend trust/validation code, regression tests, README/roadmap/product health/AGENTS docs, and docs smoke updates;
+- M13 branch changes are limited to readiness report, README/roadmap/product health/AGENTS docs, and docs smoke updates;
 - forbidden backend/live/auth/credential files are absent.
 
 ## Definition of Done
+
+M13 is done only when:
+
+- M12 trust behavior is verified stable on `main` for unknown run/export states, `/health`, result visibility, and fixture transparency;
+- `docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md` exists and is linked from README;
+- Product Trust, UX Clarity, Research Transparency, Regression Stability, and Creative Comparison Planning decisions are explicit;
+- Product Health, Roadmap, README, AGENTS, and docs smoke reflect M13 governance status;
+- no Creative Comparison implementation, additional workflow implementation, backend, runtime API, persistence, workspace storage, live API, auth, credentials, CRM/customer data, PII, private data, voter lists, microtargeting, persuasion optimization, conversion guarantees, production campaign claims, product redesign, SocialSense changes, or MarketingSimulation changes are introduced;
+- `npm run test`, `npm run typecheck`, `npm run lint`, `npm run build`, `python3 scripts/docs_smoke.py`, `git diff --check HEAD`, `python3 -m unittest discover -s tests -p 'test_*.py'`, `PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py`, and changed-path guard pass;
+- QA Review, Code Review, Safety Review, Product Review, UX Review, and Research Review all return GO;
+- PR is opened for M13 review.
+
+## M12 Definition of Done
 
 M12 is done only when:
 

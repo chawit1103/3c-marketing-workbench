@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M12 Campaign Workspace Trust & Validation is complete and merged. Product Health improved from the M11 7.4 baseline while P1/P2 trust issues were addressed in-app: unknown run/export unavailable states, clearer input validation, immediate result visibility, fixture transparency, and current `/health` wording. Creative Comparison, additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain out of scope.
+Status: M13 Product Trust Readiness & Next Capability Gate is in review. M12 Campaign Workspace Trust & Validation is complete and merged, and M13 verifies those trust improvements remain stable on `main` before allowing Creative Comparison to enter planning. Creative Comparison remains blocked for implementation; additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain out of scope.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -30,7 +30,7 @@ This repository owns the 3C product experience:
 - Product Launch Simulation vertical slice backed by `src/product/fixtures/productLaunchResult.json`;
 - Campaign Message Test and A/B Experiment reference workflows backed by generated product fixtures;
 - product-owned fixture generation through `scripts/generate_product_launch_fixture.py`;
-- product-owned SocialSense adapter under `integrations/socialsense/`;
+- product-owned adapter under `integrations/socialsense/`;
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
@@ -144,6 +144,7 @@ Product documentation map:
 - [M11 Product Backlog](docs/product/M11_PRODUCT_BACKLOG.md)
 - [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)
 - [M12 Campaign Workspace Trust & Validation Report](docs/product/M12_TRUST_VALIDATION_REPORT.md)
+- [M13 Product Trust Readiness Gate](docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
