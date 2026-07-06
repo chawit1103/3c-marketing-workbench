@@ -222,6 +222,53 @@ M17_ALLOWED_CHANGED_PATHS = {
     *REQUIRED_M17_DOCS,
 }
 
+M17_PR2_ALLOWED_CHANGED_PATHS = {
+    *M17_ALLOWED_CHANGED_PATHS,
+    "src/views.tsx",
+    "src/styles.css",
+    "src/App.test.tsx",
+}
+
+REQUIRED_M17_PR2_RESEARCH_GUARD_PHRASES = [
+    "Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step",
+    "Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data",
+    "Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision",
+    "Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100",
+    "Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore",
+    "Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used",
+    "Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence",
+    "Readiness evidence tier: E1 synthetic/offline fixture; review readiness only",
+    "Risk evidence tier: E1 synthetic/offline fixture; market risk remains unmeasured",
+]
+
+REQUIRED_M17_PR2_PHRASES = [
+    "executive KPI dashboard",
+    "Overall Campaign Score",
+    "Message Acceptance",
+    "Brand Perception",
+    "Audience Engagement",
+    "Synthetic Purchase Intent",
+    "Evidence Coverage",
+    "Review Readiness",
+    "Confidence",
+    "Risk Level",
+    "Recommendation",
+    "Formula:",
+    "Evidence: E1 synthetic/offline fixture",
+    "Platform comparison",
+    "Formula: platform bar value = clampScore(100 - fixture rank index × 12)",
+    "Source: productLaunchFixture.platformBreakdown fields platform, signal, and detail",
+    "Audience comparison",
+    "Formula: audience bar value = clampScore(100 - fixture rank index × 12)",
+    "Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy",
+    "Source: productLaunchFixture.sourceChecks, campaignMessageFixture.sourceChecks, abExperimentFixture.sourceChecks, and creativeComparisonFixture.sourceChecks",
+    "Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness",
+    "Journey progress",
+    "synthetic",
+    "offline",
+    "not live social",
+]
+
 REQUIRED_M17_PHRASES = [
     "Executive Experience & Marketing Simulation Enhancement",
     "M17 Executive Dashboard & Reporting",
@@ -234,7 +281,7 @@ REQUIRED_M17_PHRASES = [
     "Architecture Gate triggers",
     "safety boundaries",
     "validation and review gates",
-    "M17 PR2+ implementation is future work",
+    "M17 PR2+ implementation was explicitly future work",
     "not delivered in this PR",
     "docs/smoke only",
     "no source UI/runtime changes",
@@ -1202,7 +1249,29 @@ def main() -> None:
         ]:
             if phrase not in combined_m17_text:
                 fail(f"M17 docs missing PR sequence phrase: {phrase}")
-        forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m17-") else []
+        if current_branch_name() == "m17-executive-dashboard-kpis":
+            m17_pr2_source_text = "\n".join(
+                [
+                    (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+                    (ROOT / "src/styles.css").read_text(encoding="utf-8"),
+                    (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+                ]
+            )
+            combined_m17_pr2_text = "\n".join([combined_m17_text, m17_pr2_source_text])
+            missing_m17_pr2_phrases = [phrase for phrase in REQUIRED_M17_PR2_PHRASES if phrase not in combined_m17_pr2_text]
+            if missing_m17_pr2_phrases:
+                fail("M17 PR2 docs/source missing executive KPI dashboard phrases: " + ", ".join(missing_m17_pr2_phrases))
+            views_m17_pr2_text = (ROOT / "src/views.tsx").read_text(encoding="utf-8")
+            missing_m17_pr2_research_phrases = [
+                phrase for phrase in REQUIRED_M17_PR2_RESEARCH_GUARD_PHRASES if phrase not in views_m17_pr2_text
+            ]
+            if missing_m17_pr2_research_phrases:
+                fail("M17 PR2 source missing Research Review evidence/confidence guard phrases: " + ", ".join(missing_m17_pr2_research_phrases))
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_PR2_ALLOWED_CHANGED_PATHS]
+        elif current_branch_name().startswith("m17-"):
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
+        else:
+            forbidden_m17_changes = []
         if forbidden_m17_changes:
             fail("M17 program kickoff changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m17_changes))
 
@@ -1224,7 +1293,9 @@ def main() -> None:
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
-        print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and docs-only boundary")
+        print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
+        if current_branch_name() == "m17-executive-dashboard-kpis":
+            print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness. M17 PR1 is program kickoff docs only for Executive Experience & Marketing Simulation Enhancement and does not deliver runtime features. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
+Status: M17 Executive Dashboard & Reporting is in PR2 implementation after M16 Feature Freeze and Demo Readiness and the PR1 program kickoff docs. M17 PR2 adds fixture-backed executive KPI cards and CSS-only decision visuals to the existing Campaign Workspace using existing offline data only. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -206,7 +206,7 @@ Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
-| Executive Dashboard & Reporting | Started | M17 PR1 program kickoff docs | Executive Experience program and M17 dashboard/reporting plan started after M16; M17 PR2+ implementation is future work. |
+| Executive Dashboard & Reporting | PR2 runtime slice current | M17 PR2 fixture-backed dashboard | Executive Experience program and M17 dashboard/reporting plan started in PR1; PR2 now implements the limited fixture-backed KPI/dashboard slice with formula/source/evidence-tier copy. |
 | Thai-first Internationalization | Planned | M18 future milestone | Thai-first glossary, locale approach, and validation are planned only after M17 closeout. |
 | Synthetic Social Platform Engagement Simulation | Planned | M19 future milestone | Safe synthetic social engagement scope is planned only after M18 review; no live social APIs, scraping, or production posting. |
 
@@ -246,9 +246,9 @@ Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze
 
 - Program doc: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`.
 - M17 plan: `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
-- Scope: docs/smoke only for PR1; no source UI/runtime changes.
+- Historical PR1 scope: docs/smoke only; no source UI/runtime changes.
 - PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
-- M17 PR2+ implementation is future work and is not delivered in this PR.
+- Current PR2 scope: fixture-backed executive KPI cards, Evidence Coverage, Review Readiness, formula/source/evidence-tier copy, and CSS-only decision visuals in the existing Campaign Workspace.
 - Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
@@ -290,8 +290,8 @@ Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze
 | Dashboard Reuse % | 91% | M7 A/B reuse audit | Target >=90% |
 | Export Reuse % | 100% | M7 A/B reuse audit | No new export formats |
 | Overall Product Health | 7.4/10 | M11 Product Validation Report | Improve P1/P2 trust findings before adding new capabilities |
-| Executive Readiness | Started | M17 PR1 docs kickoff | Define PR2+ dashboard/reporting improvements before implementation |
-| Dashboard Quality | Planned | M17 plan | Improve KPI cards, evidence, confidence, and chart readability in future PRs |
+| Executive Readiness | In progress | M17 PR2 dashboard slice | Surface executive KPI cards and decision visuals from existing fixture evidence |
+| Dashboard Quality | In progress | M17 PR2 dashboard slice | Improve KPI cards, evidence, confidence, and chart readability without new chart dependencies |
 | Report Quality | Planned | M17 plan | Improve executive report/export review readability in future PRs |
 | I18N Readiness | Planned | M18 plan | Thai-first glossary and validation remain future work |
 | Simulation Readiness | Planned | M19 plan | Synthetic social engagement simulation remains future work |
@@ -470,9 +470,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone after M16 has started as M17 Executive Dashboard & Reporting PR1 program kickoff docs. This does not automatically start another workflow and does not deliver runtime implementation.
+Next milestone after M16 is M17 Executive Dashboard & Reporting. PR1 completed program kickoff docs; PR2 is the approved fixture-backed executive KPI and dashboard visual slice.
 
-Recommended option after M17 PR1 validation: review PR2 Executive KPI cards scope before implementation.
+Recommended option after M17 PR2 validation: review PR3 marketing charts/evidence/confidence visualization scope before implementation.
 
 Alternative options if priorities change:
 

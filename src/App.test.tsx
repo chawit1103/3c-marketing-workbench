@@ -230,6 +230,63 @@ describe('Campaign Workspace MVP', () => {
     expect(evidence.textContent?.toLowerCase()).not.toContain('socialsense');
   });
 
+  it('surfaces M17 executive KPI cards and CSS-only decision visuals from offline fixtures', () => {
+    renderAt('/campaign-workspace');
+
+    const dashboard = screen.getByRole('region', { name: 'Executive KPI dashboard' });
+    for (const kpi of [
+      'Overall Campaign Score',
+      'Message Acceptance',
+      'Brand Perception',
+      'Audience Engagement',
+      'Synthetic Purchase Intent',
+      'Evidence Coverage',
+      'Review Readiness',
+      'Confidence',
+      'Risk Level',
+      'Recommendation',
+    ]) {
+      expect(dashboard).toHaveTextContent(kpi);
+    }
+    expect(dashboard).toHaveTextContent('Synthetic/offline fixture-backed dashboard');
+    expect(dashboard).toHaveTextContent('not live social data');
+    expect(dashboard).toHaveTextContent('Formula: average sentiment/trust/reach scores plus completed workflow coverage');
+    expect(dashboard).toHaveTextContent('Source: summary fixture scores + completed workflow coverage');
+    expect(dashboard).toHaveTextContent('Evidence: E1 synthetic/offline fixture; not live social data or production prediction');
+    expect(dashboard).toHaveTextContent('Low implementation risk; market risk unmeasured');
+    expect(dashboard).not.toHaveTextContent('0% fixture risk score');
+    expect(dashboard).toHaveTextContent('Source: fixture riskScore is not a production risk model');
+    expect(dashboard).toHaveTextContent('4 / 4 workflows');
+    expect(dashboard).toHaveTextContent('Formula: completedWorkflowCount / totalWorkflowCount');
+    expect(dashboard).toHaveTextContent('productLaunchFixture.sourceChecks, campaignMessageFixture.sourceChecks, abExperimentFixture.sourceChecks, and creativeComparisonFixture.sourceChecks');
+    expect(dashboard).toHaveTextContent('4 / 4 exports ready');
+    expect(dashboard).toHaveTextContent('Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness');
+    const platformComparison = within(dashboard).getByRole('region', { name: 'Platform comparison' });
+    expect(platformComparison).toHaveTextContent('Fixture-rank cue');
+    expect(platformComparison).toHaveTextContent('Formula: platform bar value = clampScore(100 - fixture rank index × 12)');
+    expect(platformComparison).toHaveTextContent('Source: productLaunchFixture.platformBreakdown fields platform, signal, and detail');
+    const audienceComparison = within(dashboard).getByRole('region', { name: 'Audience comparison' });
+    expect(audienceComparison).toHaveTextContent('Fixture-rank cue');
+    expect(audienceComparison).toHaveTextContent('Formula: audience bar value = clampScore(100 - fixture rank index × 12)');
+    expect(audienceComparison).toHaveTextContent('Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy');
+    expect(dashboard).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Recommendation is unsupported for launch approval and is only a next evidence step');
+    expect(dashboard).toHaveTextContent('Confidence: Low directional; downgraded because evidence is synthetic/offline and not comparable measured field data');
+    expect(dashboard).toHaveTextContent('Limitation / next evidence step: run a small reviewed evidence test before any budget, launch, or winner decision');
+    expect(dashboard).toHaveTextContent('Low confidence / E1 downgrade rationale: non-measured directional KPI from synthetic/offline fixture, not observed market behavior');
+    const confidenceRisk = within(dashboard).getByRole('region', { name: 'Confidence / risk' });
+    expect(confidenceRisk).toHaveTextContent('Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk');
+    expect(confidenceRisk).toHaveTextContent('Caution signal');
+    expect(confidenceRisk).toHaveTextContent('Readiness signal');
+    expect(confidenceRisk).toHaveTextContent('Risk signal');
+    expect(confidenceRisk).toHaveTextContent('Formula: Confidence maps Low directional confidence to 40/100; Readiness = exports ready / fixture count; Risk = average fixture riskScore × 100');
+    expect(confidenceRisk).toHaveTextContent('Source: Confidence from creativeComparisonFixture.comparisonMethod.confidenceLevel; Readiness from fixture exports.readiness; Risk from fixture summary.riskScore');
+    expect(confidenceRisk).toHaveTextContent('Evidence: E1 synthetic/offline fixture; Low confidence downgrade because no comparable measured field evidence, live data, or production risk model is used');
+    expect(confidenceRisk).toHaveTextContent('Confidence evidence tier: E1 synthetic/offline fixture; Low directional confidence');
+    expect(confidenceRisk).toHaveTextContent('Readiness evidence tier: E1 synthetic/offline fixture; review readiness only');
+    expect(confidenceRisk).toHaveTextContent('Risk evidence tier: E1 synthetic/offline fixture; market risk remains unmeasured');
+    expect(within(dashboard).getByRole('region', { name: 'Journey progress' })).toHaveTextContent('5 of 6 review stages ready');
+  });
+
   it('offers approved workflow actions including Creative Comparison without primary navigation changes', () => {
     renderAt('/campaign-workspace');
 
