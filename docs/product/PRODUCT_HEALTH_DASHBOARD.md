@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 KPI slice, and PR3 marketing charts/evidence/confidence visualization. M17 PR4 report/export readability is current and implemented on this branch: Executive report preview, Export format readiness, Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, Formula/Source/Evidence tier/Confidence copy, and explicit no PDF/PowerPoint download generation claim. PR5 M17 validation/closeout remains future. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review after M16 Feature Freeze and Demo Readiness, PR1 program kickoff docs, PR2 KPI slice, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -206,7 +206,7 @@ Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 F
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
-| Executive Dashboard & Reporting | PR4 runtime slice current | M17 PR4 report/export readability | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 adds executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy. |
+| Executive Dashboard & Reporting | Complete for controlled review | M17 PR5 closeout GO WITH CONDITIONS | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 M17 validation/closeout complete updates docs/status/smoke only. |
 | Thai-first Internationalization | Planned | M18 future milestone | Thai-first glossary, locale approach, and validation are planned only after M17 closeout. |
 | Synthetic Social Platform Engagement Simulation | Planned | M19 future milestone | Safe synthetic social engagement scope is planned only after M18 review; no live social APIs, scraping, or production posting. |
 
@@ -242,20 +242,23 @@ Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 F
 - Known blockers: none recorded after M16 validation.
 - Release candidate readiness: ready for controlled demo and human dogfooding after review gates.
 
-## M17 Executive Dashboard & Reporting kickoff
+## M17 Executive Dashboard & Reporting closeout
 
 - Program doc: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`.
 - M17 plan: `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
+- Closeout report: `docs/product/M17_CLOSEOUT_REPORT.md`.
 - Historical PR1 scope: docs/smoke only; no source UI/runtime changes.
 - PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
 - PR2 delivered fixture-backed executive KPI cards, Evidence Coverage, Review Readiness, formula/source/evidence-tier copy, and CSS-only decision visuals in the existing Campaign Workspace.
 - PR3 delivered sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human-review checklist near chart summaries using existing fixtures only.
-- Current PR4 scope: executive report preview and export format readiness using existing fixtures only; PDF and PowerPoint are planning-only and no PDF/PPT file is generated or downloadable.
-- PR5 M17 validation/closeout remains future.
-- Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+- PR4 delivered executive report preview and export format readiness using existing fixtures only; PDF and PowerPoint are planning-only and no PDF/PPT file is generated or downloadable.
+- PR5 M17 validation/closeout complete updates docs/status/smoke only.
+- Current readiness: GO WITH CONDITIONS for controlled executive review. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions.
+- Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
-- Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- Current blocker: none for PR4 report/export readability; PR5 closeout must pass validation/review before implementation.
+- Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
+- M18 may be prepared next after M17 review/merge/post-merge validation; M18 implementation must not begin in this PR.
+- Current blocker: none for PR5 docs/status/smoke closeout after validation passes; production launch, budget, and winner decisions remain blocked without human review and field evidence.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -293,14 +296,15 @@ Status: M17 Executive Dashboard & Reporting is in PR4 implementation after M16 F
 | Dashboard Reuse % | 91% | M7 A/B reuse audit | Target >=90% |
 | Export Reuse % | 100% | M7 A/B reuse audit | No new export formats |
 | Overall Product Health | 7.4/10 | M11 Product Validation Report | Improve P1/P2 trust findings before adding new capabilities |
-| Executive Readiness | In progress | M17 PR3 visualization slice | Surface executive KPI cards, sentiment comparison, evidence tiers, visual limitations, and review checklist from existing fixture evidence |
-| Dashboard Quality | In progress | M17 PR3 dashboard slice | Improve KPI cards, sentiment comparison, evidence, confidence, and chart readability without new chart dependencies |
-| Report Quality | Planned | M17 plan | Improve executive report/export review readability in future PRs |
+| Executive Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Executive can understand dashboard/report for controlled review, but evidence remains E1 synthetic/offline fixture with Low directional confidence and requires human review/field evidence before launch, budget, or winner decisions. |
+| Dashboard Quality | GO WITH CONDITIONS | M17 PR5 closeout | KPI cards, sentiment comparison, evidence tiers, limitations, and human-review checklist are reviewable from fixture evidence; broader field usability remains future. |
+| Report Quality | GO WITH CONDITIONS | M17 PR5 closeout | Executive report preview, Executive JSON preview, Markdown briefing preview, assumptions, limitations, unsupported PDF/PPT notices, and human-review copy support management review only. |
 | I18N Readiness | Planned | M18 plan | Thai-first glossary and validation remain future work |
 | Simulation Readiness | Planned | M19 plan | Synthetic social engagement simulation remains future work |
-| Trust | Maintained | M12-M17 docs review | Preserve synthetic aggregate/offline safety boundaries |
-| Transparency | Maintained | M12-M17 docs review | Keep confidence, assumptions, limitations, evidence gaps, and human review visible |
-| Release Readiness | Feature freeze active | M16/M17 docs review | PR2+ implementation requires quality gates before release claims |
+| Trust | GO WITH CONDITIONS | M17 PR5 closeout | Synthetic/offline notices, safety boundaries, Low directional confidence, and blocked production claims remain explicit; human review is required. |
+| Transparency | GO WITH CONDITIONS | M17 PR5 closeout | Formula/source/evidence-tier/confidence, assumptions, limitations, evidence gaps, and next evidence steps remain visible. |
+| Release Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Required validation/review gates support controlled review only; not production launch readiness. |
+| Known Risks | Active / documented | M17 PR5 closeout | Offline/synthetic fixture scope, Low directional confidence, human-review dependence, field-evidence gap, and unsupported PDF/PPT generation remain explicit risks. |
 | Business Value | 8.0/10 | M11 persona dogfooding | Preserve executive campaign decision value |
 | Workflow Clarity | 7.0/10 | M11 persona dogfooding | Improve result focus and validation feedback |
 | Navigation Clarity | 7.0/10 | M11 persona dogfooding | Clarify workspace/export/run routes |
@@ -473,9 +477,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone after M16 is M17 Executive Dashboard & Reporting. PR1 completed program kickoff docs; PR2 is the approved fixture-backed executive KPI and dashboard visual slice.
+Next milestone after M17 is M18 Thai-first Internationalization preparation, only after M17 review/merge/post-merge validation passes. M17 closes with GO WITH CONDITIONS for controlled executive review.
 
-Recommended option after M17 PR2 validation: review PR3 marketing charts/evidence/confidence visualization scope before implementation.
+Recommended option after M17 PR5 validation: prepare M18 Thai-first glossary/content discovery and locale architecture planning. M18 implementation must not begin in this PR.
 
 Alternative options if priorities change:
 

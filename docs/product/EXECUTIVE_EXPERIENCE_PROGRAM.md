@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M17 Executive Dashboard & Reporting is current on the PR4 report/export readability branch after the PR1 program kickoff docs, PR2 executive KPI cards, and PR3 marketing charts/evidence/confidence visualization. PR4 implements fixture-backed executive report preview and export format readiness in the existing frontend/export review flow; PR5 M17 validation/closeout, M18 Thai-first Internationalization, and M19 Synthetic Social Platform Engagement Simulation remain planned future milestones. PR4 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, or actual PDF/PPT generation/download.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review after PR1 program kickoff docs, PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. PR5 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or actual PDF/PPT generation/download.
 
 ## Program objective
 
@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: PR4 report/export readability is current and implemented for this branch; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards and PR3 marketing charts/evidence/confidence visualization are complete. PR5 M17 validation/closeout remains future work after PR4 review.
+Status: PR5 M17 validation/closeout is current and docs/status/smoke only; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M17 closes with GO WITH CONDITIONS for controlled executive review.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 

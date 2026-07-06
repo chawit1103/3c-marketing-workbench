@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Plan
 
-Status: M17 PR4 report/export readability is current and implemented for this branch after the PR1 program kickoff docs, merged PR2 KPI slice, and PR3 CSS/React-only marketing charts/evidence/confidence expansion. PR4 delivers executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. PR4 does not deliver actual PDF/PPT generation/download, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, or new dependencies. PR5 M17 validation/closeout remains future.
+Status: M17 PR5 validation/closeout is current and docs/status/smoke only after the PR1 program kickoff docs, PR2 KPI slice, PR3 CSS/React-only marketing charts/evidence/confidence expansion, and PR4 report/export readability. PR4 delivered executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. M17 closes with GO WITH CONDITIONS for controlled executive review because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. PR5 does not deliver actual PDF/PPT generation/download, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, runtime product changes, or new dependencies.
 
 ## M17 objective
 
@@ -99,7 +99,7 @@ Acceptance criteria:
 
 Scope:
 
-- Future validation/closeout only after PR2-PR4 are merged and validated.
+- Current validation/closeout after PR2-PR4 are merged and validated.
 - Create M17 closeout documentation with KPI results, review-gate outcomes, known risks, and M18 readiness decision.
 - Update README, AGENTS, Roadmap, Product Health Dashboard, and docs smoke as needed.
 - Do not add runtime features in closeout unless separately approved.
