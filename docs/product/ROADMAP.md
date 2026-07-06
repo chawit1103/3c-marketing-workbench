@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M7 A/B Experiment Reference Workflow complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, and M6 Experiment Framework Planning are complete. A/B Experiment now exists as the third offline reference workflow. Multivariate Testing, Creative Comparison, backend, live runtime functionality, and SocialSense changes remain not implemented.
+Status: M8 Marketing Journey Framework in progress. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, M6 Experiment Framework Planning, and M7 A/B Experiment Reference Workflow are complete. M8 defines the reusable Marketing Journey that connects Product Launch, Campaign Message Test, and A/B Experiment into a coherent decision platform. Creative Comparison, additional workflows, backend, frontend implementation, live runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
@@ -178,10 +178,18 @@ Acceptance criteria:
 - Keep primary navigation unchanged.
 - Reuse audit: `docs/product/AB_EXPERIMENT_REUSE_AUDIT.md` records workflow reuse: 92%, component reuse: 93%, dashboard reuse: 91%, export reuse: 100%, navigation: unchanged.
 
-### Next: Experiment governance and additional comparison planning
+### M8: Marketing Journey Framework — Current
 
-- Review M7 A/B Experiment outcomes before adding more comparison workflows.
-- Multivariate Testing and Creative Comparison require separate review.
+- Define the Marketing Journey that connects Product Launch, Campaign Message Test, and A/B Experiment into one coherent marketing decision platform.
+- Create Marketing Journey Analysis, Marketing Journey Model, Journey Workflow Mapping, Workspace Model, Executive Journey, and Future Workflow Placement docs.
+- Keep scope documentation-only.
+- Do not implement Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, live APIs, private data, or SocialSense changes.
+- Architecture Gate is not triggered if Journey composes existing Workflow Pattern, Campaign Domain, IA, Navigation, Design System, Experiment Framework, and SocialSense boundary.
+
+### Next: Creative Comparison planning / implementation gate — Only if M8 receives GO
+
+- Review M8 Marketing Journey Framework outcomes before adding Creative Comparison.
+- Creative Comparison must be positioned as a Journey stage, not an isolated feature.
 - Do not add backend, live APIs, private data, or SocialSense changes from this roadmap alone.
 
 ### Future: Governance and implementation readiness review
@@ -213,7 +221,8 @@ Do not implement until separate review:
 - M5 Campaign Message Test Reference Workflow is marked complete.
 - M6 Experiment Framework Planning is marked complete.
 - M7 A/B Experiment Reference Workflow is marked complete.
-- Next milestone is governance/additional comparison planning only after M7 review.
+- M8 Marketing Journey Framework is marked current.
+- Next milestone is Creative Comparison only after M8 review gates approve the Marketing Journey Framework.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

@@ -46,6 +46,36 @@ REQUIRED_M6_DOCS = [
     "docs/product/EXPERIMENT_WORKFLOW_COMPATIBILITY.md",
 ]
 
+REQUIRED_M8_DOCS = [
+    "docs/product/MARKETING_JOURNEY_ANALYSIS.md",
+    "docs/product/MARKETING_JOURNEY_MODEL.md",
+    "docs/product/JOURNEY_WORKFLOW_MAPPING.md",
+    "docs/product/WORKSPACE_MODEL.md",
+    "docs/product/EXECUTIVE_JOURNEY.md",
+    "docs/product/FUTURE_WORKFLOW_PLACEMENT.md",
+]
+
+REQUIRED_M8_PHRASES = [
+    "M8 Marketing Journey Framework",
+    "Marketing Journey",
+    "Idea",
+    "Campaign Definition",
+    "Campaign Message Test",
+    "A/B Experiment",
+    "Executive Decision",
+    "Export / Handoff",
+    "Creative Comparison",
+    "No Architecture Gate",
+]
+
+REQUIRED_M8_DOC_PHRASES = [
+    "Status:",
+    "Scope:",
+    "does not implement",
+]
+
+M8_ALLOWED_CHANGED_PATHS = {"README.md", "AGENTS.md", "scripts/docs_smoke.py"}
+
 REQUIRED_M6_PHRASES = [
     "M6 Experiment Framework",
     "Experiment Framework",
@@ -239,16 +269,24 @@ def iter_repo_paths() -> list[str]:
 
 
 def changed_paths_from_main() -> list[str]:
-    try:
-        output = subprocess.check_output(
-            ["git", "diff", "--name-only", "origin/main...HEAD"],
-            cwd=ROOT,
-            text=True,
-            stderr=subprocess.DEVNULL,
-        )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return []
-    return [line.strip() for line in output.splitlines() if line.strip()]
+    paths: set[str] = set()
+    commands = [
+        ["git", "diff", "--name-only", "origin/main...HEAD"],
+        ["git", "diff", "--name-only", "--cached"],
+        ["git", "diff", "--name-only"],
+    ]
+    for command in commands:
+        try:
+            output = subprocess.check_output(
+                command,
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            continue
+        paths.update(line.strip() for line in output.splitlines() if line.strip())
+    return sorted(paths)
 
 
 def current_branch_name() -> str:
@@ -279,6 +317,10 @@ def main() -> None:
     missing_m6_docs = [path for path in REQUIRED_M6_DOCS if not (ROOT / path).is_file()]
     if missing_m6_docs:
         fail("missing required M6 docs: " + ", ".join(missing_m6_docs))
+
+    missing_m8_docs = [path for path in REQUIRED_M8_DOCS if not (ROOT / path).is_file()]
+    if missing_m8_docs:
+        fail("missing required M8 docs: " + ", ".join(missing_m8_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -312,6 +354,8 @@ def main() -> None:
     m5_text = "\n".join(m5_docs_by_path.values())
     m6_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M6_DOCS}
     m6_text = "\n".join(m6_docs_by_path.values())
+    m8_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M8_DOCS}
+    m8_text = "\n".join(m8_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -357,6 +401,10 @@ def main() -> None:
     missing_m6_links = [path for path in REQUIRED_M6_DOCS if f"]({path})" not in readme]
     if missing_m6_links:
         fail("README missing M6 doc links: " + ", ".join(missing_m6_links))
+
+    missing_m8_links = [path for path in REQUIRED_M8_DOCS if f"]({path})" not in readme]
+    if missing_m8_links:
+        fail("README missing M8 doc links: " + ", ".join(missing_m8_links))
 
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
@@ -410,7 +458,7 @@ def main() -> None:
     changed_paths = changed_paths_from_main()
     m5_files_present = all((ROOT / path).is_file() for path in EXPECTED_M5_FILES)
     m5_paths_changed = any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"])
-    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-") or current_branch_name().startswith("m7-"))):
+    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-") or current_branch_name().startswith("m7-") or current_branch_name().startswith("m8-"))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
     if "from socialsense import load_domain_pack" not in adapter:
@@ -461,6 +509,36 @@ def main() -> None:
         if phrase not in "\n".join([readme, agents, roadmap, health_dashboard, ab_audit]):
             fail(f"M7 freshness docs missing phrase: {phrase}")
 
+    combined_m8_text = "\n".join([readme, agents, roadmap, health_dashboard, m8_text])
+    missing_m8_phrases = [phrase for phrase in REQUIRED_M8_PHRASES if phrase not in combined_m8_text]
+    if missing_m8_phrases:
+        fail("M8 docs missing journey/scope phrases: " + ", ".join(missing_m8_phrases))
+    for path, content in m8_docs_by_path.items():
+        missing_doc_phrases = [phrase for phrase in REQUIRED_M8_DOC_PHRASES if phrase not in content]
+        if missing_doc_phrases:
+            fail(f"{path} missing M8 scope phrase: " + ", ".join(missing_doc_phrases))
+    for phrase in ["Marketing Journey", "Workspace", "Executive Journey", "Future Workflow Placement", "Creative Comparison only if M8"]:
+        if phrase not in combined_m8_text:
+            fail(f"M8 current-state docs missing phrase: {phrase}")
+    for stale_phrase in ["current M6 non-goals", "Before M6 handoff", "0 in M6", "before any A/B implementation"]:
+        if stale_phrase in "\n".join([readme, health_dashboard]):
+            fail(f"M8 current-state docs contain stale phrase: {stale_phrase}")
+    for phrase in ["M8 review gates", "Before M8 handoff", "Marketing Journey Framework remains documentation-only"]:
+        if phrase not in readme:
+            fail(f"README missing M8 review gate phrase: {phrase}")
+    for path in REQUIRED_M8_DOCS:
+        for linked_path in REQUIRED_M8_DOCS:
+            linked_name = Path(linked_path).name
+            if linked_name not in (ROOT / path).read_text(encoding="utf-8"):
+                fail(f"{path} missing M8 companion link to {linked_name}")
+    m8_context_active = any(path in changed_paths for path in REQUIRED_M8_DOCS) or "M8 Marketing Journey Framework" in combined_m8_text
+    if m8_context_active:
+        if current_branch_name() != "main" and not changed_paths:
+            fail("M8 planning changed-path guard could not compare against origin/main")
+        non_docs = [path for path in changed_paths if not (path in M8_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
+        if non_docs:
+            fail("M8 planning changed forbidden runtime/frontend/backend paths: " + ", ".join(non_docs))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -470,6 +548,7 @@ def main() -> None:
     print("PASS: required M4 IA/design-system docs exist and include status/scope phrases")
     print("PASS: required M5 Campaign Message Test docs exist and include reuse/status phrases")
     print("PASS: required M6 Experiment Framework docs exist and include scope/status phrases")
+    print("PASS: required M8 Marketing Journey Framework docs exist and include scope/status phrases")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
@@ -480,7 +559,7 @@ def main() -> None:
     print("PASS: adapter uses SocialSense public facade and avoids forbidden internals")
     print("PASS: fixture generators use PR3 adapter and fixtures have PR4/M5 UI contracts")
     print("PASS: M7 A/B Experiment uses product adapter, generated fixture, and reuse audit thresholds")
-    print("PASS: M5 branch includes Campaign Message Test implementation paths")
+    print("PASS: Campaign Message Test implementation paths are present")
     print("PASS: no forbidden backend/live/auth/credential files detected")
 
 
