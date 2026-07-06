@@ -61,7 +61,7 @@ Primary demo campaign:
 
 Before a demo:
 
-1. Start from clean `main`.
+1. Start from a clean release-candidate checkout for the approved M16 branch/PR or the synced `main` after merge.
 2. Run validation if time allows.
 3. Do not edit fixtures during the demo.
 4. Use safe defaults unless demonstrating validation messages.
