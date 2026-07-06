@@ -303,9 +303,9 @@ function findCard(fixture: ReferenceFixture, title: string) {
   return fixture.cards.find((card) => card.title === title);
 }
 
-const workflowCoverageCount = campaignWorkspaceRuns.length;
+const totalWorkflowCount = campaignWorkspaceRuns.length;
 const completedWorkflowCount = campaignJourneyStages.filter((stage) => stage.status === 'Completed').length;
-const completedWorkflowCoverageScore = clampScore((completedWorkflowCount / workflowCoverageCount) * 100);
+const completedWorkflowCoverageScore = clampScore((completedWorkflowCount / totalWorkflowCount) * 100);
 const readyExportCount = executiveFixtures.filter((fixture) => fixture.exports.readiness === 'Ready for human review').length;
 const liveDataExcluded = executiveFixtures.every((fixture) => !fixture.sourceChecks.liveApiAccess && fixture.sourceChecks.productionReady === false);
 const averageSentimentScore = average(executiveFixtures.map((fixture) => scoreFromDelta(fixture.summary.sentimentDelta)));
@@ -372,10 +372,11 @@ const executiveKpis = [
   },
   {
     title: 'Evidence Coverage',
-    value: `${workflowCoverageCount} / ${workflowCoverageCount} workflows`,
-    detail: 'All approved offline workflow fixtures are represented in the executive view.',
+    value: `${completedWorkflowCount} / ${totalWorkflowCount} workflows`,
+    detail: 'Completed approved offline workflow fixtures represented in the executive view.',
     metadata: [
-      'Formula: completed fixture coverage from Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison.',
+      'Formula: completedWorkflowCount / totalWorkflowCount from completed campaign journey stages and approved workflow fixtures.',
+      'Source: productLaunchFixture.sourceChecks, campaignMessageFixture.sourceChecks, abExperimentFixture.sourceChecks, and creativeComparisonFixture.sourceChecks confirm completed fixture coverage.',
       'Evidence: E1 synthetic/offline fixture; no live APIs, CRM, private, or platform data.',
     ],
   },
@@ -385,6 +386,7 @@ const executiveKpis = [
     detail: 'All export previews are ready for human handoff review.',
     metadata: [
       'Formula: fixtures whose exports.readiness equals “Ready for human review”.',
+      'Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness.',
       'Evidence: preview/handoff review only, not downloadable production export.',
     ],
   },
@@ -646,11 +648,29 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   const legend = title === 'Confidence / risk'
     ? 'Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk. Higher readiness bars are better; lower risk bars do not mean no risk.'
     : 'Legend: Fixture-rank cue; higher bars show directional strength within the offline fixture rank, not measured market performance.';
+  const sourceMapping = title === 'Platform comparison'
+    ? [
+      'Formula: platform bar value = clampScore(100 - fixture rank index × 12); earlier productLaunchFixture.platformBreakdown rows receive higher bars.',
+      'Source: productLaunchFixture.platformBreakdown fields platform, signal, and detail; fixture rank only, not measured engagement.',
+    ]
+    : title === 'Audience comparison'
+      ? [
+        'Formula: audience bar value = clampScore(100 - fixture rank index × 12); earlier productLaunchFixture.sampleInput.audiences rows receive higher bars.',
+        'Source: productLaunchFixture.sampleInput.audiences provides labels and productLaunchFixture.audienceInsights provides detail copy; fixture rank only, not measured audience engagement.',
+      ]
+      : [];
 
   return (
     <section className="executive-visual-card" aria-label={title}>
       <p className="eyebrow">{title}</p>
       <p className="bar-legend">{legend}</p>
+      {sourceMapping.length > 0 ? (
+        <div className="kpi-metadata" aria-label={`${title} formula and source`}>
+          {sourceMapping.map((metadata) => (
+            <p key={metadata}>{metadata}</p>
+          ))}
+        </div>
+      ) : null}
       <div className="bar-list">
         {items.map((item) => (
           <article className="bar-item" key={item.label}>
