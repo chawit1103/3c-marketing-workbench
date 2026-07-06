@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M15 Creative Comparison Vertical Slice is in product build mode. M14 Creative Comparison discovery/specification is complete and merged; M15 implements Creative Comparison as the fourth usable fixture-backed workflow. Architecture remains frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes are introduced.
+Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative Comparison is now the fourth usable fixture-backed workflow. Architecture remained frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes were introduced.
 
 
 ## M1 PR4 closeout
@@ -204,7 +204,22 @@ Status: M15 Creative Comparison Vertical Slice is in product build mode. M14 Cre
 | Campaign Workspace Trust & Validation readiness | Complete | M12 P1/P2 remediation | Product Health improved from baseline 7.4; unknown run/export states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes are verified. |
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
-| Creative Comparison Vertical Slice | In progress | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
+| Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
+
+## M15 Creative Comparison Vertical Slice
+
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/21
+- Merge commit: `b6bd9a447c475c3fd47f802bc627e90bcc06c7b7`
+- Closeout report: `docs/product/M15_CREATIVE_COMPARISON_CLOSEOUT_REPORT.md`
+- Route: `/workbench/creative-comparison`
+- Result route: `/runs/3c-m15-creative-comparison-reference-workflow`
+- Export review: `/exports/3c-m15-creative-comparison-reference-workflow`
+- Workflow reuse: 94%; component reuse: 93%; dashboard reuse: 92%; export reuse: 100%.
+- Navigation changes: 0 primary navigation changes.
+- SocialSense changes: 0.
+- Backend endpoints: 0.
+- Architecture Gate: not triggered.
+- Next recommendation: Workspace dogfooding round 2 before starting any additional workflow.
 
 ## M12 Campaign Workspace Trust & Validation
 

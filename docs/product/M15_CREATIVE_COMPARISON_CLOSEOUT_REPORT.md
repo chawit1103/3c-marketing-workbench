@@ -1,6 +1,6 @@
 # M15 Creative Comparison Vertical Slice Closeout Report
 
-Status: M15 Creative Comparison Vertical Slice in product build mode.
+Status: M15 Creative Comparison Vertical Slice complete and merged.
 Scope: one usable Creative Comparison MVP workflow inside the existing Campaign Workspace / Experiment Framework. No architecture redesign.
 Architecture Gate: Not triggered.
 
@@ -92,9 +92,16 @@ M15 does not add or imply:
 - SocialSense changes;
 - MarketingSimulation changes.
 
+## Merge and validation status
+
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/21
+- Merge commit: `b6bd9a447c475c3fd47f802bc627e90bcc06c7b7`
+- Post-merge validation: PASS on `main`.
+- Final main HEAD after closeout update: `aa1efb5a8869bc20d09fee3842c93e5b900207ab`.
+
 ## Validation commands
 
-Required before merge and again after merge:
+Required before merge and after merge:
 
 ```bash
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_creative_comparison_fixture.py

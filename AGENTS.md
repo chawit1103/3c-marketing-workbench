@@ -5,7 +5,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M15 Creative Comparison Vertical Slice, product build mode.
+- Current repository status: M15 Creative Comparison Vertical Slice complete and merged.
 - PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, and M14 Creative Comparison discovery/specification are complete.
 - M15 implements Creative Comparison as the fourth usable fixture-backed workflow by reusing existing workflow, campaign, experiment, workspace, design-system, dashboard, export-review, safety-label, and product adapter patterns. Do not redesign architecture, change SocialSense, change MarketingSimulation, add backend endpoints, persistence, auth, live APIs, credentials, CRM/customer data, PII/private data, production claims, persuasion optimization, microtargeting, or conversion guarantees.
 
