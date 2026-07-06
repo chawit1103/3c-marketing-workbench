@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Freeze v0.1 is declared for the four usable workflows and product shell. M16 prepares controlled demo, human dogfooding, and release-candidate readiness without adding workflows, backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
+Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness. M17 PR1 is program kickoff docs only for Executive Experience & Marketing Simulation Enhancement and does not deliver runtime features. Feature Freeze v0.1 remains active: no new workflows, backend endpoints, persistence, auth, external services, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -205,7 +205,10 @@ Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Fr
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
-| Feature Freeze and Demo Readiness | Validated for review | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
+| Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
+| Executive Dashboard & Reporting | Started | M17 PR1 program kickoff docs | Executive Experience program and M17 dashboard/reporting plan started after M16; M17 PR2+ implementation is future work. |
+| Thai-first Internationalization | Planned | M18 future milestone | Thai-first glossary, locale approach, and validation are planned only after M17 closeout. |
+| Synthetic Social Platform Engagement Simulation | Planned | M19 future milestone | Safe synthetic social engagement scope is planned only after M18 review; no live social APIs, scraping, or production posting. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -238,6 +241,18 @@ Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Fr
 - Export readiness: existing Export Readiness Preview only; no new export formats.
 - Known blockers: none recorded after M16 validation.
 - Release candidate readiness: ready for controlled demo and human dogfooding after review gates.
+
+## M17 Executive Dashboard & Reporting kickoff
+
+- Program doc: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`.
+- M17 plan: `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
+- Scope: docs/smoke only for PR1; no source UI/runtime changes.
+- PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
+- M17 PR2+ implementation is future work and is not delivered in this PR.
+- Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+- Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
+- Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
+- Current blocker: none for docs kickoff; future PR2+ must pass review before implementation.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -275,6 +290,14 @@ Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Fr
 | Dashboard Reuse % | 91% | M7 A/B reuse audit | Target >=90% |
 | Export Reuse % | 100% | M7 A/B reuse audit | No new export formats |
 | Overall Product Health | 7.4/10 | M11 Product Validation Report | Improve P1/P2 trust findings before adding new capabilities |
+| Executive Readiness | Started | M17 PR1 docs kickoff | Define PR2+ dashboard/reporting improvements before implementation |
+| Dashboard Quality | Planned | M17 plan | Improve KPI cards, evidence, confidence, and chart readability in future PRs |
+| Report Quality | Planned | M17 plan | Improve executive report/export review readability in future PRs |
+| I18N Readiness | Planned | M18 plan | Thai-first glossary and validation remain future work |
+| Simulation Readiness | Planned | M19 plan | Synthetic social engagement simulation remains future work |
+| Trust | Maintained | M12-M17 docs review | Preserve synthetic aggregate/offline safety boundaries |
+| Transparency | Maintained | M12-M17 docs review | Keep confidence, assumptions, limitations, evidence gaps, and human review visible |
+| Release Readiness | Feature freeze active | M16/M17 docs review | PR2+ implementation requires quality gates before release claims |
 | Business Value | 8.0/10 | M11 persona dogfooding | Preserve executive campaign decision value |
 | Workflow Clarity | 7.0/10 | M11 persona dogfooding | Improve result focus and validation feedback |
 | Navigation Clarity | 7.0/10 | M11 persona dogfooding | Clarify workspace/export/run routes |
@@ -447,9 +470,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone recommendation after M16 should be evidence-based and must not automatically start another workflow.
+Next milestone after M16 has started as M17 Executive Dashboard & Reporting PR1 program kickoff docs. This does not automatically start another workflow and does not deliver runtime implementation.
 
-Recommended option after M16 validation: Human Dogfooding Sprint.
+Recommended option after M17 PR1 validation: review PR2 Executive KPI cards scope before implementation.
 
 Alternative options if priorities change:
 

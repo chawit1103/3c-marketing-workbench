@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current repository status: M16 Feature Freeze and Demo Readiness complete and merged; Feature Freeze v0.1 is declared.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, and M16 Feature Freeze and Demo Readiness are complete.
-- M16 freezes Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary for controlled demo, human dogfooding, and release-candidate readiness. Allowed changes are demo readiness, UX/copy polish, bug/trust fixes, docs, test coverage, demo data, dogfooding preparation, and release checks only. Do not add new workflows, backend endpoints, SocialSense capability, live APIs, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+- Current repository status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness; this branch is PR1 program kickoff docs only.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, M14 Creative Comparison discovery/specification, M15 Creative Comparison Vertical Slice, and M16 Feature Freeze and Demo Readiness are complete. M17 PR1 starts Executive Experience & Marketing Simulation Enhancement docs for M17-M19; M17 PR2+ implementation is future work.
+- M17 PR1 is docs/smoke only. It may create Executive Experience program docs, M17 dashboard/reporting plan docs, and status links in README, Roadmap, Product Health Dashboard, AGENTS, and docs smoke. Do not add source UI/runtime changes, new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, auth, credentials, CRM/customer data, PII/private data, production automation, workflow redesign, workspace redesign, SocialSense changes, or MarketingSimulation changes.
 
 ## Repository boundaries
 
@@ -19,7 +19,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
 - Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
-- Keep M11 independent from backend services, live data sources, authentication, credentials, additional workflows, Creative Comparison, persistence, workspace storage, production campaign systems, and product redesign.
+- Keep M17 PR1 independent from source UI/runtime changes, backend services, live data sources, authentication, credentials, external services, new workflows, persistence, workspace storage, production campaign systems, SocialSense changes, MarketingSimulation changes, and product redesign.
 
 ## Safety rules
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M16 language fixture/offline-compatible, synthetic, aggregate-only, non-production, release-readiness, feature-freeze, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M17 language fixture/offline-compatible, synthetic, aggregate-only, non-production, release-readiness, feature-freeze, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -84,6 +84,36 @@ Required planning artifacts:
 - `docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md`.
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
+
+
+## M17 Executive Experience program kickoff expectations
+
+M17 PR1 must be docs/smoke only and starts the Executive Experience & Marketing Simulation Enhancement program after M16.
+
+Required planning artifacts:
+
+- `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`;
+- `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
+
+M17 PR1 must decompose M17 Executive Dashboard & Reporting, M18 Thai-first Internationalization, and M19 Synthetic Social Platform Engagement Simulation into epics/features/tasks/PR order. It must explicitly state that M17 PR2+ implementation is future work and not delivered in PR1.
+
+Architecture Gate triggers must remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
+
+Program KPIs must include: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+
+Run focused validation before handoff:
+
+```bash
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+git status --short --branch
+```
 
 ## M16 validation commands
 

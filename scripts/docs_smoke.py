@@ -208,6 +208,73 @@ REQUIRED_M16_PHRASES = [
     "Architecture Gate: Not triggered",
 ]
 
+REQUIRED_M17_DOCS = [
+    "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
+    "docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md",
+]
+
+M17_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    *REQUIRED_M17_DOCS,
+}
+
+REQUIRED_M17_PHRASES = [
+    "Executive Experience & Marketing Simulation Enhancement",
+    "M17 Executive Dashboard & Reporting",
+    "M18 Thai-first Internationalization",
+    "M19 Synthetic Social Platform Engagement Simulation",
+    "architecture freeze",
+    "epics/features/tasks/PR order",
+    "business, consumer, and executive value",
+    "PR sequencing",
+    "Architecture Gate triggers",
+    "safety boundaries",
+    "validation and review gates",
+    "M17 PR2+ implementation is future work",
+    "not delivered in this PR",
+    "docs/smoke only",
+    "no source UI/runtime changes",
+    "Measurable KPI framework",
+    "Evidence/confidence methodology",
+    "M19 PR3 implementation gate",
+]
+
+REQUIRED_M17_PROGRAM_KPIS = [
+    "Product Health",
+    "UX Health",
+    "Executive Readiness",
+    "Dashboard Quality",
+    "Report Quality",
+    "I18N Readiness",
+    "Simulation Readiness",
+    "Trust",
+    "Transparency",
+    "Release Readiness",
+]
+
+REQUIRED_M17_ARCHITECTURE_GATE_TRIGGERS = [
+    "SocialSense redesign/API change",
+    "workspace/workflow/IA/design-system redesign",
+    "backend",
+    "persistence",
+    "auth",
+    "external services",
+    "live APIs",
+]
+
+REQUIRED_M17_QUALITY_GATES = [
+    "QA Review",
+    "Code Review",
+    "Safety Review",
+    "Product Review",
+    "UX Review",
+    "Research Review",
+]
+
 REQUIRED_M15_FILES = [
     "src/product/fixtures/creativeComparisonResult.json",
     "scripts/generate_creative_comparison_fixture.py",
@@ -693,6 +760,12 @@ def main() -> None:
     m9_text = "\n".join(m9_docs_by_path.values())
     m11_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M11_DOCS}
     m11_text = "\n".join(m11_docs_by_path.values())
+    m17_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M17_DOCS
+        if (ROOT / path).is_file()
+    }
+    m17_text = "\n".join(m17_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1095,6 +1168,44 @@ def main() -> None:
         if forbidden_m16_changes:
             fail("M16 changed unexpected paths during feature freeze: " + ", ".join(forbidden_m16_changes))
 
+    if (
+        current_branch_name().startswith("m17-")
+        or "M17 Executive Dashboard" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text])
+        or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text])
+    ):
+        missing_m17_docs = [path for path in REQUIRED_M17_DOCS if not (ROOT / path).is_file()]
+        if missing_m17_docs:
+            fail("missing M17 executive experience docs: " + ", ".join(missing_m17_docs))
+        m17_docs = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M17_DOCS}
+        combined_m17_text = "\n".join([readme, agents, roadmap, health_dashboard, *m17_docs.values()])
+        for path in REQUIRED_M17_DOCS:
+            if f"]({path})" not in readme:
+                fail(f"README missing M17 docs link: {path}")
+        missing_m17_phrases = [phrase for phrase in REQUIRED_M17_PHRASES if phrase not in combined_m17_text]
+        if missing_m17_phrases:
+            fail("M17 docs missing program kickoff phrases: " + ", ".join(missing_m17_phrases))
+        missing_m17_kpis = [phrase for phrase in REQUIRED_M17_PROGRAM_KPIS if phrase not in combined_m17_text]
+        if missing_m17_kpis:
+            fail("M17 docs missing program KPIs: " + ", ".join(missing_m17_kpis))
+        missing_m17_triggers = [phrase for phrase in REQUIRED_M17_ARCHITECTURE_GATE_TRIGGERS if phrase not in combined_m17_text]
+        if missing_m17_triggers:
+            fail("M17 docs missing exact Architecture Gate triggers: " + ", ".join(missing_m17_triggers))
+        missing_m17_gates = [phrase for phrase in REQUIRED_M17_QUALITY_GATES if phrase not in combined_m17_text]
+        if missing_m17_gates:
+            fail("M17 docs missing quality gates: " + ", ".join(missing_m17_gates))
+        for phrase in [
+            "PR1 program kickoff docs",
+            "PR2 Executive KPI cards",
+            "PR3 marketing charts/evidence/confidence visualization",
+            "PR4 executive report/export improvements",
+            "PR5 M17 validation/closeout",
+        ]:
+            if phrase not in combined_m17_text:
+                fail(f"M17 docs missing PR sequence phrase: {phrase}")
+        forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m17-") else []
+        if forbidden_m17_changes:
+            fail("M17 program kickoff changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m17_changes))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -1112,6 +1223,8 @@ def main() -> None:
     print("PASS: M14 Creative Comparison discovery docs include required specification content and non-implementation boundaries")
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
+    if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
+        print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and docs-only boundary")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
