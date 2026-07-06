@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M13 Product Trust Readiness & Next Capability Gate is in review. M12 Campaign Workspace Trust & Validation is complete and merged, and M13 verifies that Product Trust, UX Clarity, Research Transparency, and Regression Stability remain GO before Creative Comparison may enter planning only. Creative Comparison implementation, additional workflows, Promotion workflow, backend endpoints, runtime APIs, product redesign, persistence, live APIs, private data, and SocialSense runtime changes remain blocked unless separately authorized.
+Status: M14 Creative Comparison Product Discovery & Specification is in progress. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 is documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, live APIs, private data, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -202,7 +202,8 @@ Status: M13 Product Trust Readiness & Next Capability Gate is in review. M12 Cam
 | Campaign Workspace MVP readiness | Complete | M10 frontend + review gates | `/campaign-workspace` provides campaign overview, journey timeline, evidence summary, executive summary, recommended next action, and workflow actions using existing fixtures only. |
 | Continuous Product Validation readiness | Complete | M11 persona dogfooding + review gates | Product Launch, Campaign Message Test, A/B Experiment, and Campaign Workspace were validated by six personas; Product Health Score is 7.4 / 10; P1/P2 findings are backlog, not implementation in M11. |
 | Campaign Workspace Trust & Validation readiness | Complete | M12 P1/P2 remediation | Product Health improved from baseline 7.4; unknown run/export states, validation feedback, result visibility, fixture labeling, `/health` clarity, and no SocialSense/MarketingSimulation changes are verified. |
-| Product Trust Readiness Gate | In review | M13 governance gate | M13 verifies M12 trust stability on `main`, audits current docs, and decides whether Creative Comparison may enter planning only. |
+| Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
+| Creative Comparison Discovery | In progress | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -378,7 +379,7 @@ Current validation suite includes:
 
 Future required:
 
-- Creative Comparison planning/implementation only if M9 receives GO and confirms Campaign Workspace can place future workflows as tools inside a campaign workspace without Architecture Gate redesign.
+- Creative Comparison discovery/specification is in progress as M14 documentation-only work.
 - Shared loading/error/empty-state conventions before async or multi-variant implementation.
 - Accessibility checks for core pages.
 - Broader workflow tests only after a future implementation milestone is explicitly authorized.
@@ -412,9 +413,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone: Creative Comparison planning only if M13 Product Trust Readiness receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review.
+Next milestone: M15 Creative Comparison Implementation Planning may be recommended only if M14 receives GO from QA, Code Review, Safety Review, Product Review, UX Review, and Research Review, and only as planning unless implementation is explicitly authorized.
 
-Creative Comparison implementation remains blocked. M13 may authorize only a separate planning milestone, not runtime work, new workflow UI, backend behavior, live APIs, persistence, SocialSense changes, or MarketingSimulation changes.
+Creative Comparison implementation remains blocked during M14. M14 may authorize only discovery/specification handoff, not runtime work, new workflow UI, backend behavior, live APIs, persistence, SocialSense changes, or MarketingSimulation changes.
 
 Future capability planning should start from:
 

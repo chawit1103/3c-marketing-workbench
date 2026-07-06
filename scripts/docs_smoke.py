@@ -149,6 +149,52 @@ M11_FORBIDDEN_CHANGED_PREFIXES = (
     "integrations/",
 )
 
+REQUIRED_M14_DOCS = [
+    "docs/product/M14_CREATIVE_COMPARISON_DISCOVERY.md",
+    "docs/product/M14_CREATIVE_COMPARISON_USER_STORIES.md",
+    "docs/product/M14_CREATIVE_COMPARISON_UX_FLOW.md",
+    "docs/product/M14_CREATIVE_COMPARISON_INFORMATION_ARCHITECTURE.md",
+    "docs/product/M14_CREATIVE_COMPARISON_ACCEPTANCE_CRITERIA.md",
+    "docs/product/M14_CREATIVE_COMPARISON_IMPLEMENTATION_PLAN.md",
+]
+
+M14_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    *REQUIRED_M14_DOCS,
+}
+
+REQUIRED_M14_PHRASES = [
+    "M14 Creative Comparison",
+    "documentation/discovery only",
+    "Problem Statement",
+    "Goals",
+    "Non-goals",
+    "Personas",
+    "User Journey",
+    "UX Flow",
+    "Navigation Flow",
+    "Information Architecture",
+    "Screen Inventory",
+    "Conceptual Data Model",
+    "Comparison Dimensions",
+    "Trust Boundaries",
+    "Transparency Rules",
+    "Research Constraints",
+    "Fixture Requirements",
+    "Error States",
+    "Empty States",
+    "Accessibility Notes",
+    "Success Metrics",
+    "Acceptance Criteria",
+    "Future API considerations",
+    "Future persistence considerations",
+    "No Creative Comparison implementation",
+]
+
 M13_ALLOWED_CHANGED_PATHS = {
     "README.md",
     "AGENTS.md",
@@ -857,6 +903,26 @@ def main() -> None:
         if forbidden_m13_changes:
             fail("M13 changed unexpected implementation paths: " + ", ".join(forbidden_m13_changes))
 
+    if current_branch_name().startswith("m14-") or "M14 Creative Comparison" in "\n".join([readme, agents, roadmap, health_dashboard]):
+        missing_m14_docs = [path for path in REQUIRED_M14_DOCS if not (ROOT / path).is_file()]
+        if missing_m14_docs:
+            fail("missing M14 Creative Comparison docs: " + ", ".join(missing_m14_docs))
+        m14_docs = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M14_DOCS}
+        combined_m14_text = "\n".join([readme, agents, roadmap, health_dashboard, *m14_docs.values()])
+        for path in REQUIRED_M14_DOCS:
+            link = "]("
+            if f"]({path})" not in readme:
+                fail(f"README missing M14 docs link: {path}")
+        missing_m14_phrases = [phrase for phrase in REQUIRED_M14_PHRASES if phrase not in combined_m14_text]
+        if missing_m14_phrases:
+            fail("M14 docs missing Creative Comparison discovery phrases: " + ", ".join(missing_m14_phrases))
+        for phrase in ["Do NOT implement Creative Comparison", "Implementation remains HOLD", "Architecture Gate: Not triggered", "documentation/discovery only"]:
+            if phrase not in combined_m14_text:
+                fail(f"M14 docs missing non-implementation boundary: {phrase}")
+        forbidden_m14_changes = [path for path in changed_paths if path not in M14_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m14-") else []
+        if forbidden_m14_changes:
+            fail("M14 changed unexpected implementation paths: " + ", ".join(forbidden_m14_changes))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -871,6 +937,7 @@ def main() -> None:
     print("PASS: required M11 Continuous Product Validation docs exist and include evidence/backlog/readiness phrases")
     print("PASS: M12 Campaign Workspace Trust & Validation docs/source include KPI and trust guard phrases")
     print("PASS: M13 Product Trust Readiness docs include capability gate and non-implementation boundaries")
+    print("PASS: M14 Creative Comparison discovery docs include required specification content and non-implementation boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")

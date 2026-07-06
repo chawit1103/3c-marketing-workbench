@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M13 Product Trust Readiness & Next Capability Gate is in review. M12 Campaign Workspace Trust & Validation is complete and merged, and M13 verifies those trust improvements remain stable on `main` before allowing Creative Comparison to enter planning. Creative Comparison remains blocked for implementation; additional workflows, backend, new marketing workflows, live APIs, product redesign, SocialSense changes, and MarketingSimulation changes remain out of scope.
+Status: M14 Creative Comparison Product Discovery & Specification is in progress. M13 Product Trust Readiness is complete and Creative Comparison Planning is GO, but Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. M14 is documentation/discovery only: no runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, Campaign Workspace redesign, SocialSense changes, or MarketingSimulation changes.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -34,12 +34,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M11:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M14:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M11 must not modify SocialSense or MarketingSimulation.
+M14 must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -145,6 +145,12 @@ Product documentation map:
 - [M11 Executive Product Review](docs/product/M11_EXECUTIVE_PRODUCT_REVIEW.md)
 - [M12 Campaign Workspace Trust & Validation Report](docs/product/M12_TRUST_VALIDATION_REPORT.md)
 - [M13 Product Trust Readiness Gate](docs/product/M13_PRODUCT_TRUST_READINESS_GATE.md)
+- [M14 Creative Comparison Discovery](docs/product/M14_CREATIVE_COMPARISON_DISCOVERY.md)
+- [M14 Creative Comparison User Stories](docs/product/M14_CREATIVE_COMPARISON_USER_STORIES.md)
+- [M14 Creative Comparison UX Flow](docs/product/M14_CREATIVE_COMPARISON_UX_FLOW.md)
+- [M14 Creative Comparison Information Architecture](docs/product/M14_CREATIVE_COMPARISON_INFORMATION_ARCHITECTURE.md)
+- [M14 Creative Comparison Acceptance Criteria](docs/product/M14_CREATIVE_COMPARISON_ACCEPTANCE_CRITERIA.md)
+- [M14 Creative Comparison Implementation Plan](docs/product/M14_CREATIVE_COMPARISON_IMPLEMENTATION_PLAN.md)
 - [UX Friction Backlog](docs/product/UX_FRICTION_BACKLOG.md)
 - [SocialSense Integration](docs/product/SOCIALSENSE_INTEGRATION.md)
 - [Agent Instructions](AGENTS.md)
