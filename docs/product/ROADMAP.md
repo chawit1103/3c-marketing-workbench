@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M14 Creative Comparison Product Discovery & Specification is complete and merged. PR1-PR4 and M2-M14 are complete; M14 produced Creative Comparison discovery/specification documentation only. Creative Comparison Planning is GO after M13; Creative Comparison Implementation remains HOLD. Creative Comparison remains blocked for implementation. Runtime behavior, frontend components, backend endpoints, APIs, persistence, auth, live APIs, SocialSense changes, and MarketingSimulation changes remain not implemented.
+Status: M15 Creative Comparison Vertical Slice is in product build mode. PR1-PR4 and M2-M14 are complete; M15 implements Creative Comparison as the fourth usable fixture-backed workflow using existing Workflow Pattern, Campaign Domain, Experiment Framework, Campaign Workspace, Design System, dashboard, export review, safety labels, and product adapter boundary. No backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes are introduced.
 
 ## Program
 
@@ -235,6 +235,15 @@ Acceptance criteria:
 - Architecture Gate remained not triggered.
 - M14 completed after validation, QA, Code Review, Safety Review, Product Review, UX Review, Research Review, PR merge, post-merge KPI commit, and full main validation.
 
+### M15: Creative Comparison Vertical Slice — Current branch
+
+- Implements `/workbench/creative-comparison` as a text-only Creative A versus Creative B workflow.
+- Reuses existing workbench route pattern, workflow steps, dashboard, executive summary, export review, safety labels, and product-owned SocialSense adapter boundary.
+- Adds deterministic offline fixture generation through `scripts/generate_creative_comparison_fixture.py` using the closest existing public adapter path, `run_message_comparison`, because no creative-specific SocialSense runtime scenario is exposed.
+- Reuses `/runs/:runId` and `/exports/:runId` for Creative Comparison dashboards and export review.
+- Preserves primary navigation; Creative Comparison is exposed through Home/Workbench/Campaign Workspace flow.
+- Architecture Gate remains not triggered unless implementation requires workflow/domain/framework/workspace/design-system/SocialSense/backend redesign.
+
 ### Future: Governance and implementation readiness review
 
 - Define private pilot criteria.
@@ -271,7 +280,8 @@ Do not implement until separate review:
 - M12 Campaign Workspace Trust & Validation is marked complete and merged.
 - M13 Product Trust Readiness & Next Capability Gate is marked complete and Creative Comparison Planning is GO.
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
-- Creative Comparison implementation remains blocked until a separate planning milestone is completed and explicitly approved.
+- M15 Creative Comparison Vertical Slice is current and must pass product build validation and all review gates before merge.
+- Additional workflows beyond Creative Comparison remain blocked until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.

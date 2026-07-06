@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
+import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
 import productLaunchFixture from './product/fixtures/productLaunchResult.json';
 
 const audiencePresets = [
@@ -14,13 +15,17 @@ const audiencePresets = [
 ];
 const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
 
-type WorkflowKey = 'productLaunch' | 'campaignMessageTest' | 'abExperiment';
+type WorkflowKey = 'productLaunch' | 'campaignMessageTest' | 'abExperiment' | 'creativeComparison';
 
 type LaunchForm = {
   brand: string;
   campaignMessage: string;
   variantA: string;
   variantB: string;
+  creativeATitle: string;
+  creativeADescription: string;
+  creativeBTitle: string;
+  creativeBDescription: string;
   offer: string;
   keyMessage: string;
   tone: string;
@@ -38,7 +43,7 @@ type FixtureCard = {
 
 type ComparisonFixtureCard = FixtureCard;
 
-type ReferenceFixture = typeof productLaunchFixture | typeof campaignMessageFixture | typeof abExperimentFixture;
+type ReferenceFixture = typeof productLaunchFixture | typeof campaignMessageFixture | typeof abExperimentFixture | typeof creativeComparisonFixture;
 
 type WorkflowConfig = {
   key: WorkflowKey;
@@ -58,6 +63,10 @@ const productLaunchDefaultForm: LaunchForm = {
   campaignMessage: productLaunchFixture.sampleInput.campaign_message,
   variantA: '',
   variantB: '',
+  creativeATitle: '',
+  creativeADescription: '',
+  creativeBTitle: '',
+  creativeBDescription: '',
   offer: productLaunchFixture.sampleInput.offer,
   keyMessage: productLaunchFixture.sampleInput.key_message,
   tone: 'Helpful and practical',
@@ -72,6 +81,10 @@ const campaignMessageDefaultForm: LaunchForm = {
   campaignMessage: campaignMessageFixture.sampleInput.campaign_message,
   variantA: '',
   variantB: '',
+  creativeATitle: '',
+  creativeADescription: '',
+  creativeBTitle: '',
+  creativeBDescription: '',
   offer: '',
   keyMessage: campaignMessageFixture.sampleInput.key_message,
   tone: campaignMessageFixture.sampleInput.tone,
@@ -86,6 +99,10 @@ const abExperimentDefaultForm: LaunchForm = {
   campaignMessage: abExperimentFixture.sampleInput.campaign_message,
   variantA: abExperimentFixture.sampleInput.variant_a,
   variantB: abExperimentFixture.sampleInput.variant_b,
+  creativeATitle: '',
+  creativeADescription: '',
+  creativeBTitle: '',
+  creativeBDescription: '',
   offer: '',
   keyMessage: abExperimentFixture.sampleInput.key_message,
   tone: abExperimentFixture.sampleInput.tone,
@@ -93,6 +110,24 @@ const abExperimentDefaultForm: LaunchForm = {
   context: abExperimentFixture.sampleInput.context,
   audiences: abExperimentFixture.sampleInput.audiences,
   platforms: abExperimentFixture.sampleInput.platforms,
+};
+
+const creativeComparisonDefaultForm: LaunchForm = {
+  brand: creativeComparisonFixture.sampleInput.brand,
+  campaignMessage: creativeComparisonFixture.sampleInput.campaign_message,
+  variantA: '',
+  variantB: '',
+  creativeATitle: creativeComparisonFixture.sampleInput.creative_a_title,
+  creativeADescription: creativeComparisonFixture.sampleInput.creative_a_description,
+  creativeBTitle: creativeComparisonFixture.sampleInput.creative_b_title,
+  creativeBDescription: creativeComparisonFixture.sampleInput.creative_b_description,
+  offer: '',
+  keyMessage: creativeComparisonFixture.sampleInput.key_message,
+  tone: creativeComparisonFixture.sampleInput.tone,
+  claim: creativeComparisonFixture.sampleInput.claim,
+  context: creativeComparisonFixture.sampleInput.context,
+  audiences: creativeComparisonFixture.sampleInput.audiences,
+  platforms: creativeComparisonFixture.sampleInput.platforms,
 };
 
 const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
@@ -135,6 +170,19 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
     fixture: abExperimentFixture,
     workflowSteps: ['Variant A', 'Variant B', 'Review', 'Run', 'Comparison Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
   },
+  creativeComparison: {
+    key: 'creativeComparison',
+    objective: 'Creative Comparison',
+    modeLabel: 'Creative Comparison mode',
+    heading: 'Creative Comparison',
+    shortDescription:
+      'Compare two text-only creative concepts with the approved workflow, dashboard, export review, and safety boundaries. No image generation or uploads are used.',
+    formLabel: 'Creative Comparison setup',
+    objectiveDescription: 'Review two text-only creative concepts with shared audience, platform, and safety assumptions.',
+    defaultForm: creativeComparisonDefaultForm,
+    fixture: creativeComparisonFixture,
+    workflowSteps: ['Creative A', 'Creative B', 'Review', 'Run', 'Creative Comparison Dashboard', 'Executive Summary', 'Export Review', 'Recommended Next Action'],
+  },
 };
 
 export function HomeView() {
@@ -152,6 +200,7 @@ export function HomeView() {
           <a className="button button-primary" href="/workbench">Open guided workbench</a>
           <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
           <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
+          <a className="button button-secondary" href="/workbench/creative-comparison">Open Creative Comparison</a>
           <a className="button button-secondary" href="/health">View product health</a>
         </div>
       </div>
@@ -171,6 +220,11 @@ export function HomeView() {
           description="A third reference workflow reuses Experiment Framework, guided inputs, comparison dashboard, export review, and safety labels."
           status="ready"
         />
+        <ObjectiveCard
+          title="Creative Comparison workflow"
+          description="A fourth usable workflow compares text-only creative concepts with the same guided pattern, dashboard, export review, and safety labels."
+          status="ready"
+        />
       </div>
     </section>
   );
@@ -180,6 +234,7 @@ const campaignWorkspaceRuns = [
   { config: workflowConfigs.productLaunch, href: `/runs/${productLaunchFixture.runId}`, stage: 'Campaign Definition' },
   { config: workflowConfigs.campaignMessageTest, href: `/runs/${campaignMessageFixture.runId}`, stage: 'Campaign Message Test' },
   { config: workflowConfigs.abExperiment, href: `/runs/${abExperimentFixture.runId}`, stage: 'A/B Experiment' },
+  { config: workflowConfigs.creativeComparison, href: `/runs/${creativeComparisonFixture.runId}`, stage: 'Creative Comparison' },
 ];
 
 const campaignJourneyStages = [
@@ -199,6 +254,11 @@ const campaignJourneyStages = [
     detail: 'A/B decision frame is ready, with no production winner selected.',
   },
   {
+    stage: 'Creative Comparison',
+    status: 'Completed',
+    detail: 'Text-only creative comparison evidence is ready, with no production winner selected.',
+  },
+  {
     stage: 'Executive Decision',
     status: 'Current',
     detail: 'Review confidence, risks, gaps, and blocked actions before handoff.',
@@ -206,24 +266,24 @@ const campaignJourneyStages = [
   {
     stage: 'Export/Handoff',
     status: 'Next',
-    detail: `Handoff readiness: ${abExperimentFixture.exports.readiness}.`,
+    detail: `Handoff readiness: ${creativeComparisonFixture.exports.readiness}.`,
   },
 ];
 
 const campaignEvidenceGaps = [
-  abExperimentFixture.reviewMetadata.assumptions.find((item) => item.includes('No approved field data')),
-  ...abExperimentFixture.reviewMetadata.evidenceGaps,
+  creativeComparisonFixture.reviewMetadata.assumptions.find((item) => item.includes('Creative Comparison MVP is text-only')),
+  ...creativeComparisonFixture.reviewMetadata.evidenceGaps,
 ].filter((item): item is string => Boolean(item));
 
 const campaignLimitationsRisks = Array.from(new Set([
-  ...abExperimentFixture.reviewMetadata.limitations.slice(0, 2),
-  ...abExperimentFixture.risksCaveats.slice(0, 2),
+  ...creativeComparisonFixture.reviewMetadata.limitations.slice(0, 2),
+  ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
 
 export function CampaignWorkspaceView() {
   const campaignName = productLaunchFixture.sampleInput.brand;
   const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
-  const recommendedAction = abExperimentFixture.recommendedNextTest;
+  const recommendedAction = creativeComparisonFixture.recommendedNextTest;
 
   return (
     <section className="view-stack" aria-labelledby="campaign-workspace-title">
@@ -232,11 +292,11 @@ export function CampaignWorkspaceView() {
         <h1 id="campaign-workspace-title">Campaign Workspace</h1>
         <p>
           Manage one campaign from definition through message testing, A/B evidence review,
-          executive decision, and handoff using the existing offline workflow results.
+          Creative Comparison, executive decision, and handoff using the existing offline workflow results.
         </p>
         <div className="button-row">
-          <a className="button button-primary" href={`/exports/${abExperimentFixture.runId}`}>Open executive handoff review</a>
-          <a className="button button-secondary" href={`/runs/${abExperimentFixture.runId}`}>Review A/B evidence</a>
+          <a className="button button-primary" href={`/exports/${creativeComparisonFixture.runId}`}>Open executive handoff review</a>
+          <a className="button button-secondary" href={`/runs/${creativeComparisonFixture.runId}`}>Review creative evidence</a>
         </div>
       </div>
 
@@ -264,7 +324,7 @@ export function CampaignWorkspaceView() {
         <section className="card next-action-card" aria-label="Current Journey Stage">
           <p className="eyebrow">Current Journey Stage</p>
           <h2>Executive Decision</h2>
-          <p>Definition, message readiness, and A/B comparison evidence are ready for human review.</p>
+          <p>Definition, message readiness, A/B comparison evidence, and Creative Comparison evidence are ready for human review.</p>
           <section aria-label="Recommended Next Action">
             <p className="eyebrow">Recommended Next Action</p>
             <strong>{recommendedAction}</strong>
@@ -317,17 +377,17 @@ export function CampaignWorkspaceView() {
           <div className="evidence-critical-grid">
             <section className="evidence-critical-card" aria-label="Decision evidence quality">
               <p className="eyebrow">Decision evidence quality</p>
-              <h3>{abExperimentFixture.comparisonMethod.decisionStatus}</h3>
-              <p>{abExperimentFixture.comparisonMethod.rationale}</p>
-              <p><strong>Confidence:</strong> {abExperimentFixture.comparisonMethod.confidenceLevel}</p>
+              <h3>{creativeComparisonFixture.comparisonMethod.decisionStatus}</h3>
+              <p>{creativeComparisonFixture.comparisonMethod.rationale}</p>
+              <p><strong>Confidence:</strong> {creativeComparisonFixture.comparisonMethod.confidenceLevel}</p>
             </section>
             <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
             <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
-            <InsightList title="Blocked actions" items={abExperimentFixture.comparisonMethod.blockedActions} />
+            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} />
             <section className="evidence-critical-card" aria-label="Handoff readiness">
               <p className="eyebrow">Handoff readiness</p>
-              <h3>{abExperimentFixture.exports.readiness}</h3>
-              <p>{abExperimentFixture.exports.status}</p>
+              <h3>{creativeComparisonFixture.exports.readiness}</h3>
+              <p>{creativeComparisonFixture.exports.status}</p>
               <p className="help-text">Open executive handoff review before using this directional evidence externally.</p>
             </section>
           </div>
@@ -339,8 +399,8 @@ export function CampaignWorkspaceView() {
           <p className="eyebrow">Executive Summary</p>
           <h2>Campaign status and next recommended action</h2>
           <p>
-            {campaignName} has a reviewed campaign definition, a message-readiness signal, and an
-            A/B comparison frame. Treat the evidence as directional planning input only.
+            {campaignName} has a reviewed campaign definition, a message-readiness signal, an
+            A/B comparison frame, and Creative Comparison evidence. Treat the evidence as directional planning input only.
           </p>
           <p><strong>Recommended next action:</strong> {recommendedAction}</p>
         </section>
@@ -352,6 +412,7 @@ export function CampaignWorkspaceView() {
             <a className="button button-secondary" href="/workbench">Open Product Launch</a>
             <a className="button button-secondary" href="/workbench/campaign-message-test">Open Campaign Message Test</a>
             <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
+            <a className="button button-secondary" href="/workbench/creative-comparison">Open Creative Comparison</a>
           </div>
           <p className="help-text">Only approved existing workflows are available in this MVP.</p>
         </section>
@@ -476,6 +537,18 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
                 <textarea id="variant-b" value={form.variantB} onChange={(event) => updateField('variantB', event.target.value)} rows={3} />
               </>
             ) : null}
+            {config.key === 'creativeComparison' ? (
+              <>
+                <label htmlFor="creative-a-title">Creative A concept title</label>
+                <input id="creative-a-title" value={form.creativeATitle} onChange={(event) => updateField('creativeATitle', event.target.value)} />
+                <label htmlFor="creative-a-description">Creative A visual idea / copy description</label>
+                <textarea id="creative-a-description" value={form.creativeADescription} onChange={(event) => updateField('creativeADescription', event.target.value)} rows={3} />
+                <label htmlFor="creative-b-title">Creative B concept title</label>
+                <input id="creative-b-title" value={form.creativeBTitle} onChange={(event) => updateField('creativeBTitle', event.target.value)} />
+                <label htmlFor="creative-b-description">Creative B visual idea / copy description</label>
+                <textarea id="creative-b-description" value={form.creativeBDescription} onChange={(event) => updateField('creativeBDescription', event.target.value)} rows={3} />
+              </>
+            ) : null}
             {config.key === 'productLaunch' ? (
               <>
                 <label htmlFor="offer">Offer/Promotion</label>
@@ -565,6 +638,14 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
                 <dd>{form.variantA || 'Required'}</dd>
                 <dt>Variant B</dt>
                 <dd>{form.variantB || 'Required'}</dd>
+              </>
+            ) : null}
+            {config.key === 'creativeComparison' ? (
+              <>
+                <dt>Creative A</dt>
+                <dd>{form.creativeATitle || 'Required'} — {form.creativeADescription || 'Required'}</dd>
+                <dt>Creative B</dt>
+                <dd>{form.creativeBTitle || 'Required'} — {form.creativeBDescription || 'Required'}</dd>
               </>
             ) : null}
             <dt>Audience</dt>
@@ -695,6 +776,10 @@ function ReferenceResults({
       ['Campaign Message', form.campaignMessage],
       ...(form.variantA ? [['Variant A', form.variantA]] : []),
       ...(form.variantB ? [['Variant B', form.variantB]] : []),
+      ...(form.creativeATitle ? [['Creative A concept title', form.creativeATitle]] : []),
+      ...(form.creativeADescription ? [['Creative A visual idea / copy description', form.creativeADescription]] : []),
+      ...(form.creativeBTitle ? [['Creative B concept title', form.creativeBTitle]] : []),
+      ...(form.creativeBDescription ? [['Creative B visual idea / copy description', form.creativeBDescription]] : []),
       ...(form.offer ? [['Offer/Promotion', form.offer]] : []),
       ['Key Message', form.keyMessage],
       ...(form.tone ? [['Tone', form.tone]] : []),
@@ -743,7 +828,33 @@ function ReferenceResults({
 
       <FixtureTransparency />
 
-      {'comparisonCards' in fixture ? (
+      {'creativeSummaries' in fixture && 'comparisonDashboard' in fixture ? (
+        <section className="card" aria-label="Creative comparison dashboard">
+          <p className="eyebrow">Creative Comparison Dashboard</p>
+          <h3>Creative Comparison Dashboard</h3>
+          <div className="grid two-col align-start">
+            {fixture.creativeSummaries.map((card: FixtureCard) => (
+              <MetricCard key={card.title} card={card} />
+            ))}
+          </div>
+          <div className="grid two-col align-start">
+            {fixture.comparisonDashboard.map((item: { title: string; detail: string }) => (
+              <section className="evidence-critical-card" key={item.title}>
+                <p className="eyebrow">Review signal</p>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </section>
+            ))}
+          </div>
+          {'comparisonMethod' in fixture ? (
+            <p className="help-text">
+              {fixture.comparisonMethod.decisionStatus}: {fixture.comparisonMethod.rationale} Confidence: {fixture.comparisonMethod.confidenceLevel}.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
+      {'comparisonCards' in fixture && !('creativeSummaries' in fixture) ? (
         <section className="card" aria-label="Variant comparison">
           <p className="eyebrow">A/B comparison</p>
           <h3>Variant decision frame</h3>
@@ -904,7 +1015,16 @@ function validateForm(form: LaunchForm, workflow: WorkflowKey): string[] {
   if (workflow === 'abExperiment' && (!form.variantA.trim() || !form.variantB.trim())) {
     errors.push('Both A/B variants are required because the comparison needs two visible alternatives. Add Variant A and Variant B copy to continue.');
   }
-  if (workflow !== 'abExperiment' && (form.variantA || form.variantB) && (!form.variantA.trim() || !form.variantB.trim())) {
+  if (workflow === 'creativeComparison' && (!form.creativeATitle.trim() || !form.creativeBTitle.trim())) {
+    errors.push('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
+  }
+  if (workflow === 'creativeComparison' && (!form.creativeADescription.trim() || !form.creativeBDescription.trim())) {
+    errors.push('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+  }
+  if (workflow === 'creativeComparison' && !form.keyMessage.trim()) {
+    errors.push('Key Message is required because message clarity must be reviewed against an explicit message.');
+  }
+  if (workflow !== 'abExperiment' && workflow !== 'creativeComparison' && (form.variantA || form.variantB) && (!form.variantA.trim() || !form.variantB.trim())) {
     errors.push('Both A/B variants are required because partial variants would make comparison context unclear. Add both variants or leave both blank.');
   }
   if (form.platforms.length === 0) {
@@ -922,6 +1042,9 @@ function configForRunId(runId?: string): WorkflowConfig | undefined {
   }
   if (runId === abExperimentFixture.runId) {
     return workflowConfigs.abExperiment;
+  }
+  if (runId === creativeComparisonFixture.runId) {
+    return workflowConfigs.creativeComparison;
   }
   return undefined;
 }

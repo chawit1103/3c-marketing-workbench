@@ -5,9 +5,9 @@ Repository guidance for agents working in 3C Marketing Workbench.
 ## Purpose
 
 - 3C Marketing Workbench is the official product app for executive marketing scenario work.
-- Current branch scope: M14 Creative Comparison Product Discovery & Specification complete and merged.
-- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, and M13 Product Trust Readiness Gate are complete.
-- M14 produced Creative Comparison discovery/specification docs only. Creative Comparison Planning is GO, but Implementation remains HOLD. Do NOT implement Creative Comparison. Do not create runtime/source files, add workflows, redesign Campaign Workspace, add backend behavior, APIs, live APIs, private data, persistence, auth, credentials, or SocialSense/MarketingSimulation changes.
+- Current branch scope: M15 Creative Comparison Vertical Slice, product build mode.
+- PR1 product architecture, PR2 frontend shell, PR3 SocialSense public adapter smoke, PR4 Product Launch vertical slice, M2 workflow-pattern stabilization, M3 Campaign Domain Planning, M4 Information Architecture & Design System Review, M5 Campaign Message Test Reference Workflow, M6 Experiment Framework Planning, M7 A/B Experiment Reference Workflow, M8 Marketing Journey Framework, M9 Campaign Workspace Foundation, M10 Campaign Workspace MVP, M11 Continuous Product Validation, M12 Campaign Workspace Trust & Validation, M13 Product Trust Readiness Gate, and M14 Creative Comparison discovery/specification are complete.
+- M15 implements Creative Comparison as the fourth usable fixture-backed workflow by reusing existing workflow, campaign, experiment, workspace, design-system, dashboard, export-review, safety-label, and product adapter patterns. Do not redesign architecture, change SocialSense, change MarketingSimulation, add backend endpoints, persistence, auth, live APIs, credentials, CRM/customer data, PII/private data, production claims, persuasion optimization, microtargeting, or conversion guarantees.
 
 ## Repository boundaries
 
@@ -17,7 +17,7 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - SocialSense is a dependency boundary: 3C may use only public SDK/runtime surfaces.
 - Allowed SocialSense import for the product adapter: `from socialsense import load_domain_pack`.
 - Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
-- Product Launch, Campaign Message Test, and A/B Experiment fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
+- Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - Do not copy UI, routes, state, CSS, API helpers, architecture, or internals from SocialSense or MarketingSimulation.
 - Keep M11 independent from backend services, live data sources, authentication, credentials, additional workflows, Creative Comparison, persistence, workspace storage, production campaign systems, and product redesign.
 
@@ -37,7 +37,7 @@ Do not add or imply:
 - conversion guarantees;
 - production campaign claims.
 
-Keep all M14 language fixture/offline-compatible, synthetic, aggregate-only, non-production, documentation/discovery-only, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
+Keep all M15 language fixture/offline-compatible, synthetic, aggregate-only, non-production, product-build, and human-review oriented. Visible UI should use user-facing executive language; avoid internal platform terms as primary UI copy.
 
 ## M6 Experiment Framework planning expectations
 
@@ -84,6 +84,25 @@ Required planning artifacts:
 - `docs/product/CAMPAIGN_WORKSPACE_PLACEMENT.md`.
 
 M9 must keep Creative Comparison, additional workflows, frontend implementation, backend behavior, runtime functionality, persistence, workspace storage, live APIs, and SocialSense changes out of scope.
+
+## M15 validation commands
+
+Run focused validation before handoff:
+
+```bash
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/generate_creative_comparison_fixture.py
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+python3 scripts/docs_smoke.py
+git diff --check HEAD
+python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+git status --short --branch
+```
+
+M15 may add the Creative Comparison route/workflow, deterministic offline fixture, generator, tests, closeout report, README/roadmap/product health/AGENTS docs, and docs smoke updates. Do not add backend/server/API/auth/credential files, persistence, live APIs, SocialSense changes, MarketingSimulation changes, production claims, persuasion optimization, microtargeting, or conversion guarantees.
 
 ## M14 validation commands
 
