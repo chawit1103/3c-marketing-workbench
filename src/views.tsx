@@ -271,13 +271,13 @@ const campaignJourneyStages = [
 ];
 
 const campaignEvidenceGaps = [
-  abExperimentFixture.reviewMetadata.assumptions.find((item) => item.includes('No approved field data')),
-  ...abExperimentFixture.reviewMetadata.evidenceGaps,
+  creativeComparisonFixture.reviewMetadata.assumptions.find((item) => item.includes('Creative Comparison MVP is text-only')),
+  ...creativeComparisonFixture.reviewMetadata.evidenceGaps,
 ].filter((item): item is string => Boolean(item));
 
 const campaignLimitationsRisks = Array.from(new Set([
-  ...abExperimentFixture.reviewMetadata.limitations.slice(0, 2),
-  ...abExperimentFixture.risksCaveats.slice(0, 2),
+  ...creativeComparisonFixture.reviewMetadata.limitations.slice(0, 2),
+  ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
 
 export function CampaignWorkspaceView() {
@@ -292,7 +292,7 @@ export function CampaignWorkspaceView() {
         <h1 id="campaign-workspace-title">Campaign Workspace</h1>
         <p>
           Manage one campaign from definition through message testing, A/B evidence review,
-          executive decision, and handoff using the existing offline workflow results.
+          Creative Comparison, executive decision, and handoff using the existing offline workflow results.
         </p>
         <div className="button-row">
           <a className="button button-primary" href={`/exports/${creativeComparisonFixture.runId}`}>Open executive handoff review</a>
@@ -324,7 +324,7 @@ export function CampaignWorkspaceView() {
         <section className="card next-action-card" aria-label="Current Journey Stage">
           <p className="eyebrow">Current Journey Stage</p>
           <h2>Executive Decision</h2>
-          <p>Definition, message readiness, and A/B comparison evidence are ready for human review.</p>
+          <p>Definition, message readiness, A/B comparison evidence, and Creative Comparison evidence are ready for human review.</p>
           <section aria-label="Recommended Next Action">
             <p className="eyebrow">Recommended Next Action</p>
             <strong>{recommendedAction}</strong>
@@ -377,17 +377,17 @@ export function CampaignWorkspaceView() {
           <div className="evidence-critical-grid">
             <section className="evidence-critical-card" aria-label="Decision evidence quality">
               <p className="eyebrow">Decision evidence quality</p>
-              <h3>{abExperimentFixture.comparisonMethod.decisionStatus}</h3>
-              <p>{abExperimentFixture.comparisonMethod.rationale}</p>
-              <p><strong>Confidence:</strong> {abExperimentFixture.comparisonMethod.confidenceLevel}</p>
+              <h3>{creativeComparisonFixture.comparisonMethod.decisionStatus}</h3>
+              <p>{creativeComparisonFixture.comparisonMethod.rationale}</p>
+              <p><strong>Confidence:</strong> {creativeComparisonFixture.comparisonMethod.confidenceLevel}</p>
             </section>
             <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
             <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
-            <InsightList title="Blocked actions" items={abExperimentFixture.comparisonMethod.blockedActions} />
+            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} />
             <section className="evidence-critical-card" aria-label="Handoff readiness">
               <p className="eyebrow">Handoff readiness</p>
-              <h3>{abExperimentFixture.exports.readiness}</h3>
-              <p>{abExperimentFixture.exports.status}</p>
+              <h3>{creativeComparisonFixture.exports.readiness}</h3>
+              <p>{creativeComparisonFixture.exports.status}</p>
               <p className="help-text">Open executive handoff review before using this directional evidence externally.</p>
             </section>
           </div>
@@ -399,8 +399,8 @@ export function CampaignWorkspaceView() {
           <p className="eyebrow">Executive Summary</p>
           <h2>Campaign status and next recommended action</h2>
           <p>
-            {campaignName} has a reviewed campaign definition, a message-readiness signal, and an
-            A/B comparison frame. Treat the evidence as directional planning input only.
+            {campaignName} has a reviewed campaign definition, a message-readiness signal, an
+            A/B comparison frame, and Creative Comparison evidence. Treat the evidence as directional planning input only.
           </p>
           <p><strong>Recommended next action:</strong> {recommendedAction}</p>
         </section>
@@ -854,7 +854,7 @@ function ReferenceResults({
         </section>
       ) : null}
 
-      {'comparisonCards' in fixture ? (
+      {'comparisonCards' in fixture && !('creativeSummaries' in fixture) ? (
         <section className="card" aria-label="Variant comparison">
           <p className="eyebrow">A/B comparison</p>
           <h3>Variant decision frame</h3>

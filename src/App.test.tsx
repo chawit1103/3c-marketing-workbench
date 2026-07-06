@@ -159,6 +159,8 @@ describe('Creative Comparison workflow', () => {
     }
     expect(dashboard).toHaveTextContent('No winner selected');
     expect(dashboard).toHaveTextContent('inconclusive');
+    expect(screen.queryByRole('heading', { name: 'Variant decision frame' })).not.toBeInTheDocument();
+    expect(screen.queryByText('A/B comparison')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Creative Comparison executive summary' })).toBeInTheDocument();
     expect(screen.getByText('Open export-readiness preview')).toHaveAttribute('href', '/exports/3c-m15-creative-comparison-reference-workflow');
     expect(document.body.textContent).toContain('Safety: offline fixture for planning only');
@@ -183,7 +185,8 @@ describe('Campaign Workspace MVP', () => {
     expect(screen.getByRole('heading', { name: 'Campaign Workspace' })).toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Campaign Overview' })).toHaveTextContent('Nimbus Go');
     expect(screen.getByRole('region', { name: 'Current Journey Stage' })).toHaveTextContent('Executive Decision');
-    expect(screen.getByRole('region', { name: 'Executive Summary' })).toHaveTextContent('next recommended action');
+    expect(screen.getByRole('region', { name: 'Current Journey Stage' })).toHaveTextContent('Creative Comparison evidence');
+    expect(screen.getByRole('region', { name: 'Executive Summary' })).toHaveTextContent('Creative Comparison evidence');
 
     const primaryAction = screen.getByRole('link', { name: 'Open executive handoff review' });
     expect(primaryAction).toHaveClass('button-primary');
@@ -217,7 +220,7 @@ describe('Campaign Workspace MVP', () => {
     expect(evidence).toHaveTextContent('Decision evidence quality');
     expect(evidence).toHaveTextContent('Low directional confidence');
     expect(evidence).toHaveTextContent('Evidence gaps');
-    expect(evidence).toHaveTextContent('No approved field data or backtest evidence is attached to this bridge output.');
+    expect(evidence).toHaveTextContent('Creative Comparison MVP is text-only');
     expect(evidence).toHaveTextContent('Limitations / risks');
     expect(evidence).toHaveTextContent('Blocked actions');
     expect(evidence).toHaveTextContent('winner selection');
