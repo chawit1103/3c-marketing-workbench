@@ -98,10 +98,16 @@ describe('Campaign Workspace MVP', () => {
     expect(screen.getByRole('region', { name: 'Current Journey Stage' })).toHaveTextContent('Executive Decision');
     expect(screen.getByRole('region', { name: 'Executive Summary' })).toHaveTextContent('next recommended action');
 
+    const primaryAction = screen.getByRole('link', { name: 'Open executive handoff review' });
+    expect(primaryAction).toHaveClass('button-primary');
+    expect(primaryAction).toHaveAttribute('href', '/exports/3c-m7-ab-experiment-reference-workflow');
+    expect(screen.queryByRole('link', { name: /Continue next workflow/i })).not.toBeInTheDocument();
+
     const journey = screen.getByRole('region', { name: 'Campaign journey timeline' });
-    for (const stage of ['Campaign Definition', 'Campaign Message Test', 'A/B Experiment', 'Executive Decision', 'Export/Handoff']) {
+    for (const stage of ['Completed: Campaign Definition', 'Completed: Campaign Message Test', 'Completed: A/B Experiment', 'Current: Executive Decision', 'Next: Export/Handoff']) {
       expect(journey).toHaveTextContent(stage);
     }
+    expect(journey).toHaveTextContent('Handoff readiness: Ready for human review');
   });
 
   it('aggregates recent runs and evidence from existing fixtures only', () => {
@@ -120,6 +126,15 @@ describe('Campaign Workspace MVP', () => {
     ]) {
       expect(evidence).toHaveTextContent(fixtureHeadline);
     }
+    expect(evidence).toHaveTextContent('Decision evidence quality');
+    expect(evidence).toHaveTextContent('Low directional confidence');
+    expect(evidence).toHaveTextContent('Evidence gaps');
+    expect(evidence).toHaveTextContent('No approved field data or backtest evidence is attached to this bridge output.');
+    expect(evidence).toHaveTextContent('Limitations / risks');
+    expect(evidence).toHaveTextContent('Blocked actions');
+    expect(evidence).toHaveTextContent('winner selection');
+    expect(evidence).toHaveTextContent('Handoff readiness');
+    expect(evidence).toHaveTextContent('Ready for human review');
     expect(evidence.textContent).not.toContain('Creative Comparison');
     expect(evidence.textContent?.toLowerCase()).not.toContain('socialsense');
   });

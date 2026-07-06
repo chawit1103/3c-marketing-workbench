@@ -183,12 +183,42 @@ const campaignWorkspaceRuns = [
 ];
 
 const campaignJourneyStages = [
-  'Campaign Definition',
-  'Campaign Message Test',
-  'A/B Experiment',
-  'Executive Decision',
-  'Export/Handoff',
+  {
+    stage: 'Campaign Definition',
+    status: 'Completed',
+    detail: 'Product-launch assumptions and executive summary are ready for review.',
+  },
+  {
+    stage: 'Campaign Message Test',
+    status: 'Completed',
+    detail: 'Message-readiness evidence is available from the approved fixture.',
+  },
+  {
+    stage: 'A/B Experiment',
+    status: 'Completed',
+    detail: 'A/B decision frame is ready, with no production winner selected.',
+  },
+  {
+    stage: 'Executive Decision',
+    status: 'Current',
+    detail: 'Review confidence, risks, gaps, and blocked actions before handoff.',
+  },
+  {
+    stage: 'Export/Handoff',
+    status: 'Next',
+    detail: `Handoff readiness: ${abExperimentFixture.exports.readiness}.`,
+  },
 ];
+
+const campaignEvidenceGaps = [
+  abExperimentFixture.reviewMetadata.assumptions.find((item) => item.includes('No approved field data')),
+  ...abExperimentFixture.reviewMetadata.evidenceGaps,
+].filter((item): item is string => Boolean(item));
+
+const campaignLimitationsRisks = Array.from(new Set([
+  ...abExperimentFixture.reviewMetadata.limitations.slice(0, 2),
+  ...abExperimentFixture.risksCaveats.slice(0, 2),
+]));
 
 export function CampaignWorkspaceView() {
   const campaignName = productLaunchFixture.sampleInput.brand;
@@ -205,8 +235,8 @@ export function CampaignWorkspaceView() {
           executive decision, and handoff using the existing offline workflow results.
         </p>
         <div className="button-row">
-          <a className="button button-primary" href="/workbench/campaign-message-test">Continue next workflow</a>
-          <a className="button button-secondary" href={`/exports/${abExperimentFixture.runId}`}>Open executive handoff</a>
+          <a className="button button-primary" href={`/exports/${abExperimentFixture.runId}`}>Open executive handoff review</a>
+          <a className="button button-secondary" href={`/runs/${abExperimentFixture.runId}`}>Review A/B evidence</a>
         </div>
       </div>
 
@@ -245,10 +275,13 @@ export function CampaignWorkspaceView() {
       <section className="card" aria-label="Campaign journey timeline">
         <p className="eyebrow">Journey timeline</p>
         <ol className="step-list workflow-step-list journey-timeline">
-          {campaignJourneyStages.map((stage, index) => (
-            <li className="step-card" key={stage}>
+          {campaignJourneyStages.map(({ stage, status, detail }, index) => (
+            <li className={`step-card journey-step journey-step-${status.toLowerCase()}`} key={stage}>
               <span className="step-number">{index + 1}</span>
-              <span>{stage}</span>
+              <div>
+                <strong>{status}: {stage}</strong>
+                <p>{detail}</p>
+              </div>
             </li>
           ))}
         </ol>
@@ -277,8 +310,26 @@ export function CampaignWorkspaceView() {
               <article className="evidence-item" key={config.key}>
                 <h3>{config.fixture.summary.headline}</h3>
                 <p>{config.fixture.exports.executiveSummaryPreview}</p>
+                <p className="help-text">Handoff readiness: {config.fixture.exports.readiness}</p>
               </article>
             ))}
+          </div>
+          <div className="evidence-critical-grid">
+            <section className="evidence-critical-card" aria-label="Decision evidence quality">
+              <p className="eyebrow">Decision evidence quality</p>
+              <h3>{abExperimentFixture.comparisonMethod.decisionStatus}</h3>
+              <p>{abExperimentFixture.comparisonMethod.rationale}</p>
+              <p><strong>Confidence:</strong> {abExperimentFixture.comparisonMethod.confidenceLevel}</p>
+            </section>
+            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
+            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
+            <InsightList title="Blocked actions" items={abExperimentFixture.comparisonMethod.blockedActions} />
+            <section className="evidence-critical-card" aria-label="Handoff readiness">
+              <p className="eyebrow">Handoff readiness</p>
+              <h3>{abExperimentFixture.exports.readiness}</h3>
+              <p>{abExperimentFixture.exports.status}</p>
+              <p className="help-text">Open executive handoff review before using this directional evidence externally.</p>
+            </section>
           </div>
         </section>
       </div>
