@@ -24,7 +24,7 @@ Scope: Evidence-backed backlog only. This document does not implement new workfl
 | M11-B06 | P2 | Label fixture reference versus user-executed run state. | Workspace can imply all stages are completed from user action. | Research and PM concerns around fixture-completed vs user-executed-completed. | Improves evidence trust and executive interpretation. | M |
 | M11-B07 | P2 | Add signal/confidence methodology panel. | Signal labels are safe but not operationally explained. | Research Analyst: no visible scoring rubric/sample basis/confidence derivation. | Improves research credibility. | M |
 | M11-B08 | P2 | Clarify global Dashboard/Export navigation context. | Header links point to Product Launch sample-run. | QA/Research found potential wrong artifact interpretation. | Reduces wrong artifact review. | S/M |
-| M11-B09 | P2 | Update Health page to current Campaign Workspace / M11 validation posture. | Health page heading remains older milestone framing. | Research and maintainability review flagged stale M7 readiness label. | Improves stakeholder confidence. | S |
+| M11-B09 | P2 | Update in-app `/health` route to current Campaign Workspace / M11 validation posture. | App `/health` heading remains older milestone framing; Product Health Dashboard documentation was updated in M11. | Research and maintainability review flagged stale M7 readiness label in the app route. | Improves stakeholder confidence. | S |
 | M11-B10 | P2 | Extract fixture registry and exact run/export lookup. | Heuristic substring fallback creates correctness risk. | Code Reviewer flagged `configForRunId` fallback behavior. | Makes future workflows safer to add later. | M |
 | M11-B11 | P2 | Extract `src/views.tsx` into maintainable modules. | Large file concentrates route views, configs, validation, exports, workspace. | Code Reviewer: `src/views.tsx` >800 lines and growing. | Reduces future-change risk. | L |
 | M11-B12 | P3 | Add scenario-specific next-test design details. | Recommendations are useful but repetitive. | PM/Research noted repeated “small approved test” language. | Increases operator actionability. | M |
@@ -37,7 +37,7 @@ Scope: Evidence-backed backlog only. This document does not implement new workfl
 ## Recommended sequencing
 
 1. P1 correctness and task-completion fix: unknown run/export states, result focus, validation feedback.
-2. P2 trust and maintainability: fixture registry, fixture-vs-user-run labeling, Health page freshness, navigation context.
+2. P2 trust and maintainability: fixture registry, fixture-vs-user-run labeling, in-app `/health` route freshness, navigation context.
 3. P2/P3 research usefulness: signal methodology and scenario-specific next-test design.
 4. P3/P4 polish: decision readiness card, not-found recovery, readiness taxonomy, safety-label compactness.
 

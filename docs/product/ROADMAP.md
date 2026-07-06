@@ -213,7 +213,7 @@ Acceptance criteria:
 ### Next: M12 Campaign Workspace Trust & Validation Fixes — Only if M11 receives GO
 
 - Resolve or explicitly accept M11 P1 evidence findings before adding any future workflow.
-- Recommended remediation: unsupported run/export states, visible validation feedback, run-complete/result focus, fixture-reference versus user-run labeling, and current Product Health wording.
+- Recommended remediation: unsupported run/export states, visible validation feedback, run-complete/result focus, fixture-reference versus user-run labeling, and in-app `/health` route wording.
 - Creative Comparison remains gated and must be separately planned after evidence-backed remediation.
 - Do not add backend, live APIs, private data, persistence, product redesign, new workflows, or SocialSense changes from this roadmap alone.
 

@@ -73,7 +73,7 @@ Scope should be remediation, not new capability:
 2. visible validation feedback;
 3. run-complete/result focus;
 4. fixture-reference versus user-run labeling;
-5. current Product Health wording;
+5. in-app `/health` route wording;
 6. optional fixture/workflow registry extraction if bundled safely.
 
 Creative Comparison should remain blocked until M12 or equivalent evidence-backed remediation is complete.

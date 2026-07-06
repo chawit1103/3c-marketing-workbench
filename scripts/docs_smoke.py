@@ -407,6 +407,16 @@ def current_branch_name() -> str:
         return ""
 
 
+def current_milestone_number() -> int | None:
+    match = re.match(r"m(\d+)-", current_branch_name())
+    return int(match.group(1)) if match else None
+
+
+def branch_at_or_after(milestone: int) -> bool:
+    current = current_milestone_number()
+    return current is not None and current >= milestone
+
+
 def main() -> None:
     missing_docs = [path for path in REQUIRED_DOCS if not (ROOT / path).is_file()]
     if missing_docs:
@@ -561,7 +571,7 @@ def main() -> None:
 
     changed_paths = changed_paths_from_main()
     m6_context_active = any(path in changed_paths for path in REQUIRED_M6_DOCS) or "M6 Experiment Framework" in "\n".join([readme, agents, roadmap, health_dashboard])
-    if m6_context_active and not current_branch_name().startswith(("m7-", "m8-", "m9-", "m10-", "m11-")):
+    if m6_context_active and not branch_at_or_after(7):
         if current_branch_name() != "main" and not changed_paths:
             fail("M6 planning changed-path guard could not compare against origin/main")
         non_docs = [path for path in changed_paths if not (path in M6_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
@@ -584,7 +594,7 @@ def main() -> None:
     changed_paths = changed_paths_from_main()
     m5_files_present = all((ROOT / path).is_file() for path in EXPECTED_M5_FILES)
     m5_paths_changed = any(path in changed_paths for path in ["src/views.tsx", "src/product/fixtures/campaignMessageTestResult.json"])
-    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or current_branch_name().startswith("m6-") or current_branch_name().startswith("m7-") or current_branch_name().startswith("m8-") or current_branch_name().startswith("m9-") or current_branch_name().startswith("m10-") or current_branch_name().startswith("m11-"))):
+    if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or branch_at_or_after(6))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
     if "from socialsense import load_domain_pack" not in adapter:
@@ -643,14 +653,14 @@ def main() -> None:
         missing_doc_phrases = [phrase for phrase in REQUIRED_M8_DOC_PHRASES if phrase not in content]
         if missing_doc_phrases:
             fail(f"{path} missing M8 scope phrase: " + ", ".join(missing_doc_phrases))
-    if not (current_branch_name().startswith(("m9-", "m10-", "m11-")) or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
+    if not (branch_at_or_after(9) or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
         for phrase in ["Marketing Journey", "Workspace", "Executive Journey", "Future Workflow Placement", "Creative Comparison only if M8"]:
             if phrase not in combined_m8_text:
                 fail(f"M8 current-state docs missing phrase: {phrase}")
     for stale_phrase in ["current M6 non-goals", "Before M6 handoff", "0 in M6", "before any A/B implementation"]:
         if stale_phrase in "\n".join([readme, health_dashboard]):
             fail(f"M8 current-state docs contain stale phrase: {stale_phrase}")
-    if not (current_branch_name().startswith(("m9-", "m10-", "m11-")) or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
+    if not (branch_at_or_after(9) or "M9 Campaign Workspace Foundation" in "\n".join([readme, agents, roadmap, health_dashboard])):
         for phrase in ["M8 review gates", "Before M8 handoff", "Marketing Journey Framework remains documentation-only"]:
             if phrase not in readme:
                 fail(f"README missing M8 review gate phrase: {phrase}")
@@ -660,7 +670,7 @@ def main() -> None:
             if linked_name not in (ROOT / path).read_text(encoding="utf-8"):
                 fail(f"{path} missing M8 companion link to {linked_name}")
     m8_context_active = any(path in changed_paths for path in REQUIRED_M8_DOCS) or "M8 Marketing Journey Framework" in combined_m8_text
-    if m8_context_active and not current_branch_name().startswith(("m9-", "m10-", "m11-")):
+    if m8_context_active and not branch_at_or_after(9):
         if current_branch_name() != "main" and not changed_paths:
             fail("M8 planning changed-path guard could not compare against origin/main")
         non_docs = [path for path in changed_paths if not (path in M8_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
@@ -675,7 +685,7 @@ def main() -> None:
         missing_doc_phrases = [phrase for phrase in REQUIRED_M9_DOC_PHRASES if phrase not in content]
         if missing_doc_phrases:
             fail(f"{path} missing M9 scope phrase: " + ", ".join(missing_doc_phrases))
-    if not (current_branch_name().startswith(("m10-", "m11-")) or "M10 Campaign Workspace MVP" in "\n".join([readme, agents, roadmap, health_dashboard])):
+    if not (branch_at_or_after(10) or "M10 Campaign Workspace MVP" in "\n".join([readme, agents, roadmap, health_dashboard])):
         for phrase in ["Campaign Workspace", "Workspace model", "Workspace navigation", "Workspace dashboard", "Executive Workspace", "Creative Comparison only if M9"]:
             if phrase not in combined_m9_text:
                 fail(f"M9 current-state docs missing phrase: {phrase}")
@@ -683,7 +693,7 @@ def main() -> None:
         if stale_phrase in "\n".join([readme, health_dashboard, roadmap]):
             fail(f"M9 current-state docs contain stale phrase: {stale_phrase}")
     if not current_branch_name().startswith("m10-"):
-        if not (current_branch_name().startswith(("m10-", "m11-")) or "M10 Campaign Workspace MVP" in "\n".join([readme, agents, roadmap, health_dashboard])):
+        if not (branch_at_or_after(10) or "M10 Campaign Workspace MVP" in "\n".join([readme, agents, roadmap, health_dashboard])):
             for phrase in ["M9 review gates", "Before M9 handoff", "Campaign Workspace Foundation remains documentation-only"]:
                 if phrase not in readme:
                     fail(f"README missing M9 review gate phrase: {phrase}")
@@ -693,7 +703,7 @@ def main() -> None:
             if linked_name not in (ROOT / path).read_text(encoding="utf-8"):
                 fail(f"{path} missing M9 companion link to {linked_name}")
     m9_context_active = any(path in changed_paths for path in REQUIRED_M9_DOCS) or "M9 Campaign Workspace Foundation" in combined_m9_text
-    if m9_context_active and not current_branch_name().startswith(("m10-", "m11-")):
+    if m9_context_active and not branch_at_or_after(10):
         if current_branch_name() != "main" and not changed_paths:
             fail("M9 planning changed-path guard could not compare against origin/main")
         non_docs = [path for path in changed_paths if not (path in M9_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
@@ -718,7 +728,7 @@ def main() -> None:
             fail("M10 docs/source missing Campaign Workspace MVP phrases: " + ", ".join(missing_m10_phrases))
         if "campaignWorkspace" not in src_text or "CampaignWorkspaceView" not in src_text:
             fail("M10 source missing campaignWorkspace route wiring")
-        if "Creative Comparison" in (ROOT / "src/views.tsx").read_text(encoding="utf-8"):
+        if current_branch_name().startswith("m10-") and "Creative Comparison" in (ROOT / "src/views.tsx").read_text(encoding="utf-8"):
             fail("M10 visible workspace source must not include Creative Comparison")
         if current_branch_name().startswith("m10-") and not changed_paths:
             fail("M10 changed-path guard could not compare against origin/main")

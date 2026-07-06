@@ -93,7 +93,7 @@ Scores use a 1-10 ordinal rubric and simple average documented in `docs/product/
 
 1. Fixture/reference completion versus user-executed completion is not clearly distinguished.
 2. Signal labels lack visible methodology or scoring rubric.
-3. Product Health page remains framed around earlier milestone readiness rather than continuous validation.
+3. In-app `/health` route copy remains framed around earlier milestone readiness rather than continuous validation; Product Health Dashboard documentation is updated for M11.
 4. `src/views.tsx` is large and future-maintenance risk is increasing.
 
 ## Architecture Gate assessment
