@@ -238,7 +238,7 @@ git diff --check origin/main...HEAD
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
-Observed result: all commands passed on branch `m11-continuous-product-validation` at head `154eca3decb1cfe867dee91a9f210b3642ddd364` before the evidence appendix fix commit.
+Observed result: all commands passed on branch `m11-continuous-product-validation` at final pre-merge head `2d798733c50ad5580f23c5929c055321f2a9b75d`; the PR was then squash-merged to `main`.
 
 ## M11 interpretation boundary
 
