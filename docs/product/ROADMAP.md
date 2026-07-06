@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M16 Feature Freeze and Demo Readiness is complete and merged. PR1-PR4 and M2-M16 are complete; Feature Freeze v0.1 is declared for Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, Product Health Dashboard, and the SocialSense public adapter boundary. M16 is release readiness only: no new workflow, backend, SocialSense capability, live API, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness. PR1-PR4 and M2-M16 are complete; M17 PR1 is program kickoff docs only for Executive Experience & Marketing Simulation Enhancement. M17 PR2+ implementation is future work and is not delivered in this PR. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
 
 ## Program
 
@@ -246,13 +246,37 @@ Acceptance criteria:
 - Architecture Gate remained not triggered.
 - PR #21 merged at `b6bd9a447c475c3fd47f802bc627e90bcc06c7b7`.
 
-### M16: Feature Freeze and Demo Readiness — Current branch
+### M16: Feature Freeze and Demo Readiness — Complete
 
 - Declares Feature Freeze v0.1 for the four usable workflows and product shell.
 - Creates release-readiness artifacts: Feature Freeze, 5-minute demo script, Demo Workspace, Human Dogfooding Plan, Feedback Capture Template, and Release Candidate Checklist.
 - Keeps scope release-readiness only: demo readiness, UX/copy polish, bug/trust fixes, docs, test coverage, demo data, dogfooding preparation, and release checks.
 - Blocks new workflows, backend, SocialSense capability, live APIs, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, and workspace redesign.
 - Architecture Gate remains not triggered unless release readiness requires blocked architecture or data changes.
+
+### M17: Executive Dashboard & Reporting — Started
+
+- PR1 starts the Executive Experience & Marketing Simulation Enhancement program with docs only.
+- Program docs: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md` and `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`.
+- M17 PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
+- M17 PR2+ implementation is future work and is not delivered in PR1.
+- Program KPIs: Product Health, UX Health, Executive Readiness, Dashboard Quality, Report Quality, I18N Readiness, Simulation Readiness, Trust, Transparency, Release Readiness.
+- Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
+- Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
+- Scope for PR1 remains docs/smoke only with no source UI/runtime changes, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, or live APIs.
+
+### M18: Thai-first Internationalization — Planned
+
+- Plan Thai-first content model, glossary, locale architecture, safety copy, and validation gates.
+- Track I18N Readiness, UX Health, Trust, Transparency, and Release Readiness.
+- Implementation remains future work after M17 closeout and must stop if an Architecture Gate trigger appears.
+
+### M19: Synthetic Social Platform Engagement Simulation — Planned
+
+- Plan safe synthetic social platform engagement simulation using aggregate assumptions only.
+- Keep scraping, private messages, real accounts, production posting, microtargeting, persuasion optimization, and conversion guarantees out of scope.
+- Track Simulation Readiness, Dashboard Quality, Report Quality, Trust, Transparency, and Release Readiness.
+- Implementation remains future work after M18 review and must stop if an Architecture Gate trigger appears.
 
 ### Future: Governance and implementation readiness review
 
@@ -292,6 +316,8 @@ Do not implement until separate review:
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
 - M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
+- M17 Executive Dashboard & Reporting is started by PR1 program kickoff docs only; implementation remains future work for PR2+.
+- M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation are planned future milestones, not implemented.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

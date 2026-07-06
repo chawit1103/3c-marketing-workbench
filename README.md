@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M16 Feature Freeze and Demo Readiness is complete and merged. Feature Freeze v0.1 is declared: Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Campaign Workspace, Executive Summary, Export Review, Safety Labels, and Product Health Dashboard are frozen for controlled demo, human dogfooding, and release-candidate readiness. No new workflow, backend, persistence, auth, live API, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
+Status: M17 Executive Dashboard & Reporting has started after M16 Feature Freeze and Demo Readiness. This branch is PR1 program kickoff docs only for the Executive Experience & Marketing Simulation Enhancement program covering M17 Executive Dashboard & Reporting, M18 Thai-first Internationalization, and M19 Synthetic Social Platform Engagement Simulation. M17 PR2+ implementation is future work and is not delivered in this PR. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -34,12 +34,12 @@ This repository owns the 3C product experience:
 - executive dashboard and export review experience for the generated offline sample;
 - repository-local product, architecture, roadmap, and operating docs.
 
-Adjacent repositories are reference/dependency boundaries, not edit targets for M16:
+Adjacent repositories are reference/dependency boundaries, not edit targets for M17:
 
 - SocialSense is the platform dependency. It owns simulation runtime, Marketing Domain Pack, ConsumerSDK, safety validation, provenance, dashboard contracts, and export contracts.
 - MarketingSimulation is old/reference material only. It may be inspected for UX lessons, but must not be copied or modified.
 
-M16 must not modify SocialSense or MarketingSimulation.
+M17 program kickoff must not modify SocialSense or MarketingSimulation.
 
 ## Historical M1 PR4 delivered status
 
@@ -96,6 +96,8 @@ Product documentation map:
 - [Cross-Repository Dependency Map](docs/architecture/CROSS_REPOSITORY_DEPENDENCY_MAP.md)
 - [Roadmap](docs/product/ROADMAP.md)
 - [Product Health Dashboard](docs/product/PRODUCT_HEALTH_DASHBOARD.md)
+- [Executive Experience & Marketing Simulation Enhancement Program](docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md)
+- [M17 Executive Dashboard & Reporting Plan](docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
@@ -189,7 +191,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M16 release readiness validation commands:
+M17 PR1 docs-only kickoff validation commands:
 
 ```bash
 npm run test
@@ -202,7 +204,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-M16 declares Feature Freeze v0.1 and prepares demo/human-dogfooding/release-candidate readiness. It must not add new workflows, backend endpoints, SocialSense capability, live APIs, persistence, authentication, CRM/customer data, PII/private data, or production automation.
+M17 PR1 starts the Executive Experience & Marketing Simulation Enhancement program after M16 without delivering runtime features. It must remain docs/smoke only and must not add source UI/runtime changes, new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, or MarketingSimulation changes. M17 PR2+ implementation is future work.
 
 M15 focused validation commands:
 
