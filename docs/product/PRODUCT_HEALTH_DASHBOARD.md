@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative Comparison is now the fourth usable fixture-backed workflow. Architecture remained frozen and no backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes were introduced.
+Status: M16 Feature Freeze and Demo Readiness is in progress. Feature Freeze v0.1 is declared for the four usable workflows and product shell. M16 prepares controlled demo, human dogfooding, and release-candidate readiness without adding workflows, backend endpoints, persistence, auth, live APIs, credentials, SocialSense changes, or MarketingSimulation changes.
 
 
 ## M1 PR4 closeout
@@ -205,6 +205,7 @@ Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative 
 | Product Trust Readiness Gate | Complete | M13 governance gate | M13 verified M12 trust stability on `main`; Creative Comparison Planning is GO; implementation remains HOLD. |
 | Creative Comparison Discovery | Complete | M14 discovery/specification only | M14 defines Creative Comparison problem, goals, personas, UX flow, IA, conceptual data model, trust boundaries, research constraints, fixture requirements, acceptance criteria, and future implementation plan without runtime changes. |
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
+| Feature Freeze and Demo Readiness | In progress | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -220,6 +221,23 @@ Status: M15 Creative Comparison Vertical Slice is complete and merged. Creative 
 - Backend endpoints: 0.
 - Architecture Gate: not triggered.
 - Next recommendation: Workspace dogfooding round 2 before starting any additional workflow.
+
+## M16 Feature Freeze and Demo Readiness
+
+- Feature Freeze v0.1: declared in `docs/product/FEATURE_FREEZE_V0_1.md`.
+- Demo script: `docs/product/DEMO_SCRIPT_5_MIN.md`.
+- Demo workspace: `docs/product/DEMO_WORKSPACE.md`.
+- Human dogfooding plan: `docs/product/HUMAN_DOGFOODING_PLAN.md`.
+- Feedback capture template: `docs/product/FEEDBACK_CAPTURE_TEMPLATE.md`.
+- Release candidate checklist: `docs/product/RELEASE_CANDIDATE_CHECKLIST.md`.
+- Demo readiness: in validation.
+- Executive readability: in validation.
+- Human dogfooding readiness: in validation.
+- Feature freeze compliance: no new workflow, backend, live API, persistence, auth, private/customer data, SocialSense, or MarketingSimulation changes allowed.
+- Trust readiness: existing M12/M15 trust labels and unavailable-state guard remain required.
+- Export readiness: existing Export Readiness Preview only; no new export formats.
+- Known blockers: none recorded at branch start; validation and reviews may add blockers.
+- Release candidate readiness: pending validation and review gates.
 
 ## M12 Campaign Workspace Trust & Validation
 

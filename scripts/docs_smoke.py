@@ -149,6 +149,65 @@ M11_FORBIDDEN_CHANGED_PREFIXES = (
     "integrations/",
 )
 
+REQUIRED_M16_DOCS = [
+    "docs/product/FEATURE_FREEZE_V0_1.md",
+    "docs/product/DEMO_SCRIPT_5_MIN.md",
+    "docs/product/DEMO_WORKSPACE.md",
+    "docs/product/HUMAN_DOGFOODING_PLAN.md",
+    "docs/product/FEEDBACK_CAPTURE_TEMPLATE.md",
+    "docs/product/RELEASE_CANDIDATE_CHECKLIST.md",
+]
+
+M16_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    *REQUIRED_M16_DOCS,
+}
+
+REQUIRED_M16_PHRASES = [
+    "Feature Freeze v0.1",
+    "Product Launch",
+    "Campaign Message Test",
+    "A/B Experiment",
+    "Creative Comparison",
+    "Campaign Workspace",
+    "Executive Summary",
+    "Export Readiness Preview",
+    "Safety Labels",
+    "Frozen workflows",
+    "Allowed changes",
+    "Blocked changes",
+    "Release scope",
+    "Rollback expectations",
+    "5-Minute Executive Demo Script",
+    "Demo Workspace",
+    "Human Dogfooding Plan",
+    "Feedback Capture Template",
+    "Release Candidate Readiness Checklist",
+    "Time to first result",
+    "Confusion points",
+    "Trust concerns",
+    "Safety label comprehension",
+    "Dashboard readability",
+    "Executive usefulness",
+    "Export usefulness",
+    "Missing capabilities",
+    "Willingness to use again",
+    "Demo readiness",
+    "Executive readability",
+    "Human dogfooding readiness",
+    "Feature freeze compliance",
+    "Trust readiness",
+    "Export readiness",
+    "Known blockers",
+    "Release candidate readiness",
+    "No new workflow",
+    "Architecture Gate: Not triggered",
+]
+
 REQUIRED_M15_FILES = [
     "src/product/fixtures/creativeComparisonResult.json",
     "scripts/generate_creative_comparison_fixture.py",
@@ -1006,6 +1065,36 @@ def main() -> None:
         if forbidden_m15_changes:
             fail("M15 changed unexpected paths: " + ", ".join(forbidden_m15_changes))
 
+    if current_branch_name().startswith("m16-") or "M16 Feature Freeze" in "\n".join([readme, agents, roadmap, health_dashboard]):
+        missing_m16_docs = [path for path in REQUIRED_M16_DOCS if not (ROOT / path).is_file()]
+        if missing_m16_docs:
+            fail("missing M16 release readiness docs: " + ", ".join(missing_m16_docs))
+        m16_docs = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M16_DOCS}
+        combined_m16_text = "\n".join([readme, agents, roadmap, health_dashboard, *m16_docs.values()])
+        for path in REQUIRED_M16_DOCS:
+            if f"]({path})" not in readme:
+                fail(f"README missing M16 docs link: {path}")
+        missing_m16_phrases = [phrase for phrase in REQUIRED_M16_PHRASES if phrase not in combined_m16_text]
+        if missing_m16_phrases:
+            fail("M16 docs missing release-readiness phrases: " + ", ".join(missing_m16_phrases))
+        blocked_phrases = [
+            "new workflow",
+            "new backend",
+            "new SocialSense capability",
+            "new live API",
+            "persistence",
+            "authentication",
+            "CRM/customer data",
+            "PII/private data",
+            "production automation",
+        ]
+        for phrase in blocked_phrases:
+            if phrase not in combined_m16_text:
+                fail(f"M16 feature freeze docs missing blocked scope: {phrase}")
+        forbidden_m16_changes = [path for path in changed_paths if path not in M16_ALLOWED_CHANGED_PATHS] if current_branch_name().startswith("m16-") else []
+        if forbidden_m16_changes:
+            fail("M16 changed unexpected paths during feature freeze: " + ", ".join(forbidden_m16_changes))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -1022,6 +1111,7 @@ def main() -> None:
     print("PASS: M13 Product Trust Readiness docs include capability gate and non-implementation boundaries")
     print("PASS: M14 Creative Comparison discovery docs include required specification content and non-implementation boundaries")
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
+    print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     print("PASS: README links resolve")
     print("PASS: README and AGENTS include required safety boundaries")
     print("PASS: expected React/Vite/TypeScript frontend shell files exist")
