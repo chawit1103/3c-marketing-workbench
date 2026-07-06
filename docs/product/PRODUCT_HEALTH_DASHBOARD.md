@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M7 A/B Experiment Reference Workflow implemented. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Experiment Framework is reused as the business capability for comparison workflows. Multivariate Testing, Creative Comparison, Promotion workflow, backend, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M7.
+Status: M7 A/B Experiment Reference Workflow complete and merged. Product Launch remains the first reference workflow; Campaign Message Test remains the second reference workflow; A/B Experiment is the third reference workflow; Experiment Framework is reused as the business capability for comparison workflows. Multivariate Testing, Creative Comparison, Promotion workflow, backend, live runtime functionality, live APIs, private data, and SocialSense runtime changes are not authorized by M7.
 
 
 ## M1 PR4 closeout

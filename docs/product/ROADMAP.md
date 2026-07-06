@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M7 A/B Experiment Reference Workflow implemented. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, and M6 Experiment Framework Planning are complete. A/B Experiment now exists as the third offline reference workflow. Multivariate Testing, Creative Comparison, backend, live runtime functionality, and SocialSense changes remain not implemented.
+Status: M7 A/B Experiment Reference Workflow complete and merged. PR1-PR4, M2 Product Launch stabilization, M2 Exit Workflow Pattern Review, M3 Campaign Domain Planning, M4 IA/design-system review, M5 Campaign Message Test, and M6 Experiment Framework Planning are complete. A/B Experiment now exists as the third offline reference workflow. Multivariate Testing, Creative Comparison, backend, live runtime functionality, and SocialSense changes remain not implemented.
 
 ## Program
 
