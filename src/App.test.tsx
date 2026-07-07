@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
+import { translate } from './i18n/localize';
 import { safetyLabels } from './product/safety/safetyLabels';
 
 function renderAt(pathname: string, language: 'th' | 'en' = 'en') {
@@ -84,6 +85,38 @@ describe('M18 Thai-first internationalization', () => {
 
     renderAt(pathname, 'en');
     expect(screen.getByRole('heading', { name: englishHeading })).toBeInTheDocument();
+  });
+
+  it('does not translate Health inside Healthy and translates the full campaign phrase', () => {
+    expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).toBe(
+      'ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที',
+    );
+    expect(translate('Healthy team lunch decisions can feel fast, reviewed, and dependable.', 'th')).toBe(
+      'การตัดสินใจมื้อกลางวันเพื่อสุขภาพของทีมสามารถรวดเร็ว ผ่านการตรวจทาน และเชื่อถือได้',
+    );
+    expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).not.toContain(
+      'สถานะผลิตภัณฑ์y',
+    );
+  });
+
+  it('renders campaign workspace Thai mode without known English smoke blocker fragments', () => {
+    renderAt('/campaign-workspace', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).not.toContain('สถานะผลิตภัณฑ์y');
+    for (const blocker of [
+      'Run a small',
+      'Both creative concepts',
+      'MVP is text-only',
+      'Have claims',
+      'winner selection',
+      'Directional campaign health',
+      'Message is understandable',
+      'Message is clear enough',
+      'Low implementation risk',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
   });
 });
 

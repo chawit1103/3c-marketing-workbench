@@ -86,12 +86,28 @@ function translateTemplates(text: string, table: Record<string, string>) {
     'Audience': 'กลุ่มเป้าหมาย',
   };
 
-  for (const [source, target] of Object.entries({ ...phraseReplacements, ...table })) {
-    if (result.includes(source)) {
-      result = result.split(source).join(target);
+  const safeReplacements = Object.entries({ ...phraseReplacements, ...table }).sort(
+    ([left], [right]) => right.length - left.length,
+  );
+
+  for (const [source, target] of safeReplacements) {
+    if (result.includes(source) && canReplaceIsolatedPhrase(result, source)) {
+      result = result.replace(isolatedPhrasePattern(source), target);
     }
   }
   return result;
+}
+
+function isolatedPhrasePattern(source: string): RegExp {
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(source)}(?![\\p{L}\\p{N}])`, 'gu');
+}
+
+function canReplaceIsolatedPhrase(text: string, source: string): boolean {
+  return isolatedPhrasePattern(source).test(text);
+}
+
+function escapeRegExp(source: string): string {
+  return source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export function localizeDom(root: HTMLElement, language: Language) {
