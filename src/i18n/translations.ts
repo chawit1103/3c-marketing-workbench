@@ -145,7 +145,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'Run completion status': 'สถานะการรัน',
     'Defaults are prefilled. Run now, or edit the visible inputs first.': 'ระบบกรอกค่าเริ่มต้นไว้แล้ว สามารถรันทันที หรือแก้ไขช่องที่เห็นก่อน',
     'Run complete: generated sample results are visible below now.': 'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
-    'Jump to generated sample results': 'ไปยังผลตัวอย่างที่สร้างไว้',
+    'Jump to generated sample results': 'ไปยังผลลัพธ์ตัวอย่างที่สร้างไว้',
     'Run offline simulation': 'รันการจำลองออฟไลน์',
     'Reference workflow': 'เวิร์กโฟลว์อ้างอิง',
     'Reference workflow steps': 'ขั้นตอนเวิร์กโฟลว์อ้างอิง',

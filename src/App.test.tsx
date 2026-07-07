@@ -185,13 +185,16 @@ describe('M18 Thai-first internationalization', () => {
     expect(resultSection).toHaveTextContent('แดชบอร์ด');
     expect(resultSection).toHaveTextContent('ข้อเสนอแนะถัดไป');
     expect(resultSection).toHaveTextContent('ใช้เป็นโจทย์ให้มนุษย์ตรวจทาน');
+    expect(screen.getByRole('link', { name: 'ไปยังผลลัพธ์ตัวอย่างที่สร้างไว้' })).toHaveAttribute('href', '#results-title');
     for (const blocker of [
       'Offline product-launch simulation ready for executive review',
       'DASHBOARD',
       'The offline Product Launch sample shows',
       'Recommended next action',
+      'Jump to generated sample results',
     ]) {
       expect(resultSection).not.toHaveTextContent(blocker);
+      expect(document.body).not.toHaveTextContent(blocker);
     }
   });
 

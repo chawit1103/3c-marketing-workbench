@@ -981,7 +981,11 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           <p className="eyebrow">Quick start</p>
           <h2>Run with safe defaults</h2>
           <p aria-label={translate('Run completion status', language)} role={hasRun ? 'status' : undefined}>{resultPreview}</p>
-          {hasRun ? <a className="button button-secondary" href="#results-title">Jump to generated sample results</a> : null}
+          {hasRun ? (
+            <a className="button button-secondary" href="#results-title">
+              {translate('Jump to generated sample results', language)}
+            </a>
+          ) : null}
           <button className="button button-primary" type="button" onClick={runSimulation}>
             Run offline simulation
           </button>
