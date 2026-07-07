@@ -1269,6 +1269,7 @@ function ReferenceResults({
   config: WorkflowConfig;
   showActions?: boolean;
 }) {
+  const { t } = useI18n();
   const assumptionRows = useMemo(
     () => [
       ['Campaign name or brand', form.brand],
@@ -1295,13 +1296,13 @@ function ReferenceResults({
   return (
     <section className="view-stack" aria-labelledby="results-title">
       <div className="card result-hero">
-        <p className="eyebrow">Dashboard</p>
-        <h2 id="results-title">{fixture.summary.headline}</h2>
-        <p>{fixture.summary.text}</p>
-        <section className="next-action-card" aria-label="Recommended next action">
-          <p className="eyebrow">Recommended next action</p>
-          <strong>Use this as a human review prompt, then approve a small evidence-gathering test.</strong>
-          <p>{fixture.recommendedNextTest}</p>
+        <p className="eyebrow">{t('Dashboard')}</p>
+        <h2 id="results-title">{t(fixture.summary.headline)}</h2>
+        <p>{t(fixture.summary.text)}</p>
+        <section className="next-action-card" aria-label={t('Recommended next action')}>
+          <p className="eyebrow">{t('Recommended next action')}</p>
+          <strong>{t('Use this as a human review prompt, then approve a small evidence-gathering test.')}</strong>
+          <p>{t(fixture.recommendedNextTest)}</p>
         </section>
         <p className="help-text">Safety: offline fixture for planning only; review before using externally.</p>
         {showActions ? (
@@ -1317,7 +1318,7 @@ function ReferenceResults({
         <dl className="assumption-grid">
           {assumptionRows.map(([label, value]) => (
             <div key={label}>
-              <dt>{label}</dt>
+              <dt>{t(label)}</dt>
               <dd>{value}</dd>
             </div>
           ))}
@@ -1328,9 +1329,9 @@ function ReferenceResults({
       <FixtureTransparency />
 
       {'creativeSummaries' in fixture && 'comparisonDashboard' in fixture ? (
-        <section className="card" aria-label="Creative comparison dashboard">
-          <p className="eyebrow">Creative Comparison Dashboard</p>
-          <h3>Creative Comparison Dashboard</h3>
+        <section className="card" aria-label={t('Creative comparison dashboard')}>
+          <p className="eyebrow">{t('Creative Comparison Dashboard')}</p>
+          <h3>{t('Creative Comparison Dashboard')}</h3>
           <div className="grid two-col align-start">
             {fixture.creativeSummaries.map((card: FixtureCard) => (
               <MetricCard key={card.title} card={card} />
@@ -1339,33 +1340,33 @@ function ReferenceResults({
           <div className="grid two-col align-start">
             {fixture.comparisonDashboard.map((item: { title: string; detail: string }) => (
               <section className="evidence-critical-card" key={item.title}>
-                <p className="eyebrow">Review signal</p>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
+                <p className="eyebrow">{t('Review signal')}</p>
+                <h3>{t(item.title)}</h3>
+                <p>{t(item.detail)}</p>
               </section>
             ))}
           </div>
           {'comparisonMethod' in fixture ? (
             <p className="help-text">
-              {fixture.comparisonMethod.decisionStatus}: {fixture.comparisonMethod.rationale} Confidence: {fixture.comparisonMethod.confidenceLevel}.
+              {t(fixture.comparisonMethod.decisionStatus)}: {t(fixture.comparisonMethod.rationale)} {t('Confidence')}: {t(fixture.comparisonMethod.confidenceLevel)}.
             </p>
           ) : null}
         </section>
       ) : null}
 
       {'comparisonCards' in fixture && !('creativeSummaries' in fixture) ? (
-        <section className="card" aria-label="Variant comparison">
-          <p className="eyebrow">A/B comparison</p>
-          <h3>Variant decision frame</h3>
+        <section className="card" aria-label={t('Variant comparison')}>
+          <p className="eyebrow">{t('A/B comparison')}</p>
+          <h3>{t('Variant decision frame')}</h3>
           {comparisonMethod ? (
             <div>
               <p>
-                {comparisonMethod.decisionStatus}: {comparisonMethod.rationale} Confidence: {comparisonMethod.confidenceLevel}.
+                {t(comparisonMethod.decisionStatus)}: {t(comparisonMethod.rationale)} {t('Confidence')}: {t(comparisonMethod.confidenceLevel)}.
               </p>
-              <p className="help-text">Parity check: {comparisonMethod.parityCheck}</p>
+              <p className="help-text">{t('Parity check')}: {t(comparisonMethod.parityCheck)}</p>
               <div className="grid two-col align-start">
-                <InsightList title="Shared Criteria" items={comparisonMethod.sharedCriteria} />
-                <InsightList title="Blocked Actions" items={comparisonMethod.blockedActions} />
+                <InsightList title="Shared Criteria" items={comparisonMethod.sharedCriteria} localize />
+                <InsightList title="Blocked Actions" items={comparisonMethod.blockedActions} localize />
               </div>
             </div>
           ) : null}
@@ -1384,13 +1385,13 @@ function ReferenceResults({
       </div>
 
       <div className="grid two-col align-start">
-        <InsightList title="Platform Breakdown" items={fixture.platformBreakdown.map((item) => `${item.platform}: ${item.signal}. ${item.detail}`)} />
-        <InsightList title="Audience Insights" items={fixture.audienceInsights} />
-        <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} />
+        <InsightList title="Platform Breakdown" items={fixture.platformBreakdown.map((item) => `${item.platform}: ${item.signal}. ${item.detail}`)} localize />
+        <InsightList title="Audience Insights" items={fixture.audienceInsights} localize />
+        <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} localize />
         <div className="card">
-          <p className="eyebrow">Executive Summary</p>
-          <h3>{config.objective} executive summary</h3>
-          <p>{fixture.exports.executiveSummaryPreview}</p>
+          <p className="eyebrow">{t('Executive Summary')}</p>
+          <h3>{t(`${config.objective} executive summary`)}</h3>
+          <p>{t(fixture.exports.executiveSummaryPreview)}</p>
         </div>
       </div>
     </section>
@@ -1646,22 +1647,25 @@ function FixtureTransparency() {
 }
 
 function MetricCard({ card }: { card: FixtureCard }) {
+  const { t } = useI18n();
   return (
     <article className="card metric-card">
-      <p className="eyebrow">{card.title}</p>
-      <h3>{card.value}</h3>
-      <p>{card.detail}</p>
+      <p className="eyebrow">{t(card.title)}</p>
+      <h3>{t(card.value)}</h3>
+      <p>{t(card.detail)}</p>
     </article>
   );
 }
 
-function InsightList({ title, items }: { title: string; items: string[] }) {
+function InsightList({ title, items, localize = false }: { title: string; items: string[]; localize?: boolean }) {
+  const { t } = useI18n();
+  const renderText = (text: string) => (localize ? t(text) : text);
   return (
     <section className="card">
-      <p className="eyebrow">Review signal</p>
-      <h3>{title}</h3>
+      <p className="eyebrow">{renderText('Review signal')}</p>
+      <h3>{renderText(title)}</h3>
       <ul className="insight-list">
-        {items.map((item) => <li key={item}>{item}</li>)}
+        {items.map((item) => <li key={item}>{renderText(item)}</li>)}
       </ul>
     </section>
   );

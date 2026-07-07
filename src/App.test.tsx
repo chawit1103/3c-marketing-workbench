@@ -169,6 +169,32 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).not.toContain('Top evidence confidence blocker');
   });
 
+  it.each([
+    ['/workbench', 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/campaign-message-test', 'การทดสอบข้อความแคมเปญออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/ab-experiment', 'การทดลอง A/B ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/creative-comparison', 'การเปรียบเทียบงานสร้างสรรค์ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+  ])('keeps dynamic run results localized in Thai after clicking run on %s', (pathname, thaiResultHeading) => {
+    renderAt(pathname, 'th');
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'รันการจำลองออฟไลน์' }).at(-1)!);
+
+    const resultHeading = screen.getByRole('heading', { name: thaiResultHeading });
+    const resultSection = resultHeading.closest('section');
+    expect(resultSection).not.toBeNull();
+    expect(resultSection).toHaveTextContent('แดชบอร์ด');
+    expect(resultSection).toHaveTextContent('ข้อเสนอแนะถัดไป');
+    expect(resultSection).toHaveTextContent('ใช้เป็นโจทย์ให้มนุษย์ตรวจทาน');
+    for (const blocker of [
+      'Offline product-launch simulation ready for executive review',
+      'DASHBOARD',
+      'The offline Product Launch sample shows',
+      'Recommended next action',
+    ]) {
+      expect(resultSection).not.toHaveTextContent(blocker);
+    }
+  });
+
   it('localizes Thai Workbench default input values without known English fixture fragments', () => {
     const form = renderAt('/workbench', 'th').container.querySelector('form');
     expect(form).not.toBeNull();
