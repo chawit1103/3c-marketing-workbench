@@ -207,6 +207,22 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  it('fully localizes Workbench completion status accessible label in Thai mode', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    expect(accessibleText).not.toContain('รัน completion status');
+    expect(accessibleText).not.toContain('Run completion status');
+  });
+
   it('preserves edited Workbench inputs while localizing untouched defaults across language switches', () => {
     const form = renderWorkbench();
     const editedCampaignName = 'Edited campaign survives language switch';
@@ -241,7 +257,60 @@ describe('M18 Thai-first internationalization', () => {
     expect(kpiDashboard).toHaveTextContent('Reviewed core UI');
     expect(kpiDashboard).toHaveTextContent('Language Coverage');
     expect(kpiDashboard).toHaveTextContent('known mixed-language fragments remain visible for review');
-    expect(kpiDashboard).not.toHaveTextContent('cover supported UI chrome, screen headings, actions, safety notices, dashboard wording, and report section labels');
+    expect(kpiDashboard).not.toHaveTextContent('all UI copy');
+    expect(kpiDashboard).not.toHaveTextContent('fully translated');
+  });
+
+  it('fully localizes Health KPI copy and technical boundaries in Thai mode', () => {
+    renderAt('/health', 'th');
+
+    const kpiDashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI M18' });
+    const visibleText = document.body.textContent ?? '';
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+
+    for (const thaiTerm of [
+      'หลักฐาน',
+      'ความเชื่อมั่น',
+      'ข้อเสนอแนะ',
+      'เส้นทางแคมเปญ',
+      'แดชบอร์ด',
+      'รายงาน',
+      'ส่งออก',
+      'ตรวจทาน',
+      'ข้อความหน้าจอหลักที่ตรวจทานแล้ว',
+    ]) {
+      expect(kpiDashboard).toHaveTextContent(thaiTerm);
+    }
+
+    for (const blocker of [
+      'Product terms follow the M18 glossary',
+      'ไทย copy is short',
+      'English remains the fallback',
+      'Dashboard, executive summary',
+      'Human review',
+      'Engineering KPI',
+      'No Architecture Gate',
+      'Evidence',
+      'Confidence',
+      'Recommendation',
+      'Journey',
+      'Dashboard',
+      'Report',
+      'Export',
+      'Review',
+      'backend',
+      'persistence',
+      'auth',
+      'live API',
+      'IA',
+      'all UI copy',
+      'fully translated',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
   });
 });
 

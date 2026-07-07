@@ -950,9 +950,12 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
     setHasRun(true);
   }
 
-  const resultPreview = hasRun
-    ? 'Run complete: generated sample results are visible below now.'
-    : 'Defaults are prefilled. Run now, or edit the visible inputs first.';
+  const resultPreview = translate(
+    hasRun
+      ? 'Run complete: generated sample results are visible below now.'
+      : 'Defaults are prefilled. Run now, or edit the visible inputs first.',
+    language,
+  );
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
 
@@ -977,7 +980,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
         <aside className="quick-start-panel" aria-label="Quick start run action">
           <p className="eyebrow">Quick start</p>
           <h2>Run with safe defaults</h2>
-          <p aria-label="Run completion status" role={hasRun ? 'status' : undefined}>{resultPreview}</p>
+          <p aria-label={translate('Run completion status', language)} role={hasRun ? 'status' : undefined}>{resultPreview}</p>
           {hasRun ? <a className="button button-secondary" href="#results-title">Jump to generated sample results</a> : null}
           <button className="button button-primary" type="button" onClick={runSimulation}>
             Run offline simulation
