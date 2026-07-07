@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 closeout docs/status/smoke are complete. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 has not begun and must start with terminology/remediation backlog before Synthetic Social Platform Engagement Simulation implementation.
 
 ## Program
 
@@ -92,6 +92,23 @@ Acceptance criteria:
 - README/AGENTS are no longer stale PR1-only docs.
 - Docs smoke passes with scaffold expected.
 - All validation commands pass.
+
+### M18: Thai-first Internationalization — Closed as GO WITH CONDITIONS
+
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/30
+- Merge commit: `42bdf1b4c259c0bc553733fe89f6ad065409de4a`
+- Closeout report: `docs/product/M18_CLOSEOUT_REPORT.md`
+- Delivered Thai default language, English runtime switching, translation resources, language provider, language selector, translation style guide, official glossary, and i18n regression coverage.
+- Removed unsafe broad DOM localization and broad phrase replacement; localization is exact/template-based and preserves free-form user-entered values.
+- Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current scope with M19 terminology/copy conditions.
+- Architecture Gate was not triggered.
+- M19 implementation remains blocked until the M18 closeout is merged and a synthetic social engagement terminology/remediation backlog is prepared.
+
+### M19: Synthetic Social Platform Engagement Simulation — Gated / Not begun
+
+- Evaluate readiness only after M18 closeout merge.
+- Because M18 closes as GO WITH CONDITIONS, prepare remediation backlog first.
+- Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
 
