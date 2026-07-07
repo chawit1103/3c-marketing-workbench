@@ -445,6 +445,95 @@ describe('M18 Thai-first internationalization', () => {
     expect(kpiDashboard).not.toHaveTextContent('fully translated');
   });
 
+  it('fully localizes Thai Export Review sample-run executive copy and glossary terms', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    for (const blocker of [
+      'Generated from the reviewed offline sample',
+      'This screen previews Executive JSON',
+      'Prepared from the reviewed offline sample',
+      'Unsupported now',
+      'Decision readiness:',
+      'Objectives',
+      'Scenario',
+      'Inputs',
+      'Use the report for executive handoff',
+      'ส่งออก readiness',
+      'หลักฐาน tier',
+      'executive handoff report',
+      'Decision readiness: การตรวจทานโดยมนุษย์ required',
+      'Evidence tier',
+      'Source:',
+      'Formula:',
+      'Confidence:',
+      'Objective:',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
+
+    for (const thaiCopy of [
+      'ตรวจทานการส่งออก',
+      'หน้าจอนี้แสดงตัวอย่างเนื้อหา Executive JSON และบรีฟ Markdown',
+      'เตรียมจากตัวอย่างออฟไลน์ที่ตรวจทานแล้วพร้อมหมายเหตุความปลอดภัย',
+      'ยังไม่รองรับในตอนนี้',
+      'ความพร้อมในการตัดสินใจ: ต้องให้มนุษย์ตรวจทาน',
+      'วัตถุประสงค์',
+      'สถานการณ์',
+      'ข้อมูลนำเข้า',
+      'ใช้รายงานนี้เพื่อส่งต่อให้ผู้บริหารและให้มนุษย์ตรวจทาน',
+      'ระดับหลักฐาน',
+      'แหล่งที่มา',
+      'สูตร',
+      'ความเชื่อมั่น',
+      'รายงานส่งต่อผู้บริหาร',
+    ]) {
+      expect(visibleText).toContain(thaiCopy);
+    }
+  });
+
+  it('fully localizes Thai Campaign Workspace dashboard metadata and accessibility labels', () => {
+    renderAt('/campaign-workspace', 'th');
+
+    const dashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI ผู้บริหาร' });
+    const visibleText = dashboard.textContent ?? '';
+    const accessibleText = Array.from(dashboard.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+
+    for (const blocker of [
+      'Legend: ข้อมูลตัวอย่าง-rank cue',
+      'higher bars show directional strength',
+      'สูตร: platform bar value = clampScore',
+      'earlier productLaunchFixture',
+      'Overall Campaign Score แหล่งที่มาและหลักฐาน',
+      'Sentiment comparison สูตรและแหล่งที่มา',
+      'Human review สูตรและแหล่งที่มา',
+      'source and evidence',
+      'formula and source',
+      'Legend:',
+      'Formula:',
+      'Source:',
+      'Evidence tier:',
+      'Confidence:',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
+
+    expect(accessibleText).toContain('คะแนนรวมแคมเปญ แหล่งที่มาและหลักฐาน');
+    expect(accessibleText).toContain('เปรียบเทียบ Sentiment สูตรและแหล่งที่มา');
+    expect(accessibleText).toContain('รายการตรวจทานโดยมนุษย์ สูตรและแหล่งที่มา');
+    expect(visibleText).toContain('คำอธิบาย: สัญญาณจากลำดับข้อมูลตัวอย่าง');
+    expect(visibleText).toContain('สูตร: ค่าแถบแพลตฟอร์ม = clampScore(100 - fixture rank index × 12)');
+    expect(visibleText).toContain('แหล่งที่มา: productLaunchFixture.platformBreakdown');
+    expect(visibleText).toContain('ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์');
+  });
+
   it('fully localizes Health KPI copy and technical boundaries in Thai mode', () => {
     renderAt('/health', 'th');
 
