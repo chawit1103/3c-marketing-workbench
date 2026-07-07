@@ -62,6 +62,7 @@ describe('M18 Thai-first internationalization', () => {
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
+    expect(screen.getByLabelText('Language')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Compare campaign decisions safely before budget reviews.' })).toBeInTheDocument();
     const safetyPanel = screen.getByRole('region', { name: 'Safety boundaries' });
     for (const label of safetyLabels) {
@@ -104,6 +105,9 @@ describe('M18 Thai-first internationalization', () => {
 
     const visibleText = document.body.textContent ?? '';
     expect(visibleText).not.toContain('สถานะผลิตภัณฑ์y');
+    expect(visibleText).not.toContain('runtime');
+    expect(visibleText).not.toContain('Experiment Framework');
+    expect(visibleText).not.toContain('MVP');
     for (const blocker of [
       'Run a small',
       'Both creative concepts',
@@ -138,6 +142,37 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).not.toContain('Current Journey Stage');
     expect(accessibleText).not.toContain('Campaign journey timeline');
     expect(accessibleText).not.toContain('Top evidence confidence blocker');
+  });
+
+  it('preserves edited Workbench inputs when switching languages', () => {
+    const form = renderWorkbench();
+    const editedCampaignName = 'Edited campaign survives language switch';
+    const editedMessage = 'Edited message remains controlled state';
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: editedCampaignName } });
+    fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: editedMessage } });
+
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    expect(within(thaiForm).getByLabelText('ชื่อแคมเปญหรือแบรนด์')).toHaveValue(editedCampaignName);
+    expect(within(thaiForm).getByLabelText('ข้อความแคมเปญ')).toHaveValue(editedMessage);
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishForm = screen.getByRole('form', { name: 'Product Launch setup' });
+    expect(within(englishForm).getByLabelText('Campaign name or brand')).toHaveValue(editedCampaignName);
+    expect(within(englishForm).getByLabelText('Campaign Message')).toHaveValue(editedMessage);
+  });
+
+  it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
+    renderAt('/health', 'en');
+
+    const kpiDashboard = screen.getByRole('region', { name: 'M18 KPI dashboard' });
+    expect(kpiDashboard).toHaveTextContent('Reviewed core UI');
+    expect(kpiDashboard).toHaveTextContent('Language Coverage');
+    expect(kpiDashboard).toHaveTextContent('known mixed-language fragments remain visible for review');
+    expect(kpiDashboard).not.toHaveTextContent('cover supported UI chrome, screen headings, actions, safety notices, dashboard wording, and report section labels');
   });
 });
 
@@ -241,7 +276,7 @@ describe('Creative Comparison workflow', () => {
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B descriptions are required because this reviewed prototype uses text-only concepts.');
     expect(screen.getByRole('alert')).toHaveTextContent('Key Message is required because message clarity must be reviewed against an explicit message.');
     expect(screen.queryByRole('heading', { name: 'Offline creative comparison ready for executive review' })).not.toBeInTheDocument();
   });

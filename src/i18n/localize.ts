@@ -1,6 +1,24 @@
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
 import { translations, type Language } from './translations';
 
+const originalText = new WeakMap<Text, string>();
+
+function restoreEnglish(text: string): string {
+  const table = translations.th;
+  const exactMatch = Object.entries(table).find(([, target]) => target === text);
+  if (exactMatch) {
+    return exactMatch[0];
+  }
+
+  const trimmed = text.trim();
+  const trimmedMatch = Object.entries(table).find(([, target]) => target === trimmed);
+  if (trimmed && trimmedMatch) {
+    return text.replace(trimmed, trimmedMatch[0]);
+  }
+
+  return text;
+}
+
 export function translate(text: string, language: Language): string {
   if (language === 'en') {
     return text;
@@ -131,10 +149,6 @@ function escapeRegExp(source: string): string {
 }
 
 export function localizeDom(root: HTMLElement, language: Language) {
-  if (language === 'en') {
-    return;
-  }
-
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const textNodes: Text[] = [];
   while (walker.nextNode()) {
@@ -145,14 +159,23 @@ export function localizeDom(root: HTMLElement, language: Language) {
     if (node.parentElement?.closest('script, style')) {
       continue;
     }
-    node.nodeValue = translate(node.nodeValue ?? '', language);
+    if (!originalText.has(node)) {
+      originalText.set(node, language === 'en' ? restoreEnglish(node.nodeValue ?? '') : node.nodeValue ?? '');
+    }
+    const source = language === 'en' ? restoreEnglish(originalText.get(node) ?? node.nodeValue ?? '') : originalText.get(node) ?? '';
+    node.nodeValue = language === 'en' ? source : translate(source, language);
   }
 
   for (const element of root.querySelectorAll<HTMLElement>('[aria-label], [placeholder], [title]')) {
     for (const attr of ['aria-label', 'placeholder', 'title']) {
       const value = element.getAttribute(attr);
       if (value) {
-        element.setAttribute(attr, translate(value, language));
+        const sourceAttr = `data-i18n-original-${attr}`;
+        if (!element.hasAttribute(sourceAttr)) {
+          element.setAttribute(sourceAttr, language === 'en' ? restoreEnglish(value) : value);
+        }
+        const source = language === 'en' ? restoreEnglish(element.getAttribute(sourceAttr) ?? value) : element.getAttribute(sourceAttr) ?? value;
+        element.setAttribute(attr, language === 'en' ? source : translate(source, language));
       }
     }
   }

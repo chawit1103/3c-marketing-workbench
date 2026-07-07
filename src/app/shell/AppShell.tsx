@@ -18,7 +18,7 @@ interface AppShellProps {
 }
 
 export function AppShell({ route, children }: AppShellProps) {
-  const { language, setLanguage } = useI18n();
+  const { language, setLanguage, t } = useI18n();
   const shellRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -28,7 +28,7 @@ export function AppShell({ route, children }: AppShellProps) {
   }, [language, route.pathname, children]);
 
   return (
-    <div className="app-shell" ref={shellRef} key={language}>
+    <div className="app-shell" ref={shellRef}>
       <header className="site-header">
         <a className="brand" href="/" aria-label="3C Marketing Workbench home">
           <span className="brand-mark">3C</span>
@@ -50,7 +50,7 @@ export function AppShell({ route, children }: AppShellProps) {
             ))}
           </nav>
           <label className="language-selector" htmlFor="language-selector">
-            <span>ภาษา</span>
+            <span>{t('Language')}</span>
             <select
               id="language-selector"
               value={language}

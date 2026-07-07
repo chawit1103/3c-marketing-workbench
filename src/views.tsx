@@ -163,7 +163,7 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
     modeLabel: 'A/B Experiment mode',
     heading: 'A/B Experiment',
     shortDescription:
-      'Compare Variant A and Variant B with the approved Experiment Framework while reusing the same offline workbench pattern, dashboard, and export review.',
+      'Compare Variant A and Variant B with the approved comparison framework while reusing the same offline workbench pattern, dashboard, and export review.',
     formLabel: 'A/B Experiment setup',
     objectiveDescription: 'Review two campaign message variants with shared audience, platform, and safety assumptions.',
     defaultForm: abExperimentDefaultForm,
@@ -217,7 +217,7 @@ export function HomeView() {
         />
         <ObjectiveCard
           title="A/B Experiment workflow"
-          description="A third reference workflow reuses Experiment Framework, guided inputs, comparison dashboard, export review, and safety labels."
+          description="A third reference workflow reuses the comparison framework, guided inputs, dashboard, export review, and safety labels."
           status="ready"
         />
         <ObjectiveCard
@@ -545,7 +545,7 @@ export function CampaignWorkspaceView() {
               <dd>{campaignMessageFixture.sampleInput.platforms.join(', ')}</dd>
             </div>
           </dl>
-          <p className="help-text">Offline fixture-based workspace; no persistence, live data, or new workflow runtime.</p>
+          <p className="help-text">Offline fixture-based workspace; no persistence, live data, or new workflow execution.</p>
         </section>
 
         <section className="card next-action-card" aria-label="Current Journey Stage">
@@ -648,7 +648,7 @@ export function CampaignWorkspaceView() {
             <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
             <a className="button button-secondary" href="/workbench/creative-comparison">Open Creative Comparison</a>
           </div>
-          <p className="help-text">Only approved existing workflows are available in this MVP.</p>
+          <p className="help-text">Only approved existing workflows are available in this reviewed prototype.</p>
         </section>
       </div>
     </section>
@@ -1169,14 +1169,14 @@ function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: s
 
 export function HealthView() {
   const kpis = [
-    ['Translation Completeness', 'Thai and English resources cover supported UI chrome, screen headings, actions, safety notices, dashboard wording, and report section labels.'],
+    ['Translation Completeness', 'Reviewed core UI copy is translated for the M18 screens; remaining mixed-language fragments stay visible for review rather than being claimed complete.'],
     ['Glossary Consistency', 'Product terms follow the M18 glossary for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
     ['Thai UX Quality', 'Thai copy is short, professional, executive-readable, and avoids unnecessary technical language.'],
     ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
     ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
-    ['Language Coverage', 'Default language is Thai; English is available at runtime without backend, persistence, SocialSense, or workflow changes.'],
+    ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
     ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. M19 has not begun.'],
   ];
 
@@ -1185,7 +1185,7 @@ export function HealthView() {
       <div className="card">
         <p className="eyebrow">Product health</p>
         <h1 id="health-title">M18 Thai-first Internationalization</h1>
-        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and preserves executive readability plus safety meaning without backend or SocialSense changes.</p>
+        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and tracks remaining mixed-language review gaps without backend or SocialSense changes.</p>
       </div>
       <section className="grid two-col" aria-label="M18 KPI dashboard">
         {kpis.map(([title, description]) => (
@@ -1447,7 +1447,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
           </ReportSection>
           <ReportSection title="Parameters">
-            <p>Review mode: {fixture.reviewMetadata.source.reviewMode}; runtime mode: {fixture.reviewMetadata.provenance.runtime_mode}; production ready: no.</p>
+            <p>Review mode: {fixture.reviewMetadata.source.reviewMode}; execution mode: {fixture.reviewMetadata.provenance.runtime_mode}; production ready: no.</p>
             <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
           </ReportSection>
           <ReportSection title="Audience">
@@ -1632,7 +1632,7 @@ function validateForm(form: LaunchForm, workflow: WorkflowKey): string[] {
     errors.push('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
   }
   if (workflow === 'creativeComparison' && (!form.creativeADescription.trim() || !form.creativeBDescription.trim())) {
-    errors.push('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+    errors.push('Creative A and Creative B descriptions are required because this reviewed prototype uses text-only concepts.');
   }
   if (workflow === 'creativeComparison' && !form.keyMessage.trim()) {
     errors.push('Key Message is required because message clarity must be reviewed against an explicit message.');
