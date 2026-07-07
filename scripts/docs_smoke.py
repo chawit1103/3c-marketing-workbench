@@ -248,6 +248,10 @@ REQUIRED_M17_CLOSEOUT_PHRASES = [
     "Can the report be presented in a management meeting?",
     "Which sections still require expert interpretation?",
     "M18 Thai-first Internationalization may be prepared next",
+    "M17 closure is pending this final status correction merge and post-merge validation",
+    "PR #27",
+    "5cec77a26cffd5255d9051a2743ab20c79512607",
+    "Merge this final status correction, run post-merge validation, then close M17 as GO WITH CONDITIONS and prepare M18",
     "M18 implementation must not begin until explicit M18 kickoff",
 ]
 
@@ -1335,7 +1339,10 @@ def main() -> None:
             m17_status_text = "\n".join([readme, agents, roadmap, health_dashboard, *m17_docs.values()])
             for phrase in [
                 "M17 Executive Dashboard & Reporting — Complete",
-                "PR5 M17 validation/closeout complete",
+                "PR5 closeout branch / PR #27",
+                "5cec77a26cffd5255d9051a2743ab20c79512607",
+                "this final-status correction branch is pending PR/merge",
+                "M17 closure is pending this final status correction merge and post-merge validation",
                 "Executive Readiness",
                 "Dashboard Quality",
                 "Report Quality",
@@ -1345,7 +1352,7 @@ def main() -> None:
                 "Known Risks",
                 "M18 may be prepared next",
                 "post-merge validation on `main`",
-                "M17 is closed as GO WITH CONDITIONS",
+                "M18 implementation must not begin until explicit M18 kickoff",
             ]:
                 if phrase not in m17_status_text:
                     fail(f"M17 closeout status docs missing phrase: {phrase}")
@@ -1359,12 +1366,23 @@ def main() -> None:
                 "after validation passes and the PR is reviewed/merged",
                 "after M17 review/merge/post-merge validation",
                 "PR5 M17 validation/closeout is current and docs/status/smoke only",
+                "Status: M17 Executive Dashboard & Reporting is complete and merged on `main`; PR5 is merged",
+                "Validation status for closeout: PASS in post-merge validation on current `main`",
+                "PR5/current `main` post-merge validation passed",
+                "This final-status correction branch is already merged",
+                "this final-status correction branch is already merged",
+                "this follow-up final-status correction branch is already merged",
+                "this follow-up final-status correction branch has already merged",
             ]
             stale_hits = [phrase for phrase in stale_m17_phrases if phrase in m17_status_text]
             if stale_hits:
                 fail("M17 closeout status docs contain stale PR4/PR5 phrase: " + ", ".join(stale_hits))
             if "M18 implementation must not begin until explicit M18 kickoff" not in m17_status_text:
                 fail("M17 closeout status docs missing M18 implementation block")
+            if "PR #27" not in m17_status_text or "5cec77a26cffd5255d9051a2743ab20c79512607" not in m17_status_text:
+                fail("M17 closeout status docs missing original PR #27 merge evidence")
+            if "Merge this final status correction, run post-merge validation, then close M17 as GO WITH CONDITIONS and prepare M18" not in m17_status_text:
+                fail("M17 closeout status docs missing final-status correction recommendation")
             forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
         elif current_branch_name() == "m17-executive-dashboard-kpis":
             m17_pr2_source_text = "\n".join(
@@ -1447,7 +1465,7 @@ def main() -> None:
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         if current_branch_name().startswith("m17-closeout") or "PR5 M17 validation/closeout complete" in combined_m17_text:
-            print("PASS: M17 PR5 closeout report includes required sections, final merged lifecycle, GO WITH CONDITIONS readiness, post-merge gate outcomes, stale-status guards, and M18 preparation-only gate")
+            print("PASS: M17 PR5 closeout report includes required sections, PR #27 merge evidence, pending final-status correction lifecycle, GO WITH CONDITIONS readiness, stale/false-merge guards, and M18 preparation-only gate")
         if current_branch_name() == "m17-executive-dashboard-kpis":
             print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")
         if current_branch_name() == "m17-evidence-confidence-visuals":
