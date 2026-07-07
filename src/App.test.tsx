@@ -331,6 +331,20 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  it('preserves user-entered Health Co exactly in Thai result assumptions', () => {
+    const form = renderWorkbench();
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Health Co' } });
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const assumptions = screen.getByText('สมมติฐานของคุณที่แสดงเพื่อการตรวจทาน').closest('.assumption-panel');
+    expect(assumptions).toHaveTextContent('Health Co');
+    expect(assumptions).not.toHaveTextContent('สถานะผลิตภัณฑ์ Co');
+  });
+
   it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
     renderAt('/health', 'en');
 

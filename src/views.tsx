@@ -914,6 +914,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const [formOverrides, setFormOverrides] = useState<Partial<LaunchForm>>({});
   const [hasRun, setHasRun] = useState(false);
   const [submittedForm, setSubmittedForm] = useState<LaunchForm>(localizedDefaultForm);
+  const [submittedEditedFields, setSubmittedEditedFields] = useState<Set<keyof LaunchForm>>(new Set());
   const [errors, setErrors] = useState<string[]>([]);
   const form = useMemo<LaunchForm>(() => ({
     ...localizedDefaultForm,
@@ -921,6 +922,10 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
     audiences: formOverrides.audiences ?? localizedDefaultForm.audiences,
     platforms: formOverrides.platforms ?? localizedDefaultForm.platforms,
   }), [formOverrides, localizedDefaultForm]);
+  const editedFields = useMemo(
+    () => new Set(Object.keys(formOverrides) as Array<keyof LaunchForm>),
+    [formOverrides],
+  );
 
   const selectedAudienceText = translate(form.audiences.join(', '), language);
   const selectedPlatformText = form.platforms.join(', ');
@@ -947,6 +952,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
       return;
     }
     setSubmittedForm(form);
+    setSubmittedEditedFields(new Set(editedFields));
     setHasRun(true);
   }
 
@@ -1162,7 +1168,15 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
         </section>
       </div>
 
-      {hasRun ? <ReferenceResults form={submittedForm} config={config} fixture={config.fixture} showActions /> : null}
+      {hasRun ? (
+        <ReferenceResults
+          form={submittedForm}
+          config={config}
+          fixture={config.fixture}
+          editedFields={submittedEditedFields}
+          showActions
+        />
+      ) : null}
     </section>
   );
 }
@@ -1266,31 +1280,48 @@ function ReferenceResults({
   form,
   fixture,
   config,
+  editedFields,
   showActions = false,
 }: {
   form: LaunchForm;
   fixture: ReferenceFixture;
   config: WorkflowConfig;
+  editedFields?: Set<keyof LaunchForm>;
   showActions?: boolean;
 }) {
-  const { t } = useI18n();
-  const assumptionRows = useMemo(
+  const { language, t } = useI18n();
+  const localizeTrustedAssumptionValue = (field: keyof LaunchForm, value: string) => {
+    if (language === 'en') {
+      return value;
+    }
+    if (field === 'audiences') {
+      return value
+        .split(', ')
+        .map((audience) => (audiencePresets.includes(audience) ? t(audience) : audience))
+        .join(', ');
+    }
+    if (field === 'platforms' || editedFields?.has(field)) {
+      return value;
+    }
+    return t(value);
+  };
+  const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(
     () => [
-      ['Campaign name or brand', form.brand],
-      ['Campaign Message', form.campaignMessage],
-      ...(form.variantA ? [['Variant A', form.variantA]] : []),
-      ...(form.variantB ? [['Variant B', form.variantB]] : []),
-      ...(form.creativeATitle ? [['Creative A concept title', form.creativeATitle]] : []),
-      ...(form.creativeADescription ? [['Creative A visual idea / copy description', form.creativeADescription]] : []),
-      ...(form.creativeBTitle ? [['Creative B concept title', form.creativeBTitle]] : []),
-      ...(form.creativeBDescription ? [['Creative B visual idea / copy description', form.creativeBDescription]] : []),
-      ...(form.offer ? [['Offer/Promotion', form.offer]] : []),
-      ['Key Message', form.keyMessage],
-      ...(form.tone ? [['Tone', form.tone]] : []),
-      ...(form.claim ? [['Claim to review', form.claim]] : []),
-      ['Audience', form.audiences.join(', ') || 'General Consumers'],
-      ['Platform mix', form.platforms.join(', ')],
-      ['Context', form.context || 'No additional context'],
+      ['Campaign name or brand', form.brand, 'brand'],
+      ['Campaign Message', form.campaignMessage, 'campaignMessage'],
+      ...(form.variantA ? ([['Variant A', form.variantA, 'variantA']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.variantB ? ([['Variant B', form.variantB, 'variantB']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeATitle ? ([['Creative A concept title', form.creativeATitle, 'creativeATitle']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeADescription ? ([['Creative A visual idea / copy description', form.creativeADescription, 'creativeADescription']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeBTitle ? ([['Creative B concept title', form.creativeBTitle, 'creativeBTitle']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeBDescription ? ([['Creative B visual idea / copy description', form.creativeBDescription, 'creativeBDescription']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.offer ? ([['Offer/Promotion', form.offer, 'offer']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ['Key Message', form.keyMessage, 'keyMessage'],
+      ...(form.tone ? ([['Tone', form.tone, 'tone']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.claim ? ([['Claim to review', form.claim, 'claim']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ['Audience', form.audiences.join(', ') || 'General Consumers', 'audiences'],
+      ['Platform mix', form.platforms.join(', '), 'platforms'],
+      ['Context', form.context || 'No additional context', 'context'],
     ],
     [form],
   );
@@ -1320,10 +1351,10 @@ function ReferenceResults({
       <div className="card assumption-panel">
         <p className="eyebrow">{t('Your assumptions shown for review')}</p>
         <dl className="assumption-grid">
-          {assumptionRows.map(([label, value]) => (
+          {assumptionRows.map(([label, value, field]) => (
             <div key={label}>
               <dt>{t(label)}</dt>
-              <dd>{t(value)}</dd>
+              <dd>{localizeTrustedAssumptionValue(field, value)}</dd>
             </div>
           ))}
         </dl>
