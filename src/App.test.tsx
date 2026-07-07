@@ -100,6 +100,30 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  it.each([
+    ['/workbench', 'ทำตัวอย่างเปิดตัวสินค้าออฟไลน์ที่ตรวจทานแล้วให้เสร็จในไม่ถึงหนึ่งนาที', 'เปลี่ยนไปที่ การทดลอง A/B'],
+    ['/workbench/campaign-message-test', 'ทบทวนข้อความแคมเปญ กลุ่มเป้าหมาย และสัดส่วนแพลตฟอร์ม', 'เปลี่ยนไปที่ การทดลอง A/B'],
+    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ Product Launch'],
+    ['/workbench/creative-comparison', 'เปรียบเทียบแนวคิดงานสร้างสรรค์แบบข้อความเท่านั้นสองแบบ', 'เปลี่ยนไปที่ การทดลอง A/B'],
+  ])('renders Workbench Thai mode without known English smoke blocker fragments for %s', (pathname, thaiHelper, thaiSwitch) => {
+    renderAt(pathname, 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain(thaiHelper);
+    expect(visibleText).toContain(thaiSwitch);
+    expect(visibleText).toContain('เครื่องมือช่วยตัดสินใจการตลาด');
+    for (const blocker of [
+      'Complete a reviewed offline Product Launch sample in under a minute',
+      'Review a campaign message, audience, and platform mix',
+      'Compare two text-only creative concepts with the approved workflow',
+      'Switch to',
+      'Marketing Decision Workbench',
+      'WORKBENCH ตัดสินใจการตลาด',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+  });
+
   it('renders campaign workspace Thai mode without known English smoke blocker fragments', () => {
     renderAt('/campaign-workspace', 'th');
 

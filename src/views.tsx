@@ -923,7 +923,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </section>
           <div className="button-row" aria-label="Switch workflow">
             <a className="button button-secondary" href={alternateWorkflowHref}>
-              Switch to {alternateWorkflow.objective}
+              {`Switch to ${alternateWorkflow.objective}`}
             </a>
           </div>
         </div>
