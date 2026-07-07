@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
-import { translate } from './i18n/localize';
+import { translate, translateUi } from './i18n/localize';
 import { safetyLabels } from './product/safety/safetyLabels';
 
 function renderAt(pathname: string, language: 'th' | 'en' = 'en') {
@@ -91,6 +91,8 @@ describe('M18 Thai-first internationalization', () => {
 
   it('does not translate Health inside arbitrary user text and translates known full campaign phrases', () => {
     expect(translate('Health Co', 'th')).toBe('Health Co');
+    expect(translate('Brand and product is Health Co.', 'th')).toBe('Brand and product is Health Co.');
+    expect(translateUi('Brand and product is Health Co.', 'th')).toBe('Brand and product is Health Co.');
     expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).toBe(
       'ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที',
     );
@@ -562,7 +564,7 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).toContain('คะแนนรวมแคมเปญ แหล่งที่มาและหลักฐาน');
     expect(accessibleText).toContain('เปรียบเทียบ Sentiment สูตรและแหล่งที่มา');
     expect(accessibleText).toContain('รายการตรวจทานโดยมนุษย์ สูตรและแหล่งที่มา');
-    expect(visibleText).toContain('คำอธิบาย: สัญญาณจากลำดับข้อมูลตัวอย่าง');
+    expect(visibleText).toContain('สัญญาณจากลำดับข้อมูลตัวอย่าง');
     expect(visibleText).toContain('สูตร: ค่าแถบแพลตฟอร์ม = clampScore(100 - fixture rank index × 12)');
     expect(visibleText).toContain('แหล่งที่มา: productLaunchFixture.platformBreakdown');
     expect(visibleText).toContain('ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์');

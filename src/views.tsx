@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
-import { translate } from './i18n/localize';
+import { localizeNode, translate } from './i18n/localize';
 import type { Language } from './i18n/translations';
 import { useI18n } from './i18n/useI18n';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
@@ -17,6 +17,11 @@ const audiencePresets = [
   'General Consumers',
 ];
 const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
+
+function Localized({ children }: { children: ReactNode }) {
+  const { language } = useI18n();
+  return <>{localizeNode(children, language)}</>;
+}
 
 type WorkflowKey = 'productLaunch' | 'campaignMessageTest' | 'abExperiment' | 'creativeComparison';
 
@@ -222,7 +227,8 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
 
 export function HomeView() {
   return (
-    <section className="view-stack" aria-labelledby="home-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="home-title">
       <div className="hero card card-accent">
         <p className="eyebrow">Marketing Decision Workbench</p>
         <h1 id="home-title">Compare campaign decisions safely before budget reviews.</h1>
@@ -262,6 +268,7 @@ export function HomeView() {
         />
       </div>
     </section>
+    </Localized>
   );
 }
 
@@ -314,6 +321,10 @@ const campaignLimitationsRisks = Array.from(new Set([
   ...creativeComparisonFixture.reviewMetadata.limitations.slice(0, 2),
   ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
+
+function localizeAudienceNames(audiences: string[], language: Language) {
+  return audiences.map((audience) => translate(audience, language)).join(', ');
+}
 
 const executiveFixtures = [
   productLaunchFixture,
@@ -543,12 +554,15 @@ const decisionBlockersBeforeAction = [
 ];
 
 export function CampaignWorkspaceView() {
+  const { language } = useI18n();
   const campaignName = productLaunchFixture.sampleInput.brand;
   const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
+  const campaignAudienceText = localizeAudienceNames(campaignMessageFixture.sampleInput.audiences, language);
   const recommendedAction = creativeComparisonFixture.recommendedNextTest;
 
   return (
-    <section className="view-stack" aria-labelledby="campaign-workspace-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="campaign-workspace-title">
       <div className="card card-accent hero">
         <p className="eyebrow">Campaign Workspace</p>
         <h1 id="campaign-workspace-title">Campaign Workspace</h1>
@@ -573,7 +587,7 @@ export function CampaignWorkspaceView() {
             </div>
             <div>
               <dt>Audience</dt>
-              <dd>{campaignMessageFixture.sampleInput.audiences.join(', ')}</dd>
+              <dd data-i18n-rendered="true">{campaignAudienceText}</dd>
             </div>
             <div>
               <dt>Platform mix</dt>
@@ -647,9 +661,9 @@ export function CampaignWorkspaceView() {
               <p>{creativeComparisonFixture.comparisonMethod.rationale}</p>
               <p><strong>Confidence:</strong> {creativeComparisonFixture.comparisonMethod.confidenceLevel}</p>
             </section>
-            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
-            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
-            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} />
+            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} localize />
+            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} localize />
+            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} localize />
             <section className="evidence-critical-card" aria-label="Handoff readiness">
               <p className="eyebrow">Handoff readiness</p>
               <h3>{creativeComparisonFixture.exports.readiness}</h3>
@@ -687,12 +701,14 @@ export function CampaignWorkspaceView() {
         </section>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function DecisionBlockersBeforeAction() {
   return (
-    <section className="card decision-blockers-card" aria-label="Decision blockers before action">
+    <Localized>
+      <section className="card decision-blockers-card" aria-label="Decision blockers before action">
       <p className="eyebrow">Decision blockers before action</p>
       <h2>Evidence gaps + human review required before action</h2>
       <p>
@@ -709,12 +725,14 @@ function DecisionBlockersBeforeAction() {
         </ul>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function ExecutiveDashboard() {
   return (
-    <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
+    <Localized>
+      <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
       <p className="eyebrow">M17 Executive Dashboard</p>
       <h2>Executive KPI cards and decision visuals</h2>
       <p>
@@ -765,12 +783,14 @@ function ExecutiveDashboard() {
         <HumanReviewChecklist />
       </div>
     </section>
+    </Localized>
   );
 }
 
 function EvidenceTierVisualization() {
   return (
-    <section className="executive-visual-card" aria-label="Evidence tier visualization">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Evidence tier visualization">
       <p className="eyebrow">Evidence tier visualization</p>
       <h3>Notice: current evidence is E1 only; E2 evidence is required before budget or launch decisions.</h3>
       <ol className="tier-list">
@@ -788,12 +808,14 @@ function EvidenceTierVisualization() {
         <p>Confidence/limitation/next evidence step: Low directional; compare against approved field feedback or backtest before any launch, budget, or winner decision.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function VisualEvidenceGaps() {
   return (
-    <section className="executive-visual-card" aria-label="Visual evidence gaps and limitations">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Visual evidence gaps and limitations">
       <p className="eyebrow">Visual evidence gaps and limitations</p>
       <h3>Gaps stay visible beside the charts</h3>
       <ul className="insight-list">
@@ -806,12 +828,14 @@ function VisualEvidenceGaps() {
         <p>Confidence/limitation/next evidence step: Low directional; collect approved field feedback or backtest evidence before external use.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function HumanReviewChecklist() {
   return (
-    <section className="executive-visual-card" aria-label="Human review checklist">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Human review checklist">
       <p className="eyebrow">Human review checklist</p>
       <h3>Questions before action</h3>
       <ul className="insight-list">
@@ -824,10 +848,12 @@ function HumanReviewChecklist() {
         <p>Confidence: Low directional; limitation is synthetic fixture evidence only.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function BarList({ title, items }: { title: string; items: { label: string; value: number; cue: string; detail: string }[] }) {
+  const { t } = useI18n();
   const legend = title === 'Confidence / risk'
     ? 'Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk. Higher readiness bars are better; lower risk bars do not mean no risk.'
     : title === 'Sentiment comparison'
@@ -874,29 +900,29 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
         : [];
 
   return (
-    <section className="executive-visual-card" aria-label={title}>
-      <p className="eyebrow">{title}</p>
-      <h3>{executiveSignal}</h3>
-      <div className="bar-list">
+    <section className="executive-visual-card" aria-label={t(title)}>
+      <p className="eyebrow">{t(title)}</p>
+      <h3>{t(executiveSignal)}</h3>
+      <div className="bar-list" aria-label={t(`${title} formula and source`)}>
         {items.map((item) => (
           <article className="bar-item" key={item.label}>
             <div className="bar-label-row">
-              <strong>{item.label}</strong>
+              <strong>{t(item.label)}</strong>
               <span>{item.value}/100</span>
             </div>
-            <p className={`semantic-cue semantic-cue-${item.cue.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{item.cue}</p>
+            <p className={`semantic-cue semantic-cue-${item.cue.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{t(item.cue)}</p>
             <div className="progress-track" aria-hidden="true">
               <span style={{ width: `${item.value}%` }} />
             </div>
-            <p>{item.detail}</p>
+            <p>{t(item.detail)}</p>
           </article>
         ))}
       </div>
       {sourceMapping.length > 0 ? (
-        <div className="kpi-metadata" aria-label={`${title} formula and source`}>
-          <p className="bar-legend">{legend}</p>
+        <div className="kpi-metadata" aria-label={t(`${title} formula and source`)}>
+          <p className="bar-legend">{t(legend)}</p>
           {sourceMapping.map((metadata) => (
-            <p key={metadata}>{metadata}</p>
+            <p key={metadata}>{t(metadata)}</p>
           ))}
         </div>
       ) : null}
@@ -975,7 +1001,8 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
 
   return (
-    <section className="view-stack" aria-labelledby="workbench-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="workbench-title">
       <div className="card card-accent quick-start">
         <div>
           <p className="eyebrow">Marketing Decision Workbench</p>
@@ -1186,7 +1213,8 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           showActions
         />
       ) : null}
-    </section>
+      </section>
+    </Localized>
   );
 }
 
@@ -1196,14 +1224,16 @@ export function RunDashboardView({ runId }: { runId?: string }) {
     return <UnavailableReferenceView kind="Run" id={runId} />;
   }
   return (
-    <section className="view-stack" aria-labelledby="dashboard-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="dashboard-title">{`${config.objective} Results`}</h1>
         <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
       <ReferenceResults form={config.defaultForm} config={config} fixture={config.fixture} />
-    </section>
+      </section>
+    </Localized>
   );
 }
 
@@ -1213,7 +1243,8 @@ export function ExportReviewView({ runId }: { runId?: string }) {
     return <UnavailableReferenceView kind="Export" id={runId} />;
   }
   return (
-    <section className="view-stack" aria-labelledby="export-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="export-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="export-title">Export Readiness Preview</h1>
@@ -1221,7 +1252,8 @@ export function ExportReviewView({ runId }: { runId?: string }) {
       </div>
       <FixtureTransparency />
       <ExportReview fixture={config.fixture} objective={config.objective} />
-    </section>
+      </section>
+    </Localized>
   );
 }
 
@@ -1258,7 +1290,8 @@ export function HealthView() {
   ];
 
   return (
-    <section className="view-stack" aria-labelledby="health-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
         <h1 id="health-title">M18 Thai-first Internationalization</h1>
@@ -1270,18 +1303,21 @@ export function HealthView() {
         ))}
       </section>
     </section>
+    </Localized>
   );
 }
 
 export function NotFoundView() {
   return (
-    <section className="view-stack" aria-labelledby="not-found-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="not-found-title">
       <div className="card error-state">
         <p className="eyebrow">Route not found</p>
         <h1 id="not-found-title">This page is not part of the guided campaign review.</h1>
         <p>Use the main navigation to return to a documented workbench route.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
@@ -1481,7 +1517,8 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
     : `${decisionStatus}. Confidence: ${decisionConfidence}. Evidence gaps remain visible before action.`;
 
   return (
-    <div className="view-stack">
+    <Localized>
+      <div className="view-stack">
       <div className="card executive-report-hero">
         <p className="eyebrow">Export review</p>
         <h2>{fixture.exports.readiness}</h2>
@@ -1522,21 +1559,21 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
 
       <section className="card executive-report-preview" aria-label="Executive report preview">
         <p className="eyebrow">Executive report preview</p>
-        <h2>{objective} executive handoff report</h2>
+        <h2>{t(`${objective} executive handoff report`)}</h2>
         <p>
           Decision readiness: human review required before launch, budget, or winner decisions.
         </p>
         <p>
-          Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.
-          Evidence tier: E1 synthetic/offline fixture; Confidence: {decisionConfidence}.
+          {t('Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.')}{' '}
+          {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t(decisionConfidence)}.
         </p>
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
-            <p className="help-text">Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: {decisionConfidence}.</p>
+            <p className="help-text">{t('Source')}: fixture.exports.executiveSummaryPreview. {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}. {t('Confidence')}: {t(decisionConfidence)}.</p>
           </ReportSection>
           <ReportSection title="Objectives">
-            <p>Objective: {objective}. Use the report for executive handoff and human review, not production approval.</p>
+            <p>{t(`Objective: ${objective}. Use the report for executive handoff and human review, not production approval.`)}</p>
             <p className="help-text">Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.</p>
           </ReportSection>
           <ReportSection title="Scenario">
@@ -1559,7 +1596,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
           </ReportSection>
           <ReportSection title="Audience">
-            <p>{fixture.sampleInput.audiences.join(', ')}</p>
+            <p>{fixture.sampleInput.audiences.map((audience) => t(audience)).join(', ')}</p>
             <p className="help-text">Source: fixture.sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.</p>
           </ReportSection>
           <ReportSection title="Platform Mix">
@@ -1576,11 +1613,11 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           </ReportSection>
           <ReportSection title="Recommendations">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">Next review step: {fixture.recommendedNextTest}</p>
+            <p className="help-text">{t('Next review step')}: {t(fixture.recommendedNextTest)}</p>
           </ReportSection>
           <ReportSection title="Next review step">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">Evidence tier: E1 synthetic/offline fixture; Confidence: Low directional; review step only, not a launch or budget decision.</p>
+            <p className="help-text">{t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t('Low directional')}; {t('review step only, not a launch or budget decision')}.</p>
           </ReportSection>
           <ReportSection title="Assumptions">
             <ul className="insight-list">
@@ -1605,13 +1642,13 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
 
       <div className="card">
         <p className="eyebrow">Executive Summary preview</p>
-        <h2>{objective} executive-ready summary</h2>
+        <h2>{t(`${objective} executive-ready summary`)}</h2>
         <p>{fixture.exports.executiveSummaryPreview}</p>
       </div>
       <div className="grid two-col align-start">
-        <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} />
-        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} />
-        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} />
+        <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} localize />
+        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} localize />
+        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} localize />
         <div className="card">
           <p className="eyebrow">Review confidence</p>
           <h3>Offline sample basis</h3>
@@ -1637,14 +1674,16 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           {fixture.safetyLabels.map((label) => <li key={label}>{label}</li>)}
         </ul>
       </div>
-    </div>
+      </div>
+    </Localized>
   );
 }
 
 function ReportSection({ title, children }: { title: string; children: ReactNode }) {
+  const { t } = useI18n();
   return (
     <section className="report-section-card">
-      <h3>{title}</h3>
+      <h3>{t(title)}</h3>
       {children}
     </section>
   );
@@ -1683,7 +1722,8 @@ function reportInputRows(fixture: ReferenceFixture): string[][] {
 function FixtureTransparency() {
   const { t } = useI18n();
   return (
-    <section className="card" aria-label={t('Fixture transparency')}>
+    <Localized>
+      <section className="card" aria-label={t('Fixture transparency')}>
       <p className="eyebrow">{t('Fixture transparency')}</p>
       <h2>{t('Reference Fixture vs User Review Session')}</h2>
       <dl className="assumption-grid">
@@ -1701,6 +1741,7 @@ function FixtureTransparency() {
         </div>
       </dl>
     </section>
+    </Localized>
   );
 }
 

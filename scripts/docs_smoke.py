@@ -1577,6 +1577,23 @@ def main() -> None:
         if missing_i18n_source:
             fail("M18 missing i18n source/resources/tests: " + ", ".join(missing_i18n_source))
         source_i18n_text = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in source_i18n_files)
+        i18n_safety_files = [
+            "src/i18n/localize.ts",
+            "src/app/shell/AppShell.tsx",
+        ]
+        i18n_safety_text = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in i18n_safety_files)
+        forbidden_i18n_patterns = [
+            "createTreeWalker",
+            "SHOW_TEXT",
+            "replaceTrustedUiPhrases",
+            "isolatedPhrasePattern",
+            "escapeRegExp",
+        ]
+        forbidden_i18n_hits = [pattern for pattern in forbidden_i18n_patterns if pattern in i18n_safety_text]
+        if forbidden_i18n_hits:
+            fail("M18 i18n safety guard found broad DOM or phrase replacement mutation: " + ", ".join(forbidden_i18n_hits))
+        if re.search(r"\.replace\([^\n]+RegExp", i18n_safety_text):
+            fail("M18 i18n safety guard found generic regex phrase mutation")
         combined_m18_text = "\n".join([readme, agents, roadmap, health_dashboard, m18_text, source_i18n_text])
         for phrase in [
             "M18 current implementation milestone",

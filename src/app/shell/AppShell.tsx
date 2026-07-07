@@ -1,7 +1,7 @@
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import type { AppRoute } from '../routes/routeResolver';
 import { SafetyLabels } from '../../components/product/SafetyLabels';
-import { localizeDom } from '../../i18n/localize';
+import { localizeNode } from '../../i18n/localize';
 import { useI18n } from '../../i18n/useI18n';
 
 const navItems = [
@@ -19,33 +19,27 @@ interface AppShellProps {
 
 export function AppShell({ route, children }: AppShellProps) {
   const { language, setLanguage, t } = useI18n();
-  const shellRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (shellRef.current) {
-      localizeDom(shellRef.current, language);
-    }
-  }, [language, route.pathname, children]);
+  const localizedChildren = localizeNode(children, language);
 
   return (
-    <div className="app-shell" ref={shellRef}>
+    <div className="app-shell">
       <header className="site-header">
-        <a className="brand" href="/" aria-label="3C Marketing Workbench home">
+        <a className="brand" href="/" aria-label={t('3C Marketing Workbench home')}>
           <span className="brand-mark">3C</span>
           <span>
-            <strong>Marketing Decision Workbench</strong>
-            <small>Executive scenario review</small>
+            <strong>{t('Marketing Decision Workbench')}</strong>
+            <small>{t('Executive scenario review')}</small>
           </span>
         </a>
         <div className="header-actions">
-          <nav className="site-nav" aria-label="Main navigation">
+          <nav className="site-nav" aria-label={t('Main navigation')}>
             {navItems.map((item) => (
               <a
                 aria-current={route.pathname === item.href ? 'page' : undefined}
                 href={item.href}
                 key={item.href}
               >
-                {item.label}
+                {t(item.label)}
               </a>
             ))}
           </nav>
@@ -64,7 +58,7 @@ export function AppShell({ route, children }: AppShellProps) {
       </header>
       <main className="page-shell">
         <SafetyLabels />
-        {children}
+        {localizedChildren}
       </main>
     </div>
   );
