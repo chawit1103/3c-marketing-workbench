@@ -190,6 +190,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 - Architecture Gate: not triggered.
 - Post-merge validation: PASS on `main`.
 - M19 status: not begun; prepare remediation/terminology backlog before implementation.
+- M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` exists for terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 
 ## Summary
 

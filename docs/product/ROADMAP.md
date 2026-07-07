@@ -108,6 +108,7 @@ Acceptance criteria:
 
 - Evaluate readiness only after M18 closeout merge.
 - Because M18 closes as GO WITH CONDITIONS, prepare remediation backlog first.
+- Preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
