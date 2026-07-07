@@ -922,7 +922,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
     platforms: formOverrides.platforms ?? localizedDefaultForm.platforms,
   }), [formOverrides, localizedDefaultForm]);
 
-  const selectedAudienceText = form.audiences.join(', ');
+  const selectedAudienceText = translate(form.audiences.join(', '), language);
   const selectedPlatformText = form.platforms.join(', ');
 
   function updateField(field: keyof LaunchForm, value: string) {
@@ -1323,7 +1323,7 @@ function ReferenceResults({
           {assumptionRows.map(([label, value]) => (
             <div key={label}>
               <dt>{t(label)}</dt>
-              <dd>{value}</dd>
+              <dd>{t(value)}</dd>
             </div>
           ))}
         </dl>

@@ -77,7 +77,7 @@ describe('M18 Thai-first internationalization', () => {
     ['/workbench/campaign-message-test', 'Campaign Message Test', 'ทดสอบข้อความแคมเปญ'],
     ['/workbench/ab-experiment', 'A/B Experiment', 'การทดลอง A/B'],
     ['/workbench/creative-comparison', 'Creative Comparison', 'เปรียบเทียบงานสร้างสรรค์'],
-    ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์ Product Launch'],
+    ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์การเปิดตัวสินค้า (Product Launch)'],
     ['/exports/sample-run', 'Export Readiness Preview', 'ตัวอย่างความพร้อมสำหรับส่งออก'],
     ['/health', 'M18 Thai-first Internationalization', 'M18 ภาษาไทยเป็นหลัก'],
   ])('renders Thai and English labels for %s', (pathname, englishHeading, thaiHeading) => {
@@ -101,10 +101,21 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  const thaiUxReviewBlockerPhrases = [
+    'Working Adults',
+    'Urban Consumers',
+    'SME Owners',
+    'Product Launch mode',
+    'Strong directional signal',
+    'Light positive signal',
+    'Message is understandable',
+    'Directional campaign health',
+  ];
+
   it.each([
     ['/workbench', 'ทำตัวอย่างเปิดตัวสินค้าออฟไลน์ที่ตรวจทานแล้วให้เสร็จในไม่ถึงหนึ่งนาที', 'เปลี่ยนไปที่ การทดลอง A/B'],
     ['/workbench/campaign-message-test', 'ทบทวนข้อความแคมเปญ กลุ่มเป้าหมาย และสัดส่วนแพลตฟอร์ม', 'เปลี่ยนไปที่ การทดลอง A/B'],
-    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ Product Launch'],
+    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ การเปิดตัวสินค้า (Product Launch)'],
     ['/workbench/creative-comparison', 'เปรียบเทียบแนวคิดงานสร้างสรรค์แบบข้อความเท่านั้นสองแบบ', 'เปลี่ยนไปที่ การทดลอง A/B'],
   ])('renders Workbench Thai mode without known English smoke blocker fragments for %s', (pathname, thaiHelper, thaiSwitch) => {
     renderAt(pathname, 'th');
@@ -120,6 +131,7 @@ describe('M18 Thai-first internationalization', () => {
       'Switch to',
       'Marketing Decision Workbench',
       'WORKBENCH ตัดสินใจการตลาด',
+      ...thaiUxReviewBlockerPhrases,
     ]) {
       expect(visibleText).not.toContain(blocker);
     }
@@ -155,6 +167,7 @@ describe('M18 Thai-first internationalization', () => {
       'quality, delivery',
       'observed market behavior',
       'synthetic/offline fixture',
+      ...thaiUxReviewBlockerPhrases,
     ]) {
       expect(visibleText).not.toContain(blocker);
     }
@@ -203,6 +216,7 @@ describe('M18 Thai-first internationalization', () => {
       'The offline Product Launch sample shows',
       'Recommended next action',
       'Jump to generated sample results',
+      ...thaiUxReviewBlockerPhrases,
     ]) {
       expect(resultSection).not.toHaveTextContent(blocker);
       expect(document.body).not.toHaveTextContent(blocker);
