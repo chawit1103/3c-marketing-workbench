@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The milestone improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence, so human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
+Status: M18 Thai-first Internationalization is **closed as GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains available through runtime switching, and M18 delivered the translation style guide, official glossary, exact/template-based localization, language selector, and i18n regression coverage. M19 has not begun; before M19 implementation, create a terminology/copy remediation backlog for Synthetic Social Platform Engagement Simulation and preserve the no-live/no-scraping/no-production boundary. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -101,6 +101,7 @@ Product documentation map:
 - [M17 Executive Dashboard & Reporting Closeout Report](docs/product/M17_CLOSEOUT_REPORT.md)
 - [M18 Translation Style Guide](docs/product/TRANSLATION_STYLE_GUIDE.md)
 - [M18 Glossary](docs/product/GLOSSARY.md)
+- [M18 Closeout Report](docs/product/M18_CLOSEOUT_REPORT.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)

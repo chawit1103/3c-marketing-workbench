@@ -217,6 +217,7 @@ REQUIRED_M17_DOCS = [
 REQUIRED_M18_DOCS = [
     "docs/product/TRANSLATION_STYLE_GUIDE.md",
     "docs/product/GLOSSARY.md",
+    "docs/product/M18_CLOSEOUT_REPORT.md",
 ]
 
 REQUIRED_M18_GLOSSARY_TERMS = [
@@ -1594,9 +1595,10 @@ def main() -> None:
             fail("M18 i18n safety guard found broad DOM or phrase replacement mutation: " + ", ".join(forbidden_i18n_hits))
         if re.search(r"\.replace\([^\n]+RegExp", i18n_safety_text):
             fail("M18 i18n safety guard found generic regex phrase mutation")
-        combined_m18_text = "\n".join([readme, agents, roadmap, health_dashboard, m18_text, source_i18n_text])
+        m18_closeout_text = (ROOT / "docs/product/M18_CLOSEOUT_REPORT.md").read_text(encoding="utf-8")
+        combined_m18_text = "\n".join([readme, agents, roadmap, health_dashboard, m18_text, m18_closeout_text, source_i18n_text])
         for phrase in [
-            "M18 current implementation milestone",
+            "M18 Thai-first Internationalization is closed as GO WITH CONDITIONS",
             "Default language is Thai",
             "English is the secondary language",
             "English fallback",
@@ -1604,6 +1606,8 @@ def main() -> None:
             "Architecture Gate: Not Triggered",
             "M19 has not begun",
             "M17 is closed as GO WITH CONDITIONS",
+            "GO WITH CONDITIONS",
+            "fallback review evidence",
         ]:
             if phrase not in combined_m18_text:
                 fail(f"M18 docs/source missing required status/scope phrase: {phrase}")
@@ -1657,7 +1661,7 @@ def main() -> None:
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if branch_at_or_after(18):
-        print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, stale planned-only guard, and no-M19 wording")
+        print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, closeout report, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, closed GO WITH CONDITIONS wording, fallback review evidence, and no-M19 wording")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

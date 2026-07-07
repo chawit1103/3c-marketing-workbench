@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 has not begun and must start with a terminology/remediation backlog before any Synthetic Social Platform Engagement Simulation implementation.
 
 
 ## M1 PR4 closeout
@@ -178,6 +178,19 @@ Status: M18 Thai-first Internationalization is the current implementation milest
 - Architecture Gate: not triggered.
 - Scope: documentation-only; no frontend implementation, backend behavior, additional workflows, persistence, workspace storage, live APIs, private data, or SocialSense runtime changes.
 
+## M18 Thai-first Internationalization Closeout
+
+- PR: https://github.com/chawit1103/3c-marketing-workbench/pull/30
+- Merge commit: `42bdf1b4c259c0bc553733fe89f6ad065409de4a`
+- Closeout report: `docs/product/M18_CLOSEOUT_REPORT.md`
+- Translation Style Guide: `docs/product/TRANSLATION_STYLE_GUIDE.md`
+- Glossary: `docs/product/GLOSSARY.md`
+- Readiness decision: **GO WITH CONDITIONS**.
+- Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current M18 scope with M19 terminology/copy remediation conditions.
+- Architecture Gate: not triggered.
+- Post-merge validation: PASS on `main`.
+- M19 status: not begun; prepare remediation/terminology backlog before implementation.
+
 ## Summary
 
 | Area | Current status | Current target | Notes |
@@ -207,8 +220,8 @@ Status: M18 Thai-first Internationalization is the current implementation milest
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 | Executive Dashboard & Reporting | Closed as GO WITH CONDITIONS | M17 PR5 closeout + PR #28 final status correction | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed. |
-| Thai-first Internationalization | Current implementation | M18 Thai-first i18n | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, and tests are in progress without backend/SocialSense/runtime dependency changes. |
-| Synthetic Social Platform Engagement Simulation | Not begun | M19 future milestone | Safe synthetic social engagement scope has not begun and must wait until M18 closes; no live social APIs, scraping, or production posting. |
+| Thai-first Internationalization | Closed as GO WITH CONDITIONS | M18 closeout | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, exact/template-based localization, and tests are complete without backend/SocialSense/runtime dependency changes. |
+| Synthetic Social Platform Engagement Simulation | Not begun | M19 gated future milestone | M19 must begin with a terminology/remediation backlog because M18 closed as GO WITH CONDITIONS; no live social APIs, scraping, production posting, credentials, private data, or production engagement claims. |
 
 ## M15 Creative Comparison Vertical Slice
 
