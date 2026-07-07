@@ -1476,6 +1476,9 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
   const dashboardSnapshotCopy = `${fixture.cards
     .map((card) => `${t(card.title)}: ${t(card.value)}`)
     .join('; ')}.`;
+  const confidenceSummaryCopy = language === 'th'
+    ? `${t(decisionStatus)}. ${t('Confidence')}: ${t(decisionConfidence)}. ช่องว่างหลักฐานต้องแสดงให้เห็นก่อนดำเนินการ.`
+    : `${decisionStatus}. Confidence: ${decisionConfidence}. Evidence gaps remain visible before action.`;
 
   return (
     <div className="view-stack">
@@ -1568,7 +1571,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
           </ReportSection>
           <ReportSection title="Charts / Evidence / Confidence summary">
-            <p>{decisionStatus}. Confidence: {decisionConfidence}. Evidence gaps remain visible before action.</p>
+            <p data-i18n-rendered="true">{confidenceSummaryCopy}</p>
             <p className="help-text">Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.</p>
           </ReportSection>
           <ReportSection title="Recommendations">

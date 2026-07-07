@@ -477,6 +477,13 @@ describe('M18 Thai-first internationalization', () => {
       'Light positive signal',
       'Strong directional signal',
       'Directional only',
+      'Brand and product is Nimbus Go.',
+      'Campaign message is Healthy lunch decisions in under 10 minutes for busy urban teams.',
+      'Launch offer is Intro launch bundle: first-week sampler with free delivery threshold.',
+      'Key message is Save time without sacrificing taste, nutrition, or team convenience.',
+      'Use only aggregate, synthetic, offline assumptions',
+      'Directional synthetic aggregate sample only',
+      'ช่องว่างหลักฐาน remain visible before action.',
       'Review mode:',
       'execution mode:',
       'production ready:',
@@ -511,6 +518,13 @@ describe('M18 Thai-first internationalization', () => {
       'โหมดตรวจทาน: ตัวอย่างออฟไลน์',
       'รูปแบบการทำงาน: ข้อมูลตัวอย่างออฟไลน์',
       'ความพร้อมใช้งานจริง: ยังไม่พร้อมใช้งานจริง',
+      'แบรนด์และสินค้า: Nimbus Go',
+      'ข้อความแคมเปญ: ตัดสินใจมื้อกลางวันที่ดีต่อสุขภาพได้ในไม่เกิน 10 นาที สำหรับทีมเมืองที่งานยุ่ง',
+      'ข้อเสนอเปิดตัว: ชุดทดลองสัปดาห์แรกพร้อมเกณฑ์ส่งฟรี',
+      'ข้อความหลัก: ประหยัดเวลาโดยไม่ลดทอนรสชาติ โภชนาการ หรือความสะดวกของทีม',
+      'ใช้เฉพาะสมมติฐานแบบรวม สังเคราะห์ และออฟไลน์',
+      'เป็นตัวอย่างรวมเชิงสังเคราะห์แบบชี้ทิศทางเท่านั้น',
+      'ช่องว่างหลักฐานต้องแสดงให้เห็นก่อนดำเนินการ',
     ]) {
       expect(visibleText).toContain(thaiCopy);
     }
