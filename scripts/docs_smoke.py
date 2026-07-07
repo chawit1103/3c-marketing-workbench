@@ -878,6 +878,10 @@ def branch_at_or_after(milestone: int) -> bool:
     return current is not None and current >= milestone
 
 
+def branch_is_milestone(milestone: int) -> bool:
+    return current_milestone_number() == milestone
+
+
 def branch_before_milestone(milestone: int) -> bool:
     current = current_milestone_number()
     return current is None or current < milestone
@@ -1533,7 +1537,7 @@ def main() -> None:
         if forbidden_m17_changes:
             fail("M17 program kickoff changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m17_changes))
 
-    if branch_at_or_after(18):
+    if branch_is_milestone(18):
         source_i18n_files = [
             "src/i18n/I18nContext.ts",
             "src/i18n/I18nProvider.tsx",

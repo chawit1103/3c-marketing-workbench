@@ -37,6 +37,13 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertFalse(docs_smoke.branch_at_or_after(7))
             self.assertTrue(docs_smoke.branch_before_milestone(7))
 
+    def test_m18_guard_is_active_only_for_m18_branches(self) -> None:
+        with patch.object(docs_smoke, "current_branch_name", return_value="m18-thai-first-i18n"):
+            self.assertTrue(docs_smoke.branch_is_milestone(18))
+
+        with patch.object(docs_smoke, "current_branch_name", return_value="m19-synthetic-social-platform-engagement"):
+            self.assertFalse(docs_smoke.branch_is_milestone(18))
+
 
 if __name__ == "__main__":
     unittest.main()
