@@ -471,6 +471,18 @@ describe('M18 Thai-first internationalization', () => {
       'Formula:',
       'Confidence:',
       'Objective:',
+      'Overall Reaction',
+      'Moderate positive signal',
+      'Message is understandable',
+      'Light positive signal',
+      'Strong directional signal',
+      'Directional only',
+      'Review mode:',
+      'execution mode:',
+      'production ready:',
+      'Offline sample',
+      'fixture;',
+      'no.',
     ]) {
       expect(visibleText).not.toContain(blocker);
       expect(accessibleText).not.toContain(blocker);
@@ -491,6 +503,14 @@ describe('M18 Thai-first internationalization', () => {
       'สูตร',
       'ความเชื่อมั่น',
       'รายงานส่งต่อผู้บริหาร',
+      'ปฏิกิริยาโดยรวม: สัญญาณบวกปานกลาง',
+      'การยอมรับข้อความ: ข้อความเข้าใจง่าย',
+      'ภาพรับรู้แบรนด์: สัญญาณบวกเล็กน้อย',
+      'ศักยภาพการมีส่วนร่วม: สัญญาณเชิงทิศทางชัดเจน',
+      'ความตั้งใจซื้อเชิงสังเคราะห์: ใช้เป็นทิศทางเท่านั้น',
+      'โหมดตรวจทาน: ตัวอย่างออฟไลน์',
+      'รูปแบบการทำงาน: ข้อมูลตัวอย่างออฟไลน์',
+      'ความพร้อมใช้งานจริง: ยังไม่พร้อมใช้งานจริง',
     ]) {
       expect(visibleText).toContain(thaiCopy);
     }

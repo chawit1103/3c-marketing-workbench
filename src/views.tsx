@@ -1443,6 +1443,7 @@ function ReferenceResults({
 }
 
 function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objective: string }) {
+  const { language, t } = useI18n();
   const supportedFormats = fixture.exports.formats
     .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
     .map((format) => {
@@ -1466,6 +1467,15 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
   const decisionStatus = 'comparisonMethod' in fixture
     ? fixture.comparisonMethod.decisionStatus
     : 'Ready for human review';
+  const reviewMode = language === 'th' ? 'ตัวอย่างออฟไลน์' : fixture.reviewMetadata.source.reviewMode;
+  const executionMode = language === 'th' ? 'ข้อมูลตัวอย่างออฟไลน์' : fixture.reviewMetadata.provenance.runtime_mode;
+  const productionReady = language === 'th' ? 'ยังไม่พร้อมใช้งานจริง' : 'no';
+  const parametersCopy = language === 'th'
+    ? `โหมดตรวจทาน: ${reviewMode}; รูปแบบการทำงาน: ${executionMode}; ความพร้อมใช้งานจริง: ${productionReady}.`
+    : `Review mode: ${reviewMode}; execution mode: ${executionMode}; production ready: ${productionReady}.`;
+  const dashboardSnapshotCopy = `${fixture.cards
+    .map((card) => `${t(card.title)}: ${t(card.value)}`)
+    .join('; ')}.`;
 
   return (
     <div className="view-stack">
@@ -1542,7 +1552,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
           </ReportSection>
           <ReportSection title="Parameters">
-            <p>Review mode: {fixture.reviewMetadata.source.reviewMode}; execution mode: {fixture.reviewMetadata.provenance.runtime_mode}; production ready: no.</p>
+            <p data-i18n-rendered="true">{parametersCopy}</p>
             <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
           </ReportSection>
           <ReportSection title="Audience">
@@ -1554,7 +1564,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Source: fixture.sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.</p>
           </ReportSection>
           <ReportSection title="Dashboard / KPI snapshot">
-            <p>{fixture.cards.map((card) => `${card.title}: ${card.value}`).join('; ')}.</p>
+            <p data-i18n-rendered="true">{dashboardSnapshotCopy}</p>
             <p className="help-text">Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
           </ReportSection>
           <ReportSection title="Charts / Evidence / Confidence summary">
@@ -1605,7 +1615,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           <dl className="assumption-grid">
             <div>
               <dt>Review mode</dt>
-              <dd>{fixture.reviewMetadata.source.reviewMode}</dd>
+              <dd data-i18n-rendered="true">{reviewMode}</dd>
             </div>
             <div>
               <dt>Sample source</dt>
