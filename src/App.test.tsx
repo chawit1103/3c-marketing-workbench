@@ -50,6 +50,7 @@ describe('M18 Thai-first internationalization', () => {
 
     expect(screen.getByLabelText('ภาษา')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'เปรียบเทียบทางเลือกแคมเปญอย่างปลอดภัยก่อนทบทวนงบประมาณ' })).toBeInTheDocument();
+    expect(within(screen.getByRole('navigation', { name: 'เมนูหลัก' })).getByRole('link', { name: 'พื้นที่ทำงาน' })).toHaveAttribute('href', '/workbench');
     expect(screen.getByRole('link', { name: 'เปิด Campaign Workspace' })).toBeInTheDocument();
     const safetyPanel = screen.getByRole('region', { name: 'ขอบเขตความปลอดภัย' });
     for (const label of thaiSafetyLabels) {
@@ -168,7 +169,45 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).not.toContain('Top evidence confidence blocker');
   });
 
-  it('preserves edited Workbench inputs when switching languages', () => {
+  it('localizes Thai Workbench default input values without known English fixture fragments', () => {
+    const form = renderAt('/workbench', 'th').container.querySelector('form');
+    expect(form).not.toBeNull();
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    const defaultValues = [
+      within(thaiForm).getByLabelText('ข้อความแคมเปญ'),
+      within(thaiForm).getByLabelText('ข้อเสนอ/โปรโมชัน'),
+      within(thaiForm).getByLabelText('ข้อความหลัก'),
+      within(thaiForm).getByLabelText('บริบทเพิ่มเติม'),
+    ].map((field) => (field as HTMLInputElement | HTMLTextAreaElement).value);
+
+    for (const value of defaultValues) {
+      expect(value).not.toContain('Healthy lunch decisions in under 10 minutes for busy urban teams.');
+      expect(value).not.toContain('Intro launch bundle: first-week sampler with free delivery threshold.');
+      expect(value).not.toContain('Save time without sacrificing taste, nutrition, or team convenience.');
+      expect(value).not.toContain('Reviewed offline product-launch sample for an executive marketing scenario walkthrough.');
+    }
+    expect(defaultValues.join(' ')).toContain('ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที');
+  });
+
+  it('shows English Workbench defaults in English mode', () => {
+    const form = renderWorkbench();
+
+    expect(within(form).getByLabelText('Campaign Message')).toHaveValue(
+      'Healthy lunch decisions in under 10 minutes for busy urban teams.',
+    );
+    expect(within(form).getByLabelText('Offer/Promotion')).toHaveValue(
+      'Intro launch bundle: first-week sampler with free delivery threshold.',
+    );
+    expect(within(form).getByLabelText('Key Message')).toHaveValue(
+      'Save time without sacrificing taste, nutrition, or team convenience.',
+    );
+    expect(within(form).getByLabelText('Context notes')).toHaveValue(
+      'Reviewed offline product-launch sample for an executive marketing scenario walkthrough.',
+    );
+  });
+
+  it('preserves edited Workbench inputs while localizing untouched defaults across language switches', () => {
     const form = renderWorkbench();
     const editedCampaignName = 'Edited campaign survives language switch';
     const editedMessage = 'Edited message remains controlled state';
@@ -181,12 +220,18 @@ describe('M18 Thai-first internationalization', () => {
     const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
     expect(within(thaiForm).getByLabelText('ชื่อแคมเปญหรือแบรนด์')).toHaveValue(editedCampaignName);
     expect(within(thaiForm).getByLabelText('ข้อความแคมเปญ')).toHaveValue(editedMessage);
+    expect(within(thaiForm).getByLabelText('ข้อเสนอ/โปรโมชัน')).toHaveValue(
+      'ชุดเปิดตัวทดลองสัปดาห์แรก พร้อมเงื่อนไขส่งฟรีเมื่อถึงยอดขั้นต่ำ',
+    );
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
     const englishForm = screen.getByRole('form', { name: 'Product Launch setup' });
     expect(within(englishForm).getByLabelText('Campaign name or brand')).toHaveValue(editedCampaignName);
     expect(within(englishForm).getByLabelText('Campaign Message')).toHaveValue(editedMessage);
+    expect(within(englishForm).getByLabelText('Offer/Promotion')).toHaveValue(
+      'Intro launch bundle: first-week sampler with free delivery threshold.',
+    );
   });
 
   it('uses honest Health KPI language and avoids overclaiming language coverage', () => {

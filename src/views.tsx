@@ -1,5 +1,8 @@
 import { type ReactNode, useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
+import { translate } from './i18n/localize';
+import type { Language } from './i18n/translations';
+import { useI18n } from './i18n/useI18n';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -34,6 +37,38 @@ type LaunchForm = {
   audiences: string[];
   platforms: string[];
 };
+
+type LocalizedFormField = Exclude<keyof LaunchForm, 'audiences' | 'platforms'>;
+
+const localizedFormFields: LocalizedFormField[] = [
+  'brand',
+  'campaignMessage',
+  'variantA',
+  'variantB',
+  'creativeATitle',
+  'creativeADescription',
+  'creativeBTitle',
+  'creativeBDescription',
+  'offer',
+  'keyMessage',
+  'tone',
+  'claim',
+  'context',
+];
+
+function localizeDefaultForm(defaultForm: LaunchForm, language: Language): LaunchForm {
+  const localizedForm: LaunchForm = {
+    ...defaultForm,
+    audiences: [...defaultForm.audiences],
+    platforms: [...defaultForm.platforms],
+  };
+
+  for (const field of localizedFormFields) {
+    localizedForm[field] = translate(defaultForm[field], language);
+  }
+
+  return localizedForm;
+}
 
 type FixtureCard = {
   title: string;
@@ -870,24 +905,36 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
 }
 
 export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
+  const { language } = useI18n();
   const config = workflowConfigs[workflow];
-  const [form, setForm] = useState<LaunchForm>(config.defaultForm);
+  const localizedDefaultForm = useMemo(
+    () => localizeDefaultForm(config.defaultForm, language),
+    [config.defaultForm, language],
+  );
+  const [formOverrides, setFormOverrides] = useState<Partial<LaunchForm>>({});
   const [hasRun, setHasRun] = useState(false);
-  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(config.defaultForm);
+  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(localizedDefaultForm);
   const [errors, setErrors] = useState<string[]>([]);
+  const form = useMemo<LaunchForm>(() => ({
+    ...localizedDefaultForm,
+    ...formOverrides,
+    audiences: formOverrides.audiences ?? localizedDefaultForm.audiences,
+    platforms: formOverrides.platforms ?? localizedDefaultForm.platforms,
+  }), [formOverrides, localizedDefaultForm]);
 
   const selectedAudienceText = form.audiences.join(', ');
   const selectedPlatformText = form.platforms.join(', ');
 
   function updateField(field: keyof LaunchForm, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setFormOverrides((current) => ({ ...current, [field]: value }));
   }
 
   function toggleList(field: 'audiences' | 'platforms', value: string) {
-    setForm((current) => {
-      const values = current[field].includes(value)
-        ? current[field].filter((item) => item !== value)
-        : [...current[field], value];
+    setFormOverrides((current) => {
+      const currentValues = current[field] ?? localizedDefaultForm[field];
+      const values = currentValues.includes(value)
+        ? currentValues.filter((item) => item !== value)
+        : [...currentValues, value];
       return { ...current, [field]: values };
     });
   }
