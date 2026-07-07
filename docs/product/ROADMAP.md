@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M17 Executive Dashboard & Reporting — Complete for controlled review. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; this final-status correction branch is pending PR/merge as a docs/status/smoke-only correction. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after this final status correction merge and post-merge validation on `main`, but M18 implementation must not begin until explicit M18 kickoff. Feature Freeze v0.1 remains active: no new workflow, backend, SocialSense capability, live API, external service, persistence, auth, CRM/customer data, PII/private data, production automation, workflow redesign, or workspace redesign.
+Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 closeout docs/status/smoke are complete. M18 Thai-first Internationalization may be prepared next as kickoff planning only, but M18 implementation must not begin until explicit M18 kickoff.
 
 ## Program
 
@@ -260,14 +260,14 @@ Acceptance criteria:
 - PR2 implemented the first dashboard slice: executive KPI cards, platform comparison, audience comparison, confidence/risk, and journey progress visuals using existing offline fixtures and React/CSS only.
 - PR3 implemented marketing charts/evidence/confidence visualization: sentiment comparison, evidence tier visualization, visual evidence gaps/limitations, and human review checklist using existing offline fixture fields only.
 - PR4 implemented report/export readability: executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. No PDF/PPT file is generated or downloadable.
-- PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; this final-status correction branch updates docs/status/smoke only and is pending PR/merge.
+- PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed; M17 is CLOSED as GO WITH CONDITIONS.
 - Program docs: `docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md`, `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`, and `docs/product/M17_CLOSEOUT_REPORT.md`.
 - M17 PR order: PR1 program kickoff docs, PR2 Executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 executive report/export improvements, PR5 M17 validation/closeout.
 - Current readiness: GO WITH CONDITIONS for controlled executive review. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions.
 - Program KPI closeout: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, and Known Risks are current in Product Health Dashboard and closeout report.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Triggers remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 may be prepared next after this final status correction merge and post-merge validation on `main`; M18 implementation must not begin until explicit M18 kickoff.
+- M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
 - PR5 scope remained docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
 
 ### M18: Thai-first Internationalization — Planned
@@ -321,7 +321,7 @@ Do not implement until separate review:
 - M14 Creative Comparison Product Discovery & Specification is marked complete and merged.
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
 - M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
-- M17 Executive Dashboard & Reporting is complete for controlled review: PR1 program kickoff docs, PR2 fixture-backed executive KPI/dashboard visual slice, PR3 marketing chart/evidence/confidence visuals, PR4 report/export readability, and PR5 closeout docs/status/smoke are complete with GO WITH CONDITIONS readiness.
+- M17 Executive Dashboard & Reporting is closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f`: PR1 program kickoff docs, PR2 fixture-backed executive KPI/dashboard visual slice, PR3 marketing chart/evidence/confidence visuals, PR4 report/export readability, PR5 closeout docs/status/smoke, PR #28 final status correction, and post-merge validation are complete.
 - M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation are planned future milestones, not implemented.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
