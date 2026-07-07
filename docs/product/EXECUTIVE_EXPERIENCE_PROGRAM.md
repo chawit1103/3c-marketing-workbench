@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M17 Executive Dashboard & Reporting — Complete for controlled review after PR1 program kickoff docs, PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 M17 validation/closeout complete. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after M17 review/merge/post-merge validation, but M18 implementation must not begin in this PR. PR5 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or actual PDF/PPT generation/download.
+Status: M17 Executive Dashboard & Reporting — Complete for controlled review after PR1 program kickoff docs, PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, PR4 report/export readability, and PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; this final-status correction branch is pending PR/merge. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 may be prepared next after this final status correction merge and post-merge validation on `main`, but M18 implementation must not begin until explicit M18 kickoff. PR5 does not add backend behavior, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or actual PDF/PPT generation/download.
 
 ## Program objective
 
@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: PR5 M17 validation/closeout is current and docs/status/smoke only; PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M17 closes with GO WITH CONDITIONS for controlled executive review.
+Status: PR5 closeout branch / PR #27 was merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; this final-status correction branch is pending PR/merge as docs/status/smoke only. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M17 closure is pending this final status correction merge and post-merge validation; after that, the orchestrator can report M17 closed as GO WITH CONDITIONS for controlled executive review.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 

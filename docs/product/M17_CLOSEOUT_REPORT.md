@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Closeout Report
 
-Status: M17 Executive Dashboard & Reporting PR5 closeout is complete for review on `m17-closeout`.
+Status: PR5 closeout branch / PR #27 was merged to `main` at merge commit `5cec77a26cffd5255d9051a2743ab20c79512607`. This follow-up final-status correction branch is pending PR/merge; M17 closure is pending this final status correction merge and post-merge validation. Current readiness: GO WITH CONDITIONS, conditional on that merge and validation.
 Program: Executive Experience & Marketing Simulation Enhancement.
 Milestone: M17 — Executive Dashboard & Reporting.
 Scope: docs/status/smoke closeout only; no runtime feature implementation.
@@ -9,13 +9,13 @@ Current readiness: GO WITH CONDITIONS.
 
 ## Executive Summary
 
-M17 closes the Executive Dashboard & Reporting milestone after five PR slices:
+M17 is ready to close the Executive Dashboard & Reporting milestone after this final-status correction merges and post-merge validation passes. The original PR5 closeout branch / PR #27 was merged to `main` at merge commit `5cec77a26cffd5255d9051a2743ab20c79512607`; this follow-up final-status correction branch is not yet merged.
 
 1. PR1 program kickoff docs for the Executive Experience & Marketing Simulation Enhancement program.
 2. PR2 executive KPI cards and dashboard readability improvements.
 3. PR3 marketing chart, evidence tier, confidence, limitation, and human-review visualization.
 4. PR4 executive report/export readability, including Executive JSON preview, Markdown briefing preview, and planning-only PDF/PowerPoint notices.
-5. PR5 closeout documentation, status refresh, and docs smoke guard updates.
+5. PR5 closeout documentation, status refresh, and docs smoke guard updates — PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`.
 
 M17 improves the controlled-review executive experience without expanding product architecture. The dashboard and report surfaces are now executive-ready for internal management review of fixture-backed scenarios, but not production launch, budget, or winner decisions. The evidence remains E1 synthetic/offline fixture evidence with Low directional confidence, so human review and field evidence are required before external launch decisions.
 
@@ -25,8 +25,8 @@ M17 improves the controlled-review executive experience without expanding produc
 - Updated M17 status in `docs/product/PRODUCT_HEALTH_DASHBOARD.md`.
 - Updated M17 status and M18 sequencing in `docs/product/ROADMAP.md`.
 - Updated README docs map and validation/status copy for M17 closeout.
-- Updated `AGENTS.md` to make PR5 closeout the current M17 state and keep M18 implementation blocked until M17 merges and validates.
-- Updated `scripts/docs_smoke.py` so docs smoke validates M17 closeout and guards against stale PR4/PR5 status.
+- Updated `AGENTS.md` to distinguish the merged PR5 closeout branch / PR #27 from this pending final-status correction branch and keep M18 implementation blocked until this correction merges and validates.
+- Updated `scripts/docs_smoke.py` so docs smoke validates PR #27 merge evidence, rejects claims that this final-status correction branch has already merged, and guards the M18 preparation-only gate.
 
 M17 shipped through prior PR slices:
 
@@ -49,16 +49,16 @@ M17 shipped through prior PR slices:
 
 | Gate | Outcome | Evidence / condition |
 |---|---|---|
-| QA Review | GO WITH CONDITIONS | Required validation suite is run for PR5; readiness remains controlled-review only. |
-| Code Review | GO WITH CONDITIONS | PR5 changes are docs/status/smoke only; no runtime source changes outside `scripts/docs_smoke.py`. |
-| Safety Review | GO WITH CONDITIONS | Safety boundaries remain visible: no live APIs, scraping, credentials, CRM/customer lists, PII, private messages/groups, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims. |
-| Product Review | GO WITH CONDITIONS | Executive dashboard/reporting is reviewable for management discussion, not launch/budget/winner decisions. |
-| UX Review | GO WITH CONDITIONS | Executive surfaces are scannable for controlled review; deeper field usability evidence remains future. |
-| Research Review | GO WITH CONDITIONS | Evidence is E1 synthetic/offline fixture evidence with Low directional confidence; E2/E3 evidence is required before stronger claims. |
+| QA Review | PENDING | This final-status correction branch must merge, then required post-merge validation must pass on `main`. Historical PR5 / PR #27 validation evidence remains the closeout baseline, but it is not proof that this correction branch has merged. |
+| Code Review | REQUEST_CHANGES resolved by this branch | Research Review requested correction because prior docs implied this final-status correction branch had already merged. This branch is docs/status/smoke only and remains pending PR/merge. |
+| Safety Review | GO | Safety boundaries remain visible: no live APIs, scraping, credentials, CRM/customer lists, PII, private messages/groups, voter lists, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims. |
+| Product Review | PENDING | M17 should be reported closed only after this final-status correction merges and post-merge validation passes; production launch, budget, and winner decisions remain blocked by evidence conditions. |
+| UX Review | GO WITH CONDITIONS | Executive dashboard/report surfaces are scannable for controlled review; deeper field usability evidence remains a future evidence step. |
+| Research Review | REQUEST_CHANGES history / pending verification | Research Review blocker is addressed by distinguishing PR #27 merge history from this pending final-status correction branch. Final Research Review GO requires merge plus post-merge validation evidence. |
 
 ## Validation Summary
 
-Required PR5 validation commands:
+Required validation commands for this final-status correction branch:
 
 ```bash
 python3 scripts/docs_smoke.py
@@ -71,7 +71,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-Validation status for closeout: PASS before commit and handoff. The required chained command completed with exit code 0. Frontend tests reported 2 files passed / 57 tests passed; Python unittest reported 14 tests passed; build completed with Vite production output; SocialSense adapter smoke returned status `ok` with `public_sdk_only: true`, `fixture_only: true`, `live_api_access: false`, and `production_ready: false`. Passing validation supports PR5 closeout only; it does not convert fixture evidence into production evidence.
+Validation status for this branch: pending until these commands pass here and again after this final-status correction merges to `main`. Historical PR5 closeout branch / PR #27 merged at `5cec77a26cffd5255d9051a2743ab20c79512607`; that merge evidence remains true, but it does not mean this follow-up final-status correction branch has merged. Passing validation supports M17 closeout only; it does not convert fixture evidence into production evidence.
 
 ## Regression Summary
 
@@ -79,7 +79,7 @@ Validation status for closeout: PASS before commit and handoff. The required cha
 - Backend/live/auth/persistence/external-service scope: unchanged and absent.
 - SocialSense scope: unchanged; no SocialSense repository changes.
 - MarketingSimulation scope: unchanged; no MarketingSimulation changes.
-- Docs smoke scope: expanded to require M17 closeout report sections, GO WITH CONDITIONS readiness, Not Triggered Architecture Gate, M18 gate wording, and stale PR4 status guard.
+- Docs smoke scope: expanded to require M17 closeout report sections, GO WITH CONDITIONS readiness, Not Triggered Architecture Gate, PR #27 merge evidence, pending final-status correction lifecycle wording, M18 gate wording, and stale/false merged-status guards.
 
 ## Known Risks
 
@@ -89,7 +89,7 @@ Validation status for closeout: PASS before commit and handoff. The required cha
 | Offline fixture scope may not represent real campaign performance. | High | Require human review and approved field evidence before launch, budget, or winner decisions. |
 | Report/dashboard readability has not been proven with broad executive field use. | Medium | Run controlled management review and dogfooding before external use. |
 | PDF/PowerPoint wording could be mistaken for actual generated files. | Medium | Keep PDF/PPT explicitly planning-only and not generated/downloadable. |
-| M18 could start before M17 evidence limitations are understood. | Medium | Gate M18 preparation on this closeout and validation; do not implement M18 in this PR. |
+| M18 could start before M17 evidence limitations are understood. | Medium | Merge this final status correction, run post-merge validation, then close M17 as GO WITH CONDITIONS and prepare M18; do not implement M18 in this PR. |
 
 ## Technical Debt
 
@@ -169,7 +169,7 @@ PR5 did not introduce or require:
 
 ## Executive Readiness
 
-M17 is executive-ready for controlled review and internal management discussion. It is not ready for production launch authorization, budget allocation, campaign winner selection, or external performance claims without human review and stronger evidence.
+M17 is executive-ready for controlled review and internal management discussion once this final-status correction merges and post-merge validation passes. It is not ready for production launch authorization, budget allocation, campaign winner selection, or external performance claims without human review and stronger evidence.
 
 Current readiness: GO WITH CONDITIONS.
 
@@ -210,4 +210,4 @@ Rationale: M17 improves executive dashboard and report readability enough for co
 
 ## Recommendation
 
-Close M17 PR5 as GO WITH CONDITIONS after validation passes and the PR is reviewed/merged. If M17 closes with GO or GO WITH CONDITIONS, M18 Thai-first Internationalization may be prepared next, but M18 implementation must not begin in this PR. The next M18 work should start with Thai-first glossary/content discovery, safety-copy review, and locale architecture planning while preserving the M16/M17 architecture boundaries.
+Merge this final status correction, run post-merge validation, then close M17 as GO WITH CONDITIONS and prepare M18. M18 Thai-first Internationalization may be prepared next, but M18 implementation must not begin until explicit M18 kickoff. The next M18 work should start with Thai-first glossary/content discovery, safety-copy review, and locale architecture planning while preserving the M16/M17 architecture boundaries.
