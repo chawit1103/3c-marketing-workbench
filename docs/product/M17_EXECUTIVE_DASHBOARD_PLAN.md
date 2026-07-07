@@ -1,6 +1,6 @@
 # M17 Executive Dashboard & Reporting Plan
 
-Status: M17 PR5 closeout branch / PR #27 was merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; this final-status correction branch is pending PR/merge as docs/status/smoke only. The M17 sequence includes the PR1 program kickoff docs, PR2 KPI slice, PR3 CSS/React-only marketing charts/evidence/confidence expansion, and PR4 report/export readability. PR4 delivered executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, Planning only: PDF, Planning only: PowerPoint, Assumptions, Limitations, Synthetic-data notice, Safety notice, and Formula/Source/Evidence tier/Confidence copy. M17 closure is pending this final status correction merge and post-merge validation; after that, the orchestrator can report M17 closed as GO WITH CONDITIONS for controlled executive review because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. PR5 does not deliver actual PDF/PPT generation/download, backend, persistence, auth, external services, live APIs, SocialSense changes, MarketingSimulation changes, runtime product changes, or new dependencies.
+Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The M17 sequence includes the PR1 program kickoff docs, PR2 KPI slice, PR3 CSS/React-only marketing charts/evidence/confidence expansion, and PR4 report/export readability. PR4 delivered executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
 
 ## M17 objective
 
@@ -34,7 +34,7 @@ Acceptance criteria:
 
 ### PR2: Executive KPI cards
 
-Status: complete prior limited implementation slice.
+Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The M17 sequence includes the PR1 program kickoff docs, PR2 KPI slice, PR3 CSS/React-only marketing charts/evidence/confidence expansion, and PR4 report/export readability. PR4 delivered executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
 
 Scope:
 
