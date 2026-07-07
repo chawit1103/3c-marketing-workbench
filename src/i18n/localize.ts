@@ -19,7 +19,7 @@ function restoreEnglish(text: string): string {
   return text;
 }
 
-export function translate(text: string, language: Language): string {
+export function translateExact(text: string, language: Language): string {
   if (language === 'en') {
     return text;
   }
@@ -34,39 +34,38 @@ export function translate(text: string, language: Language): string {
     return text.replace(trimmed, table[trimmed]);
   }
 
-  return translateTemplates(text, table);
+  return text;
 }
 
-function translateTemplates(text: string, table: Record<string, string>) {
-  let result = text;
-  const replacements: Array<[RegExp, string | ((...args: string[]) => string)]> = [
-    [/^Run (.+)$/u, (_match, id) => `รัน ${id}`],
-    [/^Switch to (.+)$/u, (_match, workflow) => `เปลี่ยนไปที่ ${translate(String(workflow), 'th')}`],
-    [/^Objective: (.+)$/u, (_match, objective) => `วัตถุประสงค์: ${translate(String(objective), 'th')}`],
-    [/^(.+) executive summary$/u, (_match, objective) => `สรุปผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
-    [/^(.+) executive-ready summary$/u, (_match, objective) => `สรุปพร้อมผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
-    [/^(.+) executive handoff report$/u, (_match, objective) => `รายงานส่งต่อผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
-    [/^(.+) Results$/u, (_match, objective) => `ผลลัพธ์ ${translate(String(objective), 'th')}`],
-    [/^(Completed|Current|Next): (.+)$/u, (_match, status, stage) => `${translate(String(status), 'th')}: ${translate(String(stage), 'th')}`],
-    [/^Handoff readiness: (.+)$/u, (_match, value) => `ความพร้อมสำหรับส่งต่อ: ${translate(String(value), 'th')}`],
-    [/^Confidence: (.+)$/u, (_match, value) => `ความเชื่อมั่น: ${translate(String(value), 'th')}`],
-    [/^Safety: (.+)$/u, (_match, value) => `ความปลอดภัย: ${translate(String(value), 'th')}`],
-    [/^Evidence gap: (.+)$/u, (_match, value) => `ช่องว่างหลักฐาน: ${translate(String(value), 'th')}`],
-    [/^Human review required: (.+)$/u, (_match, value) => `ต้องให้มนุษย์ตรวจทาน: ${translate(String(value), 'th')}`],
-    [/^Blocked action: (.+)$/u, (_match, value) => `การดำเนินการที่ถูกบล็อก: ${translate(String(value), 'th')}`],
-    [/^Source: (.+)$/u, (_match, value) => `แหล่งที่มา: ${translate(String(value), 'th')}`],
-    [/^Formula: (.+)$/u, (_match, value) => `สูตร: ${translate(String(value), 'th')}`],
-    [/^Evidence: (.+)$/u, (_match, value) => `หลักฐาน: ${translate(String(value), 'th')}`],
-    [/^Evidence tier: (.+)$/u, (_match, value) => `ระดับหลักฐาน: ${translate(String(value), 'th')}`],
-    [/^Next evidence step: (.+)$/u, (_match, value) => `ขั้นตอนหลักฐานถัดไป: ${translate(String(value), 'th')}`],
-  ];
-
-  for (const [pattern, replacement] of replacements) {
-    if (pattern.test(result)) {
-      return result.replace(pattern, replacement as string);
-    }
+export function translateUi(text: string, language: Language): string {
+  if (language === 'en') {
+    return text;
   }
 
+  const exact = translateExact(text, language);
+  if (exact !== text) {
+    return exact;
+  }
+
+  const templated = translateTemplates(text);
+  return replaceTrustedUiPhrases(templated);
+}
+
+export function translate(text: string, language: Language): string {
+  if (language === 'en') {
+    return text;
+  }
+
+  const exact = translateExact(text, language);
+  if (exact !== text) {
+    return exact;
+  }
+
+  return translateTemplates(text);
+}
+
+function replaceTrustedUiPhrases(text: string): string {
+  let result = text;
   const phraseReplacements: Record<string, string> = {
     'Completed': 'เสร็จแล้ว',
     'Current': 'ปัจจุบัน',
@@ -75,7 +74,6 @@ function translateTemplates(text: string, table: Record<string, string>) {
     'Executive Decision': 'การตัดสินใจระดับผู้บริหาร',
     'Export/Handoff': 'ส่งออก/ส่งต่อ',
     'Ready for human review': 'พร้อมให้มนุษย์ตรวจทาน',
-    'Product Launch': 'การเปิดตัวสินค้า (Product Launch)',
     'Working Adults': 'วัยทำงาน',
     'Urban Consumers': 'ผู้บริโภคในเมือง',
     'SME Owners': 'เจ้าของธุรกิจ SME',
@@ -128,14 +126,12 @@ function translateTemplates(text: string, table: Record<string, string>) {
     'Audience': 'กลุ่มเป้าหมาย',
   };
 
-  const safeReplacements = Object.entries({ ...phraseReplacements, ...table }).sort(
+  const safeReplacements = Object.entries(phraseReplacements).sort(
     ([left], [right]) => right.length - left.length,
   );
 
   for (const [source, target] of safeReplacements) {
-    if (result.includes(source) && canReplaceIsolatedPhrase(result, source)) {
-      result = result.replace(isolatedPhrasePattern(source), target);
-    }
+    result = result.replace(isolatedPhrasePattern(source), target);
   }
   return result;
 }
@@ -144,12 +140,41 @@ function isolatedPhrasePattern(source: string): RegExp {
   return new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(source)}(?![\\p{L}\\p{N}])`, 'gu');
 }
 
-function canReplaceIsolatedPhrase(text: string, source: string): boolean {
-  return isolatedPhrasePattern(source).test(text);
-}
-
 function escapeRegExp(source: string): string {
   return source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function translateTemplates(text: string) {
+  const replacements: Array<[RegExp, string | ((...args: string[]) => string)]> = [
+    [/^Run (.+)$/u, (_match, id) => `รัน ${id}`],
+    [/^Switch to (.+)$/u, (_match, workflow) => `เปลี่ยนไปที่ ${translate(String(workflow), 'th')}`],
+    [/^Objective: (.+)$/u, (_match, objective) => `วัตถุประสงค์: ${translate(String(objective), 'th')}`],
+    [/^(.+) executive summary$/u, (_match, objective) => `สรุปผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
+    [/^(.+) executive-ready summary$/u, (_match, objective) => `สรุปพร้อมผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
+    [/^(.+) executive handoff report$/u, (_match, objective) => `รายงานส่งต่อผู้บริหารสำหรับ ${translate(String(objective), 'th')}`],
+    [/^(.+) Results$/u, (_match, objective) => `ผลลัพธ์ ${translate(String(objective), 'th')}`],
+    [/^(Completed|Current|Next): (.+)$/u, (_match, status, stage) => `${translate(String(status), 'th')}: ${translate(String(stage), 'th')}`],
+    [/^Handoff readiness: (.+)$/u, (_match, value) => `ความพร้อมสำหรับส่งต่อ: ${translate(String(value), 'th')}`],
+    [/^Confidence: (.+)$/u, (_match, value) => `ความเชื่อมั่น: ${translate(String(value), 'th')}`],
+    [/^Safety: (.+)$/u, (_match, value) => `ความปลอดภัย: ${translate(String(value), 'th')}`],
+    [/^Evidence gap: (.+)$/u, (_match, value) => `ช่องว่างหลักฐาน: ${translate(String(value), 'th')}`],
+    [/^Human review required: (.+)$/u, (_match, value) => `ต้องให้มนุษย์ตรวจทาน: ${translate(String(value), 'th')}`],
+    [/^Blocked action: (.+)$/u, (_match, value) => `การดำเนินการที่ถูกบล็อก: ${translate(String(value), 'th')}`],
+    [/^Source: (.+)$/u, (_match, value) => `แหล่งที่มา: ${translate(String(value), 'th')}`],
+    [/^Formula: (.+)$/u, (_match, value) => `สูตร: ${translate(String(value), 'th')}`],
+    [/^Evidence: (.+)$/u, (_match, value) => `หลักฐาน: ${translate(String(value), 'th')}`],
+    [/^Evidence tier: (.+)$/u, (_match, value) => `ระดับหลักฐาน: ${translate(String(value), 'th')}`],
+    [/^Next evidence step: (.+)$/u, (_match, value) => `ขั้นตอนหลักฐานถัดไป: ${translate(String(value), 'th')}`],
+    [/^([^:]+): ([^.]+)\. (.+)$/u, (_match, label, signal, detail) => `${translate(String(label), 'th')}: ${translate(String(signal), 'th')}. ${translate(String(detail), 'th')}`],
+  ];
+
+  for (const [pattern, replacement] of replacements) {
+    if (pattern.test(text)) {
+      return text.replace(pattern, replacement as string);
+    }
+  }
+
+  return text;
 }
 
 export function localizeDom(root: HTMLElement, language: Language) {
@@ -160,26 +185,26 @@ export function localizeDom(root: HTMLElement, language: Language) {
   }
 
   for (const node of textNodes) {
-    if (node.parentElement?.closest('script, style, [data-i18n-rendered]')) {
+    if (node.parentElement?.closest('script, style, [data-i18n-rendered], [data-i18n-preserve]')) {
       continue;
     }
     if (!originalText.has(node)) {
       originalText.set(node, language === 'en' ? restoreEnglish(node.nodeValue ?? '') : node.nodeValue ?? '');
     }
     const source = language === 'en' ? restoreEnglish(originalText.get(node) ?? node.nodeValue ?? '') : originalText.get(node) ?? '';
-    node.nodeValue = language === 'en' ? source : translate(source, language);
+    node.nodeValue = language === 'en' ? source : translateUi(source, language);
   }
 
   for (const element of root.querySelectorAll<HTMLElement>('[aria-label], [placeholder], [title]')) {
     for (const attr of ['aria-label', 'placeholder', 'title']) {
       const value = element.getAttribute(attr);
-      if (value && !element.closest('[data-i18n-rendered]')) {
+      if (value && !element.closest('[data-i18n-rendered], [data-i18n-preserve]')) {
         const sourceAttr = `data-i18n-original-${attr}`;
         if (!element.hasAttribute(sourceAttr)) {
           element.setAttribute(sourceAttr, language === 'en' ? restoreEnglish(value) : value);
         }
         const source = language === 'en' ? restoreEnglish(element.getAttribute(sourceAttr) ?? value) : element.getAttribute(sourceAttr) ?? value;
-        element.setAttribute(attr, language === 'en' ? source : translate(source, language));
+        element.setAttribute(attr, language === 'en' ? source : translateUi(source, language));
       }
     }
   }
@@ -187,7 +212,7 @@ export function localizeDom(root: HTMLElement, language: Language) {
 
 export function localizeNode(node: ReactNode, language: Language): ReactNode {
   if (typeof node === 'string') {
-    return translate(node, language);
+    return translateUi(node, language);
   }
 
   if (Array.isArray(node)) {
@@ -205,7 +230,7 @@ export function localizeNode(node: ReactNode, language: Language): ReactNode {
   for (const attr of ['aria-label', 'placeholder', 'title']) {
     const value = props[attr];
     if (typeof value === 'string') {
-      nextProps[attr] = translate(value, language);
+      nextProps[attr] = translateUi(value, language);
     }
   }
 

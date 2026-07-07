@@ -904,6 +904,13 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   );
 }
 
+function ReviewValue({ value, fallback = 'Required' }: { value: string; fallback?: string }) {
+  if (!value) {
+    return <>{fallback}</>;
+  }
+  return <span data-i18n-preserve="true">{value}</span>;
+}
+
 export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
   const { language } = useI18n();
   const config = workflowConfigs[workflow];
@@ -927,7 +934,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
     [formOverrides],
   );
 
-  const selectedAudienceText = translate(form.audiences.join(', '), language);
+  const selectedAudienceText = form.audiences
+    .map((audience) => (audiencePresets.includes(audience) ? translate(audience, language) : audience))
+    .join(', ');
   const selectedPlatformText = form.platforms.join(', ');
 
   function updateField(field: keyof LaunchForm, value: string) {
@@ -1120,9 +1129,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
 
           {errors.length > 0 ? (
             <div className="error-state form-errors" role="alert">
-              <strong>Complete required fields before running:</strong>
+              <strong>{translate('Complete required fields before running:', language)}</strong>
               <ul>
-                {errors.map((error) => <li key={error}>{error}</li>)}
+                {errors.map((error) => <li key={error}>{translate(error, language)}</li>)}
               </ul>
             </div>
           ) : null}
@@ -1139,21 +1148,21 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
             <dt>Objective</dt>
             <dd>{config.objective}</dd>
             <dt>Campaign name or brand</dt>
-            <dd>{form.brand || 'Required'}</dd>
+            <dd><ReviewValue value={form.brand} /></dd>
             {config.key === 'abExperiment' ? (
               <>
                 <dt>Variant A</dt>
-                <dd>{form.variantA || 'Required'}</dd>
+                <dd><ReviewValue value={form.variantA} /></dd>
                 <dt>Variant B</dt>
-                <dd>{form.variantB || 'Required'}</dd>
+                <dd><ReviewValue value={form.variantB} /></dd>
               </>
             ) : null}
             {config.key === 'creativeComparison' ? (
               <>
                 <dt>Creative A</dt>
-                <dd>{form.creativeATitle || 'Required'} — {form.creativeADescription || 'Required'}</dd>
+                <dd><ReviewValue value={form.creativeATitle} /> — <ReviewValue value={form.creativeADescription} /></dd>
                 <dt>Creative B</dt>
-                <dd>{form.creativeBTitle || 'Required'} — {form.creativeBDescription || 'Required'}</dd>
+                <dd><ReviewValue value={form.creativeBTitle} /> — <ReviewValue value={form.creativeBDescription} /></dd>
               </>
             ) : null}
             <dt>Audience</dt>

@@ -89,7 +89,8 @@ describe('M18 Thai-first internationalization', () => {
     expect(screen.getByRole('heading', { name: englishHeading })).toBeInTheDocument();
   });
 
-  it('does not translate Health inside Healthy and translates the full campaign phrase', () => {
+  it('does not translate Health inside arbitrary user text and translates known full campaign phrases', () => {
+    expect(translate('Health Co', 'th')).toBe('Health Co');
     expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).toBe(
       'ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที',
     );
@@ -331,6 +332,17 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  it('preserves user-entered Health Co exactly in Thai review preview before run', () => {
+    const form = renderWorkbench();
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Health Co' } });
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const preview = screen.getByRole('region', { name: 'สมมติฐานปัจจุบัน' });
+    expect(preview).toHaveTextContent('Health Co');
+    expect(preview).not.toHaveTextContent('สถานะผลิตภัณฑ์ Co');
+  });
+
   it('preserves user-entered Health Co exactly in Thai result assumptions', () => {
     const form = renderWorkbench();
 
@@ -343,6 +355,34 @@ describe('M18 Thai-first internationalization', () => {
     const assumptions = screen.getByText('สมมติฐานของคุณที่แสดงเพื่อการตรวจทาน').closest('.assumption-panel');
     expect(assumptions).toHaveTextContent('Health Co');
     expect(assumptions).not.toHaveTextContent('สถานะผลิตภัณฑ์ Co');
+  });
+
+  it('localizes Thai Workbench validation errors after user interaction', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.change(within(thaiForm).getByLabelText('ชื่อแคมเปญหรือแบรนด์'), { target: { value: '' } });
+    fireEvent.change(within(thaiForm).getByLabelText('ข้อความแคมเปญ'), { target: { value: '' } });
+    for (const checkbox of within(thaiForm).getAllByRole('checkbox')) {
+      if ((checkbox as HTMLInputElement).checked) {
+        fireEvent.click(checkbox);
+      }
+    }
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('กรอกข้อมูลจำเป็นให้ครบก่อนรัน:');
+    expect(alert).toHaveTextContent('ต้องระบุชื่อแคมเปญหรือแบรนด์');
+    expect(alert).toHaveTextContent('ต้องระบุข้อความแคมเปญ');
+    expect(alert).toHaveTextContent('เลือกอย่างน้อยหนึ่งแพลตฟอร์ม');
+    for (const blocker of [
+      'Complete required fields before running:',
+      'Campaign name or brand is required',
+      'Campaign Message is required',
+      'Select at least one platform',
+    ]) {
+      expect(alert).not.toHaveTextContent(blocker);
+    }
   });
 
   it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
