@@ -2,7 +2,7 @@
 
 Status: Preparation only. M19 runtime implementation has not begun.
 Scope: Documentation, terminology, copy rules, safety wording, evidence/confidence wording, and remediation backlog only.
-Source milestone: M18 Thai-first Internationalization closed as **GO WITH CONDITIONS** on main at `e871b7f38111eb13bf3f2e727d948ef19d915874`.
+Source milestone: M18 Thai-first Internationalization implementation closed as **GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a`; M18 closeout/status was finalized at `e871b7f38111eb13bf3f2e727d948ef19d915874`.
 Architecture Gate: Not Triggered.
 
 This addendum prepares language and review constraints for a future Synthetic Social Platform Engagement Simulation milestone without adding runtime behavior. It does not add or modify frontend routes, backend services, SocialSense, MarketingSimulation, live APIs, scraping, posting, credentials, persistence, auth, private data, production automation, or production engagement claims.
