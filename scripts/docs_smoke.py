@@ -869,8 +869,33 @@ def milestone_number_from_branch(branch_name: str) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def milestone_number_from_changed_paths(changed_paths: list[str]) -> int | None:
+    candidates: set[int] = set()
+    milestone_path_markers = {
+        6: set(REQUIRED_M6_DOCS),
+        18: {
+            *REQUIRED_M18_DOCS,
+            "src/i18n/I18nContext.ts",
+            "src/i18n/I18nProvider.tsx",
+            "src/i18n/localize.ts",
+            "src/i18n/translations.ts",
+            "src/i18n/useI18n.ts",
+        },
+    }
+
+    for path in changed_paths:
+        for milestone, markers in milestone_path_markers.items():
+            if path in markers:
+                candidates.add(milestone)
+        explicit_match = re.search(r"(?:^|/|_)M(\d+)(?:_|-|/|\.)", path, re.IGNORECASE)
+        if explicit_match:
+            candidates.add(int(explicit_match.group(1)))
+
+    return max(candidates) if candidates else None
+
+
 def current_milestone_number() -> int | None:
-    return milestone_number_from_branch(current_branch_name())
+    return milestone_number_from_branch(current_branch_name()) or milestone_number_from_changed_paths(changed_paths_from_main())
 
 
 def branch_at_or_after(milestone: int) -> bool:

@@ -1166,7 +1166,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
               </>
             ) : null}
             <dt>Audience</dt>
-            <dd>{selectedAudienceText || 'General Consumers'}</dd>
+            <dd data-i18n-rendered="true">{selectedAudienceText || translate('General Consumers', language)}</dd>
             <dt>Platform mix</dt>
             <dd>{selectedPlatformText || 'Required'}</dd>
           </dl>

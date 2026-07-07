@@ -278,9 +278,13 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).not.toContain('Run completion status');
   });
 
-  it('keeps Workbench run-complete status across language switches after Thai run', () => {
+  it('keeps Workbench run-complete status and audience assumptions across language switches after Thai run', () => {
     renderAt('/workbench', 'th');
     const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    const thaiPreview = screen.getByRole('region', { name: 'สมมติฐานปัจจุบัน' });
+    expect(thaiPreview).toHaveTextContent('วัยทำงาน, ผู้บริโภคในเมือง, เจ้าของธุรกิจ SME');
+    expect(thaiPreview).not.toHaveTextContent('Working Adults');
 
     fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
 
@@ -291,6 +295,11 @@ describe('M18 Thai-first internationalization', () => {
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
+    const englishPreview = screen.getByRole('region', { name: 'Current assumptions' });
+    expect(englishPreview).toHaveTextContent('Working Adults, Urban Consumers, SME Owners');
+    expect(englishPreview).not.toHaveTextContent('วัยทำงาน');
+    expect(englishPreview).not.toHaveTextContent('ผู้บริโภคในเมือง');
+    expect(englishPreview).not.toHaveTextContent('เจ้าของธุรกิจ SME');
     expect(screen.getByRole('status', { name: 'Run completion status' })).toHaveTextContent(
       'Run complete: generated sample results are visible below now.',
     );

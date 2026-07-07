@@ -44,6 +44,30 @@ class MilestoneGuardTests(unittest.TestCase):
         with patch.object(docs_smoke, "current_branch_name", return_value="m19-synthetic-social-platform-engagement"):
             self.assertFalse(docs_smoke.branch_is_milestone(18))
 
+    def test_unknown_pr_branch_with_m18_files_infers_m18_context(self) -> None:
+        changed_paths = [
+            "docs/product/TRANSLATION_STYLE_GUIDE.md",
+            "src/i18n/localize.ts",
+            "src/views.tsx",
+            "src/App.test.tsx",
+        ]
+        with (
+            patch.object(docs_smoke, "current_branch_name", return_value="pr-30-current"),
+            patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+        ):
+            self.assertEqual(docs_smoke.current_milestone_number(), 18)
+            self.assertFalse(docs_smoke.branch_before_milestone(7))
+            self.assertTrue(docs_smoke.branch_is_milestone(18))
+
+    def test_unknown_branch_with_m6_docs_keeps_m6_planning_guard_meaningful(self) -> None:
+        with (
+            patch.object(docs_smoke, "current_branch_name", return_value="experiment-planning"),
+            patch.object(docs_smoke, "changed_paths_from_main", return_value=["docs/product/EXPERIMENT_TAXONOMY.md"]),
+        ):
+            self.assertEqual(docs_smoke.current_milestone_number(), 6)
+            self.assertTrue(docs_smoke.branch_before_milestone(7))
+            self.assertFalse(docs_smoke.branch_is_milestone(18))
+
 
 if __name__ == "__main__":
     unittest.main()
