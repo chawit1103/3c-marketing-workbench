@@ -220,6 +220,30 @@ REQUIRED_M18_DOCS = [
     "docs/product/M18_CLOSEOUT_REPORT.md",
 ]
 
+REQUIRED_M19_PREP_DOCS = [
+    "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
+]
+
+REQUIRED_M19_PREP_PHRASES = [
+    "M19 Preparation",
+    "Synthetic engagement",
+    "engagement สังเคราะห์",
+    "Thai-first copy rules",
+    "Safety Wording Checklist",
+    "Evidence And Confidence Wording Rules",
+    "Remediation Backlog From M18 Conditions",
+    "M19 runtime implementation has not begun",
+    "No live social data",
+    "not measured platform engagement",
+    "Low directional confidence",
+    "ความเชื่อมั่นเชิงทิศทางต่ำ",
+    "E1 synthetic/offline fixture",
+    "E1 ข้อมูลสังเคราะห์/ออฟไลน์",
+    "SocialSense remains a public dependency boundary",
+    "MarketingSimulation remains reference-only",
+    "Architecture Gate: Not Triggered",
+]
+
 REQUIRED_M18_GLOSSARY_TERMS = [
     "Campaign",
     "Campaign Workspace",
@@ -946,6 +970,11 @@ def main() -> None:
     if missing_m18_docs:
         fail("missing required M18 Thai-first i18n docs: " + ", ".join(missing_m18_docs))
 
+    if branch_at_or_after(19):
+        missing_m19_prep_docs = [path for path in REQUIRED_M19_PREP_DOCS if not (ROOT / path).is_file()]
+        if missing_m19_prep_docs:
+            fail("missing required M19 preparation docs: " + ", ".join(missing_m19_prep_docs))
+
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
         fail("missing expected frontend shell files: " + ", ".join(missing_frontend))
@@ -992,6 +1021,12 @@ def main() -> None:
     m17_text = "\n".join(m17_docs_by_path.values())
     m18_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M18_DOCS}
     m18_text = "\n".join(m18_docs_by_path.values())
+    m19_prep_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M19_PREP_DOCS
+        if (ROOT / path).is_file()
+    }
+    m19_prep_text = "\n".join(m19_prep_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1049,6 +1084,11 @@ def main() -> None:
     missing_m11_links = [path for path in REQUIRED_M11_DOCS if f"]({path})" not in readme]
     if missing_m11_links:
         fail("README missing M11 doc links: " + ", ".join(missing_m11_links))
+
+    if branch_at_or_after(19):
+        missing_m19_prep_links = [path for path in REQUIRED_M19_PREP_DOCS if f"]({path})" not in readme]
+        if missing_m19_prep_links:
+            fail("README missing M19 preparation doc links: " + ", ".join(missing_m19_prep_links))
 
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
@@ -1643,6 +1683,31 @@ def main() -> None:
         if stale_m18_current_hits:
             fail("M18 current docs contain stale planned-only/blocked wording: " + ", ".join(stale_m18_current_hits))
 
+    if branch_at_or_after(19):
+        combined_m19_prep_text = "\n".join([readme, agents, roadmap, health_dashboard, m19_prep_text])
+        missing_m19_prep_phrases = [
+            phrase for phrase in REQUIRED_M19_PREP_PHRASES if phrase not in combined_m19_prep_text
+        ]
+        if missing_m19_prep_phrases:
+            fail("M19 preparation docs missing terminology/safety/remediation phrases: " + ", ".join(missing_m19_prep_phrases))
+        forbidden_m19_runtime_paths = [
+            path
+            for path in changed_paths
+            if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
+        ]
+        if forbidden_m19_runtime_paths:
+            fail("M19 preparation changed runtime/backend/SocialSense paths: " + ", ".join(forbidden_m19_runtime_paths))
+        m19_forbidden_claims = [
+            "measured platform engagement is available",
+            "live social data is available",
+            "production engagement prediction",
+            "guaranteed engagement lift",
+            "ready for production posting",
+        ]
+        m19_claim_hits = [phrase for phrase in m19_forbidden_claims if phrase in combined_m19_prep_text]
+        if m19_claim_hits:
+            fail("M19 preparation docs contain forbidden production/live engagement claim: " + ", ".join(m19_claim_hits))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -1662,6 +1727,8 @@ def main() -> None:
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if branch_at_or_after(18):
         print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, closeout report, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, closed GO WITH CONDITIONS wording, fallback review evidence, and no-M19 wording")
+    if branch_at_or_after(19):
+        print("PASS: M19 preparation docs include terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, remediation backlog, docs-only boundary, and no runtime/SocialSense changes")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

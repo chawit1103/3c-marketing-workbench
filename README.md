@@ -102,6 +102,7 @@ Product documentation map:
 - [M18 Translation Style Guide](docs/product/TRANSLATION_STYLE_GUIDE.md)
 - [M18 Glossary](docs/product/GLOSSARY.md)
 - [M18 Closeout Report](docs/product/M18_CLOSEOUT_REPORT.md)
+- [M19 Synthetic Engagement Preparation](docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
