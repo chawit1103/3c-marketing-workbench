@@ -34,7 +34,7 @@ Acceptance criteria:
 
 ### PR2: Executive KPI cards
 
-Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The M17 sequence includes the PR1 program kickoff docs, PR2 KPI slice, PR3 CSS/React-only marketing charts/evidence/confidence expansion, and PR4 report/export readability. PR4 delivered executive report preview and export format readiness in the existing export review flow: Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
+Historical status: complete. PR2 delivered the limited Executive KPI cards slice using existing fixture data and existing dashboard patterns; it remains a historical implementation slice in the closed M17 sequence.
 
 Scope:
 

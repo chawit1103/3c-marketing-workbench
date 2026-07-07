@@ -1331,7 +1331,16 @@ def main() -> None:
         ]:
             if phrase not in combined_m17_text:
                 fail(f"M17 docs missing PR sequence phrase: {phrase}")
-        if current_branch_name() in {"m17-closeout", "m17-final-closed-wording"} or current_branch_name().startswith("m17-closeout") or "PR5 M17 validation/closeout complete" in combined_m17_text:
+        m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()
+        m17_is_closed = any(
+            phrase in combined_m17_text
+            for phrase in [
+                "M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS",
+                "M17 is CLOSED as GO WITH CONDITIONS",
+            ]
+        )
+        m17_closeout_branch = current_branch_name() in {"m17-closeout", "m17-final-closed-wording"} or current_branch_name().startswith("m17-closeout")
+        if m17_closeout_report_exists or m17_is_closed or "PR5 M17 validation/closeout complete" in combined_m17_text:
             closeout = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").read_text(encoding="utf-8")
             missing_closeout_sections = [section for section in REQUIRED_M17_CLOSEOUT_SECTIONS if f"## {section}" not in closeout]
             if missing_closeout_sections:
@@ -1394,7 +1403,7 @@ def main() -> None:
                 fail("M17 closeout status docs missing PR #28 final status correction evidence")
             if "Recommendation: M17 closed as GO WITH CONDITIONS; prepare M18 kickoff next, do not implement M18 here." not in m17_status_text:
                 fail("M17 closeout status docs missing final closed recommendation")
-            forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS]
+            forbidden_m17_changes = [path for path in changed_paths if path not in M17_ALLOWED_CHANGED_PATHS] if m17_closeout_branch else []
         elif current_branch_name() == "m17-executive-dashboard-kpis":
             m17_pr2_source_text = "\n".join(
                 [
@@ -1475,7 +1484,15 @@ def main() -> None:
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
-        if current_branch_name() in {"m17-closeout", "m17-final-closed-wording"} or current_branch_name().startswith("m17-closeout") or "PR5 M17 validation/closeout complete" in combined_m17_text:
+        m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()
+        m17_is_closed = any(
+            phrase in combined_m17_text
+            for phrase in [
+                "M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS",
+                "M17 is CLOSED as GO WITH CONDITIONS",
+            ]
+        )
+        if m17_closeout_report_exists or m17_is_closed or "PR5 M17 validation/closeout complete" in combined_m17_text:
             print("PASS: M17 closeout report includes required sections, PR #27/PR #28 merge evidence, final closed GO WITH CONDITIONS wording, stale pending-status guards, and M18 preparation-only gate")
         if current_branch_name() == "m17-executive-dashboard-kpis":
             print("PASS: M17 PR2 runtime slice acceptance includes allowlist, KPI/formula/source phrases, first-class evidence/readiness cards, and offline/synthetic boundaries")

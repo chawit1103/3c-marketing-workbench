@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff. the orchestrator can report M17 closed as GO WITH CONDITIONS for controlled executive review.
+Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff. The orchestrator now reports M17 CLOSED as GO WITH CONDITIONS for controlled executive review.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 
