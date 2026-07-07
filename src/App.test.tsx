@@ -114,9 +114,30 @@ describe('M18 Thai-first internationalization', () => {
       'Message is understandable',
       'Message is clear enough',
       'Low implementation risk',
+      'required before external use',
+      'offline directional',
+      'Low confidence',
+      'synthetic planning cue',
+      'live social activity',
+      'JOURNEY',
+      'Product Launch fixture',
+      'Engagement Potential',
+      'fixture card',
+      'quality, delivery',
+      'observed market behavior',
+      'synthetic/offline fixture',
     ]) {
       expect(visibleText).not.toContain(blocker);
     }
+
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    expect(accessibleText).not.toContain('source and evidence');
+    expect(accessibleText).not.toContain('formula and source');
+    expect(accessibleText).not.toContain('Current Journey Stage');
+    expect(accessibleText).not.toContain('Campaign journey timeline');
+    expect(accessibleText).not.toContain('Top evidence confidence blocker');
   });
 });
 
