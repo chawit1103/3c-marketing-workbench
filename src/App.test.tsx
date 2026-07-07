@@ -1,11 +1,16 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
+import { translate, translateUi } from './i18n/localize';
 import { safetyLabels } from './product/safety/safetyLabels';
 
-function renderAt(pathname: string) {
+function renderAt(pathname: string, language: 'th' | 'en' = 'en') {
   vi.stubGlobal('location', { ...window.location, pathname });
-  return render(<App />);
+  const rendered = render(<App />);
+  if (language === 'en') {
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+  }
+  return rendered;
 }
 
 function renderWorkbench() {
@@ -28,6 +33,596 @@ function renderCreativeComparison() {
   return screen.getByRole('form', { name: 'Creative Comparison setup' });
 }
 
+
+describe('M18 Thai-first internationalization', () => {
+  const thaiSafetyLabels = [
+    'โหมดข้อมูลตัวอย่างออฟไลน์',
+    'ข้อมูลสังเคราะห์แบบรวม',
+    'ไม่มีข้อมูลโซเชียลสด',
+    'ไม่มีข้อมูล CRM/ลูกค้า',
+    'ไม่มีข้อความส่วนตัว',
+    'ไม่รับประกันการคาดการณ์',
+    'ไม่ใช่การปรับแคมเปญสำหรับใช้งานจริง',
+  ];
+
+  it('renders Thai by default and exposes a language selector', () => {
+    renderAt('/', 'th');
+
+    expect(screen.getByLabelText('ภาษา')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'เปรียบเทียบทางเลือกแคมเปญอย่างปลอดภัยก่อนทบทวนงบประมาณ' })).toBeInTheDocument();
+    expect(within(screen.getByRole('navigation', { name: 'เมนูหลัก' })).getByRole('link', { name: 'พื้นที่ทำงาน' })).toHaveAttribute('href', '/workbench');
+    expect(screen.getByRole('link', { name: 'เปิด Campaign Workspace' })).toBeInTheDocument();
+    const safetyPanel = screen.getByRole('region', { name: 'ขอบเขตความปลอดภัย' });
+    for (const label of thaiSafetyLabels) {
+      expect(safetyPanel).toHaveTextContent(label);
+    }
+  });
+
+  it('switches to English at runtime and keeps every safety label visible', () => {
+    renderAt('/', 'th');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    expect(screen.getByLabelText('Language')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Compare campaign decisions safely before budget reviews.' })).toBeInTheDocument();
+    const safetyPanel = screen.getByRole('region', { name: 'Safety boundaries' });
+    for (const label of safetyLabels) {
+      expect(safetyPanel).toHaveTextContent(label);
+    }
+  });
+
+  it.each([
+    ['/campaign-workspace', 'Campaign Workspace', 'พื้นที่ทำงานแคมเปญ'],
+    ['/workbench', 'Product Launch Simulation', 'จำลองการเปิดตัวสินค้า'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test', 'ทดสอบข้อความแคมเปญ'],
+    ['/workbench/ab-experiment', 'A/B Experiment', 'การทดลอง A/B'],
+    ['/workbench/creative-comparison', 'Creative Comparison', 'เปรียบเทียบงานสร้างสรรค์'],
+    ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์การเปิดตัวสินค้า (Product Launch)'],
+    ['/exports/sample-run', 'Export Readiness Preview', 'ตัวอย่างความพร้อมสำหรับส่งออก'],
+    ['/health', 'M18 Thai-first Internationalization', 'M18 ภาษาไทยเป็นหลัก'],
+  ])('renders Thai and English labels for %s', (pathname, englishHeading, thaiHeading) => {
+    const rendered = renderAt(pathname, 'th');
+    expect(screen.getByRole('heading', { name: thaiHeading })).toBeInTheDocument();
+    rendered.unmount();
+
+    renderAt(pathname, 'en');
+    expect(screen.getByRole('heading', { name: englishHeading })).toBeInTheDocument();
+  });
+
+  it('does not translate Health inside arbitrary user text and translates known full campaign phrases', () => {
+    expect(translate('Health Co', 'th')).toBe('Health Co');
+    expect(translate('Brand and product is Health Co.', 'th')).toBe('Brand and product is Health Co.');
+    expect(translateUi('Brand and product is Health Co.', 'th')).toBe('Brand and product is Health Co.');
+    expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).toBe(
+      'ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที',
+    );
+    expect(translate('Healthy team lunch decisions can feel fast, reviewed, and dependable.', 'th')).toBe(
+      'การตัดสินใจมื้อกลางวันเพื่อสุขภาพของทีมสามารถรวดเร็ว ผ่านการตรวจทาน และเชื่อถือได้',
+    );
+    expect(translate('Healthy lunch decisions in under 10 minutes for busy urban teams.', 'th')).not.toContain(
+      'สถานะผลิตภัณฑ์y',
+    );
+  });
+
+  it('renders Workbench Thai form legend and audience presets without English blockers', () => {
+    renderAt('/workbench', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('2. ข้อมูลที่แก้ไขได้');
+    expect(visibleText).toContain('ผู้ปกครอง');
+    expect(visibleText).not.toContain('2. Inputs you can edit');
+    expect(visibleText).not.toContain('Parents');
+  });
+
+  it('preserves Workbench English form legend and audience preset copy in English mode', () => {
+    renderAt('/workbench', 'en');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('2. Inputs you can edit');
+    expect(visibleText).toContain('Parents');
+    expect(visibleText).not.toContain('2. ข้อมูลที่แก้ไขได้');
+    expect(visibleText).not.toContain('ผู้ปกครอง');
+  });
+
+  it('renders Thai sample-run dashboard without reviewed English executive-copy blockers', () => {
+    renderAt('/runs/sample-run', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    for (const blocker of [
+      'The promise is clearest when the time-saving benefit is paired with trust proof.',
+      'Short video and chat-friendly creative are likely better first tests than broad reach claims.',
+      'Offline fixture only: no live social data, private data, CRM lists, or production prediction.',
+      'Working Adults: emphasize speed, reliability, and a clear lunch-time use case.',
+      'Urban Consumers: lead with convenience and visible quality proof.',
+      'SME Owners: frame the offer as a simple team perk with budget control.',
+      'Fixture channel cue only; use as a planning prompt, not measured live activity.',
+      'Product launch fixture shows stronger synthetic awareness than trust, so analysts should inspect launch-message clarity before using the finding.',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+    expect(visibleText).toContain('คำมั่นสัญญาชัดเจนที่สุด');
+    expect(visibleText).toContain('ผู้บริโภคในเมือง: นำด้วยความสะดวก');
+  });
+
+  const thaiUxReviewBlockerPhrases = [
+    'Working Adults',
+    'Urban Consumers',
+    'SME Owners',
+    'Product Launch mode',
+    'Strong directional signal',
+    'Light positive signal',
+    'Message is understandable',
+    'Directional campaign health',
+  ];
+
+  it.each([
+    ['/workbench', 'ทำตัวอย่างเปิดตัวสินค้าออฟไลน์ที่ตรวจทานแล้วให้เสร็จในไม่ถึงหนึ่งนาที', 'เปลี่ยนไปที่ การทดลอง A/B'],
+    ['/workbench/campaign-message-test', 'ทบทวนข้อความแคมเปญ กลุ่มเป้าหมาย และสัดส่วนแพลตฟอร์ม', 'เปลี่ยนไปที่ การทดลอง A/B'],
+    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ การเปิดตัวสินค้า (Product Launch)'],
+    ['/workbench/creative-comparison', 'เปรียบเทียบแนวคิดงานสร้างสรรค์แบบข้อความเท่านั้นสองแบบ', 'เปลี่ยนไปที่ การทดลอง A/B'],
+  ])('renders Workbench Thai mode without known English smoke blocker fragments for %s', (pathname, thaiHelper, thaiSwitch) => {
+    renderAt(pathname, 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain(thaiHelper);
+    expect(visibleText).toContain(thaiSwitch);
+    expect(visibleText).toContain('เครื่องมือช่วยตัดสินใจการตลาด');
+    for (const blocker of [
+      'Complete a reviewed offline Product Launch sample in under a minute',
+      'Review a campaign message, audience, and platform mix',
+      'Compare two text-only creative concepts with the approved workflow',
+      'Switch to',
+      'Marketing Decision Workbench',
+      'WORKBENCH ตัดสินใจการตลาด',
+      ...thaiUxReviewBlockerPhrases,
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+  });
+
+  it('renders campaign workspace Thai mode without known English smoke blocker fragments', () => {
+    renderAt('/campaign-workspace', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).not.toContain('สถานะผลิตภัณฑ์y');
+    expect(visibleText).not.toContain('runtime');
+    expect(visibleText).not.toContain('Experiment Framework');
+    expect(visibleText).not.toContain('MVP');
+    for (const blocker of [
+      'Run a small',
+      'Both creative concepts',
+      'MVP is text-only',
+      'Have claims',
+      'winner selection',
+      'Directional campaign health',
+      'Message is understandable',
+      'Message is clear enough',
+      'Low implementation risk',
+      'required before external use',
+      'offline directional',
+      'Low confidence',
+      'synthetic planning cue',
+      'live social activity',
+      'JOURNEY',
+      'Product Launch fixture',
+      'Engagement Potential',
+      'fixture card',
+      'quality, delivery',
+      'observed market behavior',
+      'synthetic/offline fixture',
+      ...thaiUxReviewBlockerPhrases,
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    expect(accessibleText).not.toContain('source and evidence');
+    expect(accessibleText).not.toContain('formula and source');
+    expect(accessibleText).not.toContain('Current Journey Stage');
+    expect(accessibleText).not.toContain('Campaign journey timeline');
+    expect(accessibleText).not.toContain('Top evidence confidence blocker');
+  });
+
+  it.each([
+    ['/workbench', 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/campaign-message-test', 'การทดสอบข้อความแคมเปญออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/ab-experiment', 'การทดลอง A/B ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+    ['/workbench/creative-comparison', 'การเปรียบเทียบงานสร้างสรรค์ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน'],
+  ])('keeps dynamic run results localized in Thai after clicking run on %s', (pathname, thaiResultHeading) => {
+    renderAt(pathname, 'th');
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'รันการจำลองออฟไลน์' }).at(-1)!);
+
+    const resultHeading = screen.getByRole('heading', { name: thaiResultHeading });
+    const resultSection = resultHeading.closest('section');
+    expect(resultSection).not.toBeNull();
+    expect(resultSection).toHaveTextContent('แดชบอร์ด');
+    expect(resultSection).toHaveTextContent('ข้อเสนอแนะถัดไป');
+    expect(resultSection).toHaveTextContent('ใช้เป็นโจทย์ให้มนุษย์ตรวจทาน');
+    expect(screen.getByRole('link', { name: 'ไปยังผลลัพธ์ตัวอย่างที่สร้างไว้' })).toHaveAttribute('href', '#results-title');
+    for (const blocker of [
+      'Offline product-launch simulation ready for executive review',
+      'Safety: offline fixture for planning only; review before using externally.',
+      'Open result dashboard',
+      'Open export-readiness preview',
+      'YOUR ASSUMPTIONS SHOWN FOR REVIEW',
+      'Your assumptions shown for review',
+      'FIXTURE TRANSPARENCY',
+      'Fixture transparency',
+      'OVERALL REACTION',
+      'Overall Reaction',
+      'Platform Breakdown',
+      'Risks / Caveats',
+      'DASHBOARD',
+      'The offline Product Launch sample shows',
+      'Recommended next action',
+      'Jump to generated sample results',
+      ...thaiUxReviewBlockerPhrases,
+    ]) {
+      expect(resultSection).not.toHaveTextContent(blocker);
+      expect(document.body).not.toHaveTextContent(blocker);
+    }
+  });
+
+  it('localizes Thai Workbench default input values without known English fixture fragments', () => {
+    const form = renderAt('/workbench', 'th').container.querySelector('form');
+    expect(form).not.toBeNull();
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    const defaultValues = [
+      within(thaiForm).getByLabelText('ข้อความแคมเปญ'),
+      within(thaiForm).getByLabelText('ข้อเสนอ/โปรโมชัน'),
+      within(thaiForm).getByLabelText('ข้อความหลัก'),
+      within(thaiForm).getByLabelText('บริบทเพิ่มเติม'),
+    ].map((field) => (field as HTMLInputElement | HTMLTextAreaElement).value);
+
+    for (const value of defaultValues) {
+      expect(value).not.toContain('Healthy lunch decisions in under 10 minutes for busy urban teams.');
+      expect(value).not.toContain('Intro launch bundle: first-week sampler with free delivery threshold.');
+      expect(value).not.toContain('Save time without sacrificing taste, nutrition, or team convenience.');
+      expect(value).not.toContain('Reviewed offline product-launch sample for an executive marketing scenario walkthrough.');
+    }
+    expect(defaultValues.join(' ')).toContain('ช่วยให้ทีมเมืองที่ยุ่งตัดสินใจเลือกมื้อกลางวันที่ดีต่อสุขภาพได้ภายใน 10 นาที');
+  });
+
+  it('shows English Workbench defaults in English mode', () => {
+    const form = renderWorkbench();
+
+    expect(within(form).getByLabelText('Campaign Message')).toHaveValue(
+      'Healthy lunch decisions in under 10 minutes for busy urban teams.',
+    );
+    expect(within(form).getByLabelText('Offer/Promotion')).toHaveValue(
+      'Intro launch bundle: first-week sampler with free delivery threshold.',
+    );
+    expect(within(form).getByLabelText('Key Message')).toHaveValue(
+      'Save time without sacrificing taste, nutrition, or team convenience.',
+    );
+    expect(within(form).getByLabelText('Context notes')).toHaveValue(
+      'Reviewed offline product-launch sample for an executive marketing scenario walkthrough.',
+    );
+  });
+
+  it('fully localizes Workbench completion status accessible label in Thai mode', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    expect(accessibleText).not.toContain('รัน completion status');
+    expect(accessibleText).not.toContain('Run completion status');
+  });
+
+  it('keeps Workbench run-complete status and audience assumptions across language switches after Thai run', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    const thaiPreview = screen.getByRole('region', { name: 'สมมติฐานปัจจุบัน' });
+    expect(thaiPreview).toHaveTextContent('วัยทำงาน, ผู้บริโภคในเมือง, เจ้าของธุรกิจ SME');
+    expect(thaiPreview).not.toHaveTextContent('Working Adults');
+
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    expect(screen.getByRole('heading', { name: 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน' })).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishPreview = screen.getByRole('region', { name: 'Current assumptions' });
+    expect(englishPreview).toHaveTextContent('Working Adults, Urban Consumers, SME Owners');
+    expect(englishPreview).not.toHaveTextContent('วัยทำงาน');
+    expect(englishPreview).not.toHaveTextContent('ผู้บริโภคในเมือง');
+    expect(englishPreview).not.toHaveTextContent('เจ้าของธุรกิจ SME');
+    expect(screen.getByRole('status', { name: 'Run completion status' })).toHaveTextContent(
+      'Run complete: generated sample results are visible below now.',
+    );
+    expect(screen.getByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent('Defaults are prefilled. Run now, or edit the visible inputs first.');
+
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    expect(screen.getByRole('heading', { name: 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน' })).toBeInTheDocument();
+  });
+
+  it('preserves edited Workbench inputs while localizing untouched defaults across language switches', () => {
+    const form = renderWorkbench();
+    const editedCampaignName = 'Edited campaign survives language switch';
+    const editedMessage = 'Edited message remains controlled state';
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: editedCampaignName } });
+    fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: editedMessage } });
+
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    expect(within(thaiForm).getByLabelText('ชื่อแคมเปญหรือแบรนด์')).toHaveValue(editedCampaignName);
+    expect(within(thaiForm).getByLabelText('ข้อความแคมเปญ')).toHaveValue(editedMessage);
+    expect(within(thaiForm).getByLabelText('ข้อเสนอ/โปรโมชัน')).toHaveValue(
+      'ชุดเปิดตัวทดลองสัปดาห์แรก พร้อมเงื่อนไขส่งฟรีเมื่อถึงยอดขั้นต่ำ',
+    );
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishForm = screen.getByRole('form', { name: 'Product Launch setup' });
+    expect(within(englishForm).getByLabelText('Campaign name or brand')).toHaveValue(editedCampaignName);
+    expect(within(englishForm).getByLabelText('Campaign Message')).toHaveValue(editedMessage);
+    expect(within(englishForm).getByLabelText('Offer/Promotion')).toHaveValue(
+      'Intro launch bundle: first-week sampler with free delivery threshold.',
+    );
+  });
+
+  it('preserves user-entered Health Co exactly in Thai review preview before run', () => {
+    const form = renderWorkbench();
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Health Co' } });
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const preview = screen.getByRole('region', { name: 'สมมติฐานปัจจุบัน' });
+    expect(preview).toHaveTextContent('Health Co');
+    expect(preview).not.toHaveTextContent('สถานะผลิตภัณฑ์ Co');
+  });
+
+  it('preserves user-entered Health Co exactly in Thai result assumptions', () => {
+    const form = renderWorkbench();
+
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Health Co' } });
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const assumptions = screen.getByText('สมมติฐานของคุณที่แสดงเพื่อการตรวจทาน').closest('.assumption-panel');
+    expect(assumptions).toHaveTextContent('Health Co');
+    expect(assumptions).not.toHaveTextContent('สถานะผลิตภัณฑ์ Co');
+  });
+
+  it('localizes Thai Workbench validation errors after user interaction', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.change(within(thaiForm).getByLabelText('ชื่อแคมเปญหรือแบรนด์'), { target: { value: '' } });
+    fireEvent.change(within(thaiForm).getByLabelText('ข้อความแคมเปญ'), { target: { value: '' } });
+    for (const checkbox of within(thaiForm).getAllByRole('checkbox')) {
+      if ((checkbox as HTMLInputElement).checked) {
+        fireEvent.click(checkbox);
+      }
+    }
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('กรอกข้อมูลจำเป็นให้ครบก่อนรัน:');
+    expect(alert).toHaveTextContent('ต้องระบุชื่อแคมเปญหรือแบรนด์');
+    expect(alert).toHaveTextContent('ต้องระบุข้อความแคมเปญ');
+    expect(alert).toHaveTextContent('เลือกอย่างน้อยหนึ่งแพลตฟอร์ม');
+    for (const blocker of [
+      'Complete required fields before running:',
+      'Campaign name or brand is required',
+      'Campaign Message is required',
+      'Select at least one platform',
+    ]) {
+      expect(alert).not.toHaveTextContent(blocker);
+    }
+  });
+
+  it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
+    renderAt('/health', 'en');
+
+    const kpiDashboard = screen.getByRole('region', { name: 'M18 KPI dashboard' });
+    expect(kpiDashboard).toHaveTextContent('Reviewed core UI');
+    expect(kpiDashboard).toHaveTextContent('Language Coverage');
+    expect(kpiDashboard).toHaveTextContent('known mixed-language fragments remain visible for review');
+    expect(kpiDashboard).not.toHaveTextContent('all UI copy');
+    expect(kpiDashboard).not.toHaveTextContent('fully translated');
+  });
+
+  it('fully localizes Thai Export Review sample-run executive copy and glossary terms', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+    for (const blocker of [
+      'Generated from the reviewed offline sample',
+      'This screen previews Executive JSON',
+      'Prepared from the reviewed offline sample',
+      'Unsupported now',
+      'Decision readiness:',
+      'Objectives',
+      'Scenario',
+      'Inputs',
+      'Use the report for executive handoff',
+      'ส่งออก readiness',
+      'หลักฐาน tier',
+      'executive handoff report',
+      'Decision readiness: การตรวจทานโดยมนุษย์ required',
+      'Evidence tier',
+      'Source:',
+      'Formula:',
+      'Confidence:',
+      'Objective:',
+      'Overall Reaction',
+      'Moderate positive signal',
+      'Message is understandable',
+      'Light positive signal',
+      'Strong directional signal',
+      'Directional only',
+      'Brand and product is Nimbus Go.',
+      'Campaign message is Healthy lunch decisions in under 10 minutes for busy urban teams.',
+      'Launch offer is Intro launch bundle: first-week sampler with free delivery threshold.',
+      'Key message is Save time without sacrificing taste, nutrition, or team convenience.',
+      'Use only aggregate, synthetic, offline assumptions',
+      'Directional synthetic aggregate sample only',
+      'ช่องว่างหลักฐาน remain visible before action.',
+      'Review mode:',
+      'execution mode:',
+      'production ready:',
+      'Offline sample',
+      'fixture;',
+      'no.',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
+
+    for (const thaiCopy of [
+      'ตรวจทานการส่งออก',
+      'หน้าจอนี้แสดงตัวอย่างเนื้อหา Executive JSON และบรีฟ Markdown',
+      'เตรียมจากตัวอย่างออฟไลน์ที่ตรวจทานแล้วพร้อมหมายเหตุความปลอดภัย',
+      'ยังไม่รองรับในตอนนี้',
+      'ความพร้อมในการตัดสินใจ: ต้องให้มนุษย์ตรวจทาน',
+      'วัตถุประสงค์',
+      'สถานการณ์',
+      'ข้อมูลนำเข้า',
+      'ใช้รายงานนี้เพื่อส่งต่อให้ผู้บริหารและให้มนุษย์ตรวจทาน',
+      'ระดับหลักฐาน',
+      'แหล่งที่มา',
+      'สูตร',
+      'ความเชื่อมั่น',
+      'รายงานส่งต่อผู้บริหาร',
+      'ปฏิกิริยาโดยรวม: สัญญาณบวกปานกลาง',
+      'การยอมรับข้อความ: ข้อความเข้าใจง่าย',
+      'ภาพรับรู้แบรนด์: สัญญาณบวกเล็กน้อย',
+      'ศักยภาพการมีส่วนร่วม: สัญญาณเชิงทิศทางชัดเจน',
+      'ความตั้งใจซื้อเชิงสังเคราะห์: ใช้เป็นทิศทางเท่านั้น',
+      'โหมดตรวจทาน: ตัวอย่างออฟไลน์',
+      'รูปแบบการทำงาน: ข้อมูลตัวอย่างออฟไลน์',
+      'ความพร้อมใช้งานจริง: ยังไม่พร้อมใช้งานจริง',
+      'แบรนด์และสินค้า: Nimbus Go',
+      'ข้อความแคมเปญ: ตัดสินใจมื้อกลางวันที่ดีต่อสุขภาพได้ในไม่เกิน 10 นาที สำหรับทีมเมืองที่งานยุ่ง',
+      'ข้อเสนอเปิดตัว: ชุดทดลองสัปดาห์แรกพร้อมเกณฑ์ส่งฟรี',
+      'ข้อความหลัก: ประหยัดเวลาโดยไม่ลดทอนรสชาติ โภชนาการ หรือความสะดวกของทีม',
+      'ใช้เฉพาะสมมติฐานแบบรวม สังเคราะห์ และออฟไลน์',
+      'เป็นตัวอย่างรวมเชิงสังเคราะห์แบบชี้ทิศทางเท่านั้น',
+      'ช่องว่างหลักฐานต้องแสดงให้เห็นก่อนดำเนินการ',
+    ]) {
+      expect(visibleText).toContain(thaiCopy);
+    }
+  });
+
+  it('fully localizes Thai Campaign Workspace dashboard metadata and accessibility labels', () => {
+    renderAt('/campaign-workspace', 'th');
+
+    const dashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI ผู้บริหาร' });
+    const visibleText = dashboard.textContent ?? '';
+    const accessibleText = Array.from(dashboard.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+
+    for (const blocker of [
+      'Legend: ข้อมูลตัวอย่าง-rank cue',
+      'higher bars show directional strength',
+      'สูตร: platform bar value = clampScore',
+      'earlier productLaunchFixture',
+      'Overall Campaign Score แหล่งที่มาและหลักฐาน',
+      'Sentiment comparison สูตรและแหล่งที่มา',
+      'Human review สูตรและแหล่งที่มา',
+      'source and evidence',
+      'formula and source',
+      'Legend:',
+      'Formula:',
+      'Source:',
+      'Evidence tier:',
+      'Confidence:',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
+
+    expect(accessibleText).toContain('คะแนนรวมแคมเปญ แหล่งที่มาและหลักฐาน');
+    expect(accessibleText).toContain('เปรียบเทียบ Sentiment สูตรและแหล่งที่มา');
+    expect(accessibleText).toContain('รายการตรวจทานโดยมนุษย์ สูตรและแหล่งที่มา');
+    expect(visibleText).toContain('สัญญาณจากลำดับข้อมูลตัวอย่าง');
+    expect(visibleText).toContain('สูตร: ค่าแถบแพลตฟอร์ม = clampScore(100 - fixture rank index × 12)');
+    expect(visibleText).toContain('แหล่งที่มา: productLaunchFixture.platformBreakdown');
+    expect(visibleText).toContain('ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์');
+  });
+
+  it('fully localizes Health KPI copy and technical boundaries in Thai mode', () => {
+    renderAt('/health', 'th');
+
+    const kpiDashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI M18' });
+    const visibleText = document.body.textContent ?? '';
+    const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
+      .map((element) => element.getAttribute('aria-label') ?? '')
+      .join(' ');
+
+    for (const thaiTerm of [
+      'หลักฐาน',
+      'ความเชื่อมั่น',
+      'ข้อเสนอแนะ',
+      'เส้นทางแคมเปญ',
+      'แดชบอร์ด',
+      'รายงาน',
+      'ส่งออก',
+      'ตรวจทาน',
+      'ข้อความหน้าจอหลักที่ตรวจทานแล้ว',
+    ]) {
+      expect(kpiDashboard).toHaveTextContent(thaiTerm);
+    }
+
+    for (const blocker of [
+      'Product terms follow the M18 glossary',
+      'ไทย copy is short',
+      'English remains the fallback',
+      'Dashboard, executive summary',
+      'Human review',
+      'Engineering KPI',
+      'No Architecture Gate',
+      'Evidence',
+      'Confidence',
+      'Recommendation',
+      'Journey',
+      'Dashboard',
+      'Report',
+      'Export',
+      'Review',
+      'backend',
+      'persistence',
+      'auth',
+      'live API',
+      'IA',
+      'all UI copy',
+      'fully translated',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+      expect(accessibleText).not.toContain(blocker);
+    }
+  });
+});
+
 describe('App shell routes', () => {
   it.each([
     ['/', 'Compare campaign decisions safely before budget reviews.'],
@@ -38,7 +633,7 @@ describe('App shell routes', () => {
     ['/workbench/creative-comparison', 'Creative Comparison'],
     ['/runs/run-123', 'Run unavailable'],
     ['/exports/run-123', 'Export unavailable'],
-    ['/health', 'M12 Campaign Workspace Trust & Validation'],
+    ['/health', 'M18 Thai-first Internationalization'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -128,7 +723,7 @@ describe('Creative Comparison workflow', () => {
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
-    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Creative A and Creative B descriptions are required because this reviewed prototype uses text-only concepts.');
     expect(screen.getByRole('alert')).toHaveTextContent('Key Message is required because message clarity must be reviewed against an explicit message.');
     expect(screen.queryByRole('heading', { name: 'Offline creative comparison ready for executive review' })).not.toBeInTheDocument();
   });
@@ -471,24 +1066,26 @@ describe('M12 Campaign Workspace trust and validation', () => {
     expect(transparency).toHaveTextContent('No live execution');
   });
 
-  it('shows M12 health focus, baseline, and readiness KPIs without stale M7 wording', () => {
+  it('shows M18 Thai-first i18n KPIs without stale M7 wording', () => {
     renderAt('/health');
 
-    expect(screen.getByRole('heading', { name: 'M12 Campaign Workspace Trust & Validation' })).toBeInTheDocument();
-    expect(screen.getByText(/Product Health 7.4 baseline/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'M18 Thai-first Internationalization' })).toBeInTheDocument();
+    expect(screen.getByText(/Thai the default UI language/i)).toBeInTheDocument();
     for (const kpi of [
-      'Product Health',
-      'UX Health',
-      'Trust Score',
-      'Transparency Score',
-      'Validation Score',
-      'Dashboard Clarity',
-      'Overall Readiness',
+      'Translation Completeness',
+      'Glossary Consistency',
+      'Thai UX Quality',
+      'English UX Quality',
+      'Executive Readability',
+      'Safety Copy Quality',
+      'Terminology Consistency',
+      'Language Coverage',
       'Engineering KPI',
     ]) {
-      expect(screen.getByRole('region', { name: 'M12 KPI dashboard' })).toHaveTextContent(kpi);
+      expect(screen.getByRole('region', { name: 'M18 KPI dashboard' })).toHaveTextContent(kpi);
     }
     expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
+    expect(document.body.textContent).not.toContain('M18 planned only');
   });
 });
 

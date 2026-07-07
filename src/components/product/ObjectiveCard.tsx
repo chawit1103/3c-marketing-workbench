@@ -1,3 +1,5 @@
+import { useI18n } from '../../i18n/useI18n';
+
 interface ObjectiveCardProps {
   title: string;
   description: string;
@@ -11,11 +13,12 @@ const statusText: Record<ObjectiveCardProps['status'], string> = {
 };
 
 export function ObjectiveCard({ title, description, status }: ObjectiveCardProps) {
+  const { t } = useI18n();
   return (
     <article className="card objective-card">
-      <span className={`badge badge-${status}`}>{statusText[status]}</span>
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <span className={`badge badge-${status}`}>{t(statusText[status])}</span>
+      <h3>{t(title)}</h3>
+      <p>{t(description)}</p>
     </article>
   );
 }

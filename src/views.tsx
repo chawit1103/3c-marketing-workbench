@@ -1,5 +1,8 @@
 import { type ReactNode, useMemo, useState } from 'react';
 import { ObjectiveCard } from './components/product/ObjectiveCard';
+import { localizeNode, translate } from './i18n/localize';
+import type { Language } from './i18n/translations';
+import { useI18n } from './i18n/useI18n';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -14,6 +17,11 @@ const audiencePresets = [
   'General Consumers',
 ];
 const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
+
+function Localized({ children }: { children: ReactNode }) {
+  const { language } = useI18n();
+  return <>{localizeNode(children, language)}</>;
+}
 
 type WorkflowKey = 'productLaunch' | 'campaignMessageTest' | 'abExperiment' | 'creativeComparison';
 
@@ -34,6 +42,38 @@ type LaunchForm = {
   audiences: string[];
   platforms: string[];
 };
+
+type LocalizedFormField = Exclude<keyof LaunchForm, 'audiences' | 'platforms'>;
+
+const localizedFormFields: LocalizedFormField[] = [
+  'brand',
+  'campaignMessage',
+  'variantA',
+  'variantB',
+  'creativeATitle',
+  'creativeADescription',
+  'creativeBTitle',
+  'creativeBDescription',
+  'offer',
+  'keyMessage',
+  'tone',
+  'claim',
+  'context',
+];
+
+function localizeDefaultForm(defaultForm: LaunchForm, language: Language): LaunchForm {
+  const localizedForm: LaunchForm = {
+    ...defaultForm,
+    audiences: [...defaultForm.audiences],
+    platforms: [...defaultForm.platforms],
+  };
+
+  for (const field of localizedFormFields) {
+    localizedForm[field] = translate(defaultForm[field], language);
+  }
+
+  return localizedForm;
+}
 
 type FixtureCard = {
   title: string;
@@ -163,7 +203,7 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
     modeLabel: 'A/B Experiment mode',
     heading: 'A/B Experiment',
     shortDescription:
-      'Compare Variant A and Variant B with the approved Experiment Framework while reusing the same offline workbench pattern, dashboard, and export review.',
+      'Compare Variant A and Variant B with the approved comparison framework while reusing the same offline workbench pattern, dashboard, and export review.',
     formLabel: 'A/B Experiment setup',
     objectiveDescription: 'Review two campaign message variants with shared audience, platform, and safety assumptions.',
     defaultForm: abExperimentDefaultForm,
@@ -187,7 +227,8 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
 
 export function HomeView() {
   return (
-    <section className="view-stack" aria-labelledby="home-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="home-title">
       <div className="hero card card-accent">
         <p className="eyebrow">Marketing Decision Workbench</p>
         <h1 id="home-title">Compare campaign decisions safely before budget reviews.</h1>
@@ -217,7 +258,7 @@ export function HomeView() {
         />
         <ObjectiveCard
           title="A/B Experiment workflow"
-          description="A third reference workflow reuses Experiment Framework, guided inputs, comparison dashboard, export review, and safety labels."
+          description="A third reference workflow reuses the comparison framework, guided inputs, dashboard, export review, and safety labels."
           status="ready"
         />
         <ObjectiveCard
@@ -227,6 +268,7 @@ export function HomeView() {
         />
       </div>
     </section>
+    </Localized>
   );
 }
 
@@ -279,6 +321,10 @@ const campaignLimitationsRisks = Array.from(new Set([
   ...creativeComparisonFixture.reviewMetadata.limitations.slice(0, 2),
   ...creativeComparisonFixture.risksCaveats.slice(0, 2),
 ]));
+
+function localizeAudienceNames(audiences: string[], language: Language) {
+  return audiences.map((audience) => translate(audience, language)).join(', ');
+}
 
 const executiveFixtures = [
   productLaunchFixture,
@@ -508,12 +554,15 @@ const decisionBlockersBeforeAction = [
 ];
 
 export function CampaignWorkspaceView() {
+  const { language } = useI18n();
   const campaignName = productLaunchFixture.sampleInput.brand;
   const campaignMessage = campaignMessageFixture.sampleInput.campaign_message;
+  const campaignAudienceText = localizeAudienceNames(campaignMessageFixture.sampleInput.audiences, language);
   const recommendedAction = creativeComparisonFixture.recommendedNextTest;
 
   return (
-    <section className="view-stack" aria-labelledby="campaign-workspace-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="campaign-workspace-title">
       <div className="card card-accent hero">
         <p className="eyebrow">Campaign Workspace</p>
         <h1 id="campaign-workspace-title">Campaign Workspace</h1>
@@ -538,14 +587,14 @@ export function CampaignWorkspaceView() {
             </div>
             <div>
               <dt>Audience</dt>
-              <dd>{campaignMessageFixture.sampleInput.audiences.join(', ')}</dd>
+              <dd data-i18n-rendered="true">{campaignAudienceText}</dd>
             </div>
             <div>
               <dt>Platform mix</dt>
               <dd>{campaignMessageFixture.sampleInput.platforms.join(', ')}</dd>
             </div>
           </dl>
-          <p className="help-text">Offline fixture-based workspace; no persistence, live data, or new workflow runtime.</p>
+          <p className="help-text">Offline fixture-based workspace; no persistence, live data, or new workflow execution.</p>
         </section>
 
         <section className="card next-action-card" aria-label="Current Journey Stage">
@@ -612,9 +661,9 @@ export function CampaignWorkspaceView() {
               <p>{creativeComparisonFixture.comparisonMethod.rationale}</p>
               <p><strong>Confidence:</strong> {creativeComparisonFixture.comparisonMethod.confidenceLevel}</p>
             </section>
-            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} />
-            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} />
-            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} />
+            <InsightList title="Evidence gaps" items={campaignEvidenceGaps.slice(0, 4)} localize />
+            <InsightList title="Limitations / risks" items={campaignLimitationsRisks} localize />
+            <InsightList title="Blocked actions" items={creativeComparisonFixture.comparisonMethod.blockedActions} localize />
             <section className="evidence-critical-card" aria-label="Handoff readiness">
               <p className="eyebrow">Handoff readiness</p>
               <h3>{creativeComparisonFixture.exports.readiness}</h3>
@@ -648,16 +697,18 @@ export function CampaignWorkspaceView() {
             <a className="button button-secondary" href="/workbench/ab-experiment">Open A/B Experiment</a>
             <a className="button button-secondary" href="/workbench/creative-comparison">Open Creative Comparison</a>
           </div>
-          <p className="help-text">Only approved existing workflows are available in this MVP.</p>
+          <p className="help-text">Only approved existing workflows are available in this reviewed prototype.</p>
         </section>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function DecisionBlockersBeforeAction() {
   return (
-    <section className="card decision-blockers-card" aria-label="Decision blockers before action">
+    <Localized>
+      <section className="card decision-blockers-card" aria-label="Decision blockers before action">
       <p className="eyebrow">Decision blockers before action</p>
       <h2>Evidence gaps + human review required before action</h2>
       <p>
@@ -674,12 +725,14 @@ function DecisionBlockersBeforeAction() {
         </ul>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function ExecutiveDashboard() {
   return (
-    <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
+    <Localized>
+      <section className="card executive-dashboard" aria-label="Executive KPI dashboard">
       <p className="eyebrow">M17 Executive Dashboard</p>
       <h2>Executive KPI cards and decision visuals</h2>
       <p>
@@ -730,12 +783,14 @@ function ExecutiveDashboard() {
         <HumanReviewChecklist />
       </div>
     </section>
+    </Localized>
   );
 }
 
 function EvidenceTierVisualization() {
   return (
-    <section className="executive-visual-card" aria-label="Evidence tier visualization">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Evidence tier visualization">
       <p className="eyebrow">Evidence tier visualization</p>
       <h3>Notice: current evidence is E1 only; E2 evidence is required before budget or launch decisions.</h3>
       <ol className="tier-list">
@@ -753,12 +808,14 @@ function EvidenceTierVisualization() {
         <p>Confidence/limitation/next evidence step: Low directional; compare against approved field feedback or backtest before any launch, budget, or winner decision.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function VisualEvidenceGaps() {
   return (
-    <section className="executive-visual-card" aria-label="Visual evidence gaps and limitations">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Visual evidence gaps and limitations">
       <p className="eyebrow">Visual evidence gaps and limitations</p>
       <h3>Gaps stay visible beside the charts</h3>
       <ul className="insight-list">
@@ -771,12 +828,14 @@ function VisualEvidenceGaps() {
         <p>Confidence/limitation/next evidence step: Low directional; collect approved field feedback or backtest evidence before external use.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function HumanReviewChecklist() {
   return (
-    <section className="executive-visual-card" aria-label="Human review checklist">
+    <Localized>
+      <section className="executive-visual-card" aria-label="Human review checklist">
       <p className="eyebrow">Human review checklist</p>
       <h3>Questions before action</h3>
       <ul className="insight-list">
@@ -789,10 +848,12 @@ function HumanReviewChecklist() {
         <p>Confidence: Low directional; limitation is synthetic fixture evidence only.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
 function BarList({ title, items }: { title: string; items: { label: string; value: number; cue: string; detail: string }[] }) {
+  const { t } = useI18n();
   const legend = title === 'Confidence / risk'
     ? 'Legend: Confidence = caution; Readiness = readiness; Risk = review-controlled risk. Higher readiness bars are better; lower risk bars do not mean no risk.'
     : title === 'Sentiment comparison'
@@ -839,29 +900,29 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
         : [];
 
   return (
-    <section className="executive-visual-card" aria-label={title}>
-      <p className="eyebrow">{title}</p>
-      <h3>{executiveSignal}</h3>
-      <div className="bar-list">
+    <section className="executive-visual-card" aria-label={t(title)}>
+      <p className="eyebrow">{t(title)}</p>
+      <h3>{t(executiveSignal)}</h3>
+      <div className="bar-list" aria-label={t(`${title} formula and source`)}>
         {items.map((item) => (
           <article className="bar-item" key={item.label}>
             <div className="bar-label-row">
-              <strong>{item.label}</strong>
+              <strong>{t(item.label)}</strong>
               <span>{item.value}/100</span>
             </div>
-            <p className={`semantic-cue semantic-cue-${item.cue.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{item.cue}</p>
+            <p className={`semantic-cue semantic-cue-${item.cue.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{t(item.cue)}</p>
             <div className="progress-track" aria-hidden="true">
               <span style={{ width: `${item.value}%` }} />
             </div>
-            <p>{item.detail}</p>
+            <p>{t(item.detail)}</p>
           </article>
         ))}
       </div>
       {sourceMapping.length > 0 ? (
-        <div className="kpi-metadata" aria-label={`${title} formula and source`}>
-          <p className="bar-legend">{legend}</p>
+        <div className="kpi-metadata" aria-label={t(`${title} formula and source`)}>
+          <p className="bar-legend">{t(legend)}</p>
           {sourceMapping.map((metadata) => (
-            <p key={metadata}>{metadata}</p>
+            <p key={metadata}>{t(metadata)}</p>
           ))}
         </div>
       ) : null}
@@ -869,25 +930,51 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   );
 }
 
-export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
-  const config = workflowConfigs[workflow];
-  const [form, setForm] = useState<LaunchForm>(config.defaultForm);
-  const [hasRun, setHasRun] = useState(false);
-  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(config.defaultForm);
-  const [errors, setErrors] = useState<string[]>([]);
+function ReviewValue({ value, fallback = 'Required' }: { value: string; fallback?: string }) {
+  if (!value) {
+    return <>{fallback}</>;
+  }
+  return <span data-i18n-preserve="true">{value}</span>;
+}
 
-  const selectedAudienceText = form.audiences.join(', ');
+export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
+  const { language, t } = useI18n();
+  const config = workflowConfigs[workflow];
+  const localizedDefaultForm = useMemo(
+    () => localizeDefaultForm(config.defaultForm, language),
+    [config.defaultForm, language],
+  );
+  const [formOverrides, setFormOverrides] = useState<Partial<LaunchForm>>({});
+  const [hasRun, setHasRun] = useState(false);
+  const [submittedForm, setSubmittedForm] = useState<LaunchForm>(localizedDefaultForm);
+  const [submittedEditedFields, setSubmittedEditedFields] = useState<Set<keyof LaunchForm>>(new Set());
+  const [errors, setErrors] = useState<string[]>([]);
+  const form = useMemo<LaunchForm>(() => ({
+    ...localizedDefaultForm,
+    ...formOverrides,
+    audiences: formOverrides.audiences ?? localizedDefaultForm.audiences,
+    platforms: formOverrides.platforms ?? localizedDefaultForm.platforms,
+  }), [formOverrides, localizedDefaultForm]);
+  const editedFields = useMemo(
+    () => new Set(Object.keys(formOverrides) as Array<keyof LaunchForm>),
+    [formOverrides],
+  );
+
+  const selectedAudienceText = form.audiences
+    .map((audience) => (audiencePresets.includes(audience) ? translate(audience, language) : audience))
+    .join(', ');
   const selectedPlatformText = form.platforms.join(', ');
 
   function updateField(field: keyof LaunchForm, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setFormOverrides((current) => ({ ...current, [field]: value }));
   }
 
   function toggleList(field: 'audiences' | 'platforms', value: string) {
-    setForm((current) => {
-      const values = current[field].includes(value)
-        ? current[field].filter((item) => item !== value)
-        : [...current[field], value];
+    setFormOverrides((current) => {
+      const currentValues = current[field] ?? localizedDefaultForm[field];
+      const values = currentValues.includes(value)
+        ? currentValues.filter((item) => item !== value)
+        : [...currentValues, value];
       return { ...current, [field]: values };
     });
   }
@@ -900,17 +987,22 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
       return;
     }
     setSubmittedForm(form);
+    setSubmittedEditedFields(new Set(editedFields));
     setHasRun(true);
   }
 
-  const resultPreview = hasRun
-    ? 'Run complete: generated sample results are visible below now.'
-    : 'Defaults are prefilled. Run now, or edit the visible inputs first.';
+  const resultPreview = translate(
+    hasRun
+      ? 'Run complete: generated sample results are visible below now.'
+      : 'Defaults are prefilled. Run now, or edit the visible inputs first.',
+    language,
+  );
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
 
   return (
-    <section className="view-stack" aria-labelledby="workbench-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="workbench-title">
       <div className="card card-accent quick-start">
         <div>
           <p className="eyebrow">Marketing Decision Workbench</p>
@@ -923,15 +1015,19 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </section>
           <div className="button-row" aria-label="Switch workflow">
             <a className="button button-secondary" href={alternateWorkflowHref}>
-              Switch to {alternateWorkflow.objective}
+              {`Switch to ${alternateWorkflow.objective}`}
             </a>
           </div>
         </div>
         <aside className="quick-start-panel" aria-label="Quick start run action">
           <p className="eyebrow">Quick start</p>
           <h2>Run with safe defaults</h2>
-          <p aria-label="Run completion status" role={hasRun ? 'status' : undefined}>{resultPreview}</p>
-          {hasRun ? <a className="button button-secondary" href="#results-title">Jump to generated sample results</a> : null}
+          <p aria-label={translate('Run completion status', language)} data-i18n-rendered="true" role={hasRun ? 'status' : undefined}>{resultPreview}</p>
+          {hasRun ? (
+            <a className="button button-secondary" href="#results-title">
+              {translate('Jump to generated sample results', language)}
+            </a>
+          ) : null}
           <button className="button button-primary" type="button" onClick={runSimulation}>
             Run offline simulation
           </button>
@@ -962,7 +1058,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </fieldset>
 
           <fieldset>
-            <legend>2. Inputs you can edit</legend>
+            <legend>2. {t('Inputs you can edit')}</legend>
             <label htmlFor="brand">Campaign name or brand</label>
             <input
               id="brand"
@@ -1036,7 +1132,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
                     checked={form.audiences.includes(audience)}
                     onChange={() => toggleList('audiences', audience)}
                   />
-                  {audience}
+                  {t(audience)}
                 </label>
               ))}
             </div>
@@ -1060,9 +1156,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
 
           {errors.length > 0 ? (
             <div className="error-state form-errors" role="alert">
-              <strong>Complete required fields before running:</strong>
+              <strong>{translate('Complete required fields before running:', language)}</strong>
               <ul>
-                {errors.map((error) => <li key={error}>{error}</li>)}
+                {errors.map((error) => <li key={error}>{translate(error, language)}</li>)}
               </ul>
             </div>
           ) : null}
@@ -1079,25 +1175,25 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
             <dt>Objective</dt>
             <dd>{config.objective}</dd>
             <dt>Campaign name or brand</dt>
-            <dd>{form.brand || 'Required'}</dd>
+            <dd><ReviewValue value={form.brand} /></dd>
             {config.key === 'abExperiment' ? (
               <>
                 <dt>Variant A</dt>
-                <dd>{form.variantA || 'Required'}</dd>
+                <dd><ReviewValue value={form.variantA} /></dd>
                 <dt>Variant B</dt>
-                <dd>{form.variantB || 'Required'}</dd>
+                <dd><ReviewValue value={form.variantB} /></dd>
               </>
             ) : null}
             {config.key === 'creativeComparison' ? (
               <>
                 <dt>Creative A</dt>
-                <dd>{form.creativeATitle || 'Required'} — {form.creativeADescription || 'Required'}</dd>
+                <dd><ReviewValue value={form.creativeATitle} /> — <ReviewValue value={form.creativeADescription} /></dd>
                 <dt>Creative B</dt>
-                <dd>{form.creativeBTitle || 'Required'} — {form.creativeBDescription || 'Required'}</dd>
+                <dd><ReviewValue value={form.creativeBTitle} /> — <ReviewValue value={form.creativeBDescription} /></dd>
               </>
             ) : null}
             <dt>Audience</dt>
-            <dd>{selectedAudienceText || 'General Consumers'}</dd>
+            <dd data-i18n-rendered="true">{selectedAudienceText || translate('General Consumers', language)}</dd>
             <dt>Platform mix</dt>
             <dd>{selectedPlatformText || 'Required'}</dd>
           </dl>
@@ -1108,8 +1204,17 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
         </section>
       </div>
 
-      {hasRun ? <ReferenceResults form={submittedForm} config={config} fixture={config.fixture} showActions /> : null}
-    </section>
+      {hasRun ? (
+        <ReferenceResults
+          form={submittedForm}
+          config={config}
+          fixture={config.fixture}
+          editedFields={submittedEditedFields}
+          showActions
+        />
+      ) : null}
+      </section>
+    </Localized>
   );
 }
 
@@ -1119,14 +1224,16 @@ export function RunDashboardView({ runId }: { runId?: string }) {
     return <UnavailableReferenceView kind="Run" id={runId} />;
   }
   return (
-    <section className="view-stack" aria-labelledby="dashboard-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
-        <h1 id="dashboard-title">{config.objective} Results</h1>
+        <h1 id="dashboard-title">{`${config.objective} Results`}</h1>
         <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
       <ReferenceResults form={config.defaultForm} config={config} fixture={config.fixture} />
-    </section>
+      </section>
+    </Localized>
   );
 }
 
@@ -1136,7 +1243,8 @@ export function ExportReviewView({ runId }: { runId?: string }) {
     return <UnavailableReferenceView kind="Export" id={runId} />;
   }
   return (
-    <section className="view-stack" aria-labelledby="export-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="export-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="export-title">Export Readiness Preview</h1>
@@ -1144,7 +1252,8 @@ export function ExportReviewView({ runId }: { runId?: string }) {
       </div>
       <FixtureTransparency />
       <ExportReview fixture={config.fixture} objective={config.objective} />
-    </section>
+      </section>
+    </Localized>
   );
 }
 
@@ -1169,41 +1278,46 @@ function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: s
 
 export function HealthView() {
   const kpis = [
-    ['Product Health', '7.4 baseline retained for M12 trust validation.'],
-    ['UX Health', 'Validation focuses on blank input feedback and missed completion recovery.'],
-    ['Trust Score', 'Unknown runs and exports show unavailable states instead of fixture fallback.'],
-    ['Transparency Score', 'Results label Reference Fixture, User Review Session, synthetic sample, and no live execution.'],
-    ['Validation Score', 'Regression coverage protects unknown ids, invalid input, visibility, transparency, and health clarity.'],
-    ['Dashboard Clarity', 'Health copy now reflects current milestone and M12 trust focus.'],
-    ['Overall Readiness', 'Ready for human review with P1/P2 trust issues addressed.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, or live API changes.'],
+    ['Translation Completeness', 'Reviewed core UI copy is translated for the M18 screens; remaining mixed-language fragments stay visible for review rather than being claimed complete.'],
+    ['Glossary Consistency', 'Product terms follow the M18 glossary for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
+    ['Thai UX Quality', 'Thai copy is short, professional, executive-readable, and avoids unnecessary technical language.'],
+    ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
+    ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
+    ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
+    ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
+    ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. M19 has not begun.'],
   ];
 
   return (
-    <section className="view-stack" aria-labelledby="health-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M12 Campaign Workspace Trust &amp; Validation</h1>
-        <p>Product Health 7.4 baseline with M12 focus on trust validation, unavailable states, input clarity, result visibility, and fixture transparency.</p>
+        <h1 id="health-title">M18 Thai-first Internationalization</h1>
+        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and tracks remaining mixed-language review gaps without backend or SocialSense changes.</p>
       </div>
-      <section className="grid two-col" aria-label="M12 KPI dashboard">
+      <section className="grid two-col" aria-label="M18 KPI dashboard">
         {kpis.map(([title, description]) => (
           <ObjectiveCard key={title} title={title} description={description} status={title === 'Engineering KPI' ? 'review' : 'ready'} />
         ))}
       </section>
     </section>
+    </Localized>
   );
 }
 
 export function NotFoundView() {
   return (
-    <section className="view-stack" aria-labelledby="not-found-title">
+    <Localized>
+      <section className="view-stack" aria-labelledby="not-found-title">
       <div className="card error-state">
         <p className="eyebrow">Route not found</p>
         <h1 id="not-found-title">This page is not part of the guided campaign review.</h1>
         <p>Use the main navigation to return to a documented workbench route.</p>
       </div>
     </section>
+    </Localized>
   );
 }
 
@@ -1211,30 +1325,48 @@ function ReferenceResults({
   form,
   fixture,
   config,
+  editedFields,
   showActions = false,
 }: {
   form: LaunchForm;
   fixture: ReferenceFixture;
   config: WorkflowConfig;
+  editedFields?: Set<keyof LaunchForm>;
   showActions?: boolean;
 }) {
-  const assumptionRows = useMemo(
+  const { language, t } = useI18n();
+  const localizeTrustedAssumptionValue = (field: keyof LaunchForm, value: string) => {
+    if (language === 'en') {
+      return value;
+    }
+    if (field === 'audiences') {
+      return value
+        .split(', ')
+        .map((audience) => (audiencePresets.includes(audience) ? t(audience) : audience))
+        .join(', ');
+    }
+    if (field === 'platforms' || editedFields?.has(field)) {
+      return value;
+    }
+    return t(value);
+  };
+  const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(
     () => [
-      ['Campaign name or brand', form.brand],
-      ['Campaign Message', form.campaignMessage],
-      ...(form.variantA ? [['Variant A', form.variantA]] : []),
-      ...(form.variantB ? [['Variant B', form.variantB]] : []),
-      ...(form.creativeATitle ? [['Creative A concept title', form.creativeATitle]] : []),
-      ...(form.creativeADescription ? [['Creative A visual idea / copy description', form.creativeADescription]] : []),
-      ...(form.creativeBTitle ? [['Creative B concept title', form.creativeBTitle]] : []),
-      ...(form.creativeBDescription ? [['Creative B visual idea / copy description', form.creativeBDescription]] : []),
-      ...(form.offer ? [['Offer/Promotion', form.offer]] : []),
-      ['Key Message', form.keyMessage],
-      ...(form.tone ? [['Tone', form.tone]] : []),
-      ...(form.claim ? [['Claim to review', form.claim]] : []),
-      ['Audience', form.audiences.join(', ') || 'General Consumers'],
-      ['Platform mix', form.platforms.join(', ')],
-      ['Context', form.context || 'No additional context'],
+      ['Campaign name or brand', form.brand, 'brand'],
+      ['Campaign Message', form.campaignMessage, 'campaignMessage'],
+      ...(form.variantA ? ([['Variant A', form.variantA, 'variantA']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.variantB ? ([['Variant B', form.variantB, 'variantB']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeATitle ? ([['Creative A concept title', form.creativeATitle, 'creativeATitle']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeADescription ? ([['Creative A visual idea / copy description', form.creativeADescription, 'creativeADescription']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeBTitle ? ([['Creative B concept title', form.creativeBTitle, 'creativeBTitle']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.creativeBDescription ? ([['Creative B visual idea / copy description', form.creativeBDescription, 'creativeBDescription']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.offer ? ([['Offer/Promotion', form.offer, 'offer']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ['Key Message', form.keyMessage, 'keyMessage'],
+      ...(form.tone ? ([['Tone', form.tone, 'tone']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ...(form.claim ? ([['Claim to review', form.claim, 'claim']] as Array<[string, string, keyof LaunchForm]>) : []),
+      ['Audience', form.audiences.join(', ') || 'General Consumers', 'audiences'],
+      ['Platform mix', form.platforms.join(', '), 'platforms'],
+      ['Context', form.context || 'No additional context', 'context'],
     ],
     [form],
   );
@@ -1242,44 +1374,44 @@ function ReferenceResults({
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
   return (
-    <section className="view-stack" aria-labelledby="results-title">
+    <section className="view-stack" aria-labelledby="results-title" data-i18n-rendered="true">
       <div className="card result-hero">
-        <p className="eyebrow">Dashboard</p>
-        <h2 id="results-title">{fixture.summary.headline}</h2>
-        <p>{fixture.summary.text}</p>
-        <section className="next-action-card" aria-label="Recommended next action">
-          <p className="eyebrow">Recommended next action</p>
-          <strong>Use this as a human review prompt, then approve a small evidence-gathering test.</strong>
-          <p>{fixture.recommendedNextTest}</p>
+        <p className="eyebrow">{t('Dashboard')}</p>
+        <h2 id="results-title">{t(fixture.summary.headline)}</h2>
+        <p>{t(fixture.summary.text)}</p>
+        <section className="next-action-card" aria-label={t('Recommended next action')}>
+          <p className="eyebrow">{t('Recommended next action')}</p>
+          <strong>{t('Use this as a human review prompt, then approve a small evidence-gathering test.')}</strong>
+          <p>{t(fixture.recommendedNextTest)}</p>
         </section>
-        <p className="help-text">Safety: offline fixture for planning only; review before using externally.</p>
+        <p className="help-text">{t('Safety: offline fixture for planning only; review before using externally.')}</p>
         {showActions ? (
           <div className="button-row">
-            <a className="button button-secondary" href={`/runs/${fixture.runId}`}>Open result dashboard</a>
-            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>Open export-readiness preview</a>
+            <a className="button button-secondary" href={`/runs/${fixture.runId}`}>{t('Open result dashboard')}</a>
+            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>{t('Open export-readiness preview')}</a>
           </div>
         ) : null}
       </div>
 
       <div className="card assumption-panel">
-        <p className="eyebrow">Your assumptions shown for review</p>
+        <p className="eyebrow">{t('Your assumptions shown for review')}</p>
         <dl className="assumption-grid">
-          {assumptionRows.map(([label, value]) => (
+          {assumptionRows.map(([label, value, field]) => (
             <div key={label}>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
+              <dt>{t(label)}</dt>
+              <dd>{localizeTrustedAssumptionValue(field, value)}</dd>
             </div>
           ))}
         </dl>
-        <p className="help-text">The generated sample result is not recalculated from arbitrary browser-entered data.</p>
+        <p className="help-text">{t('The generated sample result is not recalculated from arbitrary browser-entered data.')}</p>
       </div>
 
       <FixtureTransparency />
 
       {'creativeSummaries' in fixture && 'comparisonDashboard' in fixture ? (
-        <section className="card" aria-label="Creative comparison dashboard">
-          <p className="eyebrow">Creative Comparison Dashboard</p>
-          <h3>Creative Comparison Dashboard</h3>
+        <section className="card" aria-label={t('Creative comparison dashboard')}>
+          <p className="eyebrow">{t('Creative Comparison Dashboard')}</p>
+          <h3>{t('Creative Comparison Dashboard')}</h3>
           <div className="grid two-col align-start">
             {fixture.creativeSummaries.map((card: FixtureCard) => (
               <MetricCard key={card.title} card={card} />
@@ -1288,33 +1420,33 @@ function ReferenceResults({
           <div className="grid two-col align-start">
             {fixture.comparisonDashboard.map((item: { title: string; detail: string }) => (
               <section className="evidence-critical-card" key={item.title}>
-                <p className="eyebrow">Review signal</p>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
+                <p className="eyebrow">{t('Review signal')}</p>
+                <h3>{t(item.title)}</h3>
+                <p>{t(item.detail)}</p>
               </section>
             ))}
           </div>
           {'comparisonMethod' in fixture ? (
             <p className="help-text">
-              {fixture.comparisonMethod.decisionStatus}: {fixture.comparisonMethod.rationale} Confidence: {fixture.comparisonMethod.confidenceLevel}.
+              {t(fixture.comparisonMethod.decisionStatus)}: {t(fixture.comparisonMethod.rationale)} {t('Confidence')}: {t(fixture.comparisonMethod.confidenceLevel)}.
             </p>
           ) : null}
         </section>
       ) : null}
 
       {'comparisonCards' in fixture && !('creativeSummaries' in fixture) ? (
-        <section className="card" aria-label="Variant comparison">
-          <p className="eyebrow">A/B comparison</p>
-          <h3>Variant decision frame</h3>
+        <section className="card" aria-label={t('Variant comparison')}>
+          <p className="eyebrow">{t('A/B comparison')}</p>
+          <h3>{t('Variant decision frame')}</h3>
           {comparisonMethod ? (
             <div>
               <p>
-                {comparisonMethod.decisionStatus}: {comparisonMethod.rationale} Confidence: {comparisonMethod.confidenceLevel}.
+                {t(comparisonMethod.decisionStatus)}: {t(comparisonMethod.rationale)} {t('Confidence')}: {t(comparisonMethod.confidenceLevel)}.
               </p>
-              <p className="help-text">Parity check: {comparisonMethod.parityCheck}</p>
+              <p className="help-text">{t('Parity check')}: {t(comparisonMethod.parityCheck)}</p>
               <div className="grid two-col align-start">
-                <InsightList title="Shared Criteria" items={comparisonMethod.sharedCriteria} />
-                <InsightList title="Blocked Actions" items={comparisonMethod.blockedActions} />
+                <InsightList title="Shared Criteria" items={comparisonMethod.sharedCriteria} localize />
+                <InsightList title="Blocked Actions" items={comparisonMethod.blockedActions} localize />
               </div>
             </div>
           ) : null}
@@ -1333,13 +1465,13 @@ function ReferenceResults({
       </div>
 
       <div className="grid two-col align-start">
-        <InsightList title="Platform Breakdown" items={fixture.platformBreakdown.map((item) => `${item.platform}: ${item.signal}. ${item.detail}`)} />
-        <InsightList title="Audience Insights" items={fixture.audienceInsights} />
-        <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} />
+        <InsightList title="Platform Breakdown" items={fixture.platformBreakdown.map((item) => `${item.platform}: ${item.signal}. ${item.detail}`)} localize />
+        <InsightList title="Audience Insights" items={fixture.audienceInsights} localize />
+        <InsightList title="Risks / Caveats" items={fixture.risksCaveats.slice(0, 4)} localize />
         <div className="card">
-          <p className="eyebrow">Executive Summary</p>
-          <h3>{config.objective} executive summary</h3>
-          <p>{fixture.exports.executiveSummaryPreview}</p>
+          <p className="eyebrow">{t('Executive Summary')}</p>
+          <h3>{t(`${config.objective} executive summary`)}</h3>
+          <p>{t(fixture.exports.executiveSummaryPreview)}</p>
         </div>
       </div>
     </section>
@@ -1347,6 +1479,7 @@ function ReferenceResults({
 }
 
 function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objective: string }) {
+  const { language, t } = useI18n();
   const supportedFormats = fixture.exports.formats
     .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
     .map((format) => {
@@ -1370,9 +1503,22 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
   const decisionStatus = 'comparisonMethod' in fixture
     ? fixture.comparisonMethod.decisionStatus
     : 'Ready for human review';
+  const reviewMode = language === 'th' ? 'ตัวอย่างออฟไลน์' : fixture.reviewMetadata.source.reviewMode;
+  const executionMode = language === 'th' ? 'ข้อมูลตัวอย่างออฟไลน์' : fixture.reviewMetadata.provenance.runtime_mode;
+  const productionReady = language === 'th' ? 'ยังไม่พร้อมใช้งานจริง' : 'no';
+  const parametersCopy = language === 'th'
+    ? `โหมดตรวจทาน: ${reviewMode}; รูปแบบการทำงาน: ${executionMode}; ความพร้อมใช้งานจริง: ${productionReady}.`
+    : `Review mode: ${reviewMode}; execution mode: ${executionMode}; production ready: ${productionReady}.`;
+  const dashboardSnapshotCopy = `${fixture.cards
+    .map((card) => `${t(card.title)}: ${t(card.value)}`)
+    .join('; ')}.`;
+  const confidenceSummaryCopy = language === 'th'
+    ? `${t(decisionStatus)}. ${t('Confidence')}: ${t(decisionConfidence)}. ช่องว่างหลักฐานต้องแสดงให้เห็นก่อนดำเนินการ.`
+    : `${decisionStatus}. Confidence: ${decisionConfidence}. Evidence gaps remain visible before action.`;
 
   return (
-    <div className="view-stack">
+    <Localized>
+      <div className="view-stack">
       <div className="card executive-report-hero">
         <p className="eyebrow">Export review</p>
         <h2>{fixture.exports.readiness}</h2>
@@ -1413,21 +1559,21 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
 
       <section className="card executive-report-preview" aria-label="Executive report preview">
         <p className="eyebrow">Executive report preview</p>
-        <h2>{objective} executive handoff report</h2>
+        <h2>{t(`${objective} executive handoff report`)}</h2>
         <p>
           Decision readiness: human review required before launch, budget, or winner decisions.
         </p>
         <p>
-          Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.
-          Evidence tier: E1 synthetic/offline fixture; Confidence: {decisionConfidence}.
+          {t('Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.')}{' '}
+          {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t(decisionConfidence)}.
         </p>
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
-            <p className="help-text">Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: {decisionConfidence}.</p>
+            <p className="help-text">{t('Source')}: fixture.exports.executiveSummaryPreview. {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}. {t('Confidence')}: {t(decisionConfidence)}.</p>
           </ReportSection>
           <ReportSection title="Objectives">
-            <p>Objective: {objective}. Use the report for executive handoff and human review, not production approval.</p>
+            <p>{t(`Objective: ${objective}. Use the report for executive handoff and human review, not production approval.`)}</p>
             <p className="help-text">Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.</p>
           </ReportSection>
           <ReportSection title="Scenario">
@@ -1446,11 +1592,11 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
           </ReportSection>
           <ReportSection title="Parameters">
-            <p>Review mode: {fixture.reviewMetadata.source.reviewMode}; runtime mode: {fixture.reviewMetadata.provenance.runtime_mode}; production ready: no.</p>
+            <p data-i18n-rendered="true">{parametersCopy}</p>
             <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
           </ReportSection>
           <ReportSection title="Audience">
-            <p>{fixture.sampleInput.audiences.join(', ')}</p>
+            <p>{fixture.sampleInput.audiences.map((audience) => t(audience)).join(', ')}</p>
             <p className="help-text">Source: fixture.sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.</p>
           </ReportSection>
           <ReportSection title="Platform Mix">
@@ -1458,20 +1604,20 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
             <p className="help-text">Source: fixture.sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.</p>
           </ReportSection>
           <ReportSection title="Dashboard / KPI snapshot">
-            <p>{fixture.cards.map((card) => `${card.title}: ${card.value}`).join('; ')}.</p>
+            <p data-i18n-rendered="true">{dashboardSnapshotCopy}</p>
             <p className="help-text">Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
           </ReportSection>
           <ReportSection title="Charts / Evidence / Confidence summary">
-            <p>{decisionStatus}. Confidence: {decisionConfidence}. Evidence gaps remain visible before action.</p>
+            <p data-i18n-rendered="true">{confidenceSummaryCopy}</p>
             <p className="help-text">Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.</p>
           </ReportSection>
           <ReportSection title="Recommendations">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">Next review step: {fixture.recommendedNextTest}</p>
+            <p className="help-text">{t('Next review step')}: {t(fixture.recommendedNextTest)}</p>
           </ReportSection>
           <ReportSection title="Next review step">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">Evidence tier: E1 synthetic/offline fixture; Confidence: Low directional; review step only, not a launch or budget decision.</p>
+            <p className="help-text">{t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t('Low directional')}; {t('review step only, not a launch or budget decision')}.</p>
           </ReportSection>
           <ReportSection title="Assumptions">
             <ul className="insight-list">
@@ -1496,20 +1642,20 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
 
       <div className="card">
         <p className="eyebrow">Executive Summary preview</p>
-        <h2>{objective} executive-ready summary</h2>
+        <h2>{t(`${objective} executive-ready summary`)}</h2>
         <p>{fixture.exports.executiveSummaryPreview}</p>
       </div>
       <div className="grid two-col align-start">
-        <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} />
-        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} />
-        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} />
+        <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} localize />
+        <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} localize />
+        <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} localize />
         <div className="card">
           <p className="eyebrow">Review confidence</p>
           <h3>Offline sample basis</h3>
           <dl className="assumption-grid">
             <div>
               <dt>Review mode</dt>
-              <dd>{fixture.reviewMetadata.source.reviewMode}</dd>
+              <dd data-i18n-rendered="true">{reviewMode}</dd>
             </div>
             <div>
               <dt>Sample source</dt>
@@ -1528,14 +1674,16 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           {fixture.safetyLabels.map((label) => <li key={label}>{label}</li>)}
         </ul>
       </div>
-    </div>
+      </div>
+    </Localized>
   );
 }
 
 function ReportSection({ title, children }: { title: string; children: ReactNode }) {
+  const { t } = useI18n();
   return (
     <section className="report-section-card">
-      <h3>{title}</h3>
+      <h3>{t(title)}</h3>
       {children}
     </section>
   );
@@ -1572,45 +1720,51 @@ function reportInputRows(fixture: ReferenceFixture): string[][] {
 }
 
 function FixtureTransparency() {
+  const { t } = useI18n();
   return (
-    <section className="card" aria-label="Fixture transparency">
-      <p className="eyebrow">Fixture transparency</p>
-      <h2>Reference Fixture vs User Review Session</h2>
+    <Localized>
+      <section className="card" aria-label={t('Fixture transparency')}>
+      <p className="eyebrow">{t('Fixture transparency')}</p>
+      <h2>{t('Reference Fixture vs User Review Session')}</h2>
       <dl className="assumption-grid">
         <div>
-          <dt>Reference Fixture</dt>
-          <dd>Synthetic generated sample, reviewed offline, and not live execution.</dd>
+          <dt>{t('Reference Fixture')}</dt>
+          <dd>{t('Synthetic generated sample, reviewed offline, and not live execution.')}</dd>
         </div>
         <div>
-          <dt>User Review Session</dt>
-          <dd>User-provided inputs are shown as review assumptions only; they do not recalculate the generated sample.</dd>
+          <dt>{t('User Review Session')}</dt>
+          <dd>{t('User-provided inputs are shown as review assumptions only; they do not recalculate the generated sample.')}</dd>
         </div>
         <div>
-          <dt>No live execution</dt>
-          <dd>No backend run, live API, persistence, credential, or production campaign system is invoked.</dd>
+          <dt>{t('No live execution')}</dt>
+          <dd>{t('No backend run, live API, persistence, credential, or production campaign system is invoked.')}</dd>
         </div>
       </dl>
     </section>
+    </Localized>
   );
 }
 
 function MetricCard({ card }: { card: FixtureCard }) {
+  const { t } = useI18n();
   return (
     <article className="card metric-card">
-      <p className="eyebrow">{card.title}</p>
-      <h3>{card.value}</h3>
-      <p>{card.detail}</p>
+      <p className="eyebrow">{t(card.title)}</p>
+      <h3>{t(card.value)}</h3>
+      <p>{t(card.detail)}</p>
     </article>
   );
 }
 
-function InsightList({ title, items }: { title: string; items: string[] }) {
+function InsightList({ title, items, localize = false }: { title: string; items: string[]; localize?: boolean }) {
+  const { t } = useI18n();
+  const renderText = (text: string) => (localize ? t(text) : text);
   return (
     <section className="card">
-      <p className="eyebrow">Review signal</p>
-      <h3>{title}</h3>
+      <p className="eyebrow">{renderText('Review signal')}</p>
+      <h3>{renderText(title)}</h3>
       <ul className="insight-list">
-        {items.map((item) => <li key={item}>{item}</li>)}
+        {items.map((item) => <li key={item}>{renderText(item)}</li>)}
       </ul>
     </section>
   );
@@ -1631,7 +1785,7 @@ function validateForm(form: LaunchForm, workflow: WorkflowKey): string[] {
     errors.push('Creative A and Creative B titles are required because the comparison needs two named alternatives.');
   }
   if (workflow === 'creativeComparison' && (!form.creativeADescription.trim() || !form.creativeBDescription.trim())) {
-    errors.push('Creative A and Creative B descriptions are required because this MVP reviews text-only concepts.');
+    errors.push('Creative A and Creative B descriptions are required because this reviewed prototype uses text-only concepts.');
   }
   if (workflow === 'creativeComparison' && !form.keyMessage.trim()) {
     errors.push('Key Message is required because message clarity must be reviewed against an explicit message.');

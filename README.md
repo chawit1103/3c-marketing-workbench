@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The milestone improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence, so human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization may be prepared next as kickoff planning only, but M18 implementation must not begin until explicit M18 kickoff. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
+Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. The milestone improves executive report preview and export format readiness with Executive JSON preview, Markdown briefing preview, planning-only PDF and PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy for reviewed offline campaign evidence. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence, so human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -82,7 +82,7 @@ Current frontend routes:
 | `/workbench/creative-comparison` | Guided text-only Creative Comparison form and local run action | Implemented M15 vertical slice |
 | `/runs/:runId` | Product Launch, Campaign Message Test, A/B Experiment, or Creative Comparison results dashboard for known generated offline samples; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard + M15 Creative Comparison |
 | `/exports/:runId` | Export review for known generated offline samples, including Creative Comparison; PR4 adds executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, and explicit planning-only PDF/PowerPoint unsupported notices; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M17 PR4 report/export readability |
-| `/health` | M12 Product Health 7.4 baseline, trust validation focus, and KPI dashboard | Implemented |
+| `/health` | M18 Thai-first Internationalization health, KPI dashboard, language coverage, safety copy quality, and no-M19 status | Implemented M18 |
 
 Unknown routes render a not-found state. Unknown run/export IDs render explicit unavailable states instead of Product Launch fallback content. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
 
@@ -99,6 +99,8 @@ Product documentation map:
 - [Executive Experience & Marketing Simulation Enhancement Program](docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md)
 - [M17 Executive Dashboard & Reporting Plan](docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md)
 - [M17 Executive Dashboard & Reporting Closeout Report](docs/product/M17_CLOSEOUT_REPORT.md)
+- [M18 Translation Style Guide](docs/product/TRANSLATION_STYLE_GUIDE.md)
+- [M18 Glossary](docs/product/GLOSSARY.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
@@ -205,7 +207,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
 ```
 
-M17 PR5 closeout branch / PR #27 provided docs/status/smoke closeout history, and PR #28 merged the final status correction to main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after post-merge validation passed. M17 is CLOSED as GO WITH CONDITIONS for controlled executive review: dashboard/report surfaces are not production launch evidence, and human review plus field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff. PR5 and final status correction must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, or runtime product changes outside docs smoke.
+M17 PR5 closeout branch / PR #27 provided docs/status/smoke closeout history, and PR #28 merged the final status correction to main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after post-merge validation passed. M17 is CLOSED as GO WITH CONDITIONS for controlled executive review: dashboard/report surfaces are not production launch evidence, and human review plus field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes. PR5 and final status correction must not add new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, or runtime product changes outside docs smoke.
 
 M15 focused validation commands:
 
