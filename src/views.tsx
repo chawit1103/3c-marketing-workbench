@@ -1308,17 +1308,17 @@ function ReferenceResults({
           <strong>{t('Use this as a human review prompt, then approve a small evidence-gathering test.')}</strong>
           <p>{t(fixture.recommendedNextTest)}</p>
         </section>
-        <p className="help-text">Safety: offline fixture for planning only; review before using externally.</p>
+        <p className="help-text">{t('Safety: offline fixture for planning only; review before using externally.')}</p>
         {showActions ? (
           <div className="button-row">
-            <a className="button button-secondary" href={`/runs/${fixture.runId}`}>Open result dashboard</a>
-            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>Open export-readiness preview</a>
+            <a className="button button-secondary" href={`/runs/${fixture.runId}`}>{t('Open result dashboard')}</a>
+            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>{t('Open export-readiness preview')}</a>
           </div>
         ) : null}
       </div>
 
       <div className="card assumption-panel">
-        <p className="eyebrow">Your assumptions shown for review</p>
+        <p className="eyebrow">{t('Your assumptions shown for review')}</p>
         <dl className="assumption-grid">
           {assumptionRows.map(([label, value]) => (
             <div key={label}>
@@ -1327,7 +1327,7 @@ function ReferenceResults({
             </div>
           ))}
         </dl>
-        <p className="help-text">The generated sample result is not recalculated from arbitrary browser-entered data.</p>
+        <p className="help-text">{t('The generated sample result is not recalculated from arbitrary browser-entered data.')}</p>
       </div>
 
       <FixtureTransparency />
@@ -1628,22 +1628,23 @@ function reportInputRows(fixture: ReferenceFixture): string[][] {
 }
 
 function FixtureTransparency() {
+  const { t } = useI18n();
   return (
-    <section className="card" aria-label="Fixture transparency">
-      <p className="eyebrow">Fixture transparency</p>
-      <h2>Reference Fixture vs User Review Session</h2>
+    <section className="card" aria-label={t('Fixture transparency')}>
+      <p className="eyebrow">{t('Fixture transparency')}</p>
+      <h2>{t('Reference Fixture vs User Review Session')}</h2>
       <dl className="assumption-grid">
         <div>
-          <dt>Reference Fixture</dt>
-          <dd>Synthetic generated sample, reviewed offline, and not live execution.</dd>
+          <dt>{t('Reference Fixture')}</dt>
+          <dd>{t('Synthetic generated sample, reviewed offline, and not live execution.')}</dd>
         </div>
         <div>
-          <dt>User Review Session</dt>
-          <dd>User-provided inputs are shown as review assumptions only; they do not recalculate the generated sample.</dd>
+          <dt>{t('User Review Session')}</dt>
+          <dd>{t('User-provided inputs are shown as review assumptions only; they do not recalculate the generated sample.')}</dd>
         </div>
         <div>
-          <dt>No live execution</dt>
-          <dd>No backend run, live API, persistence, credential, or production campaign system is invoked.</dd>
+          <dt>{t('No live execution')}</dt>
+          <dd>{t('No backend run, live API, persistence, credential, or production campaign system is invoked.')}</dd>
         </div>
       </dl>
     </section>

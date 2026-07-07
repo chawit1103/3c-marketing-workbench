@@ -188,6 +188,17 @@ describe('M18 Thai-first internationalization', () => {
     expect(screen.getByRole('link', { name: 'ไปยังผลลัพธ์ตัวอย่างที่สร้างไว้' })).toHaveAttribute('href', '#results-title');
     for (const blocker of [
       'Offline product-launch simulation ready for executive review',
+      'Safety: offline fixture for planning only; review before using externally.',
+      'Open result dashboard',
+      'Open export-readiness preview',
+      'YOUR ASSUMPTIONS SHOWN FOR REVIEW',
+      'Your assumptions shown for review',
+      'FIXTURE TRANSPARENCY',
+      'Fixture transparency',
+      'OVERALL REACTION',
+      'Overall Reaction',
+      'Platform Breakdown',
+      'Risks / Caveats',
       'DASHBOARD',
       'The offline Product Launch sample shows',
       'Recommended next action',
