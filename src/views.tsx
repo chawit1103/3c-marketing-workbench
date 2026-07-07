@@ -980,7 +980,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
         <aside className="quick-start-panel" aria-label="Quick start run action">
           <p className="eyebrow">Quick start</p>
           <h2>Run with safe defaults</h2>
-          <p aria-label={translate('Run completion status', language)} role={hasRun ? 'status' : undefined}>{resultPreview}</p>
+          <p aria-label={translate('Run completion status', language)} data-i18n-rendered="true" role={hasRun ? 'status' : undefined}>{resultPreview}</p>
           {hasRun ? (
             <a className="button button-secondary" href="#results-title">
               {translate('Jump to generated sample results', language)}
@@ -1298,7 +1298,7 @@ function ReferenceResults({
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
   return (
-    <section className="view-stack" aria-labelledby="results-title">
+    <section className="view-stack" aria-labelledby="results-title" data-i18n-rendered="true">
       <div className="card result-hero">
         <p className="eyebrow">{t('Dashboard')}</p>
         <h2 id="results-title">{t(fixture.summary.headline)}</h2>

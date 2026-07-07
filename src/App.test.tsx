@@ -263,6 +263,33 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).not.toContain('Run completion status');
   });
 
+  it('keeps Workbench run-complete status across language switches after Thai run', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    expect(screen.getByRole('heading', { name: 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน' })).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    expect(screen.getByRole('status', { name: 'Run completion status' })).toHaveTextContent(
+      'Run complete: generated sample results are visible below now.',
+    );
+    expect(screen.getByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent('Defaults are prefilled. Run now, or edit the visible inputs first.');
+
+    fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'th' } });
+
+    expect(screen.getByRole('status', { name: 'สถานะการรัน' })).toHaveTextContent(
+      'รันเสร็จแล้ว: ผลลัพธ์ตัวอย่างที่สร้างไว้แสดงอยู่ด้านล่างแล้ว',
+    );
+    expect(screen.getByRole('heading', { name: 'การจำลอง Product Launch ออฟไลน์พร้อมสำหรับผู้บริหารตรวจทาน' })).toBeInTheDocument();
+  });
+
   it('preserves edited Workbench inputs while localizing untouched defaults across language switches', () => {
     const form = renderWorkbench();
     const editedCampaignName = 'Edited campaign survives language switch';

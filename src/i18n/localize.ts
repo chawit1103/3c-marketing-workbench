@@ -5,13 +5,13 @@ const originalText = new WeakMap<Text, string>();
 
 function restoreEnglish(text: string): string {
   const table = translations.th;
-  const exactMatch = Object.entries(table).find(([, target]) => target === text);
+  const exactMatch = [...Object.entries(table)].reverse().find(([, target]) => target === text);
   if (exactMatch) {
     return exactMatch[0];
   }
 
   const trimmed = text.trim();
-  const trimmedMatch = Object.entries(table).find(([, target]) => target === trimmed);
+  const trimmedMatch = [...Object.entries(table)].reverse().find(([, target]) => target === trimmed);
   if (trimmed && trimmedMatch) {
     return text.replace(trimmed, trimmedMatch[0]);
   }
@@ -156,7 +156,7 @@ export function localizeDom(root: HTMLElement, language: Language) {
   }
 
   for (const node of textNodes) {
-    if (node.parentElement?.closest('script, style')) {
+    if (node.parentElement?.closest('script, style, [data-i18n-rendered]')) {
       continue;
     }
     if (!originalText.has(node)) {
@@ -169,7 +169,7 @@ export function localizeDom(root: HTMLElement, language: Language) {
   for (const element of root.querySelectorAll<HTMLElement>('[aria-label], [placeholder], [title]')) {
     for (const attr of ['aria-label', 'placeholder', 'title']) {
       const value = element.getAttribute(attr);
-      if (value) {
+      if (value && !element.closest('[data-i18n-rendered]')) {
         const sourceAttr = `data-i18n-original-${attr}`;
         if (!element.hasAttribute(sourceAttr)) {
           element.setAttribute(sourceAttr, language === 'en' ? restoreEnglish(value) : value);
