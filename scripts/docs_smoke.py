@@ -864,14 +864,23 @@ def current_branch_name() -> str:
         return ""
 
 
-def current_milestone_number() -> int | None:
-    match = re.match(r"m(\d+)-", current_branch_name())
+def milestone_number_from_branch(branch_name: str) -> int | None:
+    match = re.match(r"m(\d+)-", branch_name)
     return int(match.group(1)) if match else None
+
+
+def current_milestone_number() -> int | None:
+    return milestone_number_from_branch(current_branch_name())
 
 
 def branch_at_or_after(milestone: int) -> bool:
     current = current_milestone_number()
     return current is not None and current >= milestone
+
+
+def branch_before_milestone(milestone: int) -> bool:
+    current = current_milestone_number()
+    return current is None or current < milestone
 
 
 def main() -> None:
@@ -1040,7 +1049,7 @@ def main() -> None:
 
     changed_paths = changed_paths_from_main()
     m6_context_active = any(path in changed_paths for path in REQUIRED_M6_DOCS) or "M6 Experiment Framework" in "\n".join([readme, agents, roadmap, health_dashboard])
-    if m6_context_active and not branch_at_or_after(7):
+    if m6_context_active and branch_before_milestone(7):
         if current_branch_name() != "main" and not changed_paths:
             fail("M6 planning changed-path guard could not compare against origin/main")
         non_docs = [path for path in changed_paths if not (path in M6_ALLOWED_CHANGED_PATHS or path.startswith("docs/product/"))]
