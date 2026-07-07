@@ -1,6 +1,8 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import type { AppRoute } from '../routes/routeResolver';
 import { SafetyLabels } from '../../components/product/SafetyLabels';
+import { localizeDom } from '../../i18n/localize';
+import { useI18n } from '../../i18n/useI18n';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -16,8 +18,17 @@ interface AppShellProps {
 }
 
 export function AppShell({ route, children }: AppShellProps) {
+  const { language, setLanguage } = useI18n();
+  const shellRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (shellRef.current) {
+      localizeDom(shellRef.current, language);
+    }
+  }, [language, route.pathname, children]);
+
   return (
-    <div className="app-shell">
+    <div className="app-shell" ref={shellRef} key={language}>
       <header className="site-header">
         <a className="brand" href="/" aria-label="3C Marketing Workbench home">
           <span className="brand-mark">3C</span>
@@ -26,17 +37,30 @@ export function AppShell({ route, children }: AppShellProps) {
             <small>Executive scenario review</small>
           </span>
         </a>
-        <nav className="site-nav" aria-label="Main navigation">
-          {navItems.map((item) => (
-            <a
-              aria-current={route.pathname === item.href ? 'page' : undefined}
-              href={item.href}
-              key={item.href}
+        <div className="header-actions">
+          <nav className="site-nav" aria-label="Main navigation">
+            {navItems.map((item) => (
+              <a
+                aria-current={route.pathname === item.href ? 'page' : undefined}
+                href={item.href}
+                key={item.href}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <label className="language-selector" htmlFor="language-selector">
+            <span>ภาษา</span>
+            <select
+              id="language-selector"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value === 'en' ? 'en' : 'th')}
             >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+              <option value="th">ไทย</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+        </div>
       </header>
       <main className="page-shell">
         <SafetyLabels />

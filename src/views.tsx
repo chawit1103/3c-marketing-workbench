@@ -1122,7 +1122,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
     <section className="view-stack" aria-labelledby="dashboard-title">
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
-        <h1 id="dashboard-title">{config.objective} Results</h1>
+        <h1 id="dashboard-title">{`${config.objective} Results`}</h1>
         <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
       <ReferenceResults form={config.defaultForm} config={config} fixture={config.fixture} />
@@ -1169,24 +1169,25 @@ function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: s
 
 export function HealthView() {
   const kpis = [
-    ['Product Health', '7.4 baseline retained for M12 trust validation.'],
-    ['UX Health', 'Validation focuses on blank input feedback and missed completion recovery.'],
-    ['Trust Score', 'Unknown runs and exports show unavailable states instead of fixture fallback.'],
-    ['Transparency Score', 'Results label Reference Fixture, User Review Session, synthetic sample, and no live execution.'],
-    ['Validation Score', 'Regression coverage protects unknown ids, invalid input, visibility, transparency, and health clarity.'],
-    ['Dashboard Clarity', 'Health copy now reflects current milestone and M12 trust focus.'],
-    ['Overall Readiness', 'Ready for human review with P1/P2 trust issues addressed.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, or live API changes.'],
+    ['Translation Completeness', 'Thai and English resources cover supported UI chrome, screen headings, actions, safety notices, dashboard wording, and report section labels.'],
+    ['Glossary Consistency', 'Product terms follow the M18 glossary for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
+    ['Thai UX Quality', 'Thai copy is short, professional, executive-readable, and avoids unnecessary technical language.'],
+    ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
+    ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
+    ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
+    ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
+    ['Language Coverage', 'Default language is Thai; English is available at runtime without backend, persistence, SocialSense, or workflow changes.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. M19 has not begun.'],
   ];
 
   return (
     <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
         <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M12 Campaign Workspace Trust &amp; Validation</h1>
-        <p>Product Health 7.4 baseline with M12 focus on trust validation, unavailable states, input clarity, result visibility, and fixture transparency.</p>
+        <h1 id="health-title">M18 Thai-first Internationalization</h1>
+        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and preserves executive readability plus safety meaning without backend or SocialSense changes.</p>
       </div>
-      <section className="grid two-col" aria-label="M12 KPI dashboard">
+      <section className="grid two-col" aria-label="M18 KPI dashboard">
         {kpis.map(([title, description]) => (
           <ObjectiveCard key={title} title={title} description={description} status={title === 'Engineering KPI' ? 'review' : 'ready'} />
         ))}

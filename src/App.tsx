@@ -1,5 +1,6 @@
 import { AppShell } from './app/shell/AppShell';
 import { resolveRoute } from './app/routes/routeResolver';
+import { I18nProvider } from './i18n/I18nProvider';
 import {
   CampaignWorkspaceView,
   ExportReviewView,
@@ -38,5 +39,9 @@ export function App() {
     }
   })();
 
-  return <AppShell route={route}>{view}</AppShell>;
+  return (
+    <I18nProvider>
+      <AppShell route={route}>{view}</AppShell>
+    </I18nProvider>
+  );
 }

@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization may be prepared next as kickoff planning only, but M18 implementation must not begin until explicit M18 kickoff.
+Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
 
 
 ## M1 PR4 closeout
@@ -207,8 +207,8 @@ Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on m
 | Creative Comparison Vertical Slice | Complete | M15 product build | Text-only Creative A/B workflow uses existing Workbench, Campaign Workspace, Experiment Framework, dashboard, export review, safety labels, and public adapter boundary. |
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 | Executive Dashboard & Reporting | Closed as GO WITH CONDITIONS | M17 PR5 closeout + PR #28 final status correction | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed. |
-| Thai-first Internationalization | Planned | M18 future milestone | Thai-first glossary, locale approach, and validation are planned only after M17 closeout. |
-| Synthetic Social Platform Engagement Simulation | Planned | M19 future milestone | Safe synthetic social engagement scope is planned only after M18 review; no live social APIs, scraping, or production posting. |
+| Thai-first Internationalization | Current implementation | M18 Thai-first i18n | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, and tests are in progress without backend/SocialSense/runtime dependency changes. |
+| Synthetic Social Platform Engagement Simulation | Not begun | M19 future milestone | Safe synthetic social engagement scope has not begun and must wait until M18 closes; no live social APIs, scraping, or production posting. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -257,8 +257,8 @@ Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on m
 - Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
-- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; M18 implementation remains blocked until explicit M18 kickoff.
+- M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
+- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; M18 implementation is authorized for the current milestone.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -299,8 +299,8 @@ Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on m
 | Executive Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Executive can understand dashboard/report for controlled review, but evidence remains E1 synthetic/offline fixture with Low directional confidence and requires human review/field evidence before launch, budget, or winner decisions. |
 | Dashboard Quality | GO WITH CONDITIONS | M17 PR5 closeout | KPI cards, sentiment comparison, evidence tiers, limitations, and human-review checklist are reviewable from fixture evidence; broader field usability remains future. |
 | Report Quality | GO WITH CONDITIONS | M17 PR5 closeout | Executive report preview, Executive JSON preview, Markdown briefing preview, assumptions, limitations, unsupported PDF/PPT notices, and human-review copy support management review only. |
-| I18N Readiness | Planned | M18 plan | Thai-first glossary and validation remain future work |
-| Simulation Readiness | Planned | M19 plan | Synthetic social engagement simulation remains future work |
+| I18N Readiness | Current implementation | M18 Thai-first i18n | Thai default, English switch, glossary, translation style guide, safety copy, and sample screen coverage are under validation |
+| Simulation Readiness | Not begun | M19 plan | Synthetic social engagement simulation remains future work and must not begin until M18 closes |
 | Trust | GO WITH CONDITIONS | M17 PR5 closeout | Synthetic/offline notices, safety boundaries, Low directional confidence, and blocked production claims remain explicit; human review is required. |
 | Transparency | GO WITH CONDITIONS | M17 PR5 closeout | Formula/source/evidence-tier/confidence, assumptions, limitations, evidence gaps, and next evidence steps remain visible. |
 | Release Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Required validation/review gates support controlled review only; not production launch readiness. |
@@ -477,9 +477,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Next milestone after M17 is M18 Thai-first Internationalization kickoff preparation. M17 is closed as GO WITH CONDITIONS for controlled executive review after PR #27 and PR #28 merged and post-merge validation passed.
+Current milestone after M17 is M18 Thai-first Internationalization. M17 is closed as GO WITH CONDITIONS for controlled executive review after PR #27 and PR #28 merged and post-merge validation passed.
 
-Recommended option: prepare M18 Thai-first glossary/content discovery and locale architecture planning as kickoff work only. M18 implementation must not begin until explicit M18 kickoff.
+Recommended option: finish M18 Thai-first glossary, content resources, frontend localization, selector, and validation as the current controlled implementation milestone. M19 must not begin until M18 closes.
 
 Alternative options if priorities change:
 

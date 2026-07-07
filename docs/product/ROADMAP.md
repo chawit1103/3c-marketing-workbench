@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 closeout docs/status/smoke are complete. M18 Thai-first Internationalization may be prepared next as kickoff planning only, but M18 implementation must not begin until explicit M18 kickoff.
+Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1-PR4 and M2-M16 are complete; M17 PR1 completed program kickoff docs, M17 PR2 delivered fixture-backed executive KPI cards, M17 PR3 delivered CSS/React-only marketing charts/evidence/confidence visualization, M17 PR4 delivered report/export readability, and PR5 closeout docs/status/smoke are complete. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
 
 ## Program
 
@@ -267,14 +267,17 @@ Acceptance criteria:
 - Program KPI closeout: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, and Known Risks are current in Product Health Dashboard and closeout report.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Triggers remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff.
+- M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
 - PR5 scope remained docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
 
-### M18: Thai-first Internationalization — Planned
+### M18: Thai-first Internationalization — Current implementation
 
-- Plan Thai-first content model, glossary, locale architecture, safety copy, and validation gates.
-- Track I18N Readiness, UX Health, Trust, Transparency, and Release Readiness.
-- Preparation may start after M17 closes with GO or GO WITH CONDITIONS and post-merge validation passes; implementation remains future work and must stop if an Architecture Gate trigger appears.
+- Implement Thai-first frontend localization with Thai as the default language and English as the secondary language.
+- Use custom frontend i18n resources, provider/context, and runtime selector; no runtime dependency is added.
+- Cover Home, Campaign Workspace, Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Dashboard, Executive Summary, Export Review, and Health.
+- Document style guide and glossary; Settings is not included because no Settings route/screen exists.
+- Track Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage.
+- Stop if an Architecture Gate trigger appears. Current Architecture Gate: Not Triggered.
 
 ### M19: Synthetic Social Platform Engagement Simulation — Planned
 
@@ -322,7 +325,7 @@ Do not implement until separate review:
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
 - M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
 - M17 Executive Dashboard & Reporting is closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f`: PR1 program kickoff docs, PR2 fixture-backed executive KPI/dashboard visual slice, PR3 marketing chart/evidence/confidence visuals, PR4 report/export readability, PR5 closeout docs/status/smoke, PR #28 final status correction, and post-merge validation are complete.
-- M18 Thai-first Internationalization and M19 Synthetic Social Platform Engagement Simulation are planned future milestones, not implemented.
+- M18 Thai-first Internationalization is the current implementation milestone; M19 Synthetic Social Platform Engagement Simulation has not begun.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

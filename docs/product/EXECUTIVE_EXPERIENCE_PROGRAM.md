@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M17 Executive Dashboard & Reporting is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization may be prepared next as kickoff planning only, but M18 implementation must not begin until explicit M18 kickoff.
+Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
 
 ## Program objective
 
@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization may be prepared next as kickoff planning only; M18 implementation must not begin until explicit M18 kickoff. The orchestrator now reports M17 CLOSED as GO WITH CONDITIONS for controlled executive review.
+Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes. The orchestrator now reports M17 CLOSED as GO WITH CONDITIONS for controlled executive review.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 
@@ -164,7 +164,7 @@ Tasks:
 
 ## M18 Thai-first Internationalization
 
-Status: planned future milestone after M17 closeout. No i18n runtime implementation is delivered in this PR.
+Status: M18 current implementation milestone. Runtime frontend localization is implemented with Thai default, English secondary language, English fallback for missing keys, language selector UI, translation resources, style guide, glossary, KPI updates, and tests. No backend, persistence, SocialSense change, workflow redesign, IA redesign, design-system redesign, external service, or live API is introduced. M17 is closed as GO WITH CONDITIONS. M19 has not begun.
 
 ### Epic 1: Thai-first content model
 
@@ -172,20 +172,22 @@ Feature: Thai-first UX copy and executive terminology for the product shell and 
 
 Tasks:
 
-- Audit executive/product terms that need Thai-first wording.
-- Define translation tone, glossary, fallback rules, and review ownership.
+- Create `docs/product/TRANSLATION_STYLE_GUIDE.md`.
+- Create `docs/product/GLOSSARY.md`.
 - Preserve safety copy clarity in Thai and English.
+- Keep executive, marketing, research, dashboard, evidence, confidence, limitation, and recommendation wording consistent.
 
-### Epic 2: Locale architecture planning
+### Epic 2: Locale implementation
 
-Feature: Internationalization implementation plan that avoids architecture drift.
+Feature: Frontend-only custom i18n provider/resources with Thai default and English fallback.
 
 Tasks:
 
-- Identify current copy surfaces and route/page ownership.
-- Define future locale file structure only after review.
-- Confirm whether implementation stays frontend-only and fixture/offline.
-- Stop for Architecture Gate if locale work requires backend, persistence, auth, external services, live APIs, or design-system redesign.
+- Add app-wide i18n provider/context.
+- Add Thai and English translation resources.
+- Add runtime language selector.
+- Cover Home, Campaign Workspace, Product Launch, Campaign Message Test, A/B Experiment, Creative Comparison, Dashboard, Executive Summary, Export Review, and Health.
+- Document that no Settings route/screen exists and do not add one in M18.
 
 ### Epic 3: Thai-first validation
 
@@ -193,16 +195,16 @@ Feature: Review gates for Thai usability, executive readability, and safety comp
 
 Tasks:
 
-- Validate Thai labels, report sections, and safety boundaries with representative review personas.
-- Track I18N Readiness, UX Health, Trust, and Transparency.
-- Record unresolved wording risks before any release claim.
+- Validate default Thai rendering.
+- Validate switching to English.
+- Validate selected sample screens in both languages.
+- Track Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage.
 
 ### M18 PR order
 
-1. PR1 Thai-first i18n discovery and glossary.
-2. PR2 Locale architecture and content inventory.
-3. PR3 Thai-first UI/report copy implementation, only if approved.
-4. PR4 I18N validation and closeout.
+1. Implement frontend i18n foundation, Thai/English resources, selector, docs, tests, and docs smoke in one controlled M18 slice.
+2. Close M18 only after validation passes and no Architecture Gate trigger is found.
+3. Do not begin M19 until M18 closes.
 
 ## M19 Synthetic Social Platform Engagement Simulation
 

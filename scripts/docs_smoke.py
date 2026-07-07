@@ -214,6 +214,59 @@ REQUIRED_M17_DOCS = [
     "docs/product/M17_CLOSEOUT_REPORT.md",
 ]
 
+REQUIRED_M18_DOCS = [
+    "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/GLOSSARY.md",
+]
+
+REQUIRED_M18_GLOSSARY_TERMS = [
+    "Campaign",
+    "Campaign Workspace",
+    "Executive Summary",
+    "Evidence",
+    "Confidence",
+    "Recommendation",
+    "Journey",
+    "Stage",
+    "Workflow",
+    "Experiment",
+    "Synthetic",
+    "Fixture",
+    "Dashboard",
+    "Report",
+    "Export",
+    "Review",
+    "Platform Mix",
+    "Audience",
+    "Risk",
+    "Limitation",
+    "Assumption",
+]
+
+REQUIRED_M18_KPIS = [
+    "Translation Completeness",
+    "Glossary Consistency",
+    "Thai UX Quality",
+    "English UX Quality",
+    "Executive Readability",
+    "Safety Copy Quality",
+    "Terminology Consistency",
+    "Language Coverage",
+]
+
+REQUIRED_M18_SCREENS = [
+    "Home",
+    "Campaign Workspace",
+    "Product Launch",
+    "Campaign Message Test",
+    "A/B Experiment",
+    "Creative Comparison",
+    "Dashboard",
+    "Executive Summary",
+    "Export Review",
+    "Health",
+]
+
 REQUIRED_M17_CLOSEOUT_SECTIONS = [
     "Executive Summary",
     "Completed Deliverables",
@@ -850,6 +903,10 @@ def main() -> None:
     if missing_m11_docs:
         fail("missing required M11 docs: " + ", ".join(missing_m11_docs))
 
+    missing_m18_docs = [path for path in REQUIRED_M18_DOCS if not (ROOT / path).is_file()]
+    if missing_m18_docs:
+        fail("missing required M18 Thai-first i18n docs: " + ", ".join(missing_m18_docs))
+
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
         fail("missing expected frontend shell files: " + ", ".join(missing_frontend))
@@ -894,6 +951,8 @@ def main() -> None:
         if (ROOT / path).is_file()
     }
     m17_text = "\n".join(m17_docs_by_path.values())
+    m18_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M18_DOCS}
+    m18_text = "\n".join(m18_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1465,6 +1524,66 @@ def main() -> None:
         if forbidden_m17_changes:
             fail("M17 program kickoff changed unexpected runtime/non-doc paths: " + ", ".join(forbidden_m17_changes))
 
+    if branch_at_or_after(18):
+        source_i18n_files = [
+            "src/i18n/I18nContext.ts",
+            "src/i18n/I18nProvider.tsx",
+            "src/i18n/localize.ts",
+            "src/i18n/translations.ts",
+            "src/i18n/useI18n.ts",
+            "src/app/shell/AppShell.tsx",
+            "src/views.tsx",
+            "src/App.test.tsx",
+        ]
+        missing_i18n_source = [path for path in source_i18n_files if not (ROOT / path).is_file()]
+        if missing_i18n_source:
+            fail("M18 missing i18n source/resources/tests: " + ", ".join(missing_i18n_source))
+        source_i18n_text = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in source_i18n_files)
+        combined_m18_text = "\n".join([readme, agents, roadmap, health_dashboard, m18_text, source_i18n_text])
+        for phrase in [
+            "M18 current implementation milestone",
+            "Default language is Thai",
+            "English is the secondary language",
+            "English fallback",
+            "Settings: no Settings route/screen exists",
+            "Architecture Gate: Not Triggered",
+            "M19 has not begun",
+            "M17 is closed as GO WITH CONDITIONS",
+        ]:
+            if phrase not in combined_m18_text:
+                fail(f"M18 docs/source missing required status/scope phrase: {phrase}")
+        missing_m18_terms = [term for term in REQUIRED_M18_GLOSSARY_TERMS if term not in m18_text]
+        if missing_m18_terms:
+            fail("M18 glossary missing required terms: " + ", ".join(missing_m18_terms))
+        missing_m18_kpis = [kpi for kpi in REQUIRED_M18_KPIS if kpi not in combined_m18_text]
+        if missing_m18_kpis:
+            fail("M18 missing product KPI tracking terms: " + ", ".join(missing_m18_kpis))
+        missing_m18_screens = [screen for screen in REQUIRED_M18_SCREENS if screen not in combined_m18_text]
+        if missing_m18_screens:
+            fail("M18 missing screen coverage terms: " + ", ".join(missing_m18_screens))
+        for phrase in [
+            "language-selector",
+            "I18nProvider",
+            "translations",
+            "Synthetic aggregate outputs",
+            "ข้อมูลสังเคราะห์แบบรวม",
+            "Low directional confidence",
+            "ความเชื่อมั่นเชิงทิศทางต่ำ",
+        ]:
+            if phrase not in source_i18n_text:
+                fail(f"M18 source/resources missing i18n or safety phrase: {phrase}")
+        stale_m18_current_hits = [
+            phrase for phrase in [
+                "M18 implementation must not begin until explicit M18 kickoff",
+                "M18 Thai-first Internationalization may be prepared next as kickoff planning only",
+                "prepare M18 kickoff next, do not implement M18 here",
+                "M18 implementation remains blocked",
+            ]
+            if phrase in "\n".join([readme, agents, roadmap, health_dashboard, m18_text])
+        ]
+        if stale_m18_current_hits:
+            fail("M18 current docs contain stale planned-only/blocked wording: " + ", ".join(stale_m18_current_hits))
+
     compiled = [re.compile(pattern, re.IGNORECASE) for pattern in FORBIDDEN_PATH_PATTERNS]
     forbidden_paths = [path for path in iter_repo_paths() if any(pattern.search(path) for pattern in compiled)]
     if forbidden_paths:
@@ -1482,6 +1601,8 @@ def main() -> None:
     print("PASS: M14 Creative Comparison discovery docs include required specification content and non-implementation boundaries")
     print("PASS: M15 Creative Comparison vertical slice files include route, fixture, KPI, and safety boundaries")
     print("PASS: M16 Feature Freeze and Demo Readiness docs include freeze, demo, dogfooding, feedback, RC, and blocked-scope boundaries")
+    if branch_at_or_after(18):
+        print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, stale planned-only guard, and no-M19 wording")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

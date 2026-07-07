@@ -3,9 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 import { safetyLabels } from './product/safety/safetyLabels';
 
-function renderAt(pathname: string) {
+function renderAt(pathname: string, language: 'th' | 'en' = 'en') {
   vi.stubGlobal('location', { ...window.location, pathname });
-  return render(<App />);
+  const rendered = render(<App />);
+  if (language === 'en') {
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+  }
+  return rendered;
 }
 
 function renderWorkbench() {
@@ -28,6 +32,61 @@ function renderCreativeComparison() {
   return screen.getByRole('form', { name: 'Creative Comparison setup' });
 }
 
+
+describe('M18 Thai-first internationalization', () => {
+  const thaiSafetyLabels = [
+    'โหมดข้อมูลตัวอย่างออฟไลน์',
+    'ข้อมูลสังเคราะห์แบบรวม',
+    'ไม่มีข้อมูลโซเชียลสด',
+    'ไม่มีข้อมูล CRM/ลูกค้า',
+    'ไม่มีข้อความส่วนตัว',
+    'ไม่รับประกันการคาดการณ์',
+    'ไม่ใช่การปรับแคมเปญสำหรับใช้งานจริง',
+  ];
+
+  it('renders Thai by default and exposes a language selector', () => {
+    renderAt('/', 'th');
+
+    expect(screen.getByLabelText('ภาษา')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'เปรียบเทียบทางเลือกแคมเปญอย่างปลอดภัยก่อนทบทวนงบประมาณ' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'เปิด Campaign Workspace' })).toBeInTheDocument();
+    const safetyPanel = screen.getByRole('region', { name: 'ขอบเขตความปลอดภัย' });
+    for (const label of thaiSafetyLabels) {
+      expect(safetyPanel).toHaveTextContent(label);
+    }
+  });
+
+  it('switches to English at runtime and keeps every safety label visible', () => {
+    renderAt('/', 'th');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    expect(screen.getByRole('heading', { name: 'Compare campaign decisions safely before budget reviews.' })).toBeInTheDocument();
+    const safetyPanel = screen.getByRole('region', { name: 'Safety boundaries' });
+    for (const label of safetyLabels) {
+      expect(safetyPanel).toHaveTextContent(label);
+    }
+  });
+
+  it.each([
+    ['/campaign-workspace', 'Campaign Workspace', 'พื้นที่ทำงานแคมเปญ'],
+    ['/workbench', 'Product Launch Simulation', 'จำลองการเปิดตัวสินค้า'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test', 'ทดสอบข้อความแคมเปญ'],
+    ['/workbench/ab-experiment', 'A/B Experiment', 'การทดลอง A/B'],
+    ['/workbench/creative-comparison', 'Creative Comparison', 'เปรียบเทียบงานสร้างสรรค์'],
+    ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์ Product Launch'],
+    ['/exports/sample-run', 'Export Readiness Preview', 'ตัวอย่างความพร้อมสำหรับส่งออก'],
+    ['/health', 'M18 Thai-first Internationalization', 'M18 ภาษาไทยเป็นหลัก'],
+  ])('renders Thai and English labels for %s', (pathname, englishHeading, thaiHeading) => {
+    const rendered = renderAt(pathname, 'th');
+    expect(screen.getByRole('heading', { name: thaiHeading })).toBeInTheDocument();
+    rendered.unmount();
+
+    renderAt(pathname, 'en');
+    expect(screen.getByRole('heading', { name: englishHeading })).toBeInTheDocument();
+  });
+});
+
 describe('App shell routes', () => {
   it.each([
     ['/', 'Compare campaign decisions safely before budget reviews.'],
@@ -38,7 +97,7 @@ describe('App shell routes', () => {
     ['/workbench/creative-comparison', 'Creative Comparison'],
     ['/runs/run-123', 'Run unavailable'],
     ['/exports/run-123', 'Export unavailable'],
-    ['/health', 'M12 Campaign Workspace Trust & Validation'],
+    ['/health', 'M18 Thai-first Internationalization'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -471,24 +530,26 @@ describe('M12 Campaign Workspace trust and validation', () => {
     expect(transparency).toHaveTextContent('No live execution');
   });
 
-  it('shows M12 health focus, baseline, and readiness KPIs without stale M7 wording', () => {
+  it('shows M18 Thai-first i18n KPIs without stale M7 wording', () => {
     renderAt('/health');
 
-    expect(screen.getByRole('heading', { name: 'M12 Campaign Workspace Trust & Validation' })).toBeInTheDocument();
-    expect(screen.getByText(/Product Health 7.4 baseline/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'M18 Thai-first Internationalization' })).toBeInTheDocument();
+    expect(screen.getByText(/Thai the default UI language/i)).toBeInTheDocument();
     for (const kpi of [
-      'Product Health',
-      'UX Health',
-      'Trust Score',
-      'Transparency Score',
-      'Validation Score',
-      'Dashboard Clarity',
-      'Overall Readiness',
+      'Translation Completeness',
+      'Glossary Consistency',
+      'Thai UX Quality',
+      'English UX Quality',
+      'Executive Readability',
+      'Safety Copy Quality',
+      'Terminology Consistency',
+      'Language Coverage',
       'Engineering KPI',
     ]) {
-      expect(screen.getByRole('region', { name: 'M12 KPI dashboard' })).toHaveTextContent(kpi);
+      expect(screen.getByRole('region', { name: 'M18 KPI dashboard' })).toHaveTextContent(kpi);
     }
     expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
+    expect(document.body.textContent).not.toContain('M18 planned only');
   });
 });
 
