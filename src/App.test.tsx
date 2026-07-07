@@ -102,6 +102,46 @@ describe('M18 Thai-first internationalization', () => {
     );
   });
 
+  it('renders Workbench Thai form legend and audience presets without English blockers', () => {
+    renderAt('/workbench', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('2. ข้อมูลที่แก้ไขได้');
+    expect(visibleText).toContain('ผู้ปกครอง');
+    expect(visibleText).not.toContain('2. Inputs you can edit');
+    expect(visibleText).not.toContain('Parents');
+  });
+
+  it('preserves Workbench English form legend and audience preset copy in English mode', () => {
+    renderAt('/workbench', 'en');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('2. Inputs you can edit');
+    expect(visibleText).toContain('Parents');
+    expect(visibleText).not.toContain('2. ข้อมูลที่แก้ไขได้');
+    expect(visibleText).not.toContain('ผู้ปกครอง');
+  });
+
+  it('renders Thai sample-run dashboard without reviewed English executive-copy blockers', () => {
+    renderAt('/runs/sample-run', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    for (const blocker of [
+      'The promise is clearest when the time-saving benefit is paired with trust proof.',
+      'Short video and chat-friendly creative are likely better first tests than broad reach claims.',
+      'Offline fixture only: no live social data, private data, CRM lists, or production prediction.',
+      'Working Adults: emphasize speed, reliability, and a clear lunch-time use case.',
+      'Urban Consumers: lead with convenience and visible quality proof.',
+      'SME Owners: frame the offer as a simple team perk with budget control.',
+      'Fixture channel cue only; use as a planning prompt, not measured live activity.',
+      'Product launch fixture shows stronger synthetic awareness than trust, so analysts should inspect launch-message clarity before using the finding.',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+    expect(visibleText).toContain('คำมั่นสัญญาชัดเจนที่สุด');
+    expect(visibleText).toContain('ผู้บริโภคในเมือง: นำด้วยความสะดวก');
+  });
+
   const thaiUxReviewBlockerPhrases = [
     'Working Adults',
     'Urban Consumers',

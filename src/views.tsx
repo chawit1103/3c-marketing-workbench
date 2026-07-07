@@ -912,7 +912,7 @@ function ReviewValue({ value, fallback = 'Required' }: { value: string; fallback
 }
 
 export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: WorkflowKey }) {
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const config = workflowConfigs[workflow];
   const localizedDefaultForm = useMemo(
     () => localizeDefaultForm(config.defaultForm, language),
@@ -1031,7 +1031,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </fieldset>
 
           <fieldset>
-            <legend>2. Inputs you can edit</legend>
+            <legend>2. {t('Inputs you can edit')}</legend>
             <label htmlFor="brand">Campaign name or brand</label>
             <input
               id="brand"
@@ -1105,7 +1105,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
                     checked={form.audiences.includes(audience)}
                     onChange={() => toggleList('audiences', audience)}
                   />
-                  {audience}
+                  {t(audience)}
                 </label>
               ))}
             </div>
