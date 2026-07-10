@@ -1748,26 +1748,27 @@ function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: s
 
 export function HealthView() {
   const kpis = [
-    ['Translation Completeness', 'Reviewed core UI copy is translated for the M18 screens; remaining mixed-language fragments stay visible for review rather than being claimed complete.'],
-    ['Glossary Consistency', 'Product terms follow the M18 glossary for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
+    ['Translation Completeness', 'Reviewed core UI copy is translated for current product screens; known mixed-language fragments remain visible for review rather than being claimed complete.'],
+    ['Glossary Consistency', 'Product terms stay consistent for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
     ['Thai UX Quality', 'Thai copy is short, professional, executive-readable, and avoids unnecessary technical language.'],
     ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
     ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
+    ['Executive Insight Dashboard', 'Executive insight dashboard is available for reviewed offline results from submitted assumptions, configuration snapshots, and synthetic platform engagement signals.'],
+    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not generate downloadable files.'],
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
-    ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline, configuration-owned result contract. PR4 dashboard redesign/upgrade is not started and remains blocked; no SocialSense runtime, live measurement, or production claim.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, information architecture, workflow, or design-system redesign. The product-owned synthetic/offline engagement model and executive insight dashboard are available for reviewed offline results; no SocialSense runtime, live measurement, or production claim is included.'],
   ];
 
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
-        <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M18 Thai-first Internationalization</h1>
-        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and tracks remaining mixed-language review gaps without backend or SocialSense changes.</p>
+        <p className="eyebrow">Current product status</p>
+        <h1 id="health-title">Product health</h1>
+        <p>Executive insight dashboard is available for reviewed offline results. Report/export upgrade remains out of scope until a separate kickoff.</p>
       </div>
-      <section className="grid two-col" aria-label="M18 KPI dashboard">
+      <section className="grid two-col" aria-label="Product health status">
         {kpis.map(([title, description]) => (
           <ObjectiveCard key={title} title={title} description={description} status={title === 'Engineering KPI' ? 'review' : 'ready'} />
         ))}

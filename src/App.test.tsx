@@ -84,7 +84,7 @@ describe('M18 Thai-first internationalization', () => {
     ['/workbench/creative-comparison', 'Creative Comparison', 'เปรียบเทียบงานสร้างสรรค์'],
     ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์การเปิดตัวสินค้า (Product Launch)'],
     ['/exports/sample-run', 'Export Readiness Preview', 'ตัวอย่างความพร้อมสำหรับส่งออก'],
-    ['/health', 'M18 Thai-first Internationalization', 'M18 ภาษาไทยเป็นหลัก'],
+    ['/health', 'Product health', 'สถานะผลิตภัณฑ์'],
   ])('renders Thai and English labels for %s', (pathname, englishHeading, thaiHeading) => {
     const rendered = renderAt(pathname, 'th');
     expect(screen.getByRole('heading', { name: thaiHeading })).toBeInTheDocument();
@@ -444,12 +444,16 @@ describe('M18 Thai-first internationalization', () => {
   it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
     renderAt('/health', 'en');
 
-    const kpiDashboard = screen.getByRole('region', { name: 'M18 KPI dashboard' });
-    expect(kpiDashboard).toHaveTextContent('Reviewed core UI');
-    expect(kpiDashboard).toHaveTextContent('Language Coverage');
-    expect(kpiDashboard).toHaveTextContent('known mixed-language fragments remain visible for review');
-    expect(kpiDashboard).not.toHaveTextContent('all UI copy');
-    expect(kpiDashboard).not.toHaveTextContent('fully translated');
+    const healthStatus = screen.getByRole('region', { name: 'Product health status' });
+    expect(healthStatus).toHaveTextContent('Reviewed core UI');
+    expect(healthStatus).toHaveTextContent('known mixed-language fragments remain visible for review');
+    expect(healthStatus).toHaveTextContent('Executive insight dashboard is available for reviewed offline results');
+    expect(healthStatus).toHaveTextContent('Report/export upgrade remains out of scope');
+    expect(healthStatus).not.toHaveTextContent('all UI copy');
+    expect(healthStatus).not.toHaveTextContent('fully translated');
+    for (const internalTerm of ['M18', 'M19', 'PR3', 'PR4', 'PR5']) {
+      expect(healthStatus).not.toHaveTextContent(internalTerm);
+    }
   });
 
   it('localizes PR3 Platform Engagement comments and themes in Thai mode without English fragments', () => {
@@ -606,7 +610,7 @@ describe('M18 Thai-first internationalization', () => {
   it('fully localizes Health KPI copy and technical boundaries in Thai mode', () => {
     renderAt('/health', 'th');
 
-    const kpiDashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI M18' });
+    const healthStatus = screen.getByRole('region', { name: 'สถานะสุขภาพผลิตภัณฑ์' });
     const visibleText = document.body.textContent ?? '';
     const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
       .map((element) => element.getAttribute('aria-label') ?? '')
@@ -622,12 +626,15 @@ describe('M18 Thai-first internationalization', () => {
       'ส่งออก',
       'ตรวจทาน',
       'ข้อความหน้าจอหลักที่ตรวจทานแล้ว',
+      'ผลลัพธ์ออฟไลน์ที่ตรวจทานแล้ว',
+      'การอัปเกรดรายงาน/การส่งออกยังอยู่นอกขอบเขต',
     ]) {
-      expect(kpiDashboard).toHaveTextContent(thaiTerm);
+      expect(healthStatus).toHaveTextContent(thaiTerm);
     }
 
     for (const blocker of [
       'Product terms follow the M18 glossary',
+      'Product terms stay consistent',
       'ไทย copy is short',
       'English remains the fallback',
       'Dashboard, executive summary',
@@ -647,6 +654,11 @@ describe('M18 Thai-first internationalization', () => {
       'auth',
       'live API',
       'IA',
+      'M18',
+      'M19',
+      'PR3',
+      'PR4',
+      'PR5',
       'all UI copy',
       'fully translated',
     ]) {
@@ -666,7 +678,7 @@ describe('App shell routes', () => {
     ['/workbench/creative-comparison', 'Creative Comparison'],
     ['/runs/run-123', 'Run unavailable'],
     ['/exports/run-123', 'Export unavailable'],
-    ['/health', 'M18 Thai-first Internationalization'],
+    ['/health', 'Product health'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -1137,30 +1149,35 @@ describe('M12 Campaign Workspace trust and validation', () => {
     expect(transparency).toHaveTextContent('No live execution');
   });
 
-  it('shows M18 Thai-first i18n KPIs without stale M7 wording', () => {
+  it('shows product-facing Health status without internal milestone wording', () => {
     renderAt('/health');
 
-    expect(screen.getByRole('heading', { name: 'M18 Thai-first Internationalization' })).toBeInTheDocument();
-    expect(screen.getByText(/Thai the default UI language/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Product health' })).toBeInTheDocument();
+    const healthStatus = screen.getByRole('region', { name: 'Product health status' });
+    expect(screen.getAllByText(/Executive insight dashboard is available for reviewed offline results/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Report\/export upgrade remains out of scope/i).length).toBeGreaterThan(0);
     for (const kpi of [
       'Translation Completeness',
       'Glossary Consistency',
       'Thai UX Quality',
       'English UX Quality',
       'Executive Readability',
+      'Executive Insight Dashboard',
+      'Report/export scope',
       'Safety Copy Quality',
       'Terminology Consistency',
-      'Language Coverage',
       'Engineering KPI',
     ]) {
-      expect(screen.getByRole('region', { name: 'M18 KPI dashboard' })).toHaveTextContent(kpi);
+      expect(healthStatus).toHaveTextContent(kpi);
     }
-    expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
-    expect(document.body.textContent).not.toContain('M18 planned only');
-    expect(document.body.textContent).not.toContain('runtime result model remains not begun');
-    expect(document.body.textContent).not.toContain('PR3 remains blocked');
-    expect(document.body.textContent).toContain('PR3 Platform Engagement Result Model is implemented');
-    expect(document.body.textContent).toContain('PR4 dashboard redesign/upgrade is not started and remains blocked');
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).not.toContain('M7 A/B Experiment workflow readiness');
+    expect(visibleText).not.toContain('runtime result model remains not begun');
+    for (const internalTerm of ['M18', 'M19', 'PR3', 'PR4', 'PR5']) {
+      expect(visibleText).not.toContain(internalTerm);
+    }
+    expect(visibleText).toContain('executive insight dashboard are available for reviewed offline results');
+    expect(visibleText).toContain('Report/export upgrade remains out of scope');
   });
 });
 
