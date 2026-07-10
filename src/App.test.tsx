@@ -574,7 +574,8 @@ describe('M18 Thai-first internationalization', () => {
       'ตรวจทานการส่งออก',
       'หน้าจอนี้แสดงตัวอย่างเนื้อหา Executive JSON และบรีฟ Markdown',
       'เตรียมจากตัวอย่างออฟไลน์ที่ตรวจทานแล้วพร้อมหมายเหตุความปลอดภัย',
-      'ยังไม่รองรับในตอนนี้',
+      'ตัวอย่างตรวจทานที่รองรับ',
+      'เป็นตัวอย่างตรวจทานจากข้อมูลสังเคราะห์/ออฟไลน์เท่านั้น',
       'ความพร้อมในการตัดสินใจ: ต้องให้มนุษย์ตรวจทาน',
       'วัตถุประสงค์',
       'สถานการณ์',
@@ -852,7 +853,8 @@ describe('Creative Comparison workflow', () => {
 
     renderAt('/exports/3c-m15-creative-comparison-reference-workflow');
     expect(screen.getByRole('heading', { name: 'Creative Comparison executive-ready summary' })).toBeInTheDocument();
-    expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/synthetic\/offline fixture/i).length).toBeGreaterThanOrEqual(1);
+    expect(document.body.textContent?.toLowerCase()).not.toMatch(/download|pdf|ppt|powerpoint/);
   });
 });
 
@@ -1849,14 +1851,10 @@ describe('Export review', () => {
     }
     expect(formats).not.toHaveTextContent('Data preview (JSON)');
     expect(formats).not.toHaveTextContent('Executive summary preview');
-    expect(formats).toHaveTextContent('Planning only: PDF');
-    expect(formats).toHaveTextContent('Unsupported now; no PDF is generated or downloadable in this frontend-only preview.');
-    expect(formats).toHaveTextContent('Planning only: PowerPoint');
-    expect(formats).toHaveTextContent('Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.');
-    expect(document.body.textContent?.toLowerCase()).not.toContain('pdf ready');
-    expect(document.body.textContent?.toLowerCase()).not.toContain('powerpoint ready');
-    expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
-    expect(document.body.textContent?.toLowerCase()).not.toContain('downloadable file is ready');
+    expect(formats).toHaveTextContent('Supported review previews');
+    expect(document.body.textContent?.toLowerCase()).not.toMatch(/download|pdf|ppt|powerpoint/);
+    expect(screen.getAllByText(/synthetic\/offline fixture/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/review preview only/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: summaryHeading })).toBeInTheDocument();
     expect(screen.getAllByText(/Executive review:/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Review Assumptions')).toBeInTheDocument();

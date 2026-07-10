@@ -110,7 +110,7 @@ Acceptance criteria:
 - M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
-- M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; M19 PR4 Executive Insight Dashboard is implemented as a product-owned dashboard insight layer on the current PR branch; M19 PR5 Executive Decision Brief implemented; PR6 closeout blocked/not started.
+- M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; M19 PR4 Executive Insight Dashboard is implemented as a product-owned dashboard insight layer on the current PR branch; M19 PR5 Executive Decision Brief implemented with neutral review-only UI and no PDF/PPT/download product actions; PR6 closeout blocked/not started.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
@@ -287,7 +287,7 @@ Acceptance criteria:
 - Program KPI closeout: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, and Known Risks are current in Product Health Dashboard and closeout report.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Triggers remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract, and M19 PR4 Executive Insight Dashboard is implemented on the current PR branch. M19 PR5 Executive Decision Brief is implemented; PR6 closeout remains blocked/not started; no backend, SocialSense, or report redesign scope is included.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract, and M19 PR4 Executive Insight Dashboard is implemented on the current PR branch. M19 PR5 Executive Decision Brief is implemented with neutral review-only UI and no PDF/PPT/download product actions; PR6 closeout remains blocked/not started; no backend, SocialSense, or report redesign scope is included.
 - PR5 scope remained docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
 
 ### M18: Thai-first Internationalization — Current implementation

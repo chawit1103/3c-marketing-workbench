@@ -671,7 +671,7 @@ const executiveKpis = [
     metadata: [
       'Formula: fixtures whose exports.readiness equals “Ready for human review”.',
       'Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness.',
-      'Evidence: preview/handoff review only, not downloadable production export.',
+      'Evidence: preview/handoff review only; no production artifact is generated.',
     ],
   },
   {
@@ -1719,7 +1719,7 @@ export function ExportReviewView({ runId }: { runId?: string }) {
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="export-title">Export Readiness Preview</h1>
-        <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
+        <p>Review preview and handoff notes only, based on the synthetic offline fixture.</p>
       </div>
       <FixtureTransparency />
       <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} simulationConfig={assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration((assumptionPayload?.form ?? config.defaultForm).platforms)} />
@@ -1755,7 +1755,7 @@ export function HealthView() {
     ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
     ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
     ['Executive Insight Dashboard', 'Executive insight dashboard is available for reviewed offline results from submitted assumptions, configuration snapshots, and synthetic platform engagement signals.'],
-    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not generate downloadable files.'],
+    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not create production artifacts.'],
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
     ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, information architecture, workflow, or design-system redesign. The product-owned synthetic/offline engagement model and executive insight dashboard are available for reviewed offline results; no SocialSense runtime, live measurement, or production claim is included.'],
@@ -2154,16 +2154,6 @@ function ExportReview(
   const assumptions = form
     ? buildAssumptionRows(form).map(([label, value]) => `${label}: ${value}`).slice(0, 5)
     : fixture.reviewMetadata.assumptions;
-  const unsupportedFormats = [
-    {
-      label: 'Planning only: PDF',
-      detail: 'Unsupported now; no PDF is generated or downloadable in this frontend-only preview.',
-    },
-    {
-      label: 'Planning only: PowerPoint',
-      detail: 'Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.',
-    },
-  ];
   const supportedFormats = fixture.exports.formats
     .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
     .map((format) => {
@@ -2197,12 +2187,9 @@ function ExportReview(
   const reportBasisCopy = language === 'th'
     ? `${t('Formula')}: ส่วนรายงานประกอบจากเมทาดาทาของข้อมูลตัวอย่าง หลักฐานสังเคราะห์ และการคำนวณแบบกำหนดผลแน่นอน; ${t('หลักฐานระดับ')}: ${t('E1 synthetic/offline fixture')}; ${t('ความเชื่อมั่น')}: ${t(decisionConfidence)}.`
     : `Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.; Evidence tier: E1 synthetic/offline fixture; Confidence: ${decisionConfidence}.`;
-  const unsupportedFormatEvidenceCopy = language === 'th'
-    ? 'หลักฐานระดับ: unavailable; ความเชื่อมั่น: None because this frontend does not generate this format.'
-    : 'Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.';
   const exportReadinessConfidenceCopy = language === 'th'
-    ? 'ความเชื่อมั่น: Low directional; unsupported formats remain planning-only until separately approved.'
-    : 'Confidence: Low directional; unsupported formats remain planning-only until separately approved.';
+    ? 'ความเชื่อมั่น: เชิงทิศทางต่ำ; หน้านี้เป็นตัวอย่างตรวจทานจากข้อมูลสังเคราะห์/ออฟไลน์เท่านั้น.'
+    : 'Confidence: Low directional; review preview only from the synthetic/offline fixture.';
   const executiveSummarySourceCopy = language === 'th'
     ? `แหล่งที่มา: fixture.exports.executiveSummaryPreview. หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}. ความเชื่อมั่น: ${t(decisionConfidence)}.`
     : `Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: ${decisionConfidence}.`;
@@ -2243,7 +2230,7 @@ function ExportReview(
         <h2>{fixture.exports.readiness}</h2>
         <p>
           {fixture.exports.status} This screen previews Executive JSON and Markdown briefing content
-          for human review only; it is not a download action.
+          for human review only, using the synthetic/offline fixture.
         </p>
         <div className="kpi-metadata" aria-label="Export readiness formula and source">
           <p className="help-text">{t('Formula')}: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
@@ -2254,7 +2241,7 @@ function ExportReview(
 
       <section className="card" aria-label="Export format readiness">
         <p className="eyebrow">Export format readiness</p>
-        <h2>Supported previews and unsupported future formats</h2>
+        <h2>Supported review previews</h2>
         <div className="grid three-col export-format-grid">
           {supportedFormats.map((format) => (
             <article className="format-card" key={format.label}>
@@ -2262,14 +2249,6 @@ function ExportReview(
               <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
               <p>{format.detail}</p>
               <p className="help-text">{exportFormatSourceCopy}</p>
-            </article>
-          ))}
-          {unsupportedFormats.map((format) => (
-            <article className="format-card format-card-unsupported" key={format.label}>
-              <p className="eyebrow">{format.label}</p>
-              <h3>Unsupported now</h3>
-              <p>{format.detail}</p>
-              <p className="help-text">{unsupportedFormatEvidenceCopy}</p>
             </article>
           ))}
         </div>
