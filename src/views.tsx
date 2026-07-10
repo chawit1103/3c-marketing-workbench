@@ -1693,7 +1693,7 @@ export function HealthView() {
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
     ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. M19 has not begun.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. Configuration-only workspace is implemented; runtime result model remains not begun.'],
   ];
 
   return (
@@ -1937,16 +1937,16 @@ function ExportReview(
     : 'Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.';
   const inputSourceCopy = form
     ? (language === 'th'
-      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจาก fixture ไม่ได้คำนวณใหม่และไม่มีการเรียก live API.'
+      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจากข้อมูลตัวอย่างไม่ได้คำนวณใหม่และไม่มีการเรียกบริการสด.'
       : 'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.')
     : (language === 'th'
-      ? 'แหล่งที่มา: fixture.sampleInput; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
+      ? 'แหล่งที่มา: สมมติฐานจากข้อมูลตัวอย่าง; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
       : 'Source: fixture.sampleInput; displayed as review assumptions only.');
   const audienceSourceCopy = language === 'th'
-    ? 'แหล่งที่มา: sampleInput.audiences and audience insights. หลักฐานระดับ: E1; not measured audience engagement.'
+    ? 'แหล่งที่มา: สมมติฐานกลุ่มเป้าหมายและอินไซต์กลุ่มเป้าหมายจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การมีส่วนร่วมของกลุ่มเป้าหมายที่วัดจริง.'
     : 'Source: sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.';
   const platformMixSourceCopy = language === 'th'
-    ? 'แหล่งที่มา: sampleInput.platforms and platformBreakdown. หลักฐานระดับ: E1; not live platform measurement.'
+    ? 'แหล่งที่มา: สมมติฐานแพลตฟอร์มและรายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การวัดแพลตฟอร์มจากข้อมูลสด.'
     : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
   const dashboardSnapshotFormulaCopy = language === 'th'
     ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'

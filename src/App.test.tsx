@@ -570,7 +570,7 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).toContain('รายการตรวจทานโดยมนุษย์ สูตรและแหล่งที่มา');
     expect(visibleText).toContain('สัญญาณจากลำดับข้อมูลตัวอย่าง');
     expect(visibleText).toContain('สูตร: ค่าแถบแพลตฟอร์ม = clampScore(100 - fixture rank index × 12)');
-    expect(visibleText).toContain('แหล่งที่มา: productLaunchFixture.platformBreakdown');
+    expect(visibleText).toContain('แหล่งที่มา: รายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง');
     expect(visibleText).toContain('ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์');
   });
 
@@ -1326,7 +1326,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(visibleText).toContain('3. กลุ่มเป้าหมาย');
     expect(visibleText).toContain('4. สัดส่วนแพลตฟอร์ม');
     expect(visibleText).toContain('ผลลัพธ์ปัจจุบันยังเป็นข้อมูลตัวอย่างออฟไลน์และยังไม่ได้ถูกใช้โดยระบบจำลอง');
-    expect(visibleText).toContain('ไม่ใช่การวัดการมีส่วนร่วมจริง และไม่มีการเรียก API สด');
+    expect(visibleText).toContain('ไม่ใช่การวัดการมีส่วนร่วมจริง และไม่มีการเรียกบริการสด');
     for (const blocker of [
       '1. Campaign Details',
       '3. Audience',
@@ -1334,6 +1334,8 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
       'runtime',
       'engagement จริง',
       'live API',
+      'API สด',
+      'not measured audience engagement',
     ]) {
       expect(visibleText).not.toContain(blocker);
     }
@@ -1468,5 +1470,20 @@ describe('Export review', () => {
       'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.',
     );
     expect(report).not.toHaveTextContent('Source: fixture.sampleInput; displayed as review assumptions only.');
+  });
+
+  it('keeps Thai report and source copy free of English technical API and audience fragments', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const report = screen.getByRole('region', { name: 'ตัวอย่างรายงานผู้บริหาร' });
+    const reportText = report.textContent ?? '';
+
+    expect(reportText).toContain('แหล่งที่มา: สมมติฐานกลุ่มเป้าหมายและอินไซต์กลุ่มเป้าหมายจากข้อมูลตัวอย่าง');
+    expect(reportText).toContain('ไม่ใช่การมีส่วนร่วมของกลุ่มเป้าหมายที่วัดจริง');
+    expect(reportText).not.toContain('live API');
+    expect(reportText).not.toContain('API สด');
+    expect(reportText).not.toContain('sampleInput.audiences');
+    expect(reportText).not.toContain('audience insights');
+    expect(reportText).not.toContain('not measured audience engagement');
   });
 });

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 has not begun and must start with terminology/remediation backlog before Synthetic Social Platform Engagement Simulation implementation.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
 
 ## Program
 
@@ -102,14 +102,15 @@ Acceptance criteria:
 - Removed unsafe broad DOM localization and broad phrase replacement; localization is exact/template-based and preserves free-form user-entered values.
 - Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current scope with M19 terminology/copy conditions.
 - Architecture Gate was not triggered.
-- M19 implementation remains blocked until the M18 closeout is merged and a synthetic social engagement terminology/remediation backlog is prepared.
+- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
 
-### M19: Synthetic Social Platform Engagement Simulation — Gated / Not begun
+### M19: Synthetic Social Platform Engagement Simulation — PR2 correction in progress / runtime result model not begun
 
-- Evaluate readiness only after M18 closeout merge.
-- Because M18 closes as GO WITH CONDITIONS, prepare remediation backlog first.
+- M18 closeout is merged and the terminology/remediation backlog exists.
+- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
+- Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
