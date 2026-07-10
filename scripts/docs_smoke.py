@@ -275,8 +275,8 @@ REQUIRED_M19_PR2_PHRASES = [
     "no SocialSense changes",
     "no MarketingSimulation changes",
     "merged in PR #34",
-    "m19-pr2-localization-correction",
-    "M19 PR1 and PR2 configuration-only work are complete",
+    "M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34",
+    "m19-pr3-platform-engagement-model",
     "PR3 Platform Engagement Result Model is implemented",
     "PR4 dashboard redesign/upgrade is not started",
 ]

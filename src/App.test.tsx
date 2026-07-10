@@ -452,6 +452,35 @@ describe('M18 Thai-first internationalization', () => {
     expect(kpiDashboard).not.toHaveTextContent('fully translated');
   });
 
+  it('localizes PR3 Platform Engagement comments and themes in Thai mode without English fragments', () => {
+    renderAt('/runs/sample-run', 'th');
+
+    const panel = screen.getByRole('region', { name: 'โมเดลผลการมีส่วนร่วมแพลตฟอร์ม' });
+    expect(panel).toHaveTextContent('ประโยชน์ชัดเจน แต่ควรตรวจทานหลักฐานคุณภาพก่อนใช้ข้อความภายนอก');
+    expect(panel).toHaveTextContent('คอมเมนต์สังเคราะห์ชี้ว่าข้อความที่ตรวจทานเข้าใจง่ายเพียงใดในบริบทแพลตฟอร์มที่ตั้งค่าไว้');
+    expect(panel).toHaveTextContent('ต้องมีหลักฐานความน่าเชื่อถือ');
+    expect(panel).toHaveTextContent('สมมติฐานความเหมาะสมของช่องทาง');
+
+    for (const blocker of [
+      'Clear benefit',
+      'Message clarity: Synthetic comments indicate',
+      'Trust proof needed:',
+      'Channel fit hypothesis:',
+    ]) {
+      expect(panel).not.toHaveTextContent(blocker);
+    }
+  });
+
+  it('preserves PR3 Platform Engagement comments and themes in English mode', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const panel = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(panel).toHaveTextContent('Facebook: Clear benefit, but quality proof should be reviewed before public copy.');
+    expect(panel).toHaveTextContent('Message clarity: Synthetic comments indicate whether the reviewed message is easy to understand in each configured platform context.');
+    expect(panel).toHaveTextContent('Trust proof needed: Synthetic comments keep proof-point needs visible before any external review or small evidence test.');
+    expect(panel).toHaveTextContent('Channel fit hypothesis: Platform differences are configuration-owned planning cues from selected platforms, not field observations.');
+  });
+
   it('fully localizes Thai Export Review sample-run executive copy and glossary terms', () => {
     renderAt('/exports/sample-run', 'th');
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned TypeScript offline result contract. PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
 
 ## Program
 
@@ -102,12 +102,12 @@ Acceptance criteria:
 - Removed unsafe broad DOM localization and broad phrase replacement; localization is exact/template-based and preserves free-form user-entered values.
 - Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current scope with M19 terminology/copy conditions.
 - Architecture Gate was not triggered.
-- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
+- M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
 
 ### M19: Synthetic Social Platform Engagement Simulation — PR3 implemented / PR4 not started
 
 - M18 closeout is merged and the terminology/remediation backlog exists.
-- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress.
+- M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
 - M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.

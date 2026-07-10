@@ -1974,12 +1974,12 @@ function PlatformEngagementPanel({ result }: { result: PlatformEngagementResult 
       <div className="grid two-col align-start">
         <InsightList
           title="Synthetic comments"
-          items={result.syntheticComments.map((comment) => `${comment.platform}: ${comment.comment}`)}
+          items={result.syntheticComments.map((comment) => `${comment.platform}: ${t(comment.comment)}`)}
           localize
         />
         <InsightList
           title="Themes"
-          items={result.themes.map((theme) => `${theme.label}: ${theme.detail}`)}
+          items={result.themes.map((theme) => `${t(theme.label)}: ${t(theme.detail)}`)}
           localize
         />
       </div>

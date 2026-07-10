@@ -98,7 +98,7 @@ Required planning artifacts:
 - `docs/product/M17_EXECUTIVE_DASHBOARD_PLAN.md`;
 - `docs/product/M17_CLOSEOUT_REPORT.md`.
 
-M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR5 closeout branch / PR #27 provided docs/status/smoke closeout history and preserved PR2-PR4 as historical limited implementation slices. M17 and M18 are closed as GO WITH CONDITIONS. M19 PR1 propagated offline user assumptions, and M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34; this correction branch addresses final localization/status review blockers only. M19 PR3 Platform Engagement Result Model is implemented as product-owned offline fixture/result contract; PR4 is not started/blocked, and no runtime-consumption claim is allowed.
+M17 PR1 must continue documenting the M17-M19 program and the fact that PR1 did not deliver implementation. M17 PR5 closeout branch / PR #27 provided docs/status/smoke closeout history and preserved PR2-PR4 as historical limited implementation slices. M17 and M18 are closed as GO WITH CONDITIONS. M19 PR1 propagated offline user assumptions, and M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned offline fixture/result contract; PR4 dashboard redesign/upgrade is not started/blocked, and no SocialSense runtime, live measurement, backend, or runtime-consumption claim is allowed.
 
 Architecture Gate triggers must remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
 
