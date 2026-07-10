@@ -20,6 +20,7 @@ import {
   type SimulationConfiguration,
   type SimulationProfile,
 } from './product/simulationConfig';
+import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -158,17 +159,66 @@ function buildRuntimeAssumptionState(raw: unknown, baseline: LaunchForm): Launch
   return next;
 }
 
-function encodeAssumptionPayload(runId: string, form: LaunchForm, editedFields: Set<keyof LaunchForm>): string {
+function encodeAssumptionPayload(
+  runId: string,
+  form: LaunchForm,
+  editedFields: Set<keyof LaunchForm>,
+  simulationConfig: SimulationConfiguration,
+): string {
   const payload = {
     v: ASSUMPTION_PAYLOAD_VERSION,
     runId,
     form,
     editedFields: Array.from(editedFields),
+    simulationConfig,
   };
   return encodeURIComponent(JSON.stringify(payload));
 }
 
-function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedFields: Set<keyof LaunchForm> } | null {
+function isPlatformKey(value: string): value is PlatformKey {
+  return Object.prototype.hasOwnProperty.call(PLATFORM_LABELS, value);
+}
+
+function parseSimulationConfiguration(raw: unknown, fallback: SimulationConfiguration): SimulationConfiguration {
+  if (!raw || typeof raw !== 'object') {
+    return fallback;
+  }
+  const parsed = raw as Partial<SimulationConfiguration>;
+  const selectedPlatforms = Array.isArray(parsed.selectedPlatforms)
+    ? parsed.selectedPlatforms.filter((platform): platform is PlatformKey => typeof platform === 'string' && isPlatformKey(platform))
+    : fallback.selectedPlatforms;
+  const platformAllocations = { ...fallback.platformAllocations };
+  if (parsed.platformAllocations && typeof parsed.platformAllocations === 'object') {
+    for (const [platform, value] of Object.entries(parsed.platformAllocations)) {
+      if (isPlatformKey(platform) && typeof value === 'number' && Number.isFinite(value)) {
+        platformAllocations[platform] = value;
+      }
+    }
+  }
+  const platformAllocationDrafts = { ...fallback.platformAllocationDrafts };
+  if (parsed.platformAllocationDrafts && typeof parsed.platformAllocationDrafts === 'object') {
+    for (const [platform, value] of Object.entries(parsed.platformAllocationDrafts)) {
+      if (isPlatformKey(platform) && typeof value === 'string') {
+        platformAllocationDrafts[platform] = value;
+      }
+    }
+  }
+  return {
+    simulationProfile: parsed.simulationProfile && parsed.simulationProfile in SIMULATION_PROFILES
+      ? parsed.simulationProfile
+      : fallback.simulationProfile,
+    selectedPlatforms,
+    platformAllocations,
+    platformAllocationDrafts,
+    evidenceDepth: parsed.evidenceDepth && EVIDENCE_DEPTHS.includes(parsed.evidenceDepth)
+      ? parsed.evidenceDepth
+      : fallback.evidenceDepth,
+    configurationSource: parsed.configurationSource === 'custom' ? 'custom' : fallback.configurationSource,
+    runtimeStatus: 'configuration_only',
+  };
+}
+
+function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedFields: Set<keyof LaunchForm>; simulationConfig: SimulationConfiguration } | null {
   if (typeof window === 'undefined') {
     return null;
   }
@@ -185,6 +235,7 @@ function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedField
       runId?: string;
       form?: Partial<Record<string, unknown>>;
       editedFields?: string[];
+      simulationConfig?: unknown;
     };
 
     if (!parsed || parsed.v !== ASSUMPTION_PAYLOAD_VERSION || !parsed.form || typeof parsed.form !== 'object') {
@@ -203,6 +254,10 @@ function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedField
     }
 
     const form = buildRuntimeAssumptionState(parsed.form, config.defaultForm);
+    const simulationConfig = parseSimulationConfiguration(
+      parsed.simulationConfig,
+      createDefaultSimulationConfiguration(form.platforms),
+    );
     const nextEditedFields = new Set<keyof LaunchForm>();
     if (Array.isArray(parsed.editedFields)) {
       for (const key of parsed.editedFields) {
@@ -212,7 +267,7 @@ function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedField
       }
     }
 
-    return { form, editedFields: nextEditedFields };
+    return { form, editedFields: nextEditedFields, simulationConfig };
   } catch {
     return null;
   }
@@ -1392,7 +1447,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   );
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
-  const assumptionQuery = hasRun ? encodeAssumptionPayload(config.fixture.runId, submittedForm, submittedEditedFields) : '';
+  const assumptionQuery = hasRun ? encodeAssumptionPayload(config.fixture.runId, submittedForm, submittedEditedFields, simulationConfig) : '';
 
   return (
     <Localized>
@@ -1611,6 +1666,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           form={submittedForm}
           config={config}
           fixture={config.fixture}
+          simulationConfig={simulationConfig}
           editedFields={submittedEditedFields}
           assumptionQuery={assumptionQuery}
           showActions
@@ -1629,6 +1685,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
   const assumptionPayload = parseAssumptionPayload(runId);
   const form = assumptionPayload?.form ?? config.defaultForm;
   const editedFields = assumptionPayload?.editedFields;
+  const simulationConfig = assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration(form.platforms);
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="dashboard-title">
@@ -1637,7 +1694,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
         <h1 id="dashboard-title">{`${config.objective} Results`}</h1>
         <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
-      <ReferenceResults form={form} config={config} fixture={config.fixture} editedFields={editedFields} />
+      <ReferenceResults form={form} config={config} fixture={config.fixture} simulationConfig={simulationConfig} editedFields={editedFields} />
       </section>
     </Localized>
   );
@@ -1658,7 +1715,7 @@ export function ExportReviewView({ runId }: { runId?: string }) {
         <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
       </div>
       <FixtureTransparency />
-      <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} />
+      <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} simulationConfig={assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration((assumptionPayload?.form ?? config.defaultForm).platforms)} />
        </section>
      </Localized>
    );
@@ -1732,6 +1789,7 @@ function ReferenceResults({
   form,
   fixture,
   config,
+  simulationConfig,
   editedFields,
   assumptionQuery,
   showActions = false,
@@ -1739,6 +1797,7 @@ function ReferenceResults({
   form: LaunchForm;
   fixture: ReferenceFixture;
   config: WorkflowConfig;
+  simulationConfig: SimulationConfiguration;
   editedFields?: Set<keyof LaunchForm>;
   assumptionQuery?: string;
   showActions?: boolean;
@@ -1760,6 +1819,7 @@ function ReferenceResults({
     return t(value);
   };
   const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(() => buildAssumptionRows(form), [form]);
+  const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
 
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
@@ -1848,6 +1908,8 @@ function ReferenceResults({
         </section>
       ) : null}
 
+      <PlatformEngagementPanel result={platformEngagement} />
+
       <div className="grid three-col">
         {fixture.cards.map((card: FixtureCard) => (
           <MetricCard key={card.title} card={card} />
@@ -1868,14 +1930,73 @@ function ReferenceResults({
   );
 }
 
+function PlatformEngagementPanel({ result }: { result: PlatformEngagementResult }) {
+  const { t } = useI18n();
+  return (
+    <section className="card" aria-label={t('Platform Engagement Result Model')}>
+      <p className="eyebrow">{t('Platform Engagement Result Model')}</p>
+      <h3>{t('Synthetic platform engagement results')}</h3>
+      <p>{t('Configuration-owned offline fixture; synthetic/offline, not live, not measured, and not a forecast.')}</p>
+      <dl className="assumption-grid compact-dl">
+        <div>
+          <dt>{t('Total synthetic participants')}</dt>
+          <dd>{result.crossPlatformSummary.totalSyntheticParticipants}</dd>
+        </div>
+        <div>
+          <dt>{t('Configured platforms')}</dt>
+          <dd>{result.crossPlatformSummary.platformCount}</dd>
+        </div>
+        <div>
+          <dt>{t('Average synthetic reaction index')}</dt>
+          <dd>{result.crossPlatformSummary.averageSyntheticReactionIndex}/100</dd>
+        </div>
+        <div>
+          <dt>{t('Leading synthetic platform')}</dt>
+          <dd>{result.crossPlatformSummary.leadingSyntheticPlatform}</dd>
+        </div>
+      </dl>
+      <div className="grid three-col">
+        {result.platforms.map((platform) => (
+          <article className="metric-card" key={platform.platformKey}>
+            <p className="eyebrow">{platform.platform}</p>
+            <h4>{platform.syntheticReactionIndex}/100</h4>
+            <p>{t('Synthetic participants')}: {platform.syntheticParticipants}</p>
+            <p>{t('Synthetic comments')}: {platform.syntheticCommentCount}</p>
+            <p className="help-text">{t('Synthetic/offline planning cue only; not live platform measurement.')}</p>
+          </article>
+        ))}
+      </div>
+      <div className="grid two-col align-start">
+        <InsightList
+          title="Synthetic comments"
+          items={result.syntheticComments.map((comment) => `${comment.platform}: ${comment.comment}`)}
+          localize
+        />
+        <InsightList
+          title="Themes"
+          items={result.themes.map((theme) => `${theme.label}: ${theme.detail}`)}
+          localize
+        />
+      </div>
+      <section className="kpi-metadata" aria-label={t('Cross-platform summary')}>
+        <p>{t('Cross-platform summary')}: {t(result.crossPlatformSummary.interpretation)}</p>
+        <p>{t('Source')}: {t('configuration-owned offline fixture')}</p>
+        <p>{t(result.source.disclaimer)}</p>
+      </section>
+    </section>
+  );
+}
+
 function ExportReview(
-  { fixture, objective, form }: {
+  { fixture, objective, form, simulationConfig }: {
   fixture: ReferenceFixture;
   objective: string;
   form?: LaunchForm;
+  simulationConfig: SimulationConfiguration;
 }) {
   const { language, t } = useI18n();
   const sourceSampleInput = form ? formToFixtureSampleInput(form) : fixture.sampleInput;
+  const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
   const inputRows = reportInputRows(fixture, sourceSampleInput);
   const assumptions = form
     ? buildAssumptionRows(form).map(([label, value]) => `${label}: ${value}`).slice(0, 5)
@@ -2053,6 +2174,11 @@ function ExportReview(
           <ReportSection title="Charts / Evidence / Confidence summary">
             <p data-i18n-rendered="true">{confidenceSummaryCopy}</p>
             <p className="help-text">{chartEvidenceCopy}</p>
+          </ReportSection>
+          <ReportSection title="Platform engagement result model">
+            <p>{t('Synthetic platform engagement results')}: {platformEngagement.platforms.map((platform) => `${platform.platform} ${platform.syntheticReactionIndex}/100`).join('; ')}.</p>
+            <p>{t('Cross-platform summary')}: {platformEngagement.crossPlatformSummary.totalSyntheticParticipants} {t('Total synthetic participants')}; {t('Average synthetic reaction index')} {platformEngagement.crossPlatformSummary.averageSyntheticReactionIndex}/100.</p>
+            <p className="help-text">{t('Source')}: {t('configuration-owned offline fixture')}; {t(platformEngagement.source.disclaimer)}</p>
           </ReportSection>
           <ReportSection title="Recommendations">
             <p>{fixture.recommendedNextTest}</p>

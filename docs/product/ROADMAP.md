@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
 
 ## Program
 
@@ -102,15 +102,15 @@ Acceptance criteria:
 - Removed unsafe broad DOM localization and broad phrase replacement; localization is exact/template-based and preserves free-form user-entered values.
 - Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current scope with M19 terminology/copy conditions.
 - Architecture Gate was not triggered.
-- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
+- M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
 
-### M19: Synthetic Social Platform Engagement Simulation — PR2 correction in progress / runtime result model not begun
+### M19: Synthetic Social Platform Engagement Simulation — PR3 implemented / PR4 not started
 
 - M18 closeout is merged and the terminology/remediation backlog exists.
 - M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
-- Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
+- M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
@@ -287,7 +287,7 @@ Acceptance criteria:
 - Program KPI closeout: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, and Known Risks are current in Product Health Dashboard and closeout report.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Triggers remain exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, while the runtime synthetic engagement/platform engagement result model remains not begun and PR3 is blocked until PR2 correction post-merge validation.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, and M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract. PR4 dashboard redesign/upgrade is not started/blocked.
 - PR5 scope remained docs/status/smoke only with no new workflow, backend, SocialSense changes, MarketingSimulation changes, persistence, auth, external services, live APIs, runtime product changes, or export-generation dependencies.
 
 ### M18: Thai-first Internationalization — Current implementation
@@ -345,7 +345,7 @@ Do not implement until separate review:
 - M15 Creative Comparison Vertical Slice is marked complete and merged.
 - M16 Feature Freeze and Demo Readiness is marked complete and merged; validation and QA, Code Review, Safety Review, Product Review, UX Review, and Research Review returned GO.
 - M17 Executive Dashboard & Reporting is closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f`: PR1 program kickoff docs, PR2 fixture-backed executive KPI/dashboard visual slice, PR3 marketing chart/evidence/confidence visuals, PR4 report/export readability, PR5 closeout docs/status/smoke, PR #28 final status correction, and post-merge validation are complete.
-- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. The runtime synthetic engagement/platform engagement result model remains not begun, and PR3 is blocked until PR2 correction post-merge validation.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; PR4 dashboard redesign/upgrade is not started/blocked.
 - Additional workflows beyond Creative Comparison remain blocked during Feature Freeze v0.1 until evidence supports them and the user explicitly authorizes scope.
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.

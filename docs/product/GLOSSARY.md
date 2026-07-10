@@ -1,6 +1,6 @@
 # M18 Glossary — Thai-first Product Terms
 
-Status: M18 is closed as GO WITH CONDITIONS. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes.
+Status: M18 is closed as GO WITH CONDITIONS. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete, and M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract. PR4 dashboard redesign/upgrade is not started/blocked.
 
 Architecture Gate: Not Triggered. This glossary supports frontend-only localization and does not require backend, SocialSense, workflow, IA, design-system, persistence, auth, external service, or live API changes.
 
@@ -26,6 +26,9 @@ Architecture Gate: Not Triggered. This glossary supports frontend-only localizat
 | Simulation Profile | โปรไฟล์การจำลอง | M19 PR2 configuration-only preset. Use Quick, Balanced, Deep, Research, and Custom without implying runtime consumption. |
 | Synthetic Participants | ผู้เข้าร่วมสังเคราะห์ | Offline configured count only; not live platform users or population/demographic evidence. |
 | Platform Allocation | การจัดสรรตามแพลตฟอร์ม | Whole-number selected-platform allocation only; unselected platforms are excluded from totals. |
+| Platform Engagement Result Model | โมเดลผลการมีส่วนร่วมแพลตฟอร์ม | M19 PR3 product-owned synthetic/offline result model derived from selected PR2 platform configuration; not live, not measured, and not a forecast. |
+| Synthetic Comments | คอมเมนต์สังเคราะห์ | Deterministic offline comments for review themes only; not real-user comments. |
+| Cross-platform Summary | สรุปข้ามแพลตฟอร์ม | Aggregate PR3 summary across selected platforms only; not live platform measurement. |
 | Evidence Depth | ระดับหลักฐาน | Review-depth setting for configuration summary; not a confidence or accuracy claim. |
 | Configuration Only | เป็นการตั้งค่าเท่านั้น | Current result remains an offline fixture and has not been consumed by the simulation runtime. |
 | Audience | กลุ่มเป้าหมาย | Aggregate audience only; no private or individual targeting. |

@@ -1370,6 +1370,84 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(document.body.textContent).not.toContain('real platform users');
     expect(document.body.textContent).not.toContain('live social platform API');
   });
+
+  it('surfaces PR3 platform engagement model on all four current workflow result paths', () => {
+    for (const [pathname, formName] of [
+      ['/workbench', 'Product Launch setup'],
+      ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
+      ['/workbench/ab-experiment', 'A/B Experiment setup'],
+      ['/workbench/creative-comparison', 'Creative Comparison setup'],
+    ] as const) {
+      const rendered = renderAt(pathname);
+      const form = screen.getByRole('form', { name: formName });
+      fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+      const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+      expect(engagement).toHaveTextContent('Synthetic platform engagement results');
+      expect(engagement).toHaveTextContent('Facebook');
+      expect(engagement).toHaveTextContent('Synthetic comments');
+      expect(engagement).toHaveTextContent('Themes');
+      expect(engagement).toHaveTextContent('Cross-platform summary');
+      expect(engagement).toHaveTextContent('configuration-owned offline fixture');
+      expect(engagement).toHaveTextContent('not live');
+      expect(engagement).toHaveTextContent('not measured');
+      expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+      rendered.unmount();
+    }
+  });
+
+  it('uses selected PR2 platforms for PR3 results and excludes unselected platforms', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).not.toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('160');
+  });
+
+  it('carries PR3 platform engagement model into dashboard and export review safely', () => {
+    const form = renderWorkbench();
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const dashboardHref = screen.getByRole('link', { name: 'Open result dashboard' }).getAttribute('href')!;
+    const exportHref = screen.getByRole('link', { name: 'Open export-readiness preview' }).getAttribute('href')!;
+
+    renderAt(dashboardHref);
+    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('Instagram');
+    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('320');
+
+    renderAt(exportHref);
+    const report = screen.getByRole('region', { name: 'Executive report preview' });
+    expect(report).toHaveTextContent('Platform engagement result model');
+    expect(report).toHaveTextContent('configuration-owned offline fixture');
+    expect(report).toHaveTextContent('synthetic/offline');
+    expect(report.textContent?.toLowerCase()).not.toContain('live platform users');
+    expect(report.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+  });
+
+  it('localizes PR3 platform engagement model in Thai by default and after English switching', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const thaiEngagement = screen.getByRole('region', { name: 'โมเดลผลการมีส่วนร่วมแพลตฟอร์ม' });
+    expect(thaiEngagement).toHaveTextContent('ผลการมีส่วนร่วมแพลตฟอร์มเชิงสังเคราะห์');
+    expect(thaiEngagement).toHaveTextContent('คอมเมนต์สังเคราะห์');
+    expect(thaiEngagement).toHaveTextContent('สรุปข้ามแพลตฟอร์ม');
+    expect(thaiEngagement).not.toHaveTextContent('Synthetic platform engagement results');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishEngagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(englishEngagement).toHaveTextContent('Synthetic platform engagement results');
+    expect(englishEngagement).toHaveTextContent('Synthetic comments');
+    expect(englishEngagement).toHaveTextContent('Cross-platform summary');
+  });
 });
 
 describe('Export review', () => {
