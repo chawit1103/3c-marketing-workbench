@@ -189,8 +189,9 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 - Product KPI: Translation Completeness, Glossary Consistency, Thai UX Quality, English UX Quality, Executive Readability, Safety Copy Quality, Terminology Consistency, and Language Coverage are closed for current M18 scope with M19 terminology/copy remediation conditions.
 - Architecture Gate: not triggered.
 - Post-merge validation: PASS on `main`.
-- M19 status: not begun; prepare remediation/terminology backlog before implementation.
+- M19 status: PR2 continuation adds configuration-only simulation controls for the four existing workflows; the current result remains an offline fixture and has not been consumed by the simulation runtime.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` exists for terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
+- M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` records Balanced default, Quick/Balanced/Deep/Research/Custom presets, selected-platform integer validation, configuration summary before Run, and SocialSense boundary Outcome B.
 
 ## Summary
 

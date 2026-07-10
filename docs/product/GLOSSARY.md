@@ -23,6 +23,11 @@ Architecture Gate: Not Triggered. This glossary supports frontend-only localizat
 | Export | ส่งออก | Use with preview/readiness wording; do not imply download if not available. |
 | Review | ตรวจทาน | Human review or export review. |
 | Platform Mix | สัดส่วนแพลตฟอร์ม | Channel/platform selection context. |
+| Simulation Profile | โปรไฟล์การจำลอง | M19 PR2 configuration-only preset. Use Quick, Balanced, Deep, Research, and Custom without implying runtime consumption. |
+| Synthetic Participants | ผู้เข้าร่วมสังเคราะห์ | Offline configured count only; not live platform users or population/demographic evidence. |
+| Platform Allocation | การจัดสรรตามแพลตฟอร์ม | Whole-number selected-platform allocation only; unselected platforms are excluded from totals. |
+| Evidence Depth | ระดับหลักฐาน | Review-depth setting for configuration summary; not a confidence or accuracy claim. |
+| Configuration Only | เป็นการตั้งค่าเท่านั้น | Current result remains an offline fixture and has not been consumed by the simulation runtime. |
 | Audience | กลุ่มเป้าหมาย | Aggregate audience only; no private or individual targeting. |
 | Risk | ความเสี่ยง | Preserve market-risk-unmeasured meaning. |
 | Limitation | ข้อจำกัด | Must stay visible near evidence and confidence. |

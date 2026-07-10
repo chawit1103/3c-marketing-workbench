@@ -39,7 +39,6 @@ function renderCreativeComparison() {
   return screen.getByRole('form', { name: 'Creative Comparison setup' });
 }
 
-
 describe('M18 Thai-first internationalization', () => {
   const thaiSafetyLabels = [
     'โหมดข้อมูลตัวอย่างออฟไลน์',
@@ -1251,6 +1250,85 @@ describe('A/B Experiment workflow', () => {
     renderAt('/runs/3c-m7-ab-experiment-reference-workflow');
     expect(screen.getByRole('heading', { name: 'A/B Experiment Results' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Offline A/B experiment ready for executive review' })).toBeInTheDocument();
+  });
+});
+
+describe('M19 PR2 Simulation Configuration Workspace', () => {
+  it.each([
+    ['/workbench', 'Product Launch setup'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
+    ['/workbench/ab-experiment', 'A/B Experiment setup'],
+    ['/workbench/creative-comparison', 'Creative Comparison setup'],
+  ])('renders shared simulation configuration summary for %s', (pathname, formName) => {
+    renderAt(pathname);
+    const form = screen.getByRole('form', { name: formName });
+
+    expect(within(form).getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Balanced');
+    expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Configured for simulation');
+    expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Total synthetic participants');
+    expect(within(form).getByText('Synthetic participants only; not live platform users.')).toBeInTheDocument();
+  });
+
+  it('lets custom allocations change totals while excluding unselected platforms', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
+    fireEvent.click(within(form).getByLabelText('Facebook'));
+
+    const summary = within(form).getByRole('region', { name: 'Current Simulation Profile' });
+    expect(summary).toHaveTextContent('Current Simulation Profile');
+    expect(summary).toHaveTextContent('Custom');
+    expect(summary).toHaveTextContent('TikTok 80');
+    expect(summary).toHaveTextContent('LINE 80');
+    expect(summary).not.toHaveTextContent('Facebook 200');
+    expect(summary).toHaveTextContent('Total synthetic participants');
+    expect(summary).toHaveTextContent('160');
+  });
+
+  it.each([
+    ['-1', 'Allocation must be at least 10 synthetic participants.'],
+    ['abc', 'Use whole numbers only for synthetic participant allocation.'],
+    ['10.5', 'Use whole numbers only for synthetic participant allocation.'],
+    ['9', 'Allocation must be at least 10 synthetic participants.'],
+    ['501', 'Allocation must be no more than 500 synthetic participants.'],
+  ])('shows inline validation for invalid allocation %s', (value, expectedError) => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value } });
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const runAlert = within(form).getAllByRole('alert').at(-1)!;
+    expect(runAlert).toHaveTextContent(expectedError);
+    expect(runAlert).toHaveTextContent('Correct the selected-platform participant counts before running.');
+    expect(screen.queryByRole('heading', { name: 'Offline product-launch simulation ready for executive review' })).not.toBeInTheDocument();
+  });
+
+  it('keeps simulation configuration localized and stable across language switches', () => {
+    const form = renderAt('/workbench', 'th').container.querySelector('form')!;
+
+    expect(screen.getByRole('group', { name: 'โปรไฟล์การจำลอง' })).toHaveTextContent('สมดุล');
+    expect(screen.getByRole('region', { name: 'โปรไฟล์การจำลองปัจจุบัน' })).toHaveTextContent('ตั้งค่าเพื่อการจำลอง');
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    expect(form).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Balanced');
+    expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Configured for simulation');
+    expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('configuration only');
+  });
+
+  it('does not claim runtime consumption, live API access, or real platform users after run', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    expect(document.body).toHaveTextContent('Configured for simulation');
+    expect(document.body).toHaveTextContent('offline simulation configuration');
+    expect(document.body).toHaveTextContent('not live platform users');
+    expect(document.body.textContent).not.toContain('Consumed by SocialSense runtime');
+    expect(document.body.textContent).not.toContain('real platform users');
+    expect(document.body.textContent).not.toContain('live social platform API');
   });
 });
 

@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M18 Thai-first Internationalization is **closed as GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains available through runtime switching, and M18 delivered the translation style guide, official glossary, exact/template-based localization, language selector, and i18n regression coverage. M19 has not begun; before M19 implementation, create a terminology/copy remediation backlog for Synthetic Social Platform Engagement Simulation and preserve the no-live/no-scraping/no-production boundary. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
+Status: M19 PR2 Simulation Configuration is in local continuation on branch `m19-pr2-simulation-configuration`. M18 Thai-first Internationalization is **closed as GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. M19 PR2 adds shared configuration-only simulation profile controls for existing workflows; the current result remains an offline fixture and has not been consumed by the simulation runtime. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, or MarketingSimulation change is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -103,6 +103,7 @@ Product documentation map:
 - [M18 Glossary](docs/product/GLOSSARY.md)
 - [M18 Closeout Report](docs/product/M18_CLOSEOUT_REPORT.md)
 - [M19 Synthetic Engagement Preparation](docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md)
+- [M19 PR2 Simulation Configuration](docs/product/M19_PR2_SIMULATION_CONFIGURATION.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
