@@ -272,8 +272,8 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 - Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
-- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; M18 implementation is authorized for the current milestone.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, while the runtime synthetic engagement/platform engagement result model remains not begun and PR3 is blocked until PR2 correction post-merge validation.
+- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; runtime synthetic engagement/platform engagement result-model implementation remains blocked until separately authorized after PR2 correction post-merge validation.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -492,9 +492,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Current milestone after M17 is M18 Thai-first Internationalization. M17 is closed as GO WITH CONDITIONS for controlled executive review after PR #27 and PR #28 merged and post-merge validation passed.
+Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. The runtime synthetic engagement/platform engagement result model remains not begun, and PR3 is blocked until PR2 correction post-merge validation.
 
-Recommended option: finish M18 Thai-first glossary, content resources, frontend localization, selector, and validation as the current controlled implementation milestone. M19 must not begin until M18 closes.
+Recommended option: complete PR2 correction post-merge validation before PR3. Do not claim runtime synthetic engagement/platform engagement result-model behavior until a separately approved implementation begins.
 
 Alternative options if priorities change:
 
