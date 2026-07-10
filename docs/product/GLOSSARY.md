@@ -1,6 +1,6 @@
 # M18 Glossary — Thai-first Product Terms
 
-Status: M18 current implementation milestone. M17 is closed as GO WITH CONDITIONS. M19 must not begin until M18 closes.
+Status: M18 is closed as GO WITH CONDITIONS. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes.
 
 Architecture Gate: Not Triggered. This glossary supports frontend-only localization and does not require backend, SocialSense, workflow, IA, design-system, persistence, auth, external service, or live API changes.
 

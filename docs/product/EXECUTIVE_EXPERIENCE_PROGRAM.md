@@ -1,6 +1,6 @@
 # Executive Experience & Marketing Simulation Enhancement Program
 
-Status: M18 Thai-first Internationalization is the current implementation milestone after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS after M17 Executive Dashboard & Reporting closed as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. Current readiness is GO WITH CONDITIONS because evidence remains E1 synthetic/offline fixture scope with Low directional confidence; human review and field evidence are required before launch, budget, or winner decisions. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes.
 
 ## Program objective
 
@@ -117,7 +117,7 @@ Synthetic/offline mapping:
 
 ## M17 Executive Dashboard & Reporting
 
-Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes. The orchestrator now reports M17 CLOSED as GO WITH CONDITIONS for controlled executive review.
+Status: M17 is CLOSED as GO WITH CONDITIONS on main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after PR #27 and PR #28 merged and post-merge validation passed. PR1 remains the historical docs/smoke only kickoff and did not deliver implementation. PR2 executive KPI cards, PR3 marketing charts/evidence/confidence visualization, and PR4 report/export readability are complete. M18 Thai-first Internationalization is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes. The orchestrator plan is complete as historical status only; this program now preserves the executive experience baseline while later milestones proceed under their own gates.
 
 Historical PR1 context: PR1 recorded “M17 PR2+ implementation is future work” and “not delivered in this PR” because PR1 was docs/smoke only with no source UI/runtime changes. That boundary is preserved as PR1 history, not as the current PR2 branch status.
 
@@ -164,7 +164,7 @@ Tasks:
 
 ## M18 Thai-first Internationalization
 
-Status: M18 current implementation milestone. Runtime frontend localization is implemented with Thai default, English secondary language, English fallback for missing keys, language selector UI, translation resources, style guide, glossary, KPI updates, and tests. No backend, persistence, SocialSense change, workflow redesign, IA redesign, design-system redesign, external service, or live API is introduced. M17 is closed as GO WITH CONDITIONS. M19 has not begun.
+Status: M18 is closed as GO WITH CONDITIONS. Runtime frontend localization is implemented with Thai default, English secondary language, English fallback for missing keys, language selector UI, translation resources, style guide, glossary, KPI updates, and tests. No backend, persistence, SocialSense change, workflow redesign, IA redesign, design-system redesign, external service, or live API is introduced. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes.
 
 ### Epic 1: Thai-first content model
 
