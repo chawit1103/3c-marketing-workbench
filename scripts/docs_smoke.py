@@ -224,6 +224,10 @@ REQUIRED_M19_PREP_DOCS = [
     "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
 ]
 
+REQUIRED_M19_PR2_DOCS = [
+    "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
+]
+
 REQUIRED_M19_PREP_PHRASES = [
     "M19 Preparation",
     "Synthetic engagement",
@@ -243,6 +247,45 @@ REQUIRED_M19_PREP_PHRASES = [
     "MarketingSimulation remains reference-only",
     "Architecture Gate: Not Triggered",
 ]
+
+REQUIRED_M19_PR2_PHRASES = [
+    "M19 PR2 Simulation Configuration Workspace",
+    "simulationProfile",
+    "selectedPlatforms",
+    "platformAllocations",
+    "total synthetic participants",
+    "evidenceDepth",
+    "configurationSource",
+    "runtimeStatus",
+    "configuration_only",
+    "Configured for simulation",
+    "Consumed by runtime",
+    "synthetic participants only",
+    "not live platform users",
+    "not real engagement measurement",
+    "no live API access",
+    "Outcome: A/B/C = B",
+    "SocialSense public API inspection outcome",
+    "Architecture Gate: Not Triggered",
+    "no backend endpoint",
+    "no SocialSense changes",
+    "no MarketingSimulation changes",
+]
+
+M19_PR2_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/GLOSSARY.md",
+    "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
+    "src/App.test.tsx",
+    "src/i18n/translations.ts",
+    "src/views.tsx",
+    "src/product/simulationConfig.ts",
+    "src/product/simulationConfig.test.ts",
+}
 
 REQUIRED_M18_GLOSSARY_TERMS = [
     "Campaign",
@@ -974,6 +1017,10 @@ def main() -> None:
         missing_m19_prep_docs = [path for path in REQUIRED_M19_PREP_DOCS if not (ROOT / path).is_file()]
         if missing_m19_prep_docs:
             fail("missing required M19 preparation docs: " + ", ".join(missing_m19_prep_docs))
+        if current_branch_name().startswith("m19-pr2-"):
+            missing_m19_pr2_docs = [path for path in REQUIRED_M19_PR2_DOCS if not (ROOT / path).is_file()]
+            if missing_m19_pr2_docs:
+                fail("missing required M19 PR2 simulation configuration docs: " + ", ".join(missing_m19_pr2_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -1027,6 +1074,12 @@ def main() -> None:
         if (ROOT / path).is_file()
     }
     m19_prep_text = "\n".join(m19_prep_docs_by_path.values())
+    m19_pr2_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M19_PR2_DOCS
+        if (ROOT / path).is_file()
+    }
+    m19_pr2_text = "\n".join(m19_pr2_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1089,6 +1142,10 @@ def main() -> None:
         missing_m19_prep_links = [path for path in REQUIRED_M19_PREP_DOCS if f"]({path})" not in readme]
         if missing_m19_prep_links:
             fail("README missing M19 preparation doc links: " + ", ".join(missing_m19_prep_links))
+        if current_branch_name().startswith("m19-pr2-"):
+            missing_m19_pr2_links = [path for path in REQUIRED_M19_PR2_DOCS if f"]({path})" not in readme]
+            if missing_m19_pr2_links:
+                fail("README missing M19 PR2 simulation configuration doc links: " + ", ".join(missing_m19_pr2_links))
 
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
@@ -1690,13 +1747,24 @@ def main() -> None:
         ]
         if missing_m19_prep_phrases:
             fail("M19 preparation docs missing terminology/safety/remediation phrases: " + ", ".join(missing_m19_prep_phrases))
-        forbidden_m19_runtime_paths = [
-            path
-            for path in changed_paths
-            if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
-        ]
-        if forbidden_m19_runtime_paths:
-            fail("M19 preparation changed runtime/backend/SocialSense paths: " + ", ".join(forbidden_m19_runtime_paths))
+        if current_branch_name().startswith("m19-pr2-"):
+            combined_m19_pr2_text = "\n".join([readme, agents, roadmap, health_dashboard, m18_text, m19_pr2_text])
+            missing_m19_pr2_phrases = [
+                phrase for phrase in REQUIRED_M19_PR2_PHRASES if phrase not in combined_m19_pr2_text
+            ]
+            if missing_m19_pr2_phrases:
+                fail("M19 PR2 docs missing simulation configuration phrases: " + ", ".join(missing_m19_pr2_phrases))
+            unexpected_m19_pr2_changes = [path for path in changed_paths if path not in M19_PR2_ALLOWED_CHANGED_PATHS]
+            if unexpected_m19_pr2_changes:
+                fail("M19 PR2 changed unexpected paths: " + ", ".join(unexpected_m19_pr2_changes))
+        else:
+            forbidden_m19_runtime_paths = [
+                path
+                for path in changed_paths
+                if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
+            ]
+            if forbidden_m19_runtime_paths:
+                fail("M19 preparation changed runtime/backend/SocialSense paths: " + ", ".join(forbidden_m19_runtime_paths))
         m19_forbidden_claims = [
             "measured platform engagement is available",
             "live social data is available",
@@ -1729,6 +1797,8 @@ def main() -> None:
         print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, closeout report, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, closed GO WITH CONDITIONS wording, fallback review evidence, and no-M19 wording")
     if branch_at_or_after(19):
         print("PASS: M19 preparation docs include terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, remediation backlog, docs-only boundary, and no runtime/SocialSense changes")
+        if current_branch_name().startswith("m19-pr2-"):
+            print("PASS: M19 PR2 simulation configuration docs/source include shared presets, selected-platform allocation validation, summary before Run, configuration-only status, and SocialSense boundary Outcome B")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

@@ -3,6 +3,23 @@ import { ObjectiveCard } from './components/product/ObjectiveCard';
 import { localizeNode, translate } from './i18n/localize';
 import type { Language } from './i18n/translations';
 import { useI18n } from './i18n/useI18n';
+import {
+  EVIDENCE_DEPTHS,
+  PLATFORM_ALLOCATION_LIMITS,
+  PLATFORM_LABELS,
+  SIMULATION_PROFILES,
+  applySimulationProfile,
+  calculateSelectedParticipantTotal,
+  createDefaultSimulationConfiguration,
+  updateEvidenceDepth,
+  updatePlatformAllocationDraft,
+  updateSelectedPlatforms,
+  validateSimulationConfiguration,
+  type EvidenceDepth,
+  type PlatformKey,
+  type SimulationConfiguration,
+  type SimulationProfile,
+} from './product/simulationConfig';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -1088,6 +1105,171 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   );
 }
 
+function inlineAllocationError(config: SimulationConfiguration, fallback: string): string {
+  const invalidPlatform = config.selectedPlatforms.find((platform) => {
+    const draft = config.platformAllocationDrafts[platform].trim();
+    return !/^\d+$/.test(draft) || Number(draft) < PLATFORM_ALLOCATION_LIMITS.min || Number(draft) > PLATFORM_ALLOCATION_LIMITS.max;
+  });
+  if (!invalidPlatform) {
+    return fallback;
+  }
+  return `${PLATFORM_LABELS[invalidPlatform]} must be a whole number between ${PLATFORM_ALLOCATION_LIMITS.min} and ${PLATFORM_ALLOCATION_LIMITS.max}.`;
+}
+
+function allocationValidationErrors(config: SimulationConfiguration): string[] {
+  return validateSimulationConfiguration(config).filter(
+    (error) => error !== 'Select at least one platform because participant allocation only applies to selected platforms.',
+  );
+}
+
+function SimulationConfigurationWorkspace({
+  config,
+  onProfileChange,
+  onEvidenceDepthChange,
+  onAllocationChange,
+  onSelectedPlatformToggle,
+}: {
+  config: SimulationConfiguration;
+  onProfileChange: (profile: SimulationProfile) => void;
+  onEvidenceDepthChange: (depth: EvidenceDepth) => void;
+  onAllocationChange: (platform: PlatformKey, value: string) => void;
+  onSelectedPlatformToggle: (platform: PlatformKey) => void;
+}) {
+  const { t, language } = useI18n();
+  const selectedTotal = calculateSelectedParticipantTotal(config);
+  const selectedPlatforms = config.selectedPlatforms;
+  const profile = SIMULATION_PROFILES[config.simulationProfile];
+  const statusText = config.runtimeStatus === 'consumed_by_runtime'
+    ? 'Consumed by simulation runtime'
+    : 'Configured for simulation';
+  const statusNotice = config.runtimeStatus === 'consumed_by_runtime'
+    ? 'Runtime evidence is required before this status may be shown.'
+    : 'Current execution status: configuration-only (configuration only); current result remains an offline fixture and has not been consumed by the simulation runtime.';
+  const evidenceDepthLabel = {
+    light: 'Light',
+    standard: 'Standard',
+    deep: 'Deep',
+    research: 'Research',
+  }[config.evidenceDepth];
+  const inlineErrors = allocationValidationErrors(config);
+
+  return (
+    <fieldset className="simulation-config-panel">
+      <legend>{t('Simulation Profile')}</legend>
+      <div className="choice-grid" aria-label={t('Simulation Profile')}>
+        {(Object.keys(SIMULATION_PROFILES) as SimulationProfile[]).map((profileKey) => {
+          const definition = SIMULATION_PROFILES[profileKey];
+          return (
+            <label className="choice-pill simulation-profile-choice" key={profileKey}>
+              <input
+                type="radio"
+                name="simulation-profile"
+                checked={config.simulationProfile === profileKey}
+                aria-label={definition.label}
+                onChange={() => onProfileChange(profileKey)}
+              />
+              <span>{t(definition.label)}</span>
+              <small>{language === 'th' ? definition.description.th : definition.description.en}</small>
+            </label>
+          );
+        })}
+      </div>
+
+      <details className="advanced-settings">
+        <summary>{t('Advanced Simulation Settings')}</summary>
+        <p className="help-text">{t('Synthetic participants only; not live platform users.')}</p>
+        <p className="help-text">
+          {t('Use whole numbers between 10 and 500 for selected platforms. Unselected platform allocation is ignored, not silently included.')}
+        </p>
+        <div className="grid two-col allocation-grid">
+          {(Object.keys(PLATFORM_LABELS) as PlatformKey[]).map((platform) => {
+            const isSelected = selectedPlatforms.includes(platform);
+            const label = PLATFORM_LABELS[platform];
+            return (
+              <div className={`allocation-row ${isSelected ? '' : 'allocation-row-disabled'}`} key={platform}>
+                <label className="choice-pill" htmlFor={`use-${platform}`}>
+                  <input
+                    id={`use-${platform}`}
+                    type="checkbox"
+                    checked={isSelected}
+                    aria-label={`Use ${label} in simulation profile`}
+                    onChange={() => onSelectedPlatformToggle(platform)}
+                  />
+                  {t('Use in simulation profile')}
+                </label>
+                <label htmlFor={`allocation-${platform}`}>
+                  <span>{label} {t('Synthetic Participants')}</span>
+                  <input
+                    id={`allocation-${platform}`}
+                    aria-label={`Synthetic participants for ${label}`}
+                    inputMode="numeric"
+                    value={config.platformAllocationDrafts[platform]}
+                    onChange={(event) => onAllocationChange(platform, event.target.value)}
+                  />
+                  <small>{isSelected ? t('Included in total') : t('Not selected; excluded from total')}</small>
+                </label>
+              </div>
+            );
+          })}
+        </div>
+        <label htmlFor="evidence-depth">{t('Evidence Depth')}</label>
+        <select
+          id="evidence-depth"
+          value={config.evidenceDepth}
+          onChange={(event) => onEvidenceDepthChange(event.target.value as EvidenceDepth)}
+        >
+          {EVIDENCE_DEPTHS.map((depth) => {
+            const label = { light: 'Light', standard: 'Standard', deep: 'Deep', research: 'Research' }[depth];
+            return <option key={depth} value={depth}>{t(label)}</option>;
+          })}
+        </select>
+        {inlineErrors.length > 0 ? (
+          <div className="error-state form-errors" aria-live="polite">
+            {inlineErrors.map((error) => <p key={error}>{inlineAllocationError(config, error)}</p>)}
+          </div>
+        ) : null}
+      </details>
+
+      <section className="configuration-summary" aria-label={t('Current Simulation Profile')}>
+        <p className="eyebrow">{t('Configuration Summary before Run')}</p>
+        <h3>{t('Current Simulation Profile')}: {t(profile.label)}</h3>
+        <dl className="assumption-grid compact-dl">
+          <div>
+            <dt>{t('configuration source')}</dt>
+            <dd>{t(config.configurationSource === 'preset' ? 'preset' : 'custom')}</dd>
+          </div>
+          <div>
+            <dt>{t('selected profile')}</dt>
+            <dd>{t(profile.label)}</dd>
+          </div>
+          <div>
+            <dt>{t('selected platforms')}</dt>
+            <dd>{selectedPlatforms.map((platform) => PLATFORM_LABELS[platform]).join(', ') || t('Required')}</dd>
+          </div>
+          <div>
+            <dt>{t('Platform Allocation')}</dt>
+            <dd>{selectedPlatforms.map((platform) => `${PLATFORM_LABELS[platform]} ${config.platformAllocations[platform]}`).join(', ') || t('Required')}</dd>
+          </div>
+          <div>
+            <dt>{t('Total synthetic participants')}</dt>
+            <dd>{selectedTotal}</dd>
+          </div>
+          <div>
+            <dt>{t('Evidence depth')}</dt>
+            <dd>{t(evidenceDepthLabel)}</dd>
+          </div>
+          <div>
+            <dt>{t('current execution status')}</dt>
+            <dd>{t(statusText)}</dd>
+          </div>
+        </dl>
+        <p className="help-text">{t(statusNotice)}</p>
+        <p className="help-text">{t('Safety: synthetic participants, offline simulation configuration, not live platform users, not real engagement measurement, and no live API access.')}</p>
+      </section>
+    </fieldset>
+  );
+}
+
 function ReviewValue({ value, fallback = 'Required' }: { value: string; fallback?: string }) {
   if (!value) {
     return <>{fallback}</>;
@@ -1107,6 +1289,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const [submittedForm, setSubmittedForm] = useState<LaunchForm>(localizedDefaultForm);
   const [submittedEditedFields, setSubmittedEditedFields] = useState<Set<keyof LaunchForm>>(new Set());
   const [errors, setErrors] = useState<string[]>([]);
+  const [simulationConfig, setSimulationConfig] = useState<SimulationConfiguration>(() =>
+    createDefaultSimulationConfiguration(config.defaultForm.platforms),
+  );
   const form = useMemo<LaunchForm>(() => ({
     ...localizedDefaultForm,
     ...formOverrides,
@@ -1133,13 +1318,41 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
       const values = currentValues.includes(value)
         ? currentValues.filter((item) => item !== value)
         : [...currentValues, value];
+      if (field === 'platforms') {
+        setSimulationConfig((currentConfig) => updateSelectedPlatforms(currentConfig, values));
+      }
       return { ...current, [field]: values };
     });
   }
 
+  function toggleSimulationPlatform(platform: PlatformKey) {
+    const platformLabel = PLATFORM_LABELS[platform];
+    setSimulationConfig((current) => ({
+      ...current,
+      selectedPlatforms: current.selectedPlatforms.includes(platform)
+        ? current.selectedPlatforms.filter((item) => item !== platform)
+        : [...current.selectedPlatforms, platform],
+      runtimeStatus: 'configuration_only',
+    }));
+    setFormOverrides((current) => {
+      const currentPlatforms = current.platforms ?? localizedDefaultForm.platforms;
+      const platforms = currentPlatforms.includes(platformLabel)
+        ? currentPlatforms.filter((item) => item !== platformLabel)
+        : [...currentPlatforms, platformLabel];
+      return { ...current, platforms };
+    });
+  }
+
   function runSimulation() {
-    const nextErrors = validateForm(form, config.key);
-    setErrors(nextErrors);
+    const simulationErrors = validateSimulationConfiguration(simulationConfig);
+    const nextErrors = [
+      ...validateForm(form, config.key),
+      ...simulationErrors,
+    ];
+    if (simulationErrors.length > 0) {
+      nextErrors.push('Correct the selected-platform participant counts before running.');
+    }
+    setErrors(Array.from(new Set(nextErrors)));
     if (nextErrors.length > 0) {
       setHasRun(false);
       return;
@@ -1312,6 +1525,14 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
               ))}
             </div>
           </fieldset>
+
+          <SimulationConfigurationWorkspace
+            config={simulationConfig}
+            onProfileChange={(profile) => setSimulationConfig((current) => applySimulationProfile(current, profile))}
+            onEvidenceDepthChange={(depth) => setSimulationConfig((current) => updateEvidenceDepth(current, depth))}
+            onAllocationChange={(platform, value) => setSimulationConfig((current) => updatePlatformAllocationDraft(current, platform, value))}
+            onSelectedPlatformToggle={toggleSimulationPlatform}
+          />
 
           {errors.length > 0 ? (
             <div className="error-state form-errors" role="alert">

@@ -1,0 +1,189 @@
+export type SimulationProfile = 'quick' | 'balanced' | 'deep' | 'research' | 'custom';
+export type PlatformKey = 'facebook' | 'tiktok' | 'line' | 'youtube' | 'instagram' | 'x';
+export type EvidenceDepth = 'light' | 'standard' | 'deep' | 'research';
+export type RuntimeStatus = 'configuration_only' | 'consumed_by_runtime';
+export type ConfigurationSource = 'preset' | 'custom';
+
+export const DEFAULT_SIMULATION_PROFILE: SimulationProfile = 'balanced';
+export const EVIDENCE_DEPTHS: EvidenceDepth[] = ['light', 'standard', 'deep', 'research'];
+export const PLATFORM_ALLOCATION_LIMITS = { min: 10, max: 500 } as const;
+
+export const PLATFORM_LABELS: Record<PlatformKey, string> = {
+  facebook: 'Facebook',
+  tiktok: 'TikTok',
+  line: 'LINE',
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  x: 'X / Twitter',
+};
+
+const platformKeyByLabel: Record<string, PlatformKey> = Object.fromEntries(
+  Object.entries(PLATFORM_LABELS).map(([key, label]) => [label, key as PlatformKey]),
+) as Record<string, PlatformKey>;
+
+export type PlatformAllocations = Record<PlatformKey, number>;
+export type PlatformAllocationDrafts = Record<PlatformKey, string>;
+
+export type SimulationConfiguration = {
+  simulationProfile: SimulationProfile;
+  selectedPlatforms: PlatformKey[];
+  platformAllocations: PlatformAllocations;
+  platformAllocationDrafts: PlatformAllocationDrafts;
+  evidenceDepth: EvidenceDepth;
+  configurationSource: ConfigurationSource;
+  runtimeStatus: RuntimeStatus;
+};
+
+type ProfileDefinition = {
+  label: string;
+  description: { th: string; en: string };
+  evidenceDepth: EvidenceDepth;
+  allocations: PlatformAllocations;
+};
+
+export const SIMULATION_PROFILES: Record<SimulationProfile, ProfileDefinition> = {
+  quick: {
+    label: 'Quick',
+    description: {
+      th: 'รอบเร็วสำหรับตรวจทานสมมติฐานเบื้องต้น ใช้ผู้เข้าร่วมสังเคราะห์จำนวนน้อย',
+      en: 'Fast review of initial assumptions with a smaller synthetic participant set.',
+    },
+    evidenceDepth: 'light',
+    allocations: { facebook: 30, tiktok: 30, line: 30, youtube: 30, instagram: 30, x: 30 },
+  },
+  balanced: {
+    label: 'Balanced',
+    description: {
+      th: 'ค่าเริ่มต้นที่สมดุลสำหรับการตรวจทานผู้บริหาร โดยยังคงจำกัดภาระงานในเครื่อง',
+      en: 'Default balanced executive review configuration with bounded local workload.',
+    },
+    evidenceDepth: 'standard',
+    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, instagram: 80, x: 80 },
+  },
+  deep: {
+    label: 'Deep',
+    description: {
+      th: 'ตรวจทานละเอียดขึ้นสำหรับหลายแพลตฟอร์ม โดยยังเป็นการตั้งค่าออฟไลน์',
+      en: 'Deeper multi-platform review while remaining offline configuration only.',
+    },
+    evidenceDepth: 'deep',
+    allocations: { facebook: 150, tiktok: 150, line: 150, youtube: 150, instagram: 150, x: 150 },
+  },
+  research: {
+    label: 'Research',
+    description: {
+      th: 'รอบวิจัยสำหรับเตรียมคำถามและช่องว่างหลักฐาน ใช้ข้อมูลสังเคราะห์เท่านั้น',
+      en: 'Research-oriented configuration for questions and evidence gaps using synthetic participants only.',
+    },
+    evidenceDepth: 'research',
+    allocations: { facebook: 250, tiktok: 250, line: 250, youtube: 250, instagram: 250, x: 250 },
+  },
+  custom: {
+    label: 'Custom',
+    description: {
+      th: 'กำหนดจำนวนผู้เข้าร่วมสังเคราะห์เองภายในขอบเขตที่ปลอดภัย',
+      en: 'Manual synthetic participant allocations within safe bounds.',
+    },
+    evidenceDepth: 'standard',
+    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, instagram: 80, x: 80 },
+  },
+};
+
+export function platformLabelsToKeys(platforms: string[]): PlatformKey[] {
+  return platforms.map((platform) => platformKeyByLabel[platform]).filter((platform): platform is PlatformKey => Boolean(platform));
+}
+
+export function createDefaultSimulationConfiguration(selectedPlatformLabels: string[]): SimulationConfiguration {
+  const profile = SIMULATION_PROFILES[DEFAULT_SIMULATION_PROFILE];
+  const selectedPlatforms = platformLabelsToKeys(selectedPlatformLabels);
+  return {
+    simulationProfile: DEFAULT_SIMULATION_PROFILE,
+    selectedPlatforms: selectedPlatforms.length > 0 ? selectedPlatforms : Object.keys(PLATFORM_LABELS) as PlatformKey[],
+    platformAllocations: { ...profile.allocations },
+    platformAllocationDrafts: allocationDraftsFromValues(profile.allocations),
+    evidenceDepth: profile.evidenceDepth,
+    configurationSource: 'preset',
+    runtimeStatus: 'configuration_only',
+  };
+}
+
+export function applySimulationProfile(config: SimulationConfiguration, simulationProfile: SimulationProfile): SimulationConfiguration {
+  const profile = SIMULATION_PROFILES[simulationProfile];
+  return {
+    ...config,
+    simulationProfile,
+    platformAllocations: { ...profile.allocations },
+    platformAllocationDrafts: allocationDraftsFromValues(profile.allocations),
+    evidenceDepth: profile.evidenceDepth,
+    configurationSource: simulationProfile === 'custom' ? 'custom' : 'preset',
+    runtimeStatus: 'configuration_only',
+  };
+}
+
+export function updateSelectedPlatforms(config: SimulationConfiguration, selectedPlatformLabels: string[]): SimulationConfiguration {
+  return {
+    ...config,
+    selectedPlatforms: platformLabelsToKeys(selectedPlatformLabels),
+    runtimeStatus: 'configuration_only',
+  };
+}
+
+export function updateEvidenceDepth(config: SimulationConfiguration, evidenceDepth: EvidenceDepth): SimulationConfiguration {
+  return { ...config, evidenceDepth, simulationProfile: 'custom', configurationSource: 'custom', runtimeStatus: 'configuration_only' };
+}
+
+export function updatePlatformAllocationDraft(
+  config: SimulationConfiguration,
+  platform: PlatformKey,
+  draftValue: string,
+): SimulationConfiguration {
+  const trimmed = draftValue.trim();
+  const nextAllocations = { ...config.platformAllocations };
+  if (/^\d+$/.test(trimmed)) {
+    nextAllocations[platform] = Number(trimmed);
+  }
+  return {
+    ...config,
+    simulationProfile: 'custom',
+    configurationSource: 'custom',
+    platformAllocations: nextAllocations,
+    platformAllocationDrafts: { ...config.platformAllocationDrafts, [platform]: draftValue },
+    runtimeStatus: 'configuration_only',
+  };
+}
+
+export function validateSimulationConfiguration(config: SimulationConfiguration): string[] {
+  const errors: string[] = [];
+  if (config.selectedPlatforms.length === 0) {
+    errors.push('Select at least one platform because participant allocation only applies to selected platforms.');
+  }
+  for (const platform of config.selectedPlatforms) {
+    const draft = config.platformAllocationDrafts[platform].trim();
+    const value = Number(draft);
+    if (/^-\d+$/.test(draft)) {
+      errors.push(`Allocation must be at least ${PLATFORM_ALLOCATION_LIMITS.min} synthetic participants.`);
+      continue;
+    }
+    if (!/^\d+$/.test(draft)) {
+      errors.push('Use whole numbers only for synthetic participant allocation.');
+      continue;
+    }
+    if (value < PLATFORM_ALLOCATION_LIMITS.min) {
+      errors.push(`Allocation must be at least ${PLATFORM_ALLOCATION_LIMITS.min} synthetic participants.`);
+    }
+    if (value > PLATFORM_ALLOCATION_LIMITS.max) {
+      errors.push(`Allocation must be no more than ${PLATFORM_ALLOCATION_LIMITS.max} synthetic participants.`);
+    }
+  }
+  return Array.from(new Set(errors));
+}
+
+export function calculateSelectedParticipantTotal(config: SimulationConfiguration): number {
+  return config.selectedPlatforms.reduce((total, platform) => total + config.platformAllocations[platform], 0);
+}
+
+function allocationDraftsFromValues(allocations: PlatformAllocations): PlatformAllocationDrafts {
+  return Object.fromEntries(
+    Object.entries(allocations).map(([platform, value]) => [platform, String(value)]),
+  ) as PlatformAllocationDrafts;
+}
