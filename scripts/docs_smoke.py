@@ -276,9 +276,9 @@ REQUIRED_M19_PR2_PHRASES = [
     "no MarketingSimulation changes",
     "merged in PR #34",
     "m19-pr2-localization-correction",
-    "M19 PR1 and PR2 configuration-only work are complete/in correction",
-    "runtime synthetic engagement/platform engagement result model remains not begun",
-    "PR3 remains blocked until PR2 correction post-merge validation passes",
+    "M19 PR1 and PR2 configuration-only work are complete",
+    "PR3 Platform Engagement Result Model is implemented",
+    "PR4 dashboard redesign/upgrade is not started",
 ]
 
 M19_PR2_ALLOWED_CHANGED_PATHS = {
@@ -335,6 +335,7 @@ M19_PR3_ALLOWED_CHANGED_PATHS = {
     "src/views.tsx",
     "src/product/platformEngagement.ts",
     "src/product/platformEngagement.test.ts",
+    "src/product/simulationConfig.ts",
 }
 
 REQUIRED_M18_GLOSSARY_TERMS = [

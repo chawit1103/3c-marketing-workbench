@@ -11,6 +11,7 @@ import {
   applySimulationProfile,
   calculateSelectedParticipantTotal,
   createDefaultSimulationConfiguration,
+  normalizePlatformAllocation,
   updateEvidenceDepth,
   updatePlatformAllocationDraft,
   updateSelectedPlatforms,
@@ -191,7 +192,7 @@ function parseSimulationConfiguration(raw: unknown, fallback: SimulationConfigur
   if (parsed.platformAllocations && typeof parsed.platformAllocations === 'object') {
     for (const [platform, value] of Object.entries(parsed.platformAllocations)) {
       if (isPlatformKey(platform) && typeof value === 'number' && Number.isFinite(value)) {
-        platformAllocations[platform] = value;
+        platformAllocations[platform] = normalizePlatformAllocation(value, fallback.platformAllocations[platform]);
       }
     }
   }
@@ -1750,7 +1751,7 @@ export function HealthView() {
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
     ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. Configuration-only workspace is implemented; runtime result model remains not begun.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline, configuration-owned result contract. PR4 dashboard redesign/upgrade is not started and remains blocked; no SocialSense runtime, live measurement, or production claim.'],
   ];
 
   return (

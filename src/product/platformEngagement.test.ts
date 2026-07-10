@@ -3,6 +3,7 @@ import {
   createDefaultSimulationConfiguration,
   updatePlatformAllocationDraft,
   updateSelectedPlatforms,
+  type SimulationConfiguration,
 } from './simulationConfig';
 import { buildPlatformEngagementResult } from './platformEngagement';
 
@@ -67,6 +68,33 @@ describe('M19 PR3 platform engagement result model', () => {
     expect(result.platforms.map((platform) => platform.platform)).toEqual(['Facebook']);
     expect(JSON.stringify(result)).not.toContain('Instagram');
     expect(result.crossPlatformSummary.totalSyntheticParticipants).toBe(80);
+  });
+
+  it('normalizes malformed transported allocation values before deriving PR3 metrics', () => {
+    const config: SimulationConfiguration = {
+      ...createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE', 'Instagram']),
+      selectedPlatforms: ['facebook', 'tiktok', 'line', 'instagram'],
+      platformAllocations: {
+        facebook: -25,
+        tiktok: 0,
+        line: 999,
+        youtube: 500,
+        instagram: 110.6,
+        x: 80,
+      },
+    };
+
+    const result = buildPlatformEngagementResult(config);
+
+    expect(result.platforms.map((platform) => [platform.platformKey, platform.syntheticParticipants])).toEqual([
+      ['facebook', 10],
+      ['tiktok', 10],
+      ['line', 500],
+      ['instagram', 111],
+    ]);
+    expect(result.platforms.map((platform) => platform.platform)).not.toContain('YouTube');
+    expect(result.platforms.every((platform) => platform.syntheticCommentCount >= 1)).toBe(true);
+    expect(result.crossPlatformSummary.totalSyntheticParticipants).toBe(631);
   });
 
   it('includes synthetic comments, themes, cross-platform summary, and offline provenance safety status', () => {

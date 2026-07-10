@@ -1,6 +1,6 @@
 import {
   PLATFORM_LABELS,
-  calculateSelectedParticipantTotal,
+  normalizePlatformAllocation,
   type EvidenceDepth,
   type PlatformKey,
   type SimulationConfiguration,
@@ -99,7 +99,7 @@ const commentsByPlatform: Record<PlatformKey, string> = {
 
 export function buildPlatformEngagementResult(config: SimulationConfiguration): PlatformEngagementResult {
   const platforms = config.selectedPlatforms.map((platformKey, index) => {
-    const allocation = config.platformAllocations[platformKey];
+    const allocation = normalizePlatformAllocation(config.platformAllocations[platformKey]);
     const offsets = platformOffsets[platformKey];
     return {
       platformKey,
@@ -131,7 +131,7 @@ export function buildPlatformEngagementResult(config: SimulationConfiguration): 
     themes: themeDetails,
     crossPlatformSummary: {
       platformCount: platforms.length,
-      totalSyntheticParticipants: calculateSelectedParticipantTotal(config),
+      totalSyntheticParticipants: platforms.reduce((total, platform) => total + platform.syntheticParticipants, 0),
       averageSyntheticReachIndex: average(platforms.map((platform) => platform.syntheticReachIndex)),
       averageSyntheticReactionIndex: average(platforms.map((platform) => platform.syntheticReactionIndex)),
       totalSyntheticComments: platforms.reduce((total, platform) => total + platform.syntheticCommentCount, 0),

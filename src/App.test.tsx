@@ -681,7 +681,9 @@ describe('App shell routes', () => {
     for (const pathname of ['/', '/workbench', '/campaign-workspace', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/workbench/creative-comparison', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
-      expect(visibleText).not.toContain('pr4');
+      if (pathname !== '/health') {
+        expect(visibleText).not.toContain('pr4');
+      }
       expect(visibleText).not.toContain('pr2');
       expect(visibleText).not.toContain('vertical slice');
 
@@ -1126,6 +1128,10 @@ describe('M12 Campaign Workspace trust and validation', () => {
     }
     expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
     expect(document.body.textContent).not.toContain('M18 planned only');
+    expect(document.body.textContent).not.toContain('runtime result model remains not begun');
+    expect(document.body.textContent).not.toContain('PR3 remains blocked');
+    expect(document.body.textContent).toContain('PR3 Platform Engagement Result Model is implemented');
+    expect(document.body.textContent).toContain('PR4 dashboard redesign/upgrade is not started and remains blocked');
   });
 });
 
@@ -1407,6 +1413,51 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(engagement).toHaveTextContent('LINE');
     expect(engagement).not.toHaveTextContent('TikTok');
     expect(engagement).toHaveTextContent('160');
+  });
+
+  it('bounds transported allocation payload values before PR3 dashboard results', () => {
+    const payload = encodeURIComponent(JSON.stringify({
+      v: 1,
+      runId: 'sample-run',
+      form: { platforms: ['Facebook', 'TikTok', 'LINE', 'Instagram'] },
+      editedFields: ['platforms'],
+      simulationConfig: {
+        simulationProfile: 'custom',
+        selectedPlatforms: ['facebook', 'tiktok', 'line', 'instagram'],
+        platformAllocations: {
+          facebook: -25,
+          tiktok: 0,
+          line: 999,
+          youtube: 500,
+          instagram: 110.6,
+          x: 80,
+        },
+        platformAllocationDrafts: {
+          facebook: '-25',
+          tiktok: '0',
+          line: '999',
+          youtube: '500',
+          instagram: '110.6',
+          x: '80',
+        },
+        evidenceDepth: 'standard',
+        configurationSource: 'custom',
+        runtimeStatus: 'configuration_only',
+      },
+    }));
+
+    renderAt(`/runs/sample-run?assumptions=${payload}`);
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Total synthetic participants631');
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('Synthetic participants: 10');
+    expect(engagement).toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).toHaveTextContent('Synthetic participants: 500');
+    expect(engagement).toHaveTextContent('Instagram');
+    expect(engagement).toHaveTextContent('Synthetic participants: 111');
+    expect(engagement).not.toHaveTextContent('YouTube');
   });
 
   it('carries PR3 platform engagement model into dashboard and export review safely', () => {

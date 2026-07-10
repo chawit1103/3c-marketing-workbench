@@ -8,6 +8,17 @@ export const DEFAULT_SIMULATION_PROFILE: SimulationProfile = 'balanced';
 export const EVIDENCE_DEPTHS: EvidenceDepth[] = ['light', 'standard', 'deep', 'research'];
 export const PLATFORM_ALLOCATION_LIMITS = { min: 10, max: 500 } as const;
 
+export function normalizePlatformAllocation(value: unknown, fallback: number = PLATFORM_ALLOCATION_LIMITS.min): number {
+  const fallbackValue = typeof fallback === 'number' && Number.isFinite(fallback)
+    ? Math.round(fallback)
+    : PLATFORM_ALLOCATION_LIMITS.min;
+  const normalizedFallback = clampPlatformAllocation(fallbackValue);
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return normalizedFallback;
+  }
+  return clampPlatformAllocation(Math.round(value));
+}
+
 export const PLATFORM_LABELS: Record<PlatformKey, string> = {
   facebook: 'Facebook',
   tiktok: 'TikTok',
@@ -186,4 +197,8 @@ function allocationDraftsFromValues(allocations: PlatformAllocations): PlatformA
   return Object.fromEntries(
     Object.entries(allocations).map(([platform, value]) => [platform, String(value)]),
   ) as PlatformAllocationDrafts;
+}
+
+function clampPlatformAllocation(value: number): number {
+  return Math.max(PLATFORM_ALLOCATION_LIMITS.min, Math.min(PLATFORM_ALLOCATION_LIMITS.max, value));
 }
