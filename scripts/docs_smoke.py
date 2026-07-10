@@ -232,6 +232,10 @@ REQUIRED_M19_PR3_DOCS = [
     "docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md",
 ]
 
+REQUIRED_M19_PR4_DOCS = [
+    "docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md",
+]
+
 REQUIRED_M19_PREP_PHRASES = [
     "M19 Preparation",
     "Synthetic engagement",
@@ -334,6 +338,50 @@ M19_PR3_ALLOWED_CHANGED_PATHS = {
     "src/App.test.tsx",
     "src/i18n/translations.ts",
     "src/views.tsx",
+    "src/product/platformEngagement.ts",
+    "src/product/platformEngagement.test.ts",
+    "src/product/simulationConfig.ts",
+}
+
+REQUIRED_M19_PR4_PHRASES = [
+    "M19 PR4 Executive Insight Dashboard",
+    "Executive Insight Dashboard",
+    "Executive Insight Cards",
+    "Platform Comparison",
+    "Evidence Visualization",
+    "Decision Guidance",
+    "PR1 user-entered assumptions",
+    "PR2 submitted Simulation Configuration snapshot",
+    "PR3 Platform Engagement Result Model",
+    "synthetic/offline",
+    "configuration-only",
+    "not live",
+    "not measured",
+    "not a forecast",
+    "not a launch decision",
+    "PR4 implemented",
+    "PR5 report upgrade not started / blocked",
+    "Architecture Gate: Not Triggered",
+    "no SocialSense changes",
+]
+
+M19_PR4_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/GLOSSARY.md",
+    "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
+    "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
+    "docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md",
+    "docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md",
+    "src/App.test.tsx",
+    "src/i18n/translations.ts",
+    "src/views.tsx",
+    "src/product/executiveInsights.ts",
+    "src/product/executiveInsights.test.ts",
     "src/product/platformEngagement.ts",
     "src/product/platformEngagement.test.ts",
     "src/product/simulationConfig.ts",
@@ -1077,6 +1125,10 @@ def main() -> None:
             missing_m19_pr3_docs = [path for path in REQUIRED_M19_PR3_DOCS if not (ROOT / path).is_file()]
             if missing_m19_pr3_docs:
                 fail("missing required M19 PR3 platform engagement result docs: " + ", ".join(missing_m19_pr3_docs))
+        if current_branch_name().startswith("m19-pr4-"):
+            missing_m19_pr4_docs = [path for path in REQUIRED_M19_PR4_DOCS if not (ROOT / path).is_file()]
+            if missing_m19_pr4_docs:
+                fail("missing required M19 PR4 executive insight dashboard docs: " + ", ".join(missing_m19_pr4_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -1142,6 +1194,12 @@ def main() -> None:
         if (ROOT / path).is_file()
     }
     m19_pr3_text = "\n".join(m19_pr3_docs_by_path.values())
+    m19_pr4_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M19_PR4_DOCS
+        if (ROOT / path).is_file()
+    }
+    m19_pr4_text = "\n".join(m19_pr4_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1212,6 +1270,10 @@ def main() -> None:
             missing_m19_pr3_links = [path for path in REQUIRED_M19_PR3_DOCS if f"]({path})" not in readme]
             if missing_m19_pr3_links:
                 fail("README missing M19 PR3 platform engagement result doc links: " + ", ".join(missing_m19_pr3_links))
+        if current_branch_name().startswith("m19-pr4-"):
+            missing_m19_pr4_links = [path for path in REQUIRED_M19_PR4_DOCS if f"]({path})" not in readme]
+            if missing_m19_pr4_links:
+                fail("README missing M19 PR4 executive insight dashboard doc links: " + ", ".join(missing_m19_pr4_links))
 
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
@@ -1856,6 +1918,28 @@ def main() -> None:
             unexpected_m19_pr3_changes = [path for path in changed_paths if path not in M19_PR3_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr3_changes:
                 fail("M19 PR3 changed unexpected paths: " + ", ".join(unexpected_m19_pr3_changes))
+        elif current_branch_name().startswith("m19-pr4-"):
+            combined_m19_pr4_text = "\n".join([
+                readme,
+                agents,
+                roadmap,
+                health_dashboard,
+                m19_pr2_text,
+                m19_pr3_text,
+                m19_pr4_text,
+                (ROOT / "src/views.tsx").read_text(encoding="utf-8"),
+                (ROOT / "src/App.test.tsx").read_text(encoding="utf-8"),
+                (ROOT / "src/product/executiveInsights.ts").read_text(encoding="utf-8"),
+                (ROOT / "src/product/executiveInsights.test.ts").read_text(encoding="utf-8"),
+            ])
+            missing_m19_pr4_phrases = [
+                phrase for phrase in REQUIRED_M19_PR4_PHRASES if phrase not in combined_m19_pr4_text
+            ]
+            if missing_m19_pr4_phrases:
+                fail("M19 PR4 docs/source missing executive insight dashboard phrases: " + ", ".join(missing_m19_pr4_phrases))
+            unexpected_m19_pr4_changes = [path for path in changed_paths if path not in M19_PR4_ALLOWED_CHANGED_PATHS]
+            if unexpected_m19_pr4_changes:
+                fail("M19 PR4 changed unexpected paths: " + ", ".join(unexpected_m19_pr4_changes))
         else:
             forbidden_m19_runtime_paths = [
                 path
@@ -1898,6 +1982,8 @@ def main() -> None:
         print("PASS: M19 preparation docs include terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, remediation backlog, docs-only boundary, and no runtime/SocialSense changes")
         if current_branch_name().startswith("m19-pr2-"):
             print("PASS: M19 PR2 simulation configuration docs/source include shared presets, selected-platform allocation validation, summary before Run, configuration-only status, and SocialSense boundary Outcome B")
+        if current_branch_name().startswith("m19-pr4-"):
+            print("PASS: M19 PR4 Executive Insight Dashboard docs/source include insight cards, platform comparison, evidence visualization, decision guidance, Thai-first copy, submitted configuration snapshot use, and PR5/report-upgrade boundary")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned TypeScript offline result contract. PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR1-PR4 and M2-M17 are complete; M18 delivered Thai default language, English runtime switching, translation resources, language selector, style guide, glossary, exact/template-based localization safety, and regression coverage. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract. M19 PR4 Executive Insight Dashboard is implemented on branch `m19-pr4-executive-insight-dashboard` as a frontend-only insight layer over PR1 assumptions, PR2 submitted configuration snapshot, and PR3 platform engagement results. PR5 report upgrade not started / blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
 
 ## Program
 
@@ -104,13 +104,13 @@ Acceptance criteria:
 - Architecture Gate was not triggered.
 - M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
 
-### M19: Synthetic Social Platform Engagement Simulation — PR3 implemented / PR4 not started
+### M19: Synthetic Social Platform Engagement Simulation — PR4 implemented / PR5 report upgrade not started
 
 - M18 closeout is merged and the terminology/remediation backlog exists.
 - M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34.
 - M19 preparation artifact: `docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md` defines the terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, and remediation backlog only.
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
-- M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff.
+- M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; M19 PR4 Executive Insight Dashboard is implemented as a product-owned dashboard insight layer; PR5 report upgrade not started / blocked until separate kickoff.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
 
 ## Quality gates by PR
@@ -350,3 +350,12 @@ Do not implement until separate review:
 - Each PR/milestone has acceptance criteria and quality gates.
 - Future milestones preserve safety boundaries.
 - Roadmap does not require credentials, live APIs, SocialSense changes, backend, or arbitrary browser-input simulation.
+
+### M19 PR4 Executive Insight Dashboard
+
+- Artifact: `docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md`.
+- Status: PR4 implemented.
+- Delivered Executive Insight Cards, Platform Comparison, Evidence Visualization, and Decision Guidance in the current dashboard/result view.
+- Inputs stay deterministic: PR1 user-entered assumptions, PR2 submitted Simulation Configuration snapshot, PR3 Platform Engagement Result Model, and existing offline fixture.
+- PR5 report upgrade not started / blocked; report/export redesign remains out of scope.
+- Architecture Gate: Not Triggered; no SocialSense changes.

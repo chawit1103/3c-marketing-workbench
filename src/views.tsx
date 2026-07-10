@@ -21,6 +21,7 @@ import {
   type SimulationConfiguration,
   type SimulationProfile,
 } from './product/simulationConfig';
+import { buildExecutiveInsights, type ExecutiveInsights } from './product/executiveInsights';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
@@ -1825,6 +1826,17 @@ function ReferenceResults({
   };
   const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(() => buildAssumptionRows(form), [form]);
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const executiveInsights = useMemo(() => buildExecutiveInsights({
+    fixture,
+    form: {
+      brand: form.brand,
+      campaignMessage: form.campaignMessage,
+      audiences: form.audiences,
+      platforms: form.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+  }), [fixture, form, simulationConfig, platformEngagement]);
 
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
@@ -1914,6 +1926,7 @@ function ReferenceResults({
       ) : null}
 
       <PlatformEngagementPanel result={platformEngagement} />
+      <ExecutiveInsightDashboard insights={executiveInsights} />
 
       <div className="grid three-col">
         {fixture.cards.map((card: FixtureCard) => (
@@ -1931,6 +1944,106 @@ function ReferenceResults({
           <p>{t(fixture.exports.executiveSummaryPreview)}</p>
         </div>
       </div>
+    </section>
+  );
+}
+
+function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }) {
+  const { language, t } = useI18n();
+  const localizeCardValue = (card: ExecutiveInsights['insightCards'][number]) => {
+    if (language === 'en') {
+      return card.value;
+    }
+    if (card.title === 'Configuration scope') {
+      return card.value
+        .replace('platforms /', 'แพลตฟอร์ม /')
+        .replace('platform /', 'แพลตฟอร์ม /')
+        .replace('synthetic participants', 'ผู้เข้าร่วมสังเคราะห์');
+    }
+    if (card.title === 'Platform planning cue') {
+      return card.value.replace('leads synthetic reaction index', 'นำดัชนีปฏิกิริยาเชิงสังเคราะห์');
+    }
+    return t(card.value);
+  };
+  const localizeCardDetail = (card: ExecutiveInsights['insightCards'][number]) => {
+    if (card.title === 'Review assumption snapshot') {
+      return card.detail;
+    }
+    if (language === 'th' && card.title === 'Configuration scope') {
+      return card.detail
+        .replace('Evidence depth:', 'ระดับหลักฐาน:')
+        .replace('configuration source:', 'แหล่งที่มาการตั้งค่า:')
+        .replace('standard', 'มาตรฐาน')
+        .replace('custom', 'กำหนดเอง')
+        .replace('preset', 'ค่าตั้งต้น');
+    }
+    if (language === 'th' && card.title === 'Platform planning cue') {
+      return card.detail
+        .replace('Average synthetic reaction index', 'ค่าเฉลี่ยดัชนีปฏิกิริยาเชิงสังเคราะห์')
+        .replace('across selected platforms only.', 'เฉพาะแพลตฟอร์มที่เลือกเท่านั้น');
+    }
+    return t(card.detail);
+  };
+  return (
+    <section className="card executive-insight-dashboard" aria-label={t('Executive Insight Dashboard')}>
+      <p className="eyebrow">{t('Executive Insight Dashboard')}</p>
+      <h3>{t('Executive insight layer for reviewed offline results')}</h3>
+      <p>{t('Built from user review assumptions, submitted simulation configuration, and synthetic platform engagement results only.')}</p>
+
+      <section aria-label={t('Executive Insight Cards')}>
+        <p className="eyebrow">{t('Executive Insight Cards')}</p>
+        <div className="grid four-col executive-kpi-grid">
+          {insights.insightCards.map((card) => (
+            <article className="executive-kpi-card" key={card.title}>
+              <p className="eyebrow">{t(card.title)}</p>
+              <h4>{localizeCardValue(card)}</h4>
+              <p>{localizeCardDetail(card)}</p>
+              <p className="help-text">{t('Source')}: {t(card.source)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Platform Comparison')}>
+        <p className="eyebrow">{t('Platform Comparison')}</p>
+        <h4>{t('Selected-platform planning cues only')}</h4>
+        <div className="grid three-col">
+          {insights.platformComparison.map((platform) => (
+            <article className="metric-card" key={platform.platformKey}>
+              <p className="eyebrow">{platform.platform}</p>
+              <h4>{platform.syntheticReactionIndex}/100</h4>
+              <p>{t('Synthetic participants')}: {platform.syntheticParticipants}</p>
+              <p>{t('Synthetic reach index')}: {platform.syntheticReachIndex}/100</p>
+              <p className="help-text">{t('submitted configuration snapshot')}</p>
+              <p className="help-text">{t(platform.interpretation)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Evidence Visualization')}>
+        <p className="eyebrow">{t('Evidence Visualization')}</p>
+        <div className="grid two-col align-start">
+          {insights.evidenceVisualization.map((item) => (
+            <article className="evidence-critical-card" key={item.title}>
+              <p className="eyebrow">{t(item.status)}</p>
+              <h4>{t(item.title)}</h4>
+              <p>{t(item.detail)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Decision Guidance')}>
+        <p className="eyebrow">{t('Decision Guidance')}</p>
+        <ul className="insight-list">
+          {insights.decisionGuidance.map((item) => (
+            <li key={item.title}>
+              <strong>{t(item.title)}</strong>: {t(item.reviewStatus)} — {t(item.guidance)}
+            </li>
+          ))}
+        </ul>
+      </section>
     </section>
   );
 }

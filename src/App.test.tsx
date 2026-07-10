@@ -1555,6 +1555,114 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
   });
 });
 
+describe('M19 PR4 Executive Insight Dashboard', () => {
+  it.each([
+    ['/workbench', 'Product Launch setup'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
+    ['/workbench/ab-experiment', 'A/B Experiment setup'],
+    ['/workbench/creative-comparison', 'Creative Comparison setup'],
+  ])('keeps all four workflows rendering and running safe current result paths with executive insights for %s', (pathname, formName) => {
+    renderAt(pathname, 'en');
+    const form = screen.getByRole('form', { name: formName });
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Executive Insight Cards');
+    expect(insights).toHaveTextContent('Platform Comparison');
+    expect(insights).toHaveTextContent('Evidence Visualization');
+    expect(insights).toHaveTextContent('Decision Guidance');
+    expect(insights).toHaveTextContent('synthetic/offline');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('approve launch');
+  });
+
+  it('derives insight cards and platform comparison from submitted assumptions and configuration after Run', () => {
+    const form = renderWorkbench();
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Acme Halo' } });
+    fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: 'Reviewed message for executive insight.' } });
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '120' } });
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Acme Halo');
+    expect(insights).toHaveTextContent('Reviewed message for executive insight.');
+    expect(insights).toHaveTextContent('2 platforms / 200 synthetic participants');
+    expect(insights).toHaveTextContent('Facebook');
+    expect(insights).toHaveTextContent('LINE');
+    expect(insights).not.toHaveTextContent('TikTok');
+    expect(insights).not.toHaveTextContent('Instagram');
+    expect(insights).not.toHaveTextContent('Synthetic participants: 200');
+  });
+
+  it('shows evidence/provenance/limitations/configuration status without live runtime claims', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Provenance');
+    expect(insights).toHaveTextContent('synthetic/offline provenance');
+    expect(insights).toHaveTextContent('Configuration status');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('Limitations');
+    expect(insights).toHaveTextContent('Evidence gaps');
+    expect(insights.textContent?.toLowerCase()).not.toContain('live api access');
+    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption');
+    expect(insights.textContent?.toLowerCase()).not.toContain('consumed by runtime');
+  });
+
+  it('keeps decision guidance reviewed and blocks prediction, confidence guarantee, or launch approval wording', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const guidance = within(screen.getByRole('region', { name: 'Executive Insight Dashboard' })).getByRole('region', {
+      name: 'Decision Guidance',
+    });
+    expect(guidance).toHaveTextContent('Reviewed next step');
+    expect(guidance).toHaveTextContent('human review required');
+    expect(guidance).toHaveTextContent('not a launch decision');
+    for (const forbidden of ['predict', 'guarantee', 'accuracy', 'approve launch', 'launch approval', 'persuasion optimization']) {
+      expect(guidance.textContent?.toLowerCase()).not.toContain(forbidden);
+    }
+  });
+
+  it('localizes executive insight dashboard in Thai by default and switches to English without mixed-language Thai screen', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
+    expect(thaiInsights).toHaveTextContent('การ์ดอินไซต์ผู้บริหาร');
+    expect(thaiInsights).toHaveTextContent('เปรียบเทียบแพลตฟอร์ม');
+    expect(thaiInsights).toHaveTextContent('ภาพหลักฐาน');
+    expect(thaiInsights).toHaveTextContent('คำแนะนำเพื่อการตัดสินใจ');
+    expect(thaiInsights).not.toHaveTextContent('Executive Insight Cards');
+    expect(thaiInsights).not.toHaveTextContent('Evidence Visualization');
+    expect(thaiInsights).not.toHaveTextContent('Decision Guidance');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(englishInsights).toHaveTextContent('Executive Insight Cards');
+    expect(englishInsights).toHaveTextContent('Evidence Visualization');
+    expect(englishInsights).toHaveTextContent('Decision Guidance');
+  });
+
+  it('does not leak report redesign or export upgrade scope into the result dashboard', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).not.toHaveTextContent('Executive report preview');
+    expect(insights).not.toHaveTextContent('Export format readiness');
+    expect(insights).not.toHaveTextContent('PDF');
+    expect(insights).not.toHaveTextContent('PowerPoint');
+    expect(insights).not.toHaveTextContent('download');
+  });
+});
+
 describe('Export review', () => {
   it.each([
     ['/exports/sample-run', 'Product Launch executive-ready summary'],
