@@ -228,6 +228,10 @@ REQUIRED_M19_PR2_DOCS = [
     "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
 ]
 
+REQUIRED_M19_PR3_DOCS = [
+    "docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md",
+]
+
 REQUIRED_M19_PREP_PHRASES = [
     "M19 Preparation",
     "Synthetic engagement",
@@ -236,7 +240,7 @@ REQUIRED_M19_PREP_PHRASES = [
     "Safety Wording Checklist",
     "Evidence And Confidence Wording Rules",
     "Remediation Backlog From M18 Conditions",
-    "M19 runtime implementation has not begun",
+    "M19 PR3 product-owned synthetic/offline platform engagement result model is now implemented",
     "No live social data",
     "not measured platform engagement",
     "Low directional confidence",
@@ -271,10 +275,10 @@ REQUIRED_M19_PR2_PHRASES = [
     "no SocialSense changes",
     "no MarketingSimulation changes",
     "merged in PR #34",
-    "m19-pr2-localization-correction",
-    "M19 PR1 and PR2 configuration-only work are complete/in correction",
-    "runtime synthetic engagement/platform engagement result model remains not begun",
-    "PR3 remains blocked until PR2 correction post-merge validation passes",
+    "M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34",
+    "m19-pr3-platform-engagement-model",
+    "PR3 Platform Engagement Result Model is implemented",
+    "PR4 dashboard redesign/upgrade is not started",
 ]
 
 M19_PR2_ALLOWED_CHANGED_PATHS = {
@@ -292,6 +296,47 @@ M19_PR2_ALLOWED_CHANGED_PATHS = {
     "src/views.tsx",
     "src/product/simulationConfig.ts",
     "src/product/simulationConfig.test.ts",
+}
+
+REQUIRED_M19_PR3_PHRASES = [
+    "M19 PR3 Platform Engagement Result Model",
+    "Platform Engagement Result Model",
+    "product-owned TypeScript",
+    "deterministic",
+    "selectedPlatforms",
+    "Platform metrics",
+    "synthetic comments",
+    "themes",
+    "cross-platform summary",
+    "configuration-owned offline fixture",
+    "synthetic/offline",
+    "not live",
+    "not measured",
+    "not a forecast",
+    "PR3 Platform Engagement Result Model is implemented",
+    "PR4 dashboard redesign/upgrade is not started",
+    "Architecture Gate: Not Triggered",
+    "no SocialSense changes",
+]
+
+M19_PR3_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
+    "docs/product/GLOSSARY.md",
+    "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
+    "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
+    "docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md",
+    "src/App.test.tsx",
+    "src/i18n/translations.ts",
+    "src/views.tsx",
+    "src/product/platformEngagement.ts",
+    "src/product/platformEngagement.test.ts",
+    "src/product/simulationConfig.ts",
 }
 
 REQUIRED_M18_GLOSSARY_TERMS = [
@@ -1028,6 +1073,10 @@ def main() -> None:
             missing_m19_pr2_docs = [path for path in REQUIRED_M19_PR2_DOCS if not (ROOT / path).is_file()]
             if missing_m19_pr2_docs:
                 fail("missing required M19 PR2 simulation configuration docs: " + ", ".join(missing_m19_pr2_docs))
+        if current_branch_name().startswith("m19-pr3-"):
+            missing_m19_pr3_docs = [path for path in REQUIRED_M19_PR3_DOCS if not (ROOT / path).is_file()]
+            if missing_m19_pr3_docs:
+                fail("missing required M19 PR3 platform engagement result docs: " + ", ".join(missing_m19_pr3_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -1087,6 +1136,12 @@ def main() -> None:
         if (ROOT / path).is_file()
     }
     m19_pr2_text = "\n".join(m19_pr2_docs_by_path.values())
+    m19_pr3_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M19_PR3_DOCS
+        if (ROOT / path).is_file()
+    }
+    m19_pr3_text = "\n".join(m19_pr3_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -1153,6 +1208,10 @@ def main() -> None:
             missing_m19_pr2_links = [path for path in REQUIRED_M19_PR2_DOCS if f"]({path})" not in readme]
             if missing_m19_pr2_links:
                 fail("README missing M19 PR2 simulation configuration doc links: " + ", ".join(missing_m19_pr2_links))
+        if current_branch_name().startswith("m19-pr3-"):
+            missing_m19_pr3_links = [path for path in REQUIRED_M19_PR3_DOCS if f"]({path})" not in readme]
+            if missing_m19_pr3_links:
+                fail("README missing M19 PR3 platform engagement result doc links: " + ", ".join(missing_m19_pr3_links))
 
     combined_m5_text = "\n".join([readme, agents, roadmap, health_dashboard, m5_text])
     missing_m5_phrases = [phrase for phrase in REQUIRED_M5_PHRASES if phrase not in combined_m5_text]
@@ -1787,6 +1846,16 @@ def main() -> None:
             unexpected_m19_pr2_changes = [path for path in changed_paths if path not in M19_PR2_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr2_changes:
                 fail("M19 PR2 changed unexpected paths: " + ", ".join(unexpected_m19_pr2_changes))
+        elif current_branch_name().startswith("m19-pr3-"):
+            combined_m19_pr3_text = "\n".join([readme, agents, roadmap, health_dashboard, m19_pr2_text, m19_pr3_text])
+            missing_m19_pr3_phrases = [
+                phrase for phrase in REQUIRED_M19_PR3_PHRASES if phrase not in combined_m19_pr3_text
+            ]
+            if missing_m19_pr3_phrases:
+                fail("M19 PR3 docs missing platform engagement result phrases: " + ", ".join(missing_m19_pr3_phrases))
+            unexpected_m19_pr3_changes = [path for path in changed_paths if path not in M19_PR3_ALLOWED_CHANGED_PATHS]
+            if unexpected_m19_pr3_changes:
+                fail("M19 PR3 changed unexpected paths: " + ", ".join(unexpected_m19_pr3_changes))
         else:
             forbidden_m19_runtime_paths = [
                 path

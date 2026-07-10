@@ -452,6 +452,35 @@ describe('M18 Thai-first internationalization', () => {
     expect(kpiDashboard).not.toHaveTextContent('fully translated');
   });
 
+  it('localizes PR3 Platform Engagement comments and themes in Thai mode without English fragments', () => {
+    renderAt('/runs/sample-run', 'th');
+
+    const panel = screen.getByRole('region', { name: 'โมเดลผลการมีส่วนร่วมแพลตฟอร์ม' });
+    expect(panel).toHaveTextContent('ประโยชน์ชัดเจน แต่ควรตรวจทานหลักฐานคุณภาพก่อนใช้ข้อความภายนอก');
+    expect(panel).toHaveTextContent('คอมเมนต์สังเคราะห์ชี้ว่าข้อความที่ตรวจทานเข้าใจง่ายเพียงใดในบริบทแพลตฟอร์มที่ตั้งค่าไว้');
+    expect(panel).toHaveTextContent('ต้องมีหลักฐานความน่าเชื่อถือ');
+    expect(panel).toHaveTextContent('สมมติฐานความเหมาะสมของช่องทาง');
+
+    for (const blocker of [
+      'Clear benefit',
+      'Message clarity: Synthetic comments indicate',
+      'Trust proof needed:',
+      'Channel fit hypothesis:',
+    ]) {
+      expect(panel).not.toHaveTextContent(blocker);
+    }
+  });
+
+  it('preserves PR3 Platform Engagement comments and themes in English mode', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const panel = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(panel).toHaveTextContent('Facebook: Clear benefit, but quality proof should be reviewed before public copy.');
+    expect(panel).toHaveTextContent('Message clarity: Synthetic comments indicate whether the reviewed message is easy to understand in each configured platform context.');
+    expect(panel).toHaveTextContent('Trust proof needed: Synthetic comments keep proof-point needs visible before any external review or small evidence test.');
+    expect(panel).toHaveTextContent('Channel fit hypothesis: Platform differences are configuration-owned planning cues from selected platforms, not field observations.');
+  });
+
   it('fully localizes Thai Export Review sample-run executive copy and glossary terms', () => {
     renderAt('/exports/sample-run', 'th');
 
@@ -681,7 +710,9 @@ describe('App shell routes', () => {
     for (const pathname of ['/', '/workbench', '/campaign-workspace', '/workbench/campaign-message-test', '/workbench/ab-experiment', '/workbench/creative-comparison', '/runs/sample-run', '/exports/sample-run', '/health', '/unknown-route']) {
       const { unmount } = renderAt(pathname);
       const visibleText = document.body.textContent?.toLowerCase() ?? '';
-      expect(visibleText).not.toContain('pr4');
+      if (pathname !== '/health') {
+        expect(visibleText).not.toContain('pr4');
+      }
       expect(visibleText).not.toContain('pr2');
       expect(visibleText).not.toContain('vertical slice');
 
@@ -1126,6 +1157,10 @@ describe('M12 Campaign Workspace trust and validation', () => {
     }
     expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
     expect(document.body.textContent).not.toContain('M18 planned only');
+    expect(document.body.textContent).not.toContain('runtime result model remains not begun');
+    expect(document.body.textContent).not.toContain('PR3 remains blocked');
+    expect(document.body.textContent).toContain('PR3 Platform Engagement Result Model is implemented');
+    expect(document.body.textContent).toContain('PR4 dashboard redesign/upgrade is not started and remains blocked');
   });
 });
 
@@ -1369,6 +1404,154 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(document.body.textContent).not.toContain('Consumed by SocialSense runtime');
     expect(document.body.textContent).not.toContain('real platform users');
     expect(document.body.textContent).not.toContain('live social platform API');
+  });
+
+  it('surfaces PR3 platform engagement model on all four current workflow result paths', () => {
+    for (const [pathname, formName] of [
+      ['/workbench', 'Product Launch setup'],
+      ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
+      ['/workbench/ab-experiment', 'A/B Experiment setup'],
+      ['/workbench/creative-comparison', 'Creative Comparison setup'],
+    ] as const) {
+      const rendered = renderAt(pathname);
+      const form = screen.getByRole('form', { name: formName });
+      fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+      const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+      expect(engagement).toHaveTextContent('Synthetic platform engagement results');
+      expect(engagement).toHaveTextContent('Facebook');
+      expect(engagement).toHaveTextContent('Synthetic comments');
+      expect(engagement).toHaveTextContent('Themes');
+      expect(engagement).toHaveTextContent('Cross-platform summary');
+      expect(engagement).toHaveTextContent('configuration-owned offline fixture');
+      expect(engagement).toHaveTextContent('not live');
+      expect(engagement).toHaveTextContent('not measured');
+      expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+      rendered.unmount();
+    }
+  });
+
+  it('uses selected PR2 platforms for PR3 results and excludes unselected platforms', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).not.toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('160');
+  });
+
+  it('keeps PR3 displayed result and dashboard/export payload on submitted simulation config after unsubmitted edits', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Total synthetic participants240');
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).not.toHaveTextContent('Instagram');
+    expect(engagement).not.toHaveTextContent('Synthetic participants: 200');
+
+    for (const linkName of ['Open result dashboard', 'Open export-readiness preview']) {
+      const href = screen.getByRole('link', { name: linkName }).getAttribute('href')!;
+      const payload = JSON.parse(decodeURIComponent(new URL(href, 'http://localhost').searchParams.get('assumptions')!));
+      expect(payload.simulationConfig.selectedPlatforms).toEqual(['facebook', 'tiktok', 'line']);
+      expect(payload.simulationConfig.platformAllocations.facebook).toBe(80);
+      expect(payload.simulationConfig.selectedPlatforms).not.toContain('instagram');
+    }
+  });
+
+  it('bounds transported allocation payload values before PR3 dashboard results', () => {
+    const payload = encodeURIComponent(JSON.stringify({
+      v: 1,
+      runId: 'sample-run',
+      form: { platforms: ['Facebook', 'TikTok', 'LINE', 'Instagram'] },
+      editedFields: ['platforms'],
+      simulationConfig: {
+        simulationProfile: 'custom',
+        selectedPlatforms: ['facebook', 'tiktok', 'line', 'instagram'],
+        platformAllocations: {
+          facebook: -25,
+          tiktok: 0,
+          line: 999,
+          youtube: 500,
+          instagram: 110.6,
+          x: 80,
+        },
+        platformAllocationDrafts: {
+          facebook: '-25',
+          tiktok: '0',
+          line: '999',
+          youtube: '500',
+          instagram: '110.6',
+          x: '80',
+        },
+        evidenceDepth: 'standard',
+        configurationSource: 'custom',
+        runtimeStatus: 'configuration_only',
+      },
+    }));
+
+    renderAt(`/runs/sample-run?assumptions=${payload}`);
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Total synthetic participants631');
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('Synthetic participants: 10');
+    expect(engagement).toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).toHaveTextContent('Synthetic participants: 500');
+    expect(engagement).toHaveTextContent('Instagram');
+    expect(engagement).toHaveTextContent('Synthetic participants: 111');
+    expect(engagement).not.toHaveTextContent('YouTube');
+  });
+
+  it('carries PR3 platform engagement model into dashboard and export review safely', () => {
+    const form = renderWorkbench();
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const dashboardHref = screen.getByRole('link', { name: 'Open result dashboard' }).getAttribute('href')!;
+    const exportHref = screen.getByRole('link', { name: 'Open export-readiness preview' }).getAttribute('href')!;
+
+    renderAt(dashboardHref);
+    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('Instagram');
+    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('320');
+
+    renderAt(exportHref);
+    const report = screen.getByRole('region', { name: 'Executive report preview' });
+    expect(report).toHaveTextContent('Platform engagement result model');
+    expect(report).toHaveTextContent('configuration-owned offline fixture');
+    expect(report).toHaveTextContent('synthetic/offline');
+    expect(report.textContent?.toLowerCase()).not.toContain('live platform users');
+    expect(report.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+  });
+
+  it('localizes PR3 platform engagement model in Thai by default and after English switching', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const thaiEngagement = screen.getByRole('region', { name: 'โมเดลผลการมีส่วนร่วมแพลตฟอร์ม' });
+    expect(thaiEngagement).toHaveTextContent('ผลการมีส่วนร่วมแพลตฟอร์มเชิงสังเคราะห์');
+    expect(thaiEngagement).toHaveTextContent('คอมเมนต์สังเคราะห์');
+    expect(thaiEngagement).toHaveTextContent('สรุปข้ามแพลตฟอร์ม');
+    expect(thaiEngagement).not.toHaveTextContent('Synthetic platform engagement results');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishEngagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(englishEngagement).toHaveTextContent('Synthetic platform engagement results');
+    expect(englishEngagement).toHaveTextContent('Synthetic comments');
+    expect(englishEngagement).toHaveTextContent('Cross-platform summary');
   });
 });
 

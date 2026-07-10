@@ -1,6 +1,6 @@
 # M18 Translation Style Guide — Thai-first Internationalization
 
-Status: M18 is closed as GO WITH CONDITIONS. This guide governs Thai and English UI copy for 3C Marketing Workbench. M19 PR1 and PR2 configuration-only work are complete/in correction; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 remains blocked until PR2 correction post-merge validation passes.
+Status: M18 is closed as GO WITH CONDITIONS. This guide governs Thai and English UI copy for 3C Marketing Workbench. M19 PR1 and PR2 configuration-only work are complete, and M19 PR3 Platform Engagement Result Model is implemented as product-owned synthetic/offline copy; PR4 dashboard redesign/upgrade is not started/blocked.
 
 ## Architecture Gate
 
@@ -88,4 +88,4 @@ Settings: no Settings route/screen exists in the current route model, so M18 doe
 
 ## M19 status
 
-M19 PR1 and PR2 configuration-only work are complete/in correction. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 remains blocked until PR2 correction post-merge validation passes.
+M19 PR1 and PR2 configuration-only work are complete. M19 PR3 Platform Engagement Result Model is implemented with Thai default and English secondary copy; PR4 dashboard redesign/upgrade is not started/blocked.

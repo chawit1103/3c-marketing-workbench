@@ -1,17 +1,17 @@
 # M19 Preparation — Synthetic Engagement Terminology and Remediation Backlog
 
-Status: Preparation only. M19 runtime implementation has not begun.
+Status: Historical preparation artifact. M19 PR3 product-owned synthetic/offline platform engagement result model is now implemented; future live/runtime/SocialSense expansion remains blocked unless separately authorized.
 Scope: Documentation, terminology, copy rules, safety wording, evidence/confidence wording, and remediation backlog only.
 Source milestone: M18 Thai-first Internationalization implementation closed as **GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a`; M18 closeout/status was finalized at `e871b7f38111eb13bf3f2e727d948ef19d915874`.
 Architecture Gate: Not Triggered.
 
-This addendum prepares language and review constraints for a future Synthetic Social Platform Engagement Simulation milestone without adding runtime behavior. It does not add or modify frontend routes, backend services, SocialSense, MarketingSimulation, live APIs, scraping, posting, credentials, persistence, auth, private data, production automation, or production engagement claims.
+This addendum historically prepared language and review constraints for Synthetic Social Platform Engagement Simulation work before PR3. It does not authorize live/runtime expansion and does not add or modify backend services, SocialSense, MarketingSimulation, live APIs, scraping, posting, credentials, persistence, auth, private data, production automation, or production engagement claims.
 
 ## Non-Implementation Boundary
 
-This document is allowed to define wording and backlog only. It must not be used as approval to build M19.
+This document defined historical wording and backlog constraints before PR3. It remains a preparation artifact and must not be used as approval for live/runtime/SocialSense expansion.
 
-M19 remains blocked from implementation until a separate kickoff explicitly approves scope, acceptance criteria, review gates, and changed files.
+M19 PR3 product-owned synthetic/offline platform engagement result model is implemented. Future live/runtime/SocialSense expansion remains blocked until a separate kickoff explicitly approves scope, acceptance criteria, review gates, and changed files.
 
 Do not add or imply:
 
