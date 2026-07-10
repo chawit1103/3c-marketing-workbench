@@ -1318,6 +1318,44 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('configuration only');
   });
 
+  it('fully localizes Thai workbench step labels and simulation safety copy', () => {
+    renderAt('/workbench', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('1. รายละเอียดแคมเปญ');
+    expect(visibleText).toContain('3. กลุ่มเป้าหมาย');
+    expect(visibleText).toContain('4. สัดส่วนแพลตฟอร์ม');
+    expect(visibleText).toContain('ผลลัพธ์ปัจจุบันยังเป็นข้อมูลตัวอย่างออฟไลน์และยังไม่ได้ถูกใช้โดยระบบจำลอง');
+    expect(visibleText).toContain('ไม่ใช่การวัดการมีส่วนร่วมจริง และไม่มีการเรียก API สด');
+    for (const blocker of [
+      '1. Campaign Details',
+      '3. Audience',
+      '4. Platform Mix',
+      'runtime',
+      'engagement จริง',
+      'live API',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+  });
+
+  it('localizes Thai inline allocation validation and simulation aria labels', () => {
+    const form = renderAt('/workbench', 'th').container.querySelector('form')!;
+
+    fireEvent.click(within(form).getByText('การตั้งค่าการจำลองขั้นสูง'));
+    expect(within(form).getByLabelText('ใช้ Facebook ในโปรไฟล์การจำลอง')).toBeChecked();
+    fireEvent.change(within(form).getByLabelText('ผู้เข้าร่วมสังเคราะห์สำหรับ Facebook'), { target: { value: 'abc' } });
+    fireEvent.click(within(form).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const visibleText = document.body.textContent ?? '';
+    expect(screen.getByRole('radio', { name: 'กำหนดเอง' })).toBeChecked();
+    expect(visibleText).toContain('Facebook ต้องเป็นจำนวนเต็มระหว่าง 10 ถึง 500');
+    expect(visibleText).toContain('ใช้จำนวนเต็มเท่านั้นสำหรับการจัดสรรผู้เข้าร่วมสังเคราะห์');
+    expect(visibleText).toContain('แก้จำนวนผู้เข้าร่วมของแพลตฟอร์มที่เลือกก่อนรัน');
+    expect(visibleText).not.toContain('Facebook must be a whole number between 10 and 500.');
+    expect(visibleText).not.toContain('Use whole numbers only for synthetic participant allocation.');
+  });
+
   it('does not claim runtime consumption, live API access, or real platform users after run', () => {
     const form = renderWorkbench();
 
