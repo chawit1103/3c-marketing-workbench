@@ -45,6 +45,8 @@ export type ExecutiveEvidenceItem = {
   title: string;
   status: string;
   detail: string;
+  detailType?: 'configurationStatus';
+  selectedPlatformLabels?: string[];
 };
 
 export type ExecutiveDecisionGuidance = {
@@ -130,7 +132,9 @@ export function buildExecutiveInsights({
       {
         title: 'Configuration status',
         status: 'configuration-only',
-        detail: `Selected platforms: ${configuredLabels.join(', ') || 'none'}; runtimeStatus remains configuration-only.`,
+        detail: 'Selected platforms remain configuration-only.',
+        detailType: 'configurationStatus',
+        selectedPlatformLabels: configuredLabels,
       },
       {
         title: 'Limitations',

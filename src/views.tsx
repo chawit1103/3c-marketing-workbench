@@ -1984,6 +1984,13 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
     }
     return t(card.detail);
   };
+  const localizeEvidenceDetail = (item: ExecutiveInsights['evidenceVisualization'][number]) => {
+    if (item.detailType === 'configurationStatus') {
+      const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
+      return `${t('Selected platforms')}: ${selectedLabels}; ${t('runtimeStatus remains configuration-only')}.`;
+    }
+    return t(item.detail);
+  };
   return (
     <section className="card executive-insight-dashboard" aria-label={t('Executive Insight Dashboard')}>
       <p className="eyebrow">{t('Executive Insight Dashboard')}</p>
@@ -2028,7 +2035,7 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
             <article className="evidence-critical-card" key={item.title}>
               <p className="eyebrow">{t(item.status)}</p>
               <h4>{t(item.title)}</h4>
-              <p>{t(item.detail)}</p>
+              <p>{localizeEvidenceDetail(item)}</p>
             </article>
           ))}
         </div>

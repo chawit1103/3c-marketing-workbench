@@ -1651,6 +1651,50 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(englishInsights).toHaveTextContent('Decision Guidance');
   });
 
+  it('localizes arbitrary PR4 configuration status platform combinations in Thai and English', () => {
+    const payload = encodeURIComponent(JSON.stringify({
+      v: 1,
+      runId: 'sample-run',
+      form: { platforms: ['YouTube', 'Instagram', 'X / Twitter'] },
+      editedFields: ['platforms'],
+      simulationConfig: {
+        simulationProfile: 'custom',
+        selectedPlatforms: ['youtube', 'instagram', 'x'],
+        platformAllocations: {
+          facebook: 80,
+          tiktok: 80,
+          line: 80,
+          youtube: 90,
+          instagram: 70,
+          x: 50,
+        },
+        platformAllocationDrafts: {
+          facebook: '80',
+          tiktok: '80',
+          line: '80',
+          youtube: '90',
+          instagram: '70',
+          x: '50',
+        },
+        evidenceDepth: 'standard',
+        configurationSource: 'custom',
+        runtimeStatus: 'configuration_only',
+      },
+    }));
+
+    renderAt(`/runs/sample-run?assumptions=${payload}`, 'th');
+
+    const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
+    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, Instagram, X / Twitter; สถานะยังเป็นการตั้งค่าเท่านั้น.');
+    expect(thaiInsights).not.toHaveTextContent('Selected platforms:');
+    expect(thaiInsights).not.toHaveTextContent('runtimeStatus remains configuration-only');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, Instagram, X / Twitter; runtimeStatus remains configuration-only.');
+  });
+
   it('does not leak report redesign or export upgrade scope into the result dashboard', () => {
     renderAt('/runs/sample-run', 'en');
 
