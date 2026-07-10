@@ -270,6 +270,10 @@ REQUIRED_M19_PR2_PHRASES = [
     "no backend endpoint",
     "no SocialSense changes",
     "no MarketingSimulation changes",
+    "merged in PR #34",
+    "m19-pr2-localization-correction",
+    "runtime synthetic engagement/platform engagement result model remains not begun",
+    "PR3 remains blocked until PR2 correction post-merge validation passes",
 ]
 
 M19_PR2_ALLOWED_CHANGED_PATHS = {
@@ -1754,6 +1758,19 @@ def main() -> None:
             ]
             if missing_m19_pr2_phrases:
                 fail("M19 PR2 docs missing simulation configuration phrases: " + ", ".join(missing_m19_pr2_phrases))
+            m19_pr2_status_text = "\n".join([readme, agents, m19_pr2_text])
+            stale_m19_pr2_status_hits = [
+                phrase
+                for phrase in [
+                    "M19 PR2 Simulation Configuration is in local continuation on branch `m19-pr2-simulation-configuration`",
+                    "Status: M19 PR2 implementation slice on `m19-pr2-simulation-configuration`",
+                    "M19 must not begin implementation until the M18 closeout is merged",
+                    "M19 must not begin until M18 closes",
+                ]
+                if phrase in m19_pr2_status_text
+            ]
+            if stale_m19_pr2_status_hits:
+                fail("M19 PR2 docs contain stale branch/status wording: " + ", ".join(stale_m19_pr2_status_hits))
             unexpected_m19_pr2_changes = [path for path in changed_paths if path not in M19_PR2_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr2_changes:
                 fail("M19 PR2 changed unexpected paths: " + ", ".join(unexpected_m19_pr2_changes))
