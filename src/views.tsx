@@ -43,6 +43,28 @@ type LaunchForm = {
   platforms: string[];
 };
 
+const assumptionTransportKeys: Array<keyof LaunchForm> = [
+  'brand',
+  'campaignMessage',
+  'variantA',
+  'variantB',
+  'creativeATitle',
+  'creativeADescription',
+  'creativeBTitle',
+  'creativeBDescription',
+  'offer',
+  'keyMessage',
+  'tone',
+  'claim',
+  'context',
+  'audiences',
+  'platforms',
+];
+
+const ASSUMPTION_PAYLOAD_QUERY = 'assumptions';
+
+const ASSUMPTION_PAYLOAD_VERSION = 1;
+
 type LocalizedFormField = Exclude<keyof LaunchForm, 'audiences' | 'platforms'>;
 
 const localizedFormFields: LocalizedFormField[] = [
@@ -73,6 +95,142 @@ function localizeDefaultForm(defaultForm: LaunchForm, language: Language): Launc
   }
 
   return localizedForm;
+}
+
+function isAssumptionTransportField(field: string): field is keyof LaunchForm {
+  return (assumptionTransportKeys as readonly string[]).includes(field);
+}
+
+function buildRuntimeAssumptionState(raw: unknown, baseline: LaunchForm): LaunchForm {
+  const next = {
+    ...baseline,
+    audiences: [...baseline.audiences],
+    platforms: [...baseline.platforms],
+  };
+
+  if (!raw || typeof raw !== 'object') {
+    return next;
+  }
+
+  const parsed = raw as Partial<Record<string, unknown>>;
+
+  const audiences = parsed.audiences;
+  if (Array.isArray(audiences)) {
+    const normalizedAudiences = audiences.filter((entry) => typeof entry === 'string') as string[];
+    if (normalizedAudiences.length > 0) {
+      next.audiences = normalizedAudiences;
+    }
+  }
+
+  const platforms = parsed.platforms;
+  if (Array.isArray(platforms)) {
+    const normalizedPlatforms = platforms.filter((entry) => typeof entry === 'string') as string[];
+    if (normalizedPlatforms.length > 0) {
+      next.platforms = normalizedPlatforms;
+    }
+  }
+
+  const stringFields = parsed as Partial<Pick<LaunchForm, keyof LaunchForm>>;
+  for (const key of localizedFormFields) {
+    const value = stringFields[key];
+    if (typeof value === 'string') {
+      next[key] = value;
+    }
+  }
+
+  return next;
+}
+
+function encodeAssumptionPayload(runId: string, form: LaunchForm, editedFields: Set<keyof LaunchForm>): string {
+  const payload = {
+    v: ASSUMPTION_PAYLOAD_VERSION,
+    runId,
+    form,
+    editedFields: Array.from(editedFields),
+  };
+  return encodeURIComponent(JSON.stringify(payload));
+}
+
+function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedFields: Set<keyof LaunchForm> } | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const search = window.location.search || '';
+  const raw = new URLSearchParams(search).get(ASSUMPTION_PAYLOAD_QUERY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as {
+      v?: number;
+      runId?: string;
+      form?: Partial<Record<string, unknown>>;
+      editedFields?: string[];
+    };
+
+    if (!parsed || parsed.v !== ASSUMPTION_PAYLOAD_VERSION || !parsed.form || typeof parsed.form !== 'object') {
+      return null;
+    }
+
+    const activeRunId = runId ?? parsed.runId;
+    const config = configForRunId(activeRunId);
+    if (!config) {
+      return null;
+    }
+    if (parsed.runId && runId && parsed.runId !== runId) {
+      if (!(runId === 'sample-run' && parsed.runId === productLaunchFixture.runId)) {
+        return null;
+      }
+    }
+
+    const form = buildRuntimeAssumptionState(parsed.form, config.defaultForm);
+    const nextEditedFields = new Set<keyof LaunchForm>();
+    if (Array.isArray(parsed.editedFields)) {
+      for (const key of parsed.editedFields) {
+        if (isAssumptionTransportField(key)) {
+          nextEditedFields.add(key);
+        }
+      }
+    }
+
+    return { form, editedFields: nextEditedFields };
+  } catch {
+    return null;
+  }
+}
+
+function buildAssumptionRows(form: LaunchForm): Array<[string, string, keyof LaunchForm]> {
+  return [
+    ['Campaign name or brand', form.brand, 'brand'],
+    ['Campaign Message', form.campaignMessage, 'campaignMessage'],
+    ...(form.variantA ? ([['Variant A', form.variantA, 'variantA']] as Array<[string, string, keyof LaunchForm]>) : []),
+    ...(form.variantB ? ([['Variant B', form.variantB, 'variantB']] as Array<[string, string, keyof LaunchForm]>) : []),
+    ...(form.creativeATitle
+      ? ([['Creative A concept title', form.creativeATitle, 'creativeATitle']] as Array<[string, string, keyof LaunchForm]>)
+      : []),
+    ...(form.creativeADescription
+      ? ([['Creative A visual idea / copy description', form.creativeADescription, 'creativeADescription']] as Array<
+          [string, string, keyof LaunchForm]
+        >)
+      : []),
+    ...(form.creativeBTitle
+      ? ([['Creative B concept title', form.creativeBTitle, 'creativeBTitle']] as Array<[string, string, keyof LaunchForm]>)
+      : []),
+    ...(form.creativeBDescription
+      ? ([['Creative B visual idea / copy description', form.creativeBDescription, 'creativeBDescription']] as Array<
+          [string, string, keyof LaunchForm]
+        >)
+      : []),
+    ...(form.offer ? ([['Offer/Promotion', form.offer, 'offer']] as Array<[string, string, keyof LaunchForm]>) : []),
+    ['Key Message', form.keyMessage, 'keyMessage'],
+    ...(form.tone ? ([['Tone', form.tone, 'tone']] as Array<[string, string, keyof LaunchForm]>) : []),
+    ...(form.claim ? ([['Claim to review', form.claim, 'claim']] as Array<[string, string, keyof LaunchForm]>) : []),
+    ['Audience', form.audiences.join(', ') || 'General Consumers', 'audiences'],
+    ['Platform mix', form.platforms.join(', '), 'platforms'],
+    ['Context', form.context || 'No additional context', 'context'],
+  ];
 }
 
 type FixtureCard = {
@@ -999,6 +1157,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   );
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
+  const assumptionQuery = hasRun ? encodeAssumptionPayload(config.fixture.runId, submittedForm, submittedEditedFields) : '';
 
   return (
     <Localized>
@@ -1210,6 +1369,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           config={config}
           fixture={config.fixture}
           editedFields={submittedEditedFields}
+          assumptionQuery={assumptionQuery}
           showActions
         />
       ) : null}
@@ -1223,6 +1383,9 @@ export function RunDashboardView({ runId }: { runId?: string }) {
   if (!config) {
     return <UnavailableReferenceView kind="Run" id={runId} />;
   }
+  const assumptionPayload = parseAssumptionPayload(runId);
+  const form = assumptionPayload?.form ?? config.defaultForm;
+  const editedFields = assumptionPayload?.editedFields;
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="dashboard-title">
@@ -1231,7 +1394,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
         <h1 id="dashboard-title">{`${config.objective} Results`}</h1>
         <p>Marketing-friendly decision dashboard for a reviewed offline campaign workflow.</p>
       </div>
-      <ReferenceResults form={config.defaultForm} config={config} fixture={config.fixture} />
+      <ReferenceResults form={form} config={config} fixture={config.fixture} editedFields={editedFields} />
       </section>
     </Localized>
   );
@@ -1242,6 +1405,7 @@ export function ExportReviewView({ runId }: { runId?: string }) {
   if (!config) {
     return <UnavailableReferenceView kind="Export" id={runId} />;
   }
+  const assumptionPayload = parseAssumptionPayload(runId);
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="export-title">
@@ -1251,11 +1415,11 @@ export function ExportReviewView({ runId }: { runId?: string }) {
         <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
       </div>
       <FixtureTransparency />
-      <ExportReview fixture={config.fixture} objective={config.objective} />
-      </section>
-    </Localized>
-  );
-}
+      <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} />
+       </section>
+     </Localized>
+   );
+ }
 
 function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: string }) {
   return (
@@ -1326,12 +1490,14 @@ function ReferenceResults({
   fixture,
   config,
   editedFields,
+  assumptionQuery,
   showActions = false,
 }: {
   form: LaunchForm;
   fixture: ReferenceFixture;
   config: WorkflowConfig;
   editedFields?: Set<keyof LaunchForm>;
+  assumptionQuery?: string;
   showActions?: boolean;
 }) {
   const { language, t } = useI18n();
@@ -1350,26 +1516,7 @@ function ReferenceResults({
     }
     return t(value);
   };
-  const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(
-    () => [
-      ['Campaign name or brand', form.brand, 'brand'],
-      ['Campaign Message', form.campaignMessage, 'campaignMessage'],
-      ...(form.variantA ? ([['Variant A', form.variantA, 'variantA']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.variantB ? ([['Variant B', form.variantB, 'variantB']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.creativeATitle ? ([['Creative A concept title', form.creativeATitle, 'creativeATitle']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.creativeADescription ? ([['Creative A visual idea / copy description', form.creativeADescription, 'creativeADescription']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.creativeBTitle ? ([['Creative B concept title', form.creativeBTitle, 'creativeBTitle']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.creativeBDescription ? ([['Creative B visual idea / copy description', form.creativeBDescription, 'creativeBDescription']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.offer ? ([['Offer/Promotion', form.offer, 'offer']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ['Key Message', form.keyMessage, 'keyMessage'],
-      ...(form.tone ? ([['Tone', form.tone, 'tone']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ...(form.claim ? ([['Claim to review', form.claim, 'claim']] as Array<[string, string, keyof LaunchForm]>) : []),
-      ['Audience', form.audiences.join(', ') || 'General Consumers', 'audiences'],
-      ['Platform mix', form.platforms.join(', '), 'platforms'],
-      ['Context', form.context || 'No additional context', 'context'],
-    ],
-    [form],
-  );
+  const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(() => buildAssumptionRows(form), [form]);
 
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
@@ -1387,8 +1534,8 @@ function ReferenceResults({
         <p className="help-text">{t('Safety: offline fixture for planning only; review before using externally.')}</p>
         {showActions ? (
           <div className="button-row">
-            <a className="button button-secondary" href={`/runs/${fixture.runId}`}>{t('Open result dashboard')}</a>
-            <a className="button button-secondary" href={`/exports/${fixture.runId}`}>{t('Open export-readiness preview')}</a>
+            <a className="button button-secondary" href={`/runs/${fixture.runId}${assumptionQuery ? `?${ASSUMPTION_PAYLOAD_QUERY}=${assumptionQuery}` : ''}`}>{t('Open result dashboard')}</a>
+            <a className="button button-secondary" href={`/exports/${fixture.runId}${assumptionQuery ? `?${ASSUMPTION_PAYLOAD_QUERY}=${assumptionQuery}` : ''}`}>{t('Open export-readiness preview')}</a>
           </div>
         ) : null}
       </div>
@@ -1478,14 +1625,18 @@ function ReferenceResults({
   );
 }
 
-function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objective: string }) {
+function ExportReview(
+  { fixture, objective, form }: {
+  fixture: ReferenceFixture;
+  objective: string;
+  form?: LaunchForm;
+}) {
   const { language, t } = useI18n();
-  const supportedFormats = fixture.exports.formats
-    .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
-    .map((format) => {
-      const label = format.label === 'JSON' ? 'Executive JSON preview' : 'Markdown briefing preview';
-      return { ...format, label };
-    });
+  const sourceSampleInput = form ? formToFixtureSampleInput(form) : fixture.sampleInput;
+  const inputRows = reportInputRows(fixture, sourceSampleInput);
+  const assumptions = form
+    ? buildAssumptionRows(form).map(([label, value]) => `${label}: ${value}`).slice(0, 5)
+    : fixture.reviewMetadata.assumptions;
   const unsupportedFormats = [
     {
       label: 'Planning only: PDF',
@@ -1496,7 +1647,12 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
       detail: 'Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.',
     },
   ];
-  const inputRows = reportInputRows(fixture);
+  const supportedFormats = fixture.exports.formats
+    .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
+    .map((format) => {
+      const label = format.label === 'JSON' ? 'Executive JSON preview' : 'Markdown briefing preview';
+      return { ...format, label };
+    });
   const decisionConfidence = 'comparisonMethod' in fixture
     ? fixture.comparisonMethod.confidenceLevel
     : 'Low directional confidence';
@@ -1509,6 +1665,52 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
   const parametersCopy = language === 'th'
     ? `โหมดตรวจทาน: ${reviewMode}; รูปแบบการทำงาน: ${executionMode}; ความพร้อมใช้งานจริง: ${productionReady}.`
     : `Review mode: ${reviewMode}; execution mode: ${executionMode}; production ready: ${productionReady}.`;
+  const exportBasisCopy = language === 'th'
+    ? 'ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์; เป็นตัวอย่างเพื่อทบทวนการส่งต่อเท่านั้น.'
+    : 'Evidence tier: E1 synthetic/offline fixture; preview/handoff review only.';
+  const exportFormatSourceCopy = language === 'th'
+    ? 'หลักฐานระดับ: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์; แหล่งที่มา: fixture.exports.formats.'
+    : 'Evidence tier: E1 synthetic/offline fixture; Source: fixture.exports.formats.';
+  const scenarioSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: fixture.summary. หลักฐานระดับ: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์; ไม่มีข้อมูลโซเชียลสดหรือข้อมูลตลาดที่วัดจริง.'
+    : 'Source: fixture.summary. Evidence tier: E1 synthetic/offline fixture; no live social or measured market data.';
+  const chartEvidenceCopy = language === 'th'
+    ? 'หลักฐานระดับ: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์; ไม่มีข้อมูลโซเชียลสด การมีส่วนร่วมแพลตฟอร์มที่วัดจริง การคาดการณ์ใช้งานจริง การรับประกันคอนเวอร์ชัน การปรับเพื่อโน้มน้าว หรือไมโครทาร์เก็ตติ้ง.'
+    : 'Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.';
+  const reportBasisCopy = language === 'th'
+    ? `${t('Formula')}: ส่วนรายงานประกอบจากเมทาดาทาของข้อมูลตัวอย่าง หลักฐานสังเคราะห์ และการคำนวณแบบกำหนดผลแน่นอน; ${t('หลักฐานระดับ')}: ${t('E1 synthetic/offline fixture')}; ${t('ความเชื่อมั่น')}: ${t(decisionConfidence)}.`
+    : `Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.; Evidence tier: E1 synthetic/offline fixture; Confidence: ${decisionConfidence}.`;
+  const unsupportedFormatEvidenceCopy = language === 'th'
+    ? 'หลักฐานระดับ: unavailable; ความเชื่อมั่น: None because this frontend does not generate this format.'
+    : 'Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.';
+  const exportReadinessConfidenceCopy = language === 'th'
+    ? 'ความเชื่อมั่น: Low directional; unsupported formats remain planning-only until separately approved.'
+    : 'Confidence: Low directional; unsupported formats remain planning-only until separately approved.';
+  const executiveSummarySourceCopy = language === 'th'
+    ? `แหล่งที่มา: fixture.exports.executiveSummaryPreview. หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}. ความเชื่อมั่น: ${t(decisionConfidence)}.`
+    : `Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: ${decisionConfidence}.`;
+  const objectiveSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: fixture objective/config. หลักฐานระดับ: E1 synthetic/offline fixture. ความเชื่อมั่น: Low directional.'
+    : 'Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.';
+  const inputSourceCopy = form
+    ? (language === 'th'
+      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจาก fixture ไม่ได้คำนวณใหม่และไม่มีการเรียก live API.'
+      : 'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.')
+    : (language === 'th'
+      ? 'แหล่งที่มา: fixture.sampleInput; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
+      : 'Source: fixture.sampleInput; displayed as review assumptions only.');
+  const audienceSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: sampleInput.audiences and audience insights. หลักฐานระดับ: E1; not measured audience engagement.'
+    : 'Source: sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.';
+  const platformMixSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: sampleInput.platforms and platformBreakdown. หลักฐานระดับ: E1; not live platform measurement.'
+    : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
+  const dashboardSnapshotFormulaCopy = language === 'th'
+    ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'
+    : 'Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.';
+  const nextReviewSourceCopy = language === 'th'
+    ? `หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}; ความเชื่อมั่น: ${t('Low directional')}; ${t('review step only, not a launch or budget decision')}.`
+    : 'Evidence tier: E1 synthetic/offline fixture; Confidence: Low directional; review step only, not a launch or budget decision.';
   const dashboardSnapshotCopy = `${fixture.cards
     .map((card) => `${t(card.title)}: ${t(card.value)}`)
     .join('; ')}.`;
@@ -1527,12 +1729,11 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           for human review only; it is not a download action.
         </p>
         <div className="kpi-metadata" aria-label="Export readiness formula and source">
-          <p>Formula: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
-          <p>Source: fixture export payload for run {fixture.runId}.</p>
-          <p>Evidence tier: E1 synthetic/offline fixture; preview/handoff review only.</p>
-          <p>Confidence: Low directional; unsupported formats remain planning-only until separately approved.</p>
+          <p className="help-text">{t('Formula')}: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
+          <p>{exportBasisCopy}</p>
+          <p>{exportReadinessConfidenceCopy}</p>
         </div>
-      </div>
+</div>
 
       <section className="card" aria-label="Export format readiness">
         <p className="eyebrow">Export format readiness</p>
@@ -1543,7 +1744,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
               <p className="eyebrow">{format.label}</p>
               <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
               <p>{format.detail}</p>
-              <p className="help-text">Evidence tier: E1 synthetic/offline fixture; Source: fixture.exports.formats.</p>
+              <p className="help-text">{exportFormatSourceCopy}</p>
             </article>
           ))}
           {unsupportedFormats.map((format) => (
@@ -1551,7 +1752,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
               <p className="eyebrow">{format.label}</p>
               <h3>Unsupported now</h3>
               <p>{format.detail}</p>
-              <p className="help-text">Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.</p>
+              <p className="help-text">{unsupportedFormatEvidenceCopy}</p>
             </article>
           ))}
         </div>
@@ -1564,21 +1765,20 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           Decision readiness: human review required before launch, budget, or winner decisions.
         </p>
         <p>
-          {t('Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.')}{' '}
-          {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t(decisionConfidence)}.
+          {reportBasisCopy}
         </p>
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
-            <p className="help-text">{t('Source')}: fixture.exports.executiveSummaryPreview. {t('Evidence tier')}: {t('E1 synthetic/offline fixture')}. {t('Confidence')}: {t(decisionConfidence)}.</p>
+            <p className="help-text">{executiveSummarySourceCopy}</p>
           </ReportSection>
           <ReportSection title="Objectives">
             <p>{t(`Objective: ${objective}. Use the report for executive handoff and human review, not production approval.`)}</p>
-            <p className="help-text">Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.</p>
+            <p className="help-text">{objectiveSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Scenario">
             <p>{fixture.summary.headline}: {fixture.summary.text}</p>
-            <p className="help-text">Source: fixture.summary. Evidence tier: E1 synthetic/offline fixture; no live social or measured market data.</p>
+            <p className="help-text">{scenarioSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Inputs">
             <dl className="assumption-grid compact-dl">
@@ -1589,27 +1789,27 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
                 </div>
               ))}
             </dl>
-            <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
+            <p className="help-text">{inputSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Parameters">
             <p data-i18n-rendered="true">{parametersCopy}</p>
             <p className="help-text">Formula: source checks must keep offlineExecution=true, liveApiAccess=false, credentialsRequired=false, productionReady=false.</p>
           </ReportSection>
           <ReportSection title="Audience">
-            <p>{fixture.sampleInput.audiences.map((audience) => t(audience)).join(', ')}</p>
-            <p className="help-text">Source: fixture.sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.</p>
+            <p>{sourceSampleInput.audiences.map((audience) => t(audience)).join(', ')}</p>
+            <p className="help-text">{audienceSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Platform Mix">
-            <p>{fixture.sampleInput.platforms.join(', ')}</p>
-            <p className="help-text">Source: fixture.sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.</p>
+            <p>{sourceSampleInput.platforms.join(', ')}</p>
+            <p className="help-text">{platformMixSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Dashboard / KPI snapshot">
             <p data-i18n-rendered="true">{dashboardSnapshotCopy}</p>
-            <p className="help-text">Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
+            <p className="help-text">{dashboardSnapshotFormulaCopy}</p>
           </ReportSection>
           <ReportSection title="Charts / Evidence / Confidence summary">
             <p data-i18n-rendered="true">{confidenceSummaryCopy}</p>
-            <p className="help-text">Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.</p>
+            <p className="help-text">{chartEvidenceCopy}</p>
           </ReportSection>
           <ReportSection title="Recommendations">
             <p>{fixture.recommendedNextTest}</p>
@@ -1617,11 +1817,11 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
           </ReportSection>
           <ReportSection title="Next review step">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">{t('Evidence tier')}: {t('E1 synthetic/offline fixture')}; {t('Confidence')}: {t('Low directional')}; {t('review step only, not a launch or budget decision')}.</p>
+            <p className="help-text">{nextReviewSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Assumptions">
             <ul className="insight-list">
-              {fixture.reviewMetadata.assumptions.slice(0, 5).map((item) => <li key={item}>{item}</li>)}
+              {assumptions.slice(0, 5).map((item) => <li key={item}>{item}</li>)}
             </ul>
           </ReportSection>
           <ReportSection title="Limitations">
@@ -1646,7 +1846,7 @@ function ExportReview({ fixture, objective }: { fixture: ReferenceFixture; objec
         <p>{fixture.exports.executiveSummaryPreview}</p>
       </div>
       <div className="grid two-col align-start">
-        <InsightList title="Review Assumptions" items={fixture.reviewMetadata.assumptions} localize />
+        <InsightList title="Review Assumptions" items={assumptions} localize />
         <InsightList title="Evidence Gaps" items={fixture.reviewMetadata.evidenceGaps.slice(0, 3)} localize />
         <InsightList title="Limitations" items={fixture.reviewMetadata.limitations.slice(0, 3)} localize />
         <div className="card">
@@ -1689,32 +1889,70 @@ function ReportSection({ title, children }: { title: string; children: ReactNode
   );
 }
 
-function reportInputRows(fixture: ReferenceFixture): string[][] {
+type RuntimeSampleInput = {
+  brand: string;
+  campaign_message: string;
+  offer?: string;
+  variant_a?: string;
+  variant_b?: string;
+  creative_a_title?: string;
+  creative_a_description?: string;
+  creative_b_title?: string;
+  creative_b_description?: string;
+  key_message: string;
+  tone?: string;
+  claim?: string;
+  context: string;
+  audiences: string[];
+  platforms: string[];
+};
+
+function formToFixtureSampleInput(form: LaunchForm): RuntimeSampleInput {
+  return {
+    brand: form.brand,
+    campaign_message: form.campaignMessage,
+    offer: form.offer || undefined,
+    variant_a: form.variantA || undefined,
+    variant_b: form.variantB || undefined,
+    creative_a_title: form.creativeATitle || undefined,
+    creative_a_description: form.creativeADescription || undefined,
+    creative_b_title: form.creativeBTitle || undefined,
+    creative_b_description: form.creativeBDescription || undefined,
+    key_message: form.keyMessage,
+    tone: form.tone || undefined,
+    claim: form.claim || undefined,
+    context: form.context,
+    audiences: form.audiences,
+    platforms: form.platforms,
+  };
+}
+
+function reportInputRows(fixture: ReferenceFixture, sampleInput: RuntimeSampleInput = fixture.sampleInput): string[][] {
   const rows = [
-    ['Campaign name or brand', fixture.sampleInput.brand],
-    ['Campaign Message', fixture.sampleInput.campaign_message],
-    ['Key Message', fixture.sampleInput.key_message],
-    ['Context', fixture.sampleInput.context],
+    ['Campaign name or brand', sampleInput.brand],
+    ['Campaign Message', sampleInput.campaign_message],
+    ['Key Message', sampleInput.key_message],
+    ['Context', sampleInput.context],
   ];
-  if ('offer' in fixture.sampleInput) {
-    rows.splice(2, 0, ['Offer/Promotion', fixture.sampleInput.offer]);
+  if (sampleInput.offer) {
+    rows.splice(2, 0, ['Offer/Promotion', sampleInput.offer]);
   }
-  if ('variant_a' in fixture.sampleInput) {
-    rows.splice(2, 0, ['Variant A', fixture.sampleInput.variant_a], ['Variant B', fixture.sampleInput.variant_b]);
+  if (sampleInput.variant_a) {
+    rows.splice(2, 0, ['Variant A', sampleInput.variant_a], ['Variant B', sampleInput.variant_b ?? '']);
   }
-  if ('creative_a_title' in fixture.sampleInput) {
+  if (sampleInput.creative_a_title) {
     rows.splice(
       2,
       0,
-      ['Creative A', `${fixture.sampleInput.creative_a_title} — ${fixture.sampleInput.creative_a_description}`],
-      ['Creative B', `${fixture.sampleInput.creative_b_title} — ${fixture.sampleInput.creative_b_description}`],
+      ['Creative A', `${sampleInput.creative_a_title} — ${sampleInput.creative_a_description ?? ''}`],
+      ['Creative B', `${sampleInput.creative_b_title ?? ''} — ${sampleInput.creative_b_description ?? ''}`],
     );
   }
-  if ('tone' in fixture.sampleInput) {
-    rows.push(['Tone', fixture.sampleInput.tone]);
+  if (sampleInput.tone) {
+    rows.push(['Tone', sampleInput.tone]);
   }
-  if ('claim' in fixture.sampleInput) {
-    rows.push(['Claim to review', fixture.sampleInput.claim]);
+  if (sampleInput.claim) {
+    rows.push(['Claim to review', sampleInput.claim]);
   }
   return rows;
 }
