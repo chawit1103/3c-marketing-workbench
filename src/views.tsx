@@ -22,6 +22,7 @@ import {
   type SimulationProfile,
 } from './product/simulationConfig';
 import { buildExecutiveInsights, type ExecutiveInsights } from './product/executiveInsights';
+import { buildExecutiveDecisionBrief, type ExecutiveDecisionBrief } from './product/executiveDecisionBrief';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
@@ -2126,6 +2127,29 @@ function ExportReview(
   const { language, t } = useI18n();
   const sourceSampleInput = form ? formToFixtureSampleInput(form) : fixture.sampleInput;
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const executiveInsights = useMemo(() => buildExecutiveInsights({
+    fixture,
+    form: {
+      brand: form?.brand ?? sourceSampleInput.brand,
+      campaignMessage: form?.campaignMessage ?? sourceSampleInput.campaign_message,
+      audiences: sourceSampleInput.audiences,
+      platforms: sourceSampleInput.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement]);
+  const executiveDecisionBrief = useMemo(() => buildExecutiveDecisionBrief({
+    fixture,
+    form: {
+      brand: form?.brand ?? sourceSampleInput.brand,
+      campaignMessage: form?.campaignMessage ?? sourceSampleInput.campaign_message,
+      audiences: sourceSampleInput.audiences,
+      platforms: sourceSampleInput.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+    executiveInsights,
+  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement, executiveInsights]);
   const inputRows = reportInputRows(fixture, sourceSampleInput);
   const assumptions = form
     ? buildAssumptionRows(form).map(([label, value]) => `${label}: ${value}`).slice(0, 5)
@@ -2260,6 +2284,7 @@ function ExportReview(
         <p>
           {reportBasisCopy}
         </p>
+        <ExecutiveDecisionBriefSection brief={executiveDecisionBrief} />
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
@@ -2375,6 +2400,130 @@ function ExportReview(
       </div>
     </Localized>
   );
+}
+
+function ExecutiveDecisionBriefSection({ brief }: { brief: ExecutiveDecisionBrief }) {
+  const { t } = useI18n();
+  return (
+    <section className="executive-decision-brief" aria-label={t('Executive Decision Brief')} data-i18n-rendered="true">
+      <p className="eyebrow">{t('Executive Decision Brief')}</p>
+      <h3>{t('Executive Decision Brief')}</h3>
+      <div className="report-section-grid">
+        <ReportSection title="Campaign context">
+          <dl className="assumption-grid compact-dl">
+            {brief.campaignContext.userInputs.map((item) => (
+              <div key={item.label}>
+                <dt>{t(item.label)}</dt>
+                <dd>{t(item.value)}</dd>
+              </div>
+            ))}
+            <div>
+              <dt>{t('Selected platforms')}</dt>
+              <dd>{brief.campaignContext.selectedPlatforms.join(', ')}</dd>
+            </div>
+            <div>
+              <dt>{t('Simulation Profile')}</dt>
+              <dd>{t(profileLabel(brief.campaignContext.simulationProfile))}</dd>
+            </div>
+            <div>
+              <dt>{t('Evidence depth')}</dt>
+              <dd>{t(brief.campaignContext.evidenceDepth)}</dd>
+            </div>
+          </dl>
+          <p className="help-text">{t('Participant allocations')}: {brief.campaignContext.participantAllocations.map((item) => `${item.platform} ${item.syntheticParticipants}`).join('; ')}.</p>
+        </ReportSection>
+
+        <ReportSection title="Current situation">
+          <p>{t(brief.currentSituation.headline)}</p>
+          <p>{t(brief.currentSituation.narrative)}</p>
+        </ReportSection>
+
+        <ReportSection title="Platform findings">
+          <ul className="insight-list">
+            {brief.platformFindings.map((finding) => (
+              <li key={finding.platform}>
+                {finding.platform}: {finding.directionalFit}/100; {finding.syntheticParticipants} {t('Synthetic participants')}. {t(finding.evidenceBasis)}
+              </li>
+            ))}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Synthetic engagement summary">
+          <p>{t('Total synthetic participants')}: {brief.syntheticEngagementSummary.totalSyntheticParticipants}; {t('Average synthetic reaction index')}: {brief.syntheticEngagementSummary.averageSyntheticReactionIndex}/100.</p>
+          <p>{t('Strongest directional fit')}: {brief.syntheticEngagementSummary.strongestDirectionalFit.platform} {brief.syntheticEngagementSummary.strongestDirectionalFit.score}/100.</p>
+          <p>{t('Weakest directional fit')}: {brief.syntheticEngagementSummary.weakestDirectionalFit.platform} {brief.syntheticEngagementSummary.weakestDirectionalFit.score}/100.</p>
+          <p>{t('Top themes')}: {brief.syntheticEngagementSummary.topThemes.map((theme) => t(theme)).join(', ')}.</p>
+          <p>{t('Top concerns')}: {brief.syntheticEngagementSummary.topConcerns.map((concern) => t(concern)).join(' ')}</p>
+        </ReportSection>
+
+        <ReportSection title="Executive KPI snapshot">
+          <ul className="insight-list">
+            {brief.executiveKpiSnapshot.map((item) => (
+              <li key={item.title}>{t(item.title)}: {t(item.value)} — {t(item.detail)}</li>
+            ))}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Evidence">
+          <ul className="insight-list">
+            {brief.evidence.items.map((item) => <li key={item}>{t(item)}</li>)}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Confidence">
+          <p>{t(brief.evidence.confidence)}</p>
+        </ReportSection>
+
+        <ReportSection title="Risks">
+          <ul className="insight-list">
+            {brief.risks.map((risk) => <li key={risk}>{t(risk)}</li>)}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Decision limitations">
+          <ul className="insight-list">
+            {brief.limitations.map((limitation) => <li key={limitation}>{t(limitation)}</li>)}
+          </ul>
+        </ReportSection>
+      </div>
+
+      <section className="card" aria-label={t('Decision options')}>
+        <p className="eyebrow">{t('Decision options')}</p>
+        <h3>{t('Decision options')}</h3>
+        <div className="grid two-col">
+          {brief.decisionOptions.map((option) => (
+            <article className="format-card" key={option.label} aria-label={t(option.label)}>
+              <h4>{t(option.label)}</h4>
+              <p><strong>{t('Evidence basis')}:</strong> {t(option.evidenceBasis)}</p>
+              <p><strong>{t('Confidence')}:</strong> {t(option.confidence)}</p>
+              <p><strong>{t('Limitations')}:</strong> {option.limitations.map((item) => t(item)).join(' ')}</p>
+              <p><strong>{t('Blocked actions')}:</strong> {option.blockedActions.map((item) => t(item)).join(', ')}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="report-section-grid">
+        <ReportSection title="Decision blockers">
+          <ul className="insight-list">
+            {brief.decisionBlockers.map((blocker) => <li key={blocker}>{t(blocker)}</li>)}
+          </ul>
+        </ReportSection>
+        <ReportSection title="Recommended next action">
+          <p>{t(brief.recommendedNextAction.action)}</p>
+          <p><strong>{t('Next review step')}:</strong> {t(brief.recommendedNextAction.nextReviewStep)}</p>
+        </ReportSection>
+        <ReportSection title="Synthetic/offline notices">
+          <p>{t(brief.notices.synthetic)}</p>
+          <p>{t(brief.notices.offline)}</p>
+        </ReportSection>
+      </div>
+    </section>
+  );
+}
+
+function profileLabel(profile: SimulationConfiguration['simulationProfile']) {
+  return profile.charAt(0).toUpperCase() + profile.slice(1);
 }
 
 function ReportSection({ title, children }: { title: string; children: ReactNode }) {
