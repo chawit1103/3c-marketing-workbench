@@ -282,7 +282,7 @@ REQUIRED_M19_PR2_PHRASES = [
     "M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34",
     "m19-pr3-platform-engagement-model",
     "PR3 Platform Engagement Result Model is implemented",
-    "PR4 dashboard redesign/upgrade is not started",
+    "M19 PR4 Executive Insight Dashboard is implemented",
 ]
 
 M19_PR2_ALLOWED_CHANGED_PATHS = {
@@ -318,7 +318,7 @@ REQUIRED_M19_PR3_PHRASES = [
     "not measured",
     "not a forecast",
     "PR3 Platform Engagement Result Model is implemented",
-    "PR4 dashboard redesign/upgrade is not started",
+    "M19 PR4 Executive Insight Dashboard is implemented",
     "Architecture Gate: Not Triggered",
     "no SocialSense changes",
 ]
@@ -372,6 +372,7 @@ M19_PR4_ALLOWED_CHANGED_PATHS = {
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
     "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
     "docs/product/GLOSSARY.md",
     "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
     "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
@@ -1937,16 +1938,27 @@ def main() -> None:
             ]
             if missing_m19_pr4_phrases:
                 fail("M19 PR4 docs/source missing executive insight dashboard phrases: " + ", ".join(missing_m19_pr4_phrases))
+            stale_m19_pr4_current_docs = "\n".join([
+                agents,
+                roadmap,
+                health_dashboard,
+                m18_docs_by_path["docs/product/TRANSLATION_STYLE_GUIDE.md"],
+                m17_docs_by_path["docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md"],
+                m19_pr2_text,
+                m19_pr3_text,
+            ])
             stale_m19_pr4_current_hits = [
                 phrase
                 for phrase in [
                     "M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model`",
                     "PR4 dashboard redesign/upgrade is not started",
                     "PR4 dashboard redesign/upgrade is not started/blocked",
+                    "PR4 dashboard redesign/upgrade: Not started",
+                    "PR4 remains not started/blocked",
                     "Recommended option: keep PR3 bounded",
                     "do not start PR4 dashboard redesign/upgrade",
                 ]
-                if phrase in "\n".join([agents, roadmap, health_dashboard])
+                if phrase in stale_m19_pr4_current_docs
             ]
             if stale_m19_pr4_current_hits:
                 fail("M19 PR4 current-state docs contain stale PR3/PR4-not-started wording: " + ", ".join(stale_m19_pr4_current_hits))
