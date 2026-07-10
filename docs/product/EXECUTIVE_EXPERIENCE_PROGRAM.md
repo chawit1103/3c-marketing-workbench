@@ -313,7 +313,7 @@ PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adap
 ## PR sequencing rules
 
 - PR1 is docs-only program kickoff and must not implement runtime features.
-- PR2+ implementation was explicitly future work and not delivered in PR1; PR2 is now the current limited runtime slice.
+- PR2+ implementation was explicitly future work and not delivered in PR1; in this historical M17 section, M17 PR2 was the limited runtime slice, while M19 PR2 remains configuration-only and the M19 runtime/platform engagement result model has not begun.
 - Each implementation PR must be small enough to review independently.
 - Each PR must update docs smoke if it introduces required docs or durable acceptance criteria.
 - Any Architecture Gate trigger stops implementation until reviewed.
