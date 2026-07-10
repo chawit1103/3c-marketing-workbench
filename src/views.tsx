@@ -163,7 +163,7 @@ function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedField
   }
 
   try {
-    const parsed = JSON.parse(decodeURIComponent(raw)) as {
+    const parsed = JSON.parse(raw) as {
       v?: number;
       runId?: string;
       form?: Partial<Record<string, unknown>>;
@@ -1679,7 +1679,38 @@ function ExportReview(
     : 'Evidence tier: E1 synthetic/offline fixture; no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting.';
   const reportBasisCopy = language === 'th'
     ? `${t('Formula')}: ส่วนรายงานประกอบจากเมทาดาทาของข้อมูลตัวอย่าง หลักฐานสังเคราะห์ และการคำนวณแบบกำหนดผลแน่นอน; ${t('หลักฐานระดับ')}: ${t('E1 synthetic/offline fixture')}; ${t('ความเชื่อมั่น')}: ${t(decisionConfidence)}.`
-    : `${t('Formula')}: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.; ${t('หลักฐานระดับ')}: ${t('E1 synthetic/offline fixture')}; ${t('ความเชื่อมั่น')}: ${t(decisionConfidence)}.`;
+    : `Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.; Evidence tier: E1 synthetic/offline fixture; Confidence: ${decisionConfidence}.`;
+  const unsupportedFormatEvidenceCopy = language === 'th'
+    ? 'หลักฐานระดับ: unavailable; ความเชื่อมั่น: None because this frontend does not generate this format.'
+    : 'Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.';
+  const exportReadinessConfidenceCopy = language === 'th'
+    ? 'ความเชื่อมั่น: Low directional; unsupported formats remain planning-only until separately approved.'
+    : 'Confidence: Low directional; unsupported formats remain planning-only until separately approved.';
+  const executiveSummarySourceCopy = language === 'th'
+    ? `แหล่งที่มา: fixture.exports.executiveSummaryPreview. หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}. ความเชื่อมั่น: ${t(decisionConfidence)}.`
+    : `Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: ${decisionConfidence}.`;
+  const objectiveSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: fixture objective/config. หลักฐานระดับ: E1 synthetic/offline fixture. ความเชื่อมั่น: Low directional.'
+    : 'Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.';
+  const inputSourceCopy = form
+    ? (language === 'th'
+      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจาก fixture ไม่ได้คำนวณใหม่และไม่มีการเรียก live API.'
+      : 'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.')
+    : (language === 'th'
+      ? 'แหล่งที่มา: fixture.sampleInput; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
+      : 'Source: fixture.sampleInput; displayed as review assumptions only.');
+  const audienceSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: sampleInput.audiences and audience insights. หลักฐานระดับ: E1; not measured audience engagement.'
+    : 'Source: sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.';
+  const platformMixSourceCopy = language === 'th'
+    ? 'แหล่งที่มา: sampleInput.platforms and platformBreakdown. หลักฐานระดับ: E1; not live platform measurement.'
+    : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
+  const dashboardSnapshotFormulaCopy = language === 'th'
+    ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'
+    : 'Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.';
+  const nextReviewSourceCopy = language === 'th'
+    ? `หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}; ความเชื่อมั่น: ${t('Low directional')}; ${t('review step only, not a launch or budget decision')}.`
+    : 'Evidence tier: E1 synthetic/offline fixture; Confidence: Low directional; review step only, not a launch or budget decision.';
   const dashboardSnapshotCopy = `${fixture.cards
     .map((card) => `${t(card.title)}: ${t(card.value)}`)
     .join('; ')}.`;
@@ -1700,7 +1731,7 @@ function ExportReview(
         <div className="kpi-metadata" aria-label="Export readiness formula and source">
           <p className="help-text">{t('Formula')}: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
           <p>{exportBasisCopy}</p>
-          <p>ความเชื่อมั่น: Low directional; unsupported formats remain planning-only until separately approved.</p>
+          <p>{exportReadinessConfidenceCopy}</p>
         </div>
 </div>
 
@@ -1721,7 +1752,7 @@ function ExportReview(
               <p className="eyebrow">{format.label}</p>
               <h3>Unsupported now</h3>
               <p>{format.detail}</p>
-              <p className="help-text">หลักฐานระดับ: unavailable; ความเชื่อมั่น: None because this frontend does not generate this format.</p>
+              <p className="help-text">{unsupportedFormatEvidenceCopy}</p>
             </article>
           ))}
         </div>
@@ -1739,11 +1770,11 @@ function ExportReview(
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
-            <p className="help-text">แหล่งที่มา: fixture.exports.executiveSummaryPreview. หลักฐานระดับ: {t('E1 synthetic/offline fixture')}. ความเชื่อมั่น: {t(decisionConfidence)}.</p>
+            <p className="help-text">{executiveSummarySourceCopy}</p>
           </ReportSection>
           <ReportSection title="Objectives">
             <p>{t(`Objective: ${objective}. Use the report for executive handoff and human review, not production approval.`)}</p>
-            <p className="help-text">แหล่งที่มา: fixture objective/config. หลักฐานระดับ: E1 synthetic/offline fixture. ความเชื่อมั่น: Low directional.</p>
+            <p className="help-text">{objectiveSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Scenario">
             <p>{fixture.summary.headline}: {fixture.summary.text}</p>
@@ -1758,7 +1789,7 @@ function ExportReview(
                 </div>
               ))}
             </dl>
-            <p className="help-text">Source: fixture.sampleInput; displayed as review assumptions only.</p>
+            <p className="help-text">{inputSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Parameters">
             <p data-i18n-rendered="true">{parametersCopy}</p>
@@ -1766,15 +1797,15 @@ function ExportReview(
           </ReportSection>
           <ReportSection title="Audience">
             <p>{sourceSampleInput.audiences.map((audience) => t(audience)).join(', ')}</p>
-            <p className="help-text">แหล่งที่มา: sampleInput.audiences and audience insights. หลักฐานระดับ: E1; not measured audience engagement.</p>
+            <p className="help-text">{audienceSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Platform Mix">
             <p>{sourceSampleInput.platforms.join(', ')}</p>
-            <p className="help-text">แหล่งที่มา: sampleInput.platforms and platformBreakdown. หลักฐานระดับ: E1; not live platform measurement.</p>
+            <p className="help-text">{platformMixSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Dashboard / KPI snapshot">
             <p data-i18n-rendered="true">{dashboardSnapshotCopy}</p>
-            <p className="help-text">สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.</p>
+            <p className="help-text">{dashboardSnapshotFormulaCopy}</p>
           </ReportSection>
           <ReportSection title="Charts / Evidence / Confidence summary">
             <p data-i18n-rendered="true">{confidenceSummaryCopy}</p>
@@ -1786,7 +1817,7 @@ function ExportReview(
           </ReportSection>
           <ReportSection title="Next review step">
             <p>{fixture.recommendedNextTest}</p>
-            <p className="help-text">หลักฐานระดับ: {t('E1 synthetic/offline fixture')}; ความเชื่อมั่น: {t('Low directional')}; {t('review step only, not a launch or budget decision')}.</p>
+            <p className="help-text">{nextReviewSourceCopy}</p>
           </ReportSection>
           <ReportSection title="Assumptions">
             <ul className="insight-list">

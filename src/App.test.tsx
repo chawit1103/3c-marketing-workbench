@@ -1317,10 +1317,40 @@ describe('Export review', () => {
     }
     expect(report).toHaveTextContent('Decision readiness: human review required before launch, budget, or winner decisions.');
     expect(report).toHaveTextContent('Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.');
-    expect(report).toHaveTextContent(/หลักฐานระดับ:\s*E1 synthetic\/offline fixture|Evidence tier: E1 synthetic\/offline fixture/);
-    expect(report).toHaveTextContent(/ความเชื่อมั่น:\s*Low directional confidence|Confidence:\s*Low directional confidence/);
+    expect(report).toHaveTextContent('Evidence tier: E1 synthetic/offline fixture');
+    expect(report).toHaveTextContent('Confidence: Low directional confidence');
+    expect(report).toHaveTextContent('Source: fixture.exports.executiveSummaryPreview');
+    expect(report).toHaveTextContent('Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.');
+    for (const thaiOnlyLabel of ['หลักฐานระดับ', 'ความเชื่อมั่น', 'แหล่งที่มา', 'สูตร']) {
+      expect(report).not.toHaveTextContent(thaiOnlyLabel);
+    }
     expect(report).toHaveTextContent('Next review step');
     expect(report).toHaveTextContent('Run a small human-reviewed creative feedback test');
     expect(report).toHaveTextContent('no live social data, measured platform engagement, production prediction, conversion guarantee, persuasion optimization, or microtargeting');
+  });
+
+  it('propagates percent-sign runtime assumptions to dashboard and export previews with accurate source copy', () => {
+    const form = renderWorkbench();
+    const percentOffer = '50% off first-week sampler';
+
+    fireEvent.change(within(form).getByLabelText('Offer/Promotion'), { target: { value: percentOffer } });
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const dashboardHref = screen.getByRole('link', { name: 'Open result dashboard' }).getAttribute('href');
+    const exportHref = screen.getByRole('link', { name: 'Open export-readiness preview' }).getAttribute('href');
+    expect(dashboardHref).toBeTruthy();
+    expect(exportHref).toBeTruthy();
+
+    renderAt(dashboardHref!);
+    expect(screen.getByRole('heading', { name: 'Product Launch Results' })).toBeInTheDocument();
+    expect(screen.getByText(percentOffer)).toBeInTheDocument();
+
+    renderAt(exportHref!);
+    const report = screen.getByRole('region', { name: 'Executive report preview' });
+    expect(within(report).getByText(percentOffer)).toBeInTheDocument();
+    expect(report).toHaveTextContent(
+      'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.',
+    );
+    expect(report).not.toHaveTextContent('Source: fixture.sampleInput; displayed as review assumptions only.');
   });
 });
