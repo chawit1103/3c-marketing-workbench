@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model` as a product-owned TypeScript offline result contract. PR4 dashboard redesign/upgrade is not started and remains blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract. M19 PR4 Executive Insight Dashboard is implemented on branch `m19-pr4-executive-insight-dashboard` as a frontend-only insight layer over PR1 assumptions, PR2 submitted configuration snapshot, and PR3 platform engagement results. PR5 report upgrade not started / blocked until separate kickoff. No SocialSense, runtime, live measurement, backend, persistence, or live API changes are included.
 
 
 ## M1 PR4 closeout
@@ -204,7 +204,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Export readiness | Green for preview pattern | Future real export gated | `/exports/:runId` shows readiness/status from the generated fixture and does not claim a download. |
 | Dashboard readiness | Green for Product Launch and Campaign Message Test | Reuse pattern | `/runs/:runId` renders marketing-friendly cards, caveats, and recommendations from generated offline fixtures. |
 | Component foundation | Green for PR2 | Green every PR | Tokens, cards, badges, buttons, forms, states, and responsive layout exist. |
-| Test/build status | Green for M19 PR3 validation | Green every PR | Frontend tests, typecheck, lint, build, docs smoke, regression/diff guards, Python unit tests, SocialSense adapter smoke, and diff checks are required for PR3. |
+| Test/build status | Green for M19 PR4 validation | Green every PR | Frontend tests, typecheck, lint, build, docs smoke, regression/diff guards, Python unit tests, SocialSense adapter smoke, and diff checks are required for PR4. |
 | Safety posture | Green | Green every PR | Frontend shell plus generated offline sample and PR3 product-owned synthetic/offline result model only; no backend, live APIs, credentials, PII, auth, private data, measured engagement, or production campaign workflow. |
 | Workflow pattern readiness | GO | M2 Exit Review + M8 Journey composition | Product Launch is official reusable pattern; Campaign Message Test is the second reference workflow; A/B Experiment is the third reference workflow; M8 composes them into Marketing Journey without redesign. |
 | Campaign Domain readiness | GO | M3 review gates | Business model, taxonomy, objectives, data model, workflow mapping, and consumer mapping are complete for planning. |
@@ -223,7 +223,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 | Executive Dashboard & Reporting | Closed as GO WITH CONDITIONS | M17 PR5 closeout + PR #28 final status correction | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed. |
 | Thai-first Internationalization | Closed as GO WITH CONDITIONS | M18 closeout | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, exact/template-based localization, and tests are complete without backend/SocialSense/runtime dependency changes. |
-| Synthetic Social Platform Engagement Simulation | PR3 implemented; PR4 not started | M19 PR2 configuration-only workspace + M19 PR3 product-owned result model | M19 PR3 Platform Engagement Result Model is implemented as a deterministic TypeScript synthetic/offline model over selected PR2 platforms/configuration; PR4 dashboard redesign/upgrade is not started/blocked; no live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production engagement claims. |
+| Synthetic Social Platform Engagement Simulation | PR4 implemented; report upgrade not started / blocked | M19 PR2 configuration-only workspace + M19 PR3 result model + M19 PR4 executive insight dashboard | PR4 Executive Insight Dashboard is implemented as a frontend-only insight layer over PR1 assumptions, PR2 submitted configuration snapshots, and PR3 platform engagement results; PR5 report upgrade is not started/blocked until separate kickoff; no live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production engagement claims. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -272,8 +272,8 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 - Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, and M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract. PR4 dashboard redesign/upgrade is not started/blocked.
-- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; PR4 dashboard redesign/upgrade remains blocked until separately authorized.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract, and M19 PR4 Executive Insight Dashboard is implemented for reviewed offline results.
+- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; PR5 report upgrade is not started/blocked until separately authorized.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -315,7 +315,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Dashboard Quality | GO WITH CONDITIONS | M17 PR5 closeout | KPI cards, sentiment comparison, evidence tiers, limitations, and human-review checklist are reviewable from fixture evidence; broader field usability remains future. |
 | Report Quality | GO WITH CONDITIONS | M17 PR5 closeout | Executive report preview, Executive JSON preview, Markdown briefing preview, assumptions, limitations, unsupported PDF/PPT notices, and human-review copy support management review only. |
 | I18N Readiness | Current implementation | M18 Thai-first i18n | Thai default, English switch, glossary, translation style guide, safety copy, and sample screen coverage are under validation |
-| Simulation Readiness | PR3 implemented; PR4 not started | M19 PR2 configuration-only workspace + M19 PR3 product-owned result model | Configuration-only workspace controls are implemented/merged; PR3 deterministic platform engagement result model is implemented over selected platforms/configuration; PR4 dashboard redesign/upgrade is not started/blocked. |
+| Simulation Readiness | PR4 implemented; report upgrade not started / blocked | M19 PR2 configuration-only workspace + M19 PR3 product-owned result model + M19 PR4 executive insight dashboard | Configuration-only workspace controls are implemented/merged; deterministic platform engagement results and the executive insight dashboard are implemented for reviewed offline results; PR5 report upgrade is not started/blocked. |
 | Trust | GO WITH CONDITIONS | M17 PR5 closeout | Synthetic/offline notices, safety boundaries, Low directional confidence, and blocked production claims remain explicit; human review is required. |
 | Transparency | GO WITH CONDITIONS | M17 PR5 closeout | Formula/source/evidence-tier/confidence, assumptions, limitations, evidence gaps, and next evidence steps remain visible. |
 | Release Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Required validation/review gates support controlled review only; not production launch readiness. |
@@ -492,9 +492,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; PR4 dashboard redesign/upgrade is not started/blocked.
+Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; M19 PR4 Executive Insight Dashboard is implemented on the current PR branch. PR5 report upgrade remains not started/blocked; no backend, SocialSense, or report redesign scope is included.
 
-Recommended option: keep PR3 bounded to the product-owned synthetic/offline result model and do not start PR4 dashboard redesign/upgrade until separately approved.
+Recommended option: keep PR4 bounded to the product-owned Executive Insight Dashboard over reviewed offline results and do not start PR5 report upgrade/report redesign until separately approved.
 
 Alternative options if priorities change:
 
@@ -531,3 +531,13 @@ Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_
 - Health dashboard reflects Product Launch vertical slice readiness.
 - Route count, tests/build status, generated fixture readiness, and safety posture are explicit.
 - Dashboard is honest that outputs are generated offline samples, not production predictions.
+
+## M19 PR4 Executive Insight Dashboard
+
+- Status: PR4 implemented.
+- Scope: Executive Insight Dashboard in current result/dashboard view only.
+- Inputs: PR1 user-entered assumptions, PR2 submitted Simulation Configuration snapshot, PR3 Platform Engagement Result Model, and existing offline fixture.
+- KPI: Executive Insight Cards, Platform Comparison, Evidence Visualization, and Decision Guidance render with Thai default and English secondary copy.
+- Safety: synthetic/offline, configuration-only, not live, not measured, not a forecast, and not a launch decision.
+- PR5 report upgrade not started / blocked; no report/export redesign.
+- Architecture Gate: Not Triggered; no SocialSense changes.

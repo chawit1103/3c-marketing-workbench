@@ -21,6 +21,7 @@ import {
   type SimulationConfiguration,
   type SimulationProfile,
 } from './product/simulationConfig';
+import { buildExecutiveInsights, type ExecutiveInsights } from './product/executiveInsights';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
@@ -1747,26 +1748,27 @@ function UnavailableReferenceView({ kind, id }: { kind: 'Run' | 'Export'; id?: s
 
 export function HealthView() {
   const kpis = [
-    ['Translation Completeness', 'Reviewed core UI copy is translated for the M18 screens; remaining mixed-language fragments stay visible for review rather than being claimed complete.'],
-    ['Glossary Consistency', 'Product terms follow the M18 glossary for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
+    ['Translation Completeness', 'Reviewed core UI copy is translated for current product screens; known mixed-language fragments remain visible for review rather than being claimed complete.'],
+    ['Glossary Consistency', 'Product terms stay consistent for Campaign, Evidence, Confidence, Recommendation, Journey, Dashboard, Report, Export, and Review.'],
     ['Thai UX Quality', 'Thai copy is short, professional, executive-readable, and avoids unnecessary technical language.'],
     ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
     ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
+    ['Executive Insight Dashboard', 'Executive insight dashboard is available for reviewed offline results from submitted assumptions, configuration snapshots, and synthetic platform engagement signals.'],
+    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not generate downloadable files.'],
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
-    ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline, configuration-owned result contract. PR4 dashboard redesign/upgrade is not started and remains blocked; no SocialSense runtime, live measurement, or production claim.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, information architecture, workflow, or design-system redesign. The product-owned synthetic/offline engagement model and executive insight dashboard are available for reviewed offline results; no SocialSense runtime, live measurement, or production claim is included.'],
   ];
 
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="health-title">
       <div className="card">
-        <p className="eyebrow">Product health</p>
-        <h1 id="health-title">M18 Thai-first Internationalization</h1>
-        <p>M18 makes Thai the default UI language, keeps English available with fallback behavior, and tracks remaining mixed-language review gaps without backend or SocialSense changes.</p>
+        <p className="eyebrow">Current product status</p>
+        <h1 id="health-title">Product health</h1>
+        <p>Executive insight dashboard is available for reviewed offline results. Report/export upgrade remains out of scope until a separate kickoff.</p>
       </div>
-      <section className="grid two-col" aria-label="M18 KPI dashboard">
+      <section className="grid two-col" aria-label="Product health status">
         {kpis.map(([title, description]) => (
           <ObjectiveCard key={title} title={title} description={description} status={title === 'Engineering KPI' ? 'review' : 'ready'} />
         ))}
@@ -1825,6 +1827,17 @@ function ReferenceResults({
   };
   const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(() => buildAssumptionRows(form), [form]);
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const executiveInsights = useMemo(() => buildExecutiveInsights({
+    fixture,
+    form: {
+      brand: form.brand,
+      campaignMessage: form.campaignMessage,
+      audiences: form.audiences,
+      platforms: form.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+  }), [fixture, form, simulationConfig, platformEngagement]);
 
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
@@ -1914,6 +1927,7 @@ function ReferenceResults({
       ) : null}
 
       <PlatformEngagementPanel result={platformEngagement} />
+      <ExecutiveInsightDashboard insights={executiveInsights} />
 
       <div className="grid three-col">
         {fixture.cards.map((card: FixtureCard) => (
@@ -1931,6 +1945,116 @@ function ReferenceResults({
           <p>{t(fixture.exports.executiveSummaryPreview)}</p>
         </div>
       </div>
+    </section>
+  );
+}
+
+function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }) {
+  const { language, t } = useI18n();
+  const localizeCardValue = (card: ExecutiveInsights['insightCards'][number]) => {
+    if (language === 'en') {
+      return card.value;
+    }
+    if (card.title === 'Configuration scope') {
+      return card.value
+        .replace('platforms /', 'แพลตฟอร์ม /')
+        .replace('platform /', 'แพลตฟอร์ม /')
+        .replace('synthetic participants', 'ผู้เข้าร่วมสังเคราะห์');
+    }
+    if (card.title === 'Platform planning cue') {
+      return card.value.replace('leads synthetic reaction index', 'นำดัชนีปฏิกิริยาเชิงสังเคราะห์');
+    }
+    return t(card.value);
+  };
+  const localizeCardDetail = (card: ExecutiveInsights['insightCards'][number]) => {
+    if (card.title === 'Review assumption snapshot') {
+      return card.detail;
+    }
+    if (language === 'th' && card.title === 'Configuration scope') {
+      return card.detail
+        .replace('Evidence depth:', 'ระดับหลักฐาน:')
+        .replace('configuration source:', 'แหล่งที่มาการตั้งค่า:')
+        .replace('standard', 'มาตรฐาน')
+        .replace('custom', 'กำหนดเอง')
+        .replace('preset', 'ค่าตั้งต้น');
+    }
+    if (language === 'th' && card.title === 'Platform planning cue') {
+      return card.detail
+        .replace('Average synthetic reaction index', 'ค่าเฉลี่ยดัชนีปฏิกิริยาเชิงสังเคราะห์')
+        .replace('across selected platforms only.', 'เฉพาะแพลตฟอร์มที่เลือกเท่านั้น');
+    }
+    return t(card.detail);
+  };
+  const localizeEvidenceDetail = (item: ExecutiveInsights['evidenceVisualization'][number]) => {
+    if (item.detailType === 'configurationStatus') {
+      const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
+      return `${t('Selected platforms')}: ${selectedLabels}; ${t('runtimeStatus remains configuration-only')}.`;
+    }
+    if (item.detailFragments?.length) {
+      return item.detailFragments.map((fragment) => t(fragment)).join(' ');
+    }
+    return t(item.detail);
+  };
+  return (
+    <section className="card executive-insight-dashboard" aria-label={t('Executive Insight Dashboard')}>
+      <p className="eyebrow">{t('Executive Insight Dashboard')}</p>
+      <h3>{t('Executive insight layer for reviewed offline results')}</h3>
+      <p>{t('Built from user review assumptions, submitted simulation configuration, and synthetic platform engagement results only.')}</p>
+
+      <section aria-label={t('Executive Insight Cards')}>
+        <p className="eyebrow">{t('Executive Insight Cards')}</p>
+        <div className="grid four-col executive-kpi-grid">
+          {insights.insightCards.map((card) => (
+            <article className="executive-kpi-card" key={card.title}>
+              <p className="eyebrow">{t(card.title)}</p>
+              <h4>{localizeCardValue(card)}</h4>
+              <p>{localizeCardDetail(card)}</p>
+              <p className="help-text">{t('Source')}: {t(card.source)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Platform Comparison')}>
+        <p className="eyebrow">{t('Platform Comparison')}</p>
+        <h4>{t('Selected-platform planning cues only')}</h4>
+        <div className="grid three-col">
+          {insights.platformComparison.map((platform) => (
+            <article className="metric-card" key={platform.platformKey}>
+              <p className="eyebrow">{platform.platform}</p>
+              <h4>{platform.syntheticReactionIndex}/100</h4>
+              <p>{t('Synthetic participants')}: {platform.syntheticParticipants}</p>
+              <p>{t('Synthetic reach index')}: {platform.syntheticReachIndex}/100</p>
+              <p className="help-text">{t('submitted configuration snapshot')}</p>
+              <p className="help-text">{t(platform.interpretation)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Evidence Visualization')}>
+        <p className="eyebrow">{t('Evidence Visualization')}</p>
+        <div className="grid two-col align-start">
+          {insights.evidenceVisualization.map((item) => (
+            <article className="evidence-critical-card" key={item.title}>
+              <p className="eyebrow">{t(item.status)}</p>
+              <h4>{t(item.title)}</h4>
+              <p>{localizeEvidenceDetail(item)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={t('Decision Guidance')}>
+        <p className="eyebrow">{t('Decision Guidance')}</p>
+        <ul className="insight-list">
+          {insights.decisionGuidance.map((item) => (
+            <li key={item.title}>
+              <strong>{t(item.title)}</strong>: {t(item.reviewStatus)} — {t(item.guidance)}
+            </li>
+          ))}
+        </ul>
+      </section>
     </section>
   );
 }

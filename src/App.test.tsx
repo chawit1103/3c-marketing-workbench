@@ -84,7 +84,7 @@ describe('M18 Thai-first internationalization', () => {
     ['/workbench/creative-comparison', 'Creative Comparison', 'เปรียบเทียบงานสร้างสรรค์'],
     ['/runs/sample-run', 'Product Launch Results', 'ผลลัพธ์การเปิดตัวสินค้า (Product Launch)'],
     ['/exports/sample-run', 'Export Readiness Preview', 'ตัวอย่างความพร้อมสำหรับส่งออก'],
-    ['/health', 'M18 Thai-first Internationalization', 'M18 ภาษาไทยเป็นหลัก'],
+    ['/health', 'Product health', 'สถานะผลิตภัณฑ์'],
   ])('renders Thai and English labels for %s', (pathname, englishHeading, thaiHeading) => {
     const rendered = renderAt(pathname, 'th');
     expect(screen.getByRole('heading', { name: thaiHeading })).toBeInTheDocument();
@@ -183,6 +183,42 @@ describe('M18 Thai-first internationalization', () => {
     ]) {
       expect(visibleText).not.toContain(blocker);
     }
+  });
+
+  it('renders A/B workflow steps in Thai by default while preserving English secondary copy', () => {
+    renderAt('/workbench/ab-experiment', 'th');
+
+    const workflowSteps = screen.getByRole('region', { name: 'ขั้นตอนเวิร์กโฟลว์อ้างอิง' });
+    expect(workflowSteps).toHaveTextContent('แดชบอร์ดเปรียบเทียบ');
+    expect(workflowSteps).not.toHaveTextContent('Comparison Dashboard');
+
+    cleanup();
+    renderAt('/workbench/ab-experiment', 'en');
+    expect(screen.getByRole('region', { name: 'Reference workflow steps' })).toHaveTextContent('Comparison Dashboard');
+  });
+
+  it('localizes PR4 evidence visualization limitation and gap fragments for arbitrary platform selections', () => {
+    const form = renderAt('/workbench', 'th').getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.click(within(form).getByLabelText('Facebook'));
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByLabelText('LINE'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
+    fireEvent.click(within(form).getByLabelText('X / Twitter'));
+    fireEvent.click(within(form).getAllByRole('button', { name: 'รันการจำลองออฟไลน์' }).at(-1)!);
+
+    const evidenceSection = screen.getByRole('region', { name: 'ภาพหลักฐาน' });
+    expect(evidenceSection).toHaveTextContent('YouTube, X / Twitter');
+    expect(evidenceSection).toHaveTextContent('เป็นเพียงตัวอย่างออฟไลน์ที่ตรวจทานแล้ว');
+    expect(evidenceSection).toHaveTextContent('ไม่ได้ใช้ API แพลตฟอร์มโซเชียลจริง');
+    expect(evidenceSection).not.toHaveTextContent('Reviewed offline sample only');
+    expect(evidenceSection).not.toHaveTextContent('No real social platform APIs');
+    expect(evidenceSection).not.toHaveTextContent('Synthetic/offline only; no live data or field evidence is implied.');
+    expect(evidenceSection).not.toHaveTextContent('Treat provenance and limitations as blockers before external use.');
+
+    cleanup();
+    renderAt('/runs/sample-run', 'en');
+    expect(screen.getByRole('region', { name: 'Evidence Visualization' })).toHaveTextContent('Reviewed offline sample only');
   });
 
   it('renders campaign workspace Thai mode without known English smoke blocker fragments', () => {
@@ -444,12 +480,16 @@ describe('M18 Thai-first internationalization', () => {
   it('uses honest Health KPI language and avoids overclaiming language coverage', () => {
     renderAt('/health', 'en');
 
-    const kpiDashboard = screen.getByRole('region', { name: 'M18 KPI dashboard' });
-    expect(kpiDashboard).toHaveTextContent('Reviewed core UI');
-    expect(kpiDashboard).toHaveTextContent('Language Coverage');
-    expect(kpiDashboard).toHaveTextContent('known mixed-language fragments remain visible for review');
-    expect(kpiDashboard).not.toHaveTextContent('all UI copy');
-    expect(kpiDashboard).not.toHaveTextContent('fully translated');
+    const healthStatus = screen.getByRole('region', { name: 'Product health status' });
+    expect(healthStatus).toHaveTextContent('Reviewed core UI');
+    expect(healthStatus).toHaveTextContent('known mixed-language fragments remain visible for review');
+    expect(healthStatus).toHaveTextContent('Executive insight dashboard is available for reviewed offline results');
+    expect(healthStatus).toHaveTextContent('Report/export upgrade remains out of scope');
+    expect(healthStatus).not.toHaveTextContent('all UI copy');
+    expect(healthStatus).not.toHaveTextContent('fully translated');
+    for (const internalTerm of ['M18', 'M19', 'PR3', 'PR4', 'PR5']) {
+      expect(healthStatus).not.toHaveTextContent(internalTerm);
+    }
   });
 
   it('localizes PR3 Platform Engagement comments and themes in Thai mode without English fragments', () => {
@@ -606,7 +646,7 @@ describe('M18 Thai-first internationalization', () => {
   it('fully localizes Health KPI copy and technical boundaries in Thai mode', () => {
     renderAt('/health', 'th');
 
-    const kpiDashboard = screen.getByRole('region', { name: 'แดชบอร์ด KPI M18' });
+    const healthStatus = screen.getByRole('region', { name: 'สถานะสุขภาพผลิตภัณฑ์' });
     const visibleText = document.body.textContent ?? '';
     const accessibleText = Array.from(document.body.querySelectorAll('[aria-label]'))
       .map((element) => element.getAttribute('aria-label') ?? '')
@@ -622,12 +662,15 @@ describe('M18 Thai-first internationalization', () => {
       'ส่งออก',
       'ตรวจทาน',
       'ข้อความหน้าจอหลักที่ตรวจทานแล้ว',
+      'ผลลัพธ์ออฟไลน์ที่ตรวจทานแล้ว',
+      'การอัปเกรดรายงาน/การส่งออกยังอยู่นอกขอบเขต',
     ]) {
-      expect(kpiDashboard).toHaveTextContent(thaiTerm);
+      expect(healthStatus).toHaveTextContent(thaiTerm);
     }
 
     for (const blocker of [
       'Product terms follow the M18 glossary',
+      'Product terms stay consistent',
       'ไทย copy is short',
       'English remains the fallback',
       'Dashboard, executive summary',
@@ -647,6 +690,11 @@ describe('M18 Thai-first internationalization', () => {
       'auth',
       'live API',
       'IA',
+      'M18',
+      'M19',
+      'PR3',
+      'PR4',
+      'PR5',
       'all UI copy',
       'fully translated',
     ]) {
@@ -666,7 +714,7 @@ describe('App shell routes', () => {
     ['/workbench/creative-comparison', 'Creative Comparison'],
     ['/runs/run-123', 'Run unavailable'],
     ['/exports/run-123', 'Export unavailable'],
-    ['/health', 'M18 Thai-first Internationalization'],
+    ['/health', 'Product health'],
   ])('renders %s with safety labels', (pathname, heading) => {
     renderAt(pathname);
 
@@ -1137,30 +1185,35 @@ describe('M12 Campaign Workspace trust and validation', () => {
     expect(transparency).toHaveTextContent('No live execution');
   });
 
-  it('shows M18 Thai-first i18n KPIs without stale M7 wording', () => {
+  it('shows product-facing Health status without internal milestone wording', () => {
     renderAt('/health');
 
-    expect(screen.getByRole('heading', { name: 'M18 Thai-first Internationalization' })).toBeInTheDocument();
-    expect(screen.getByText(/Thai the default UI language/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Product health' })).toBeInTheDocument();
+    const healthStatus = screen.getByRole('region', { name: 'Product health status' });
+    expect(screen.getAllByText(/Executive insight dashboard is available for reviewed offline results/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Report\/export upgrade remains out of scope/i).length).toBeGreaterThan(0);
     for (const kpi of [
       'Translation Completeness',
       'Glossary Consistency',
       'Thai UX Quality',
       'English UX Quality',
       'Executive Readability',
+      'Executive Insight Dashboard',
+      'Report/export scope',
       'Safety Copy Quality',
       'Terminology Consistency',
-      'Language Coverage',
       'Engineering KPI',
     ]) {
-      expect(screen.getByRole('region', { name: 'M18 KPI dashboard' })).toHaveTextContent(kpi);
+      expect(healthStatus).toHaveTextContent(kpi);
     }
-    expect(document.body.textContent).not.toContain('M7 A/B Experiment workflow readiness');
-    expect(document.body.textContent).not.toContain('M18 planned only');
-    expect(document.body.textContent).not.toContain('runtime result model remains not begun');
-    expect(document.body.textContent).not.toContain('PR3 remains blocked');
-    expect(document.body.textContent).toContain('PR3 Platform Engagement Result Model is implemented');
-    expect(document.body.textContent).toContain('PR4 dashboard redesign/upgrade is not started and remains blocked');
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).not.toContain('M7 A/B Experiment workflow readiness');
+    expect(visibleText).not.toContain('runtime result model remains not begun');
+    for (const internalTerm of ['M18', 'M19', 'PR3', 'PR4', 'PR5']) {
+      expect(visibleText).not.toContain(internalTerm);
+    }
+    expect(visibleText).toContain('executive insight dashboard are available for reviewed offline results');
+    expect(visibleText).toContain('Report/export upgrade remains out of scope');
   });
 });
 
@@ -1552,6 +1605,158 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(englishEngagement).toHaveTextContent('Synthetic platform engagement results');
     expect(englishEngagement).toHaveTextContent('Synthetic comments');
     expect(englishEngagement).toHaveTextContent('Cross-platform summary');
+  });
+});
+
+describe('M19 PR4 Executive Insight Dashboard', () => {
+  it.each([
+    ['/workbench', 'Product Launch setup'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
+    ['/workbench/ab-experiment', 'A/B Experiment setup'],
+    ['/workbench/creative-comparison', 'Creative Comparison setup'],
+  ])('keeps all four workflows rendering and running safe current result paths with executive insights for %s', (pathname, formName) => {
+    renderAt(pathname, 'en');
+    const form = screen.getByRole('form', { name: formName });
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Executive Insight Cards');
+    expect(insights).toHaveTextContent('Platform Comparison');
+    expect(insights).toHaveTextContent('Evidence Visualization');
+    expect(insights).toHaveTextContent('Decision Guidance');
+    expect(insights).toHaveTextContent('synthetic/offline');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('approve launch');
+  });
+
+  it('derives insight cards and platform comparison from submitted assumptions and configuration after Run', () => {
+    const form = renderWorkbench();
+    fireEvent.change(within(form).getByLabelText('Campaign name or brand'), { target: { value: 'Acme Halo' } });
+    fireEvent.change(within(form).getByLabelText('Campaign Message'), { target: { value: 'Reviewed message for executive insight.' } });
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '120' } });
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Acme Halo');
+    expect(insights).toHaveTextContent('Reviewed message for executive insight.');
+    expect(insights).toHaveTextContent('2 platforms / 200 synthetic participants');
+    expect(insights).toHaveTextContent('Facebook');
+    expect(insights).toHaveTextContent('LINE');
+    expect(insights).not.toHaveTextContent('TikTok');
+    expect(insights).not.toHaveTextContent('Instagram');
+    expect(insights).not.toHaveTextContent('Synthetic participants: 200');
+  });
+
+  it('shows evidence/provenance/limitations/configuration status without live runtime claims', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).toHaveTextContent('Provenance');
+    expect(insights).toHaveTextContent('synthetic/offline provenance');
+    expect(insights).toHaveTextContent('Configuration status');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('Limitations');
+    expect(insights).toHaveTextContent('Evidence gaps');
+    expect(insights.textContent?.toLowerCase()).not.toContain('live api access');
+    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption');
+    expect(insights.textContent?.toLowerCase()).not.toContain('consumed by runtime');
+  });
+
+  it('keeps decision guidance reviewed and blocks prediction, confidence guarantee, or launch approval wording', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const guidance = within(screen.getByRole('region', { name: 'Executive Insight Dashboard' })).getByRole('region', {
+      name: 'Decision Guidance',
+    });
+    expect(guidance).toHaveTextContent('Reviewed next step');
+    expect(guidance).toHaveTextContent('human review required');
+    expect(guidance).toHaveTextContent('not a launch decision');
+    for (const forbidden of ['predict', 'guarantee', 'accuracy', 'approve launch', 'launch approval', 'persuasion optimization']) {
+      expect(guidance.textContent?.toLowerCase()).not.toContain(forbidden);
+    }
+  });
+
+  it('localizes executive insight dashboard in Thai by default and switches to English without mixed-language Thai screen', () => {
+    renderAt('/workbench', 'th');
+    const thaiForm = screen.getByRole('form', { name: 'ตั้งค่า Product Launch' });
+    fireEvent.click(within(thaiForm).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
+    expect(thaiInsights).toHaveTextContent('การ์ดอินไซต์ผู้บริหาร');
+    expect(thaiInsights).toHaveTextContent('เปรียบเทียบแพลตฟอร์ม');
+    expect(thaiInsights).toHaveTextContent('ภาพหลักฐาน');
+    expect(thaiInsights).toHaveTextContent('คำแนะนำเพื่อการตัดสินใจ');
+    expect(thaiInsights).not.toHaveTextContent('Executive Insight Cards');
+    expect(thaiInsights).not.toHaveTextContent('Evidence Visualization');
+    expect(thaiInsights).not.toHaveTextContent('Decision Guidance');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(englishInsights).toHaveTextContent('Executive Insight Cards');
+    expect(englishInsights).toHaveTextContent('Evidence Visualization');
+    expect(englishInsights).toHaveTextContent('Decision Guidance');
+  });
+
+  it('localizes arbitrary PR4 configuration status platform combinations in Thai and English', () => {
+    const payload = encodeURIComponent(JSON.stringify({
+      v: 1,
+      runId: 'sample-run',
+      form: { platforms: ['YouTube', 'Instagram', 'X / Twitter'] },
+      editedFields: ['platforms'],
+      simulationConfig: {
+        simulationProfile: 'custom',
+        selectedPlatforms: ['youtube', 'instagram', 'x'],
+        platformAllocations: {
+          facebook: 80,
+          tiktok: 80,
+          line: 80,
+          youtube: 90,
+          instagram: 70,
+          x: 50,
+        },
+        platformAllocationDrafts: {
+          facebook: '80',
+          tiktok: '80',
+          line: '80',
+          youtube: '90',
+          instagram: '70',
+          x: '50',
+        },
+        evidenceDepth: 'standard',
+        configurationSource: 'custom',
+        runtimeStatus: 'configuration_only',
+      },
+    }));
+
+    renderAt(`/runs/sample-run?assumptions=${payload}`, 'th');
+
+    const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
+    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, Instagram, X / Twitter; สถานะยังเป็นการตั้งค่าเท่านั้น.');
+    expect(thaiInsights).not.toHaveTextContent('Selected platforms:');
+    expect(thaiInsights).not.toHaveTextContent('runtimeStatus remains configuration-only');
+
+    fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
+
+    const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, Instagram, X / Twitter; runtimeStatus remains configuration-only.');
+  });
+
+  it('does not leak report redesign or export upgrade scope into the result dashboard', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
+    expect(insights).not.toHaveTextContent('Executive report preview');
+    expect(insights).not.toHaveTextContent('Export format readiness');
+    expect(insights).not.toHaveTextContent('PDF');
+    expect(insights).not.toHaveTextContent('PowerPoint');
+    expect(insights).not.toHaveTextContent('download');
   });
 });
 

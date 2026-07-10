@@ -1,6 +1,6 @@
 # M19 PR3 Platform Engagement Result Model
 
-Status: M19 PR3 implemented on branch `m19-pr3-platform-engagement-model`. PR4 dashboard redesign/upgrade is not started and remains blocked until a separate explicit PR4 kickoff.
+Status: M19 PR3 is implemented as a product-owned synthetic/offline platform engagement result model. M19 PR4 Executive Insight Dashboard is implemented in the current PR branch; PR5 report upgrade remains not started/blocked until a separate explicit kickoff.
 
 Architecture Gate: Not Triggered.
 
@@ -8,7 +8,7 @@ Why: PR3 is delivered entirely inside 3C as a product-owned TypeScript result co
 
 ## Scope
 
-PR3 adds a compact Platform Engagement Result Model to the current existing dashboard/export surfaces without starting PR4 redesign.
+PR3 adds a compact Platform Engagement Result Model to the existing dashboard/export surfaces. The current PR4 branch implements the separate Executive Insight Dashboard layer, while PR5 report upgrade remains out of scope.
 
 Included:
 
@@ -25,7 +25,7 @@ Included:
 
 Excluded:
 
-- No PR4 dashboard redesign/upgrade.
+- No PR4 dashboard redesign/upgrade was included in the historical PR3 slice.
 - No backend endpoint.
 - No persistence.
 - No auth.
@@ -127,7 +127,7 @@ PR3 tests cover:
 ## KPI/status
 
 - PR3 Platform Engagement Result Model: Implemented.
-- PR4 dashboard redesign/upgrade: Not started / blocked until separate kickoff.
+- M19 PR4 Executive Insight Dashboard: Implemented in the current PR branch.
 - Architecture Gate: Not Triggered.
 - SocialSense changes: None.
 - Backend/live/API/persistence/auth changes: None.
