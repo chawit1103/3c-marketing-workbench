@@ -270,6 +270,11 @@ REQUIRED_M19_PR2_PHRASES = [
     "no backend endpoint",
     "no SocialSense changes",
     "no MarketingSimulation changes",
+    "merged in PR #34",
+    "m19-pr2-localization-correction",
+    "M19 PR1 and PR2 configuration-only work are complete/in correction",
+    "runtime synthetic engagement/platform engagement result model remains not begun",
+    "PR3 remains blocked until PR2 correction post-merge validation passes",
 ]
 
 M19_PR2_ALLOWED_CHANGED_PATHS = {
@@ -278,6 +283,8 @@ M19_PR2_ALLOWED_CHANGED_PATHS = {
     "scripts/docs_smoke.py",
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
     "docs/product/GLOSSARY.md",
     "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
     "src/App.test.tsx",
@@ -1754,6 +1761,29 @@ def main() -> None:
             ]
             if missing_m19_pr2_phrases:
                 fail("M19 PR2 docs missing simulation configuration phrases: " + ", ".join(missing_m19_pr2_phrases))
+            m19_pr2_status_text = "\n".join([readme, agents, m19_pr2_text])
+            m19_pr2_localization_status_text = "\n".join(
+                [
+                    m18_docs_by_path["docs/product/TRANSLATION_STYLE_GUIDE.md"],
+                    m18_docs_by_path["docs/product/GLOSSARY.md"],
+                    m17_docs_by_path.get("docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md", ""),
+                ]
+            )
+            stale_m19_pr2_status_hits = [
+                phrase
+                for phrase in [
+                    "M19 has not begun",
+                    "Do not start Synthetic Social Platform Engagement Simulation until M18 closes",
+                    "Status: M18 current implementation milestone",
+                    "M19 PR2 Simulation Configuration is in local continuation on branch `m19-pr2-simulation-configuration`",
+                    "Status: M19 PR2 implementation slice on `m19-pr2-simulation-configuration`",
+                    "M19 must not begin implementation until the M18 closeout is merged",
+                    "M19 must not begin until M18 closes",
+                ]
+                if phrase in m19_pr2_status_text or phrase in m19_pr2_localization_status_text
+            ]
+            if stale_m19_pr2_status_hits:
+                fail("M19 PR2 docs contain stale branch/status wording: " + ", ".join(stale_m19_pr2_status_hits))
             unexpected_m19_pr2_changes = [path for path in changed_paths if path not in M19_PR2_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr2_changes:
                 fail("M19 PR2 changed unexpected paths: " + ", ".join(unexpected_m19_pr2_changes))

@@ -1105,15 +1105,37 @@ function BarList({ title, items }: { title: string; items: { label: string; valu
   );
 }
 
-function inlineAllocationError(config: SimulationConfiguration, fallback: string): string {
+function inlineAllocationError(config: SimulationConfiguration, fallback: string, language: Language): string {
   const invalidPlatform = config.selectedPlatforms.find((platform) => {
     const draft = config.platformAllocationDrafts[platform].trim();
     return !/^\d+$/.test(draft) || Number(draft) < PLATFORM_ALLOCATION_LIMITS.min || Number(draft) > PLATFORM_ALLOCATION_LIMITS.max;
   });
   if (!invalidPlatform) {
-    return fallback;
+    return translate(fallback, language);
   }
-  return `${PLATFORM_LABELS[invalidPlatform]} must be a whole number between ${PLATFORM_ALLOCATION_LIMITS.min} and ${PLATFORM_ALLOCATION_LIMITS.max}.`;
+  const platformLabel = PLATFORM_LABELS[invalidPlatform];
+  if (language === 'th') {
+    return `${platformLabel} ต้องเป็นจำนวนเต็มระหว่าง ${PLATFORM_ALLOCATION_LIMITS.min} ถึง ${PLATFORM_ALLOCATION_LIMITS.max}`;
+  }
+  return `${platformLabel} must be a whole number between ${PLATFORM_ALLOCATION_LIMITS.min} and ${PLATFORM_ALLOCATION_LIMITS.max}.`;
+}
+
+function simulationProfileAriaLabel(label: string, language: Language): string {
+  return translate(label, language);
+}
+
+function platformUseAriaLabel(platformLabel: string, language: Language): string {
+  if (language === 'th') {
+    return `ใช้ ${platformLabel} ในโปรไฟล์การจำลอง`;
+  }
+  return `Use ${platformLabel} in simulation profile`;
+}
+
+function platformAllocationAriaLabel(platformLabel: string, language: Language): string {
+  if (language === 'th') {
+    return `ผู้เข้าร่วมสังเคราะห์สำหรับ ${platformLabel}`;
+  }
+  return `Synthetic participants for ${platformLabel}`;
 }
 
 function allocationValidationErrors(config: SimulationConfiguration): string[] {
@@ -1165,7 +1187,7 @@ function SimulationConfigurationWorkspace({
                 type="radio"
                 name="simulation-profile"
                 checked={config.simulationProfile === profileKey}
-                aria-label={definition.label}
+                aria-label={simulationProfileAriaLabel(definition.label, language)}
                 onChange={() => onProfileChange(profileKey)}
               />
               <span>{t(definition.label)}</span>
@@ -1192,7 +1214,7 @@ function SimulationConfigurationWorkspace({
                     id={`use-${platform}`}
                     type="checkbox"
                     checked={isSelected}
-                    aria-label={`Use ${label} in simulation profile`}
+                    aria-label={platformUseAriaLabel(label, language)}
                     onChange={() => onSelectedPlatformToggle(platform)}
                   />
                   {t('Use in simulation profile')}
@@ -1201,7 +1223,7 @@ function SimulationConfigurationWorkspace({
                   <span>{label} {t('Synthetic Participants')}</span>
                   <input
                     id={`allocation-${platform}`}
-                    aria-label={`Synthetic participants for ${label}`}
+                    aria-label={platformAllocationAriaLabel(label, language)}
                     inputMode="numeric"
                     value={config.platformAllocationDrafts[platform]}
                     onChange={(event) => onAllocationChange(platform, event.target.value)}
@@ -1225,7 +1247,7 @@ function SimulationConfigurationWorkspace({
         </select>
         {inlineErrors.length > 0 ? (
           <div className="error-state form-errors" aria-live="polite">
-            {inlineErrors.map((error) => <p key={error}>{inlineAllocationError(config, error)}</p>)}
+            {inlineErrors.map((error) => <p key={error}>{inlineAllocationError(config, error, language)}</p>)}
           </div>
         ) : null}
       </details>
@@ -1421,7 +1443,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
       <div className="grid two-col align-start">
         <form className="card form-stack" aria-label={config.formLabel} onSubmit={(event) => event.preventDefault()}>
           <fieldset>
-            <legend>1. Campaign Details</legend>
+            <legend>{t('1. Campaign Details')}</legend>
             <div className="objective-static" aria-label={`Objective: ${config.objective}`}>
               <span className="badge badge-ready">{config.modeLabel}</span>
               <strong>{config.objectiveDescription}</strong>
@@ -1495,7 +1517,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </fieldset>
 
           <fieldset>
-            <legend>3. Audience</legend>
+            <legend>{t('3. Audience')}</legend>
             <div className="choice-grid" role="group" aria-label="Audience presets">
               {audiencePresets.map((audience) => (
                 <label className="choice-pill" key={audience}>
@@ -1511,7 +1533,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           </fieldset>
 
           <fieldset>
-            <legend>4. Platform Mix</legend>
+            <legend>{t('4. Platform Mix')}</legend>
             <div className="choice-grid" role="group" aria-label="Platform mix">
               {platformOptions.map((platform) => (
                 <label className="choice-pill" key={platform}>
@@ -1671,7 +1693,7 @@ export function HealthView() {
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
     ['Language Coverage', 'Default language is Thai; English is available during use, and known mixed-language fragments remain visible for review; no backend, persistence, SocialSense, or workflow changes.'],
-    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. M19 has not begun.'],
+    ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, IA, workflow, or design-system redesign. Configuration-only workspace is implemented; runtime result model remains not begun.'],
   ];
 
   return (
@@ -1915,16 +1937,16 @@ function ExportReview(
     : 'Source: fixture objective/config. Evidence tier: E1 synthetic/offline fixture. Confidence: Low directional.';
   const inputSourceCopy = form
     ? (language === 'th'
-      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจาก fixture ไม่ได้คำนวณใหม่และไม่มีการเรียก live API.'
+      ? 'แหล่งที่มา: สมมติฐานรีวิวออฟไลน์ที่ผู้ใช้กรอกในเบราว์เซอร์และส่งผ่าน URL/caller payload; ผลจากข้อมูลตัวอย่างไม่ได้คำนวณใหม่และไม่มีการเรียกบริการสด.'
       : 'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.')
     : (language === 'th'
-      ? 'แหล่งที่มา: fixture.sampleInput; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
+      ? 'แหล่งที่มา: สมมติฐานจากข้อมูลตัวอย่าง; แสดงเป็นสมมติฐานสำหรับตรวจทานเท่านั้น.'
       : 'Source: fixture.sampleInput; displayed as review assumptions only.');
   const audienceSourceCopy = language === 'th'
-    ? 'แหล่งที่มา: sampleInput.audiences and audience insights. หลักฐานระดับ: E1; not measured audience engagement.'
+    ? 'แหล่งที่มา: สมมติฐานกลุ่มเป้าหมายและอินไซต์กลุ่มเป้าหมายจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การมีส่วนร่วมของกลุ่มเป้าหมายที่วัดจริง.'
     : 'Source: sampleInput.audiences and audience insights. Evidence tier: E1; not measured audience engagement.';
   const platformMixSourceCopy = language === 'th'
-    ? 'แหล่งที่มา: sampleInput.platforms and platformBreakdown. หลักฐานระดับ: E1; not live platform measurement.'
+    ? 'แหล่งที่มา: สมมติฐานแพลตฟอร์มและรายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การวัดแพลตฟอร์มจากข้อมูลสด.'
     : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
   const dashboardSnapshotFormulaCopy = language === 'th'
     ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'

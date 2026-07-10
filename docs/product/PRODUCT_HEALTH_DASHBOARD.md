@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 has not begun and must start with a terminology/remediation backlog before any Synthetic Social Platform Engagement Simulation implementation.
+Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress. Runtime synthetic engagement/platform engagement result model remains not begun; PR3 stays blocked until PR2 post-merge validation.
 
 
 ## M1 PR4 closeout
@@ -223,7 +223,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 | Executive Dashboard & Reporting | Closed as GO WITH CONDITIONS | M17 PR5 closeout + PR #28 final status correction | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, planning-only PDF/PowerPoint notices, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed. |
 | Thai-first Internationalization | Closed as GO WITH CONDITIONS | M18 closeout | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, exact/template-based localization, and tests are complete without backend/SocialSense/runtime dependency changes. |
-| Synthetic Social Platform Engagement Simulation | Not begun | M19 gated future milestone | M19 must begin with a terminology/remediation backlog because M18 closed as GO WITH CONDITIONS; no live social APIs, scraping, production posting, credentials, private data, or production engagement claims. |
+| Synthetic Social Platform Engagement Simulation | PR2 correction in progress; runtime result model not begun | M19 PR2 configuration-only workspace + PR3 blocked | M19 PR2 configuration-only workspace is implemented/merged on this correction branch, with final review correction in progress; runtime synthetic engagement/platform engagement result model remains not begun and PR3 stays blocked until PR2 post-merge validation; no live social APIs, scraping, production posting, credentials, private data, or production engagement claims. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -272,8 +272,8 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 - Program KPIs updated: Executive Readiness, Dashboard Quality, Report Quality, Trust, Transparency, Release Readiness, Known Risks.
 - Quality gates: QA Review, Code Review, Safety Review, Product Review, UX Review, Research Review.
 - Architecture Gate: Not Triggered. Architecture Gate triggers exactly: SocialSense redesign/API change, workspace/workflow/IA/design-system redesign, backend, persistence, auth, external services, live APIs.
-- M18 Thai-first Internationalization is the current implementation milestone; M19 must not begin until M18 closes.
-- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; M18 implementation is authorized for the current milestone.
+- M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected, while the runtime synthetic engagement/platform engagement result model remains not begun and PR3 is blocked until PR2 correction post-merge validation.
+- Current blocker: production launch, budget, and winner decisions remain blocked without human review and field evidence; runtime synthetic engagement/platform engagement result-model implementation remains blocked until separately authorized after PR2 correction post-merge validation.
 
 ## M12 Campaign Workspace Trust & Validation
 
@@ -315,7 +315,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Dashboard Quality | GO WITH CONDITIONS | M17 PR5 closeout | KPI cards, sentiment comparison, evidence tiers, limitations, and human-review checklist are reviewable from fixture evidence; broader field usability remains future. |
 | Report Quality | GO WITH CONDITIONS | M17 PR5 closeout | Executive report preview, Executive JSON preview, Markdown briefing preview, assumptions, limitations, unsupported PDF/PPT notices, and human-review copy support management review only. |
 | I18N Readiness | Current implementation | M18 Thai-first i18n | Thai default, English switch, glossary, translation style guide, safety copy, and sample screen coverage are under validation |
-| Simulation Readiness | Not begun | M19 plan | Synthetic social engagement simulation remains future work and must not begin until M18 closes |
+| Simulation Readiness | PR2 correction in progress; runtime result model not begun | M19 PR2 configuration-only workspace + PR3 blocked | Configuration-only workspace controls are implemented/merged on this correction branch; runtime synthetic engagement/platform engagement result model remains not begun, and PR3 stays blocked until PR2 post-merge validation. |
 | Trust | GO WITH CONDITIONS | M17 PR5 closeout | Synthetic/offline notices, safety boundaries, Low directional confidence, and blocked production claims remain explicit; human review is required. |
 | Transparency | GO WITH CONDITIONS | M17 PR5 closeout | Formula/source/evidence-tier/confidence, assumptions, limitations, evidence gaps, and next evidence steps remain visible. |
 | Release Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Required validation/review gates support controlled review only; not production launch readiness. |
@@ -492,9 +492,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Current milestone after M17 is M18 Thai-first Internationalization. M17 is closed as GO WITH CONDITIONS for controlled executive review after PR #27 and PR #28 merged and post-merge validation passed.
+Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. The runtime synthetic engagement/platform engagement result model remains not begun, and PR3 is blocked until PR2 correction post-merge validation.
 
-Recommended option: finish M18 Thai-first glossary, content resources, frontend localization, selector, and validation as the current controlled implementation milestone. M19 must not begin until M18 closes.
+Recommended option: complete PR2 correction post-merge validation before PR3. Do not claim runtime synthetic engagement/platform engagement result-model behavior until a separately approved implementation begins.
 
 Alternative options if priorities change:
 

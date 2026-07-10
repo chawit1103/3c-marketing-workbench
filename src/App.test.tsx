@@ -570,7 +570,7 @@ describe('M18 Thai-first internationalization', () => {
     expect(accessibleText).toContain('รายการตรวจทานโดยมนุษย์ สูตรและแหล่งที่มา');
     expect(visibleText).toContain('สัญญาณจากลำดับข้อมูลตัวอย่าง');
     expect(visibleText).toContain('สูตร: ค่าแถบแพลตฟอร์ม = clampScore(100 - fixture rank index × 12)');
-    expect(visibleText).toContain('แหล่งที่มา: productLaunchFixture.platformBreakdown');
+    expect(visibleText).toContain('แหล่งที่มา: รายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง');
     expect(visibleText).toContain('ระดับหลักฐาน: E1 ข้อมูลตัวอย่างสังเคราะห์/ออฟไลน์');
   });
 
@@ -1318,6 +1318,46 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('configuration only');
   });
 
+  it('fully localizes Thai workbench step labels and simulation safety copy', () => {
+    renderAt('/workbench', 'th');
+
+    const visibleText = document.body.textContent ?? '';
+    expect(visibleText).toContain('1. รายละเอียดแคมเปญ');
+    expect(visibleText).toContain('3. กลุ่มเป้าหมาย');
+    expect(visibleText).toContain('4. สัดส่วนแพลตฟอร์ม');
+    expect(visibleText).toContain('ผลลัพธ์ปัจจุบันยังเป็นข้อมูลตัวอย่างออฟไลน์และยังไม่ได้ถูกใช้โดยระบบจำลอง');
+    expect(visibleText).toContain('ไม่ใช่การวัดการมีส่วนร่วมจริง และไม่มีการเรียกบริการสด');
+    for (const blocker of [
+      '1. Campaign Details',
+      '3. Audience',
+      '4. Platform Mix',
+      'runtime',
+      'engagement จริง',
+      'live API',
+      'API สด',
+      'not measured audience engagement',
+    ]) {
+      expect(visibleText).not.toContain(blocker);
+    }
+  });
+
+  it('localizes Thai inline allocation validation and simulation aria labels', () => {
+    const form = renderAt('/workbench', 'th').container.querySelector('form')!;
+
+    fireEvent.click(within(form).getByText('การตั้งค่าการจำลองขั้นสูง'));
+    expect(within(form).getByLabelText('ใช้ Facebook ในโปรไฟล์การจำลอง')).toBeChecked();
+    fireEvent.change(within(form).getByLabelText('ผู้เข้าร่วมสังเคราะห์สำหรับ Facebook'), { target: { value: 'abc' } });
+    fireEvent.click(within(form).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
+
+    const visibleText = document.body.textContent ?? '';
+    expect(screen.getByRole('radio', { name: 'กำหนดเอง' })).toBeChecked();
+    expect(visibleText).toContain('Facebook ต้องเป็นจำนวนเต็มระหว่าง 10 ถึง 500');
+    expect(visibleText).toContain('ใช้จำนวนเต็มเท่านั้นสำหรับการจัดสรรผู้เข้าร่วมสังเคราะห์');
+    expect(visibleText).toContain('แก้จำนวนผู้เข้าร่วมของแพลตฟอร์มที่เลือกก่อนรัน');
+    expect(visibleText).not.toContain('Facebook must be a whole number between 10 and 500.');
+    expect(visibleText).not.toContain('Use whole numbers only for synthetic participant allocation.');
+  });
+
   it('does not claim runtime consumption, live API access, or real platform users after run', () => {
     const form = renderWorkbench();
 
@@ -1430,5 +1470,20 @@ describe('Export review', () => {
       'Source: browser-entered offline review assumptions carried through the URL/caller payload; fixture result not recalculated and no live API invoked.',
     );
     expect(report).not.toHaveTextContent('Source: fixture.sampleInput; displayed as review assumptions only.');
+  });
+
+  it('keeps Thai report and source copy free of English technical API and audience fragments', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const report = screen.getByRole('region', { name: 'ตัวอย่างรายงานผู้บริหาร' });
+    const reportText = report.textContent ?? '';
+
+    expect(reportText).toContain('แหล่งที่มา: สมมติฐานกลุ่มเป้าหมายและอินไซต์กลุ่มเป้าหมายจากข้อมูลตัวอย่าง');
+    expect(reportText).toContain('ไม่ใช่การมีส่วนร่วมของกลุ่มเป้าหมายที่วัดจริง');
+    expect(reportText).not.toContain('live API');
+    expect(reportText).not.toContain('API สด');
+    expect(reportText).not.toContain('sampleInput.audiences');
+    expect(reportText).not.toContain('audience insights');
+    expect(reportText).not.toContain('not measured audience engagement');
   });
 });
