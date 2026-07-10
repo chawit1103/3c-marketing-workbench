@@ -1415,6 +1415,31 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(engagement).toHaveTextContent('160');
   });
 
+  it('keeps PR3 displayed result and dashboard/export payload on submitted simulation config after unsubmitted edits', () => {
+    const form = renderWorkbench();
+
+    fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
+    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
+    fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
+
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+    expect(engagement).toHaveTextContent('Total synthetic participants240');
+    expect(engagement).toHaveTextContent('Facebook');
+    expect(engagement).toHaveTextContent('TikTok');
+    expect(engagement).toHaveTextContent('LINE');
+    expect(engagement).not.toHaveTextContent('Instagram');
+    expect(engagement).not.toHaveTextContent('Synthetic participants: 200');
+
+    for (const linkName of ['Open result dashboard', 'Open export-readiness preview']) {
+      const href = screen.getByRole('link', { name: linkName }).getAttribute('href')!;
+      const payload = JSON.parse(decodeURIComponent(new URL(href, 'http://localhost').searchParams.get('assumptions')!));
+      expect(payload.simulationConfig.selectedPlatforms).toEqual(['facebook', 'tiktok', 'line']);
+      expect(payload.simulationConfig.platformAllocations.facebook).toBe(80);
+      expect(payload.simulationConfig.selectedPlatforms).not.toContain('instagram');
+    }
+  });
+
   it('bounds transported allocation payload values before PR3 dashboard results', () => {
     const payload = encodeURIComponent(JSON.stringify({
       v: 1,

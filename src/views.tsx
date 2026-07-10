@@ -1370,6 +1370,9 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const [simulationConfig, setSimulationConfig] = useState<SimulationConfiguration>(() =>
     createDefaultSimulationConfiguration(config.defaultForm.platforms),
   );
+  const [submittedSimulationConfig, setSubmittedSimulationConfig] = useState<SimulationConfiguration>(() =>
+    createDefaultSimulationConfiguration(config.defaultForm.platforms),
+  );
   const form = useMemo<LaunchForm>(() => ({
     ...localizedDefaultForm,
     ...formOverrides,
@@ -1437,6 +1440,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
     }
     setSubmittedForm(form);
     setSubmittedEditedFields(new Set(editedFields));
+    setSubmittedSimulationConfig(simulationConfig);
     setHasRun(true);
   }
 
@@ -1448,7 +1452,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   );
   const alternateWorkflow = config.key === 'abExperiment' ? workflowConfigs.productLaunch : workflowConfigs.abExperiment;
   const alternateWorkflowHref = config.key === 'abExperiment' ? '/workbench' : '/workbench/ab-experiment';
-  const assumptionQuery = hasRun ? encodeAssumptionPayload(config.fixture.runId, submittedForm, submittedEditedFields, simulationConfig) : '';
+  const assumptionQuery = hasRun ? encodeAssumptionPayload(config.fixture.runId, submittedForm, submittedEditedFields, submittedSimulationConfig) : '';
 
   return (
     <Localized>
@@ -1667,7 +1671,7 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
           form={submittedForm}
           config={config}
           fixture={config.fixture}
-          simulationConfig={simulationConfig}
+          simulationConfig={submittedSimulationConfig}
           editedFields={submittedEditedFields}
           assumptionQuery={assumptionQuery}
           showActions
