@@ -185,6 +185,42 @@ describe('M18 Thai-first internationalization', () => {
     }
   });
 
+  it('renders A/B workflow steps in Thai by default while preserving English secondary copy', () => {
+    renderAt('/workbench/ab-experiment', 'th');
+
+    const workflowSteps = screen.getByRole('region', { name: 'ขั้นตอนเวิร์กโฟลว์อ้างอิง' });
+    expect(workflowSteps).toHaveTextContent('แดชบอร์ดเปรียบเทียบ');
+    expect(workflowSteps).not.toHaveTextContent('Comparison Dashboard');
+
+    cleanup();
+    renderAt('/workbench/ab-experiment', 'en');
+    expect(screen.getByRole('region', { name: 'Reference workflow steps' })).toHaveTextContent('Comparison Dashboard');
+  });
+
+  it('localizes PR4 evidence visualization limitation and gap fragments for arbitrary platform selections', () => {
+    const form = renderAt('/workbench', 'th').getByRole('form', { name: 'ตั้งค่า Product Launch' });
+
+    fireEvent.click(within(form).getByLabelText('Facebook'));
+    fireEvent.click(within(form).getByLabelText('TikTok'));
+    fireEvent.click(within(form).getByLabelText('LINE'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
+    fireEvent.click(within(form).getByLabelText('X / Twitter'));
+    fireEvent.click(within(form).getAllByRole('button', { name: 'รันการจำลองออฟไลน์' }).at(-1)!);
+
+    const evidenceSection = screen.getByRole('region', { name: 'ภาพหลักฐาน' });
+    expect(evidenceSection).toHaveTextContent('YouTube, X / Twitter');
+    expect(evidenceSection).toHaveTextContent('เป็นเพียงตัวอย่างออฟไลน์ที่ตรวจทานแล้ว');
+    expect(evidenceSection).toHaveTextContent('ไม่ได้ใช้ API แพลตฟอร์มโซเชียลจริง');
+    expect(evidenceSection).not.toHaveTextContent('Reviewed offline sample only');
+    expect(evidenceSection).not.toHaveTextContent('No real social platform APIs');
+    expect(evidenceSection).not.toHaveTextContent('Synthetic/offline only; no live data or field evidence is implied.');
+    expect(evidenceSection).not.toHaveTextContent('Treat provenance and limitations as blockers before external use.');
+
+    cleanup();
+    renderAt('/runs/sample-run', 'en');
+    expect(screen.getByRole('region', { name: 'Evidence Visualization' })).toHaveTextContent('Reviewed offline sample only');
+  });
+
   it('renders campaign workspace Thai mode without known English smoke blocker fragments', () => {
     renderAt('/campaign-workspace', 'th');
 

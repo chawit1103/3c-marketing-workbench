@@ -1937,6 +1937,19 @@ def main() -> None:
             ]
             if missing_m19_pr4_phrases:
                 fail("M19 PR4 docs/source missing executive insight dashboard phrases: " + ", ".join(missing_m19_pr4_phrases))
+            stale_m19_pr4_current_hits = [
+                phrase
+                for phrase in [
+                    "M19 PR3 Platform Engagement Result Model is implemented on branch `m19-pr3-platform-engagement-model`",
+                    "PR4 dashboard redesign/upgrade is not started",
+                    "PR4 dashboard redesign/upgrade is not started/blocked",
+                    "Recommended option: keep PR3 bounded",
+                    "do not start PR4 dashboard redesign/upgrade",
+                ]
+                if phrase in "\n".join([agents, roadmap, health_dashboard])
+            ]
+            if stale_m19_pr4_current_hits:
+                fail("M19 PR4 current-state docs contain stale PR3/PR4-not-started wording: " + ", ".join(stale_m19_pr4_current_hits))
             unexpected_m19_pr4_changes = [path for path in changed_paths if path not in M19_PR4_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr4_changes:
                 fail("M19 PR4 changed unexpected paths: " + ", ".join(unexpected_m19_pr4_changes))

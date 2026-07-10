@@ -45,6 +45,7 @@ export type ExecutiveEvidenceItem = {
   title: string;
   status: string;
   detail: string;
+  detailFragments?: string[];
   detailType?: 'configurationStatus';
   selectedPlatformLabels?: string[];
 };
@@ -140,11 +141,19 @@ export function buildExecutiveInsights({
         title: 'Limitations',
         status: 'limitations visible',
         detail: `${firstLimitation} Synthetic/offline only; no live data or field evidence is implied.`,
+        detailFragments: [
+          firstLimitation,
+          'Synthetic/offline only; no live data or field evidence is implied.',
+        ],
       },
       {
         title: 'Evidence gaps',
         status: 'review required',
         detail: `${firstEvidenceGap} Treat provenance and limitations as blockers before external use.`,
+        detailFragments: [
+          firstEvidenceGap,
+          'Treat provenance and limitations as blockers before external use.',
+        ],
       },
     ],
     decisionGuidance: [

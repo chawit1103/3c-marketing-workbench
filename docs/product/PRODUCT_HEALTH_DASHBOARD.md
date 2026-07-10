@@ -492,9 +492,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; PR4 dashboard redesign/upgrade is not started/blocked.
+Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; M19 PR4 Executive Insight Dashboard is implemented on the current PR branch. PR5 report upgrade remains not started/blocked; no backend, SocialSense, or report redesign scope is included.
 
-Recommended option: keep PR3 bounded to the product-owned synthetic/offline result model and do not start PR4 dashboard redesign/upgrade until separately approved.
+Recommended option: keep PR4 bounded to the product-owned Executive Insight Dashboard over reviewed offline results and do not start PR5 report upgrade/report redesign until separately approved.
 
 Alternative options if priorities change:
 

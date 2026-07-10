@@ -1990,6 +1990,9 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
       const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
       return `${t('Selected platforms')}: ${selectedLabels}; ${t('runtimeStatus remains configuration-only')}.`;
     }
+    if (item.detailFragments?.length) {
+      return item.detailFragments.map((fragment) => t(fragment)).join(' ');
+    }
     return t(item.detail);
   };
   return (
