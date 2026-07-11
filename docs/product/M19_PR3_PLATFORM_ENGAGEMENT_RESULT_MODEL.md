@@ -1,6 +1,6 @@
 # M19 PR3 Platform Engagement Result Model
 
-Status: M19 PR3 is implemented as a product-owned synthetic/offline platform engagement result model. M19 PR4 Executive Insight Dashboard is implemented in the current PR branch; M19 PR5 Executive Decision Brief is implemented; PR6 closeout remains blocked/not started.
+Status: M19 PR3 is implemented as a product-owned synthetic/offline platform engagement result model. M19 PR4 Executive Insight Dashboard is implemented; M19 PR5 Executive Decision Brief is implemented; PR6 closeout closes M19 as GO WITH CONDITIONS.
 
 Architecture Gate: Not Triggered.
 
@@ -8,7 +8,7 @@ Why: PR3 is delivered entirely inside 3C as a product-owned TypeScript result co
 
 ## Scope
 
-PR3 adds a compact Platform Engagement Result Model to the existing dashboard/export surfaces. The current PR4 branch implements the separate Executive Insight Dashboard layer, while M19 PR5 Executive Decision Brief is implemented in the existing export review surface.
+PR3 adds a compact Platform Engagement Result Model to the existing dashboard/export surfaces. PR4 implements the separate Executive Insight Dashboard layer, while M19 PR5 Executive Decision Brief is implemented in the existing export review surface.
 
 Included:
 
@@ -127,7 +127,7 @@ PR3 tests cover:
 ## KPI/status
 
 - PR3 Platform Engagement Result Model: Implemented.
-- M19 PR4 Executive Insight Dashboard: Implemented in the current PR branch.
+- M19 PR4 Executive Insight Dashboard: Implemented.
 - Architecture Gate: Not Triggered.
 - SocialSense changes: None.
 - Backend/live/API/persistence/auth changes: None.

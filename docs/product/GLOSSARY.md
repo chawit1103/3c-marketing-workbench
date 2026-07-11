@@ -1,6 +1,6 @@
 # M18 Glossary — Thai-first Product Terms
 
-Status: M18 is closed as GO WITH CONDITIONS. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete, M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract, M19 PR4 Executive Insight Dashboard is implemented, and M19 PR5 Executive Decision Brief is implemented. PR6 closeout remains blocked/not started.
+Status: M18 is closed as GO WITH CONDITIONS. M17 is closed as GO WITH CONDITIONS. M19 PR1 and PR2 configuration-only work are complete, M19 PR3 Platform Engagement Result Model is implemented as a product-owned synthetic/offline result contract, M19 PR4 Executive Insight Dashboard is implemented, and M19 PR5 Executive Decision Brief is implemented. PR6 closeout closes M19 as GO WITH CONDITIONS.
 
 Architecture Gate: Not Triggered. This glossary supports frontend-only localization and does not require backend, SocialSense, workflow, IA, design-system, persistence, auth, external service, or live API changes.
 
