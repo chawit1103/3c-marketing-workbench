@@ -2210,7 +2210,7 @@ function ExportReview(
     ? 'แหล่งที่มา: สมมติฐานแพลตฟอร์มและรายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การวัดแพลตฟอร์มจากข้อมูลสด.'
     : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
   const dashboardSnapshotFormulaCopy = language === 'th'
-    ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'
+    ? 'สูตร: แสดงการ์ดข้อมูลตัวอย่างตามที่รายงาน โดยไม่คำนวณใหม่จากข้อมูลที่กรอกในเบราว์เซอร์ แหล่งที่มา: fixture.cards.'
     : 'Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.';
   const nextReviewSourceCopy = language === 'th'
     ? `หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}; ความเชื่อมั่น: ${t('Low directional')}; ${t('review step only, not a launch or budget decision')}.`
@@ -2233,7 +2233,7 @@ function ExportReview(
           for human review only, using the synthetic/offline fixture.
         </p>
         <div className="kpi-metadata" aria-label="Export readiness formula and source">
-          <p className="help-text">{t('Formula')}: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
+          <p className="help-text">{t('Formula: supported previews filter fixture.exports.formats to JSON and Markdown only.')}</p>
           <p>{exportBasisCopy}</p>
           <p>{exportReadinessConfidenceCopy}</p>
         </div>

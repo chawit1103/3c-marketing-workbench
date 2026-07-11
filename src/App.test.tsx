@@ -1282,6 +1282,17 @@ describe('M19 PR5 Executive Decision Brief export review', () => {
     expect(thaiBrief).not.toHaveTextContent('Proceed with review');
     expect(thaiBrief).not.toHaveTextContent('Run another experiment');
 
+    const thaiExportPage = document.body.textContent ?? '';
+    for (const mixedLanguageFragment of [
+      'Platform differences are configuration-owned planning cues, not field observations.',
+      '3 platforms / 240 synthetic participants — Evidence depth: standard; configuration source: preset.',
+      'LINE leads synthetic reaction index — Average synthetic reaction index 68/100 across selected platforms only.',
+      'สูตร: supported previews filter fixture.exports.formats to JSON and Markdown only.',
+      'snapshot การตั้งค่าที่ส่งแล้ว',
+    ]) {
+      expect(thaiExportPage).not.toContain(mixedLanguageFragment);
+    }
+
     renderAt('/exports/sample-run', 'en');
     const englishBrief = screen.getByRole('region', { name: 'Executive Decision Brief' });
     expect(englishBrief).toHaveTextContent('Campaign context');
