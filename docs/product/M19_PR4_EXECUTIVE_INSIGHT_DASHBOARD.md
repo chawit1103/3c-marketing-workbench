@@ -1,6 +1,6 @@
 # M19 PR4 Executive Insight Dashboard
 
-Status: PR4 implemented on branch `m19-pr4-executive-insight-dashboard`. PR5 report upgrade not started / blocked until a separate explicit kickoff.
+Status: PR4 implemented on branch `m19-pr4-executive-insight-dashboard`. PR5 is now implemented separately as Executive Decision Brief on branch `m19-pr5-executive-decision-brief`; PR6 closeout remains blocked/not started.
 
 Architecture Gate: Not Triggered.
 
@@ -68,7 +68,7 @@ PR4 reuses the current result/dashboard surface:
 
 - Workbench run result preview shows Executive Insight Dashboard after the PR3 platform engagement panel.
 - `/runs/:runId` renders the same Executive Insight Dashboard from known offline fixtures and optional assumption/configuration payload.
-- The Export Review surface is not redesigned and PR5 is not started.
+- The Export Review surface remains the existing review surface; PR5 adds a separate Executive Decision Brief narrative there without backend, SocialSense, PDF/PPT/download, or workflow changes.
 
 ## Safety wording rules
 
@@ -134,7 +134,7 @@ PR4 tests cover:
 ## KPI/status
 
 - PR4 implemented: Executive Insight Dashboard is implemented in the current dashboard/result view.
-- PR5 report upgrade not started / blocked.
+- M19 PR5 Executive Decision Brief implemented; PR6 closeout blocked/not started.
 - Report/export redesign: not started.
 - Architecture Gate: Not Triggered.
 - SocialSense changes: None.

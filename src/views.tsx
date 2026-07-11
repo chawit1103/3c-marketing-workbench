@@ -22,6 +22,7 @@ import {
   type SimulationProfile,
 } from './product/simulationConfig';
 import { buildExecutiveInsights, type ExecutiveInsights } from './product/executiveInsights';
+import { buildExecutiveDecisionBrief, type ExecutiveDecisionBrief } from './product/executiveDecisionBrief';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
@@ -670,7 +671,7 @@ const executiveKpis = [
     metadata: [
       'Formula: fixtures whose exports.readiness equals “Ready for human review”.',
       'Source: productLaunchFixture.exports.readiness, campaignMessageFixture.exports.readiness, abExperimentFixture.exports.readiness, and creativeComparisonFixture.exports.readiness.',
-      'Evidence: preview/handoff review only, not downloadable production export.',
+      'Evidence: preview/handoff review only; no production artifact is generated.',
     ],
   },
   {
@@ -1718,7 +1719,7 @@ export function ExportReviewView({ runId }: { runId?: string }) {
       <div className="card card-accent">
         <p className="eyebrow">Run {runId ?? config.fixture.runId}</p>
         <h1 id="export-title">Export Readiness Preview</h1>
-        <p>Preview format readiness and review notes only. No downloadable file is generated here.</p>
+        <p>Review preview and handoff notes only, based on the synthetic offline fixture.</p>
       </div>
       <FixtureTransparency />
       <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} simulationConfig={assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration((assumptionPayload?.form ?? config.defaultForm).platforms)} />
@@ -1754,7 +1755,7 @@ export function HealthView() {
     ['English UX Quality', 'English remains the fallback language and preserves existing product meaning for review users.'],
     ['Executive Readability', 'Dashboard, executive summary, and export copy remain readable for management review.'],
     ['Executive Insight Dashboard', 'Executive insight dashboard is available for reviewed offline results from submitted assumptions, configuration snapshots, and synthetic platform engagement signals.'],
-    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not generate downloadable files.'],
+    ['Report/export scope', 'Report/export upgrade remains out of scope; the current export readiness preview is review-only and does not create production artifacts.'],
     ['Safety Copy Quality', 'Synthetic, evidence, confidence, limitation, and human-review warnings keep their original safety meaning in both languages.'],
     ['Terminology Consistency', 'Language switching keeps terminology stable across Home, Workbench, Dashboard, Executive Summary, Export Review, and Health screens.'],
     ['Engineering KPI', 'No Architecture Gate; no SocialSense, backend, persistence, auth, external service, live API, information architecture, workflow, or design-system redesign. The product-owned synthetic/offline engagement model and executive insight dashboard are available for reviewed offline results; no SocialSense runtime, live measurement, or production claim is included.'],
@@ -2126,20 +2127,33 @@ function ExportReview(
   const { language, t } = useI18n();
   const sourceSampleInput = form ? formToFixtureSampleInput(form) : fixture.sampleInput;
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const executiveInsights = useMemo(() => buildExecutiveInsights({
+    fixture,
+    form: {
+      brand: form?.brand ?? sourceSampleInput.brand,
+      campaignMessage: form?.campaignMessage ?? sourceSampleInput.campaign_message,
+      audiences: sourceSampleInput.audiences,
+      platforms: sourceSampleInput.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement]);
+  const executiveDecisionBrief = useMemo(() => buildExecutiveDecisionBrief({
+    fixture,
+    form: {
+      brand: form?.brand ?? sourceSampleInput.brand,
+      campaignMessage: form?.campaignMessage ?? sourceSampleInput.campaign_message,
+      audiences: sourceSampleInput.audiences,
+      platforms: sourceSampleInput.platforms,
+    },
+    simulationConfig,
+    platformEngagement,
+    executiveInsights,
+  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement, executiveInsights]);
   const inputRows = reportInputRows(fixture, sourceSampleInput);
   const assumptions = form
     ? buildAssumptionRows(form).map(([label, value]) => `${label}: ${value}`).slice(0, 5)
     : fixture.reviewMetadata.assumptions;
-  const unsupportedFormats = [
-    {
-      label: 'Planning only: PDF',
-      detail: 'Unsupported now; no PDF is generated or downloadable in this frontend-only preview.',
-    },
-    {
-      label: 'Planning only: PowerPoint',
-      detail: 'Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.',
-    },
-  ];
   const supportedFormats = fixture.exports.formats
     .filter((format) => format.label === 'JSON' || format.label === 'Markdown')
     .map((format) => {
@@ -2173,12 +2187,9 @@ function ExportReview(
   const reportBasisCopy = language === 'th'
     ? `${t('Formula')}: ส่วนรายงานประกอบจากเมทาดาทาของข้อมูลตัวอย่าง หลักฐานสังเคราะห์ และการคำนวณแบบกำหนดผลแน่นอน; ${t('หลักฐานระดับ')}: ${t('E1 synthetic/offline fixture')}; ${t('ความเชื่อมั่น')}: ${t(decisionConfidence)}.`
     : `Formula: report sections are assembled from fixture metadata, synthetic evidence, and deterministic calculations.; Evidence tier: E1 synthetic/offline fixture; Confidence: ${decisionConfidence}.`;
-  const unsupportedFormatEvidenceCopy = language === 'th'
-    ? 'หลักฐานระดับ: unavailable; ความเชื่อมั่น: None because this frontend does not generate this format.'
-    : 'Evidence tier: unavailable; Confidence: None because this frontend does not generate this format.';
   const exportReadinessConfidenceCopy = language === 'th'
-    ? 'ความเชื่อมั่น: Low directional; unsupported formats remain planning-only until separately approved.'
-    : 'Confidence: Low directional; unsupported formats remain planning-only until separately approved.';
+    ? 'ความเชื่อมั่น: เชิงทิศทางต่ำ; หน้านี้เป็นตัวอย่างตรวจทานจากข้อมูลสังเคราะห์/ออฟไลน์เท่านั้น.'
+    : 'Confidence: Low directional; review preview only from the synthetic/offline fixture.';
   const executiveSummarySourceCopy = language === 'th'
     ? `แหล่งที่มา: fixture.exports.executiveSummaryPreview. หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}. ความเชื่อมั่น: ${t(decisionConfidence)}.`
     : `Source: fixture.exports.executiveSummaryPreview. Evidence tier: E1 synthetic/offline fixture. Confidence: ${decisionConfidence}.`;
@@ -2199,7 +2210,7 @@ function ExportReview(
     ? 'แหล่งที่มา: สมมติฐานแพลตฟอร์มและรายละเอียดแพลตฟอร์มจากข้อมูลตัวอย่าง หลักฐานระดับ: E1 ไม่ใช่การวัดแพลตฟอร์มจากข้อมูลสด.'
     : 'Source: sampleInput.platforms and platformBreakdown. Evidence tier: E1; not live platform measurement.';
   const dashboardSnapshotFormulaCopy = language === 'th'
-    ? 'สูตร: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.'
+    ? 'สูตร: แสดงการ์ดข้อมูลตัวอย่างตามที่รายงาน โดยไม่คำนวณใหม่จากข้อมูลที่กรอกในเบราว์เซอร์ แหล่งที่มา: fixture.cards.'
     : 'Formula: snapshot lists fixture cards as reported, with no recalculation from browser inputs. Source: fixture.cards.';
   const nextReviewSourceCopy = language === 'th'
     ? `หลักฐานระดับ: ${t('E1 synthetic/offline fixture')}; ความเชื่อมั่น: ${t('Low directional')}; ${t('review step only, not a launch or budget decision')}.`
@@ -2219,10 +2230,10 @@ function ExportReview(
         <h2>{fixture.exports.readiness}</h2>
         <p>
           {fixture.exports.status} This screen previews Executive JSON and Markdown briefing content
-          for human review only; it is not a download action.
+          for human review only, using the synthetic/offline fixture.
         </p>
         <div className="kpi-metadata" aria-label="Export readiness formula and source">
-          <p className="help-text">{t('Formula')}: supported previews filter fixture.exports.formats to JSON and Markdown only.</p>
+          <p className="help-text">{t('Formula: supported previews filter fixture.exports.formats to JSON and Markdown only.')}</p>
           <p>{exportBasisCopy}</p>
           <p>{exportReadinessConfidenceCopy}</p>
         </div>
@@ -2230,7 +2241,7 @@ function ExportReview(
 
       <section className="card" aria-label="Export format readiness">
         <p className="eyebrow">Export format readiness</p>
-        <h2>Supported previews and unsupported future formats</h2>
+        <h2>Supported review previews</h2>
         <div className="grid three-col export-format-grid">
           {supportedFormats.map((format) => (
             <article className="format-card" key={format.label}>
@@ -2238,14 +2249,6 @@ function ExportReview(
               <h3>{format.status.replace('Available for review', 'Preview ready for review')}</h3>
               <p>{format.detail}</p>
               <p className="help-text">{exportFormatSourceCopy}</p>
-            </article>
-          ))}
-          {unsupportedFormats.map((format) => (
-            <article className="format-card format-card-unsupported" key={format.label}>
-              <p className="eyebrow">{format.label}</p>
-              <h3>Unsupported now</h3>
-              <p>{format.detail}</p>
-              <p className="help-text">{unsupportedFormatEvidenceCopy}</p>
             </article>
           ))}
         </div>
@@ -2260,6 +2263,7 @@ function ExportReview(
         <p>
           {reportBasisCopy}
         </p>
+        <ExecutiveDecisionBriefSection brief={executiveDecisionBrief} />
         <div className="report-section-grid">
           <ReportSection title="Executive Summary">
             <p>{fixture.exports.executiveSummaryPreview}</p>
@@ -2375,6 +2379,130 @@ function ExportReview(
       </div>
     </Localized>
   );
+}
+
+function ExecutiveDecisionBriefSection({ brief }: { brief: ExecutiveDecisionBrief }) {
+  const { t } = useI18n();
+  return (
+    <section className="executive-decision-brief" aria-label={t('Executive Decision Brief')} data-i18n-rendered="true">
+      <p className="eyebrow">{t('Executive Decision Brief')}</p>
+      <h3>{t('Executive Decision Brief')}</h3>
+      <div className="report-section-grid">
+        <ReportSection title="Campaign context">
+          <dl className="assumption-grid compact-dl">
+            {brief.campaignContext.userInputs.map((item) => (
+              <div key={item.label}>
+                <dt>{t(item.label)}</dt>
+                <dd>{t(item.value)}</dd>
+              </div>
+            ))}
+            <div>
+              <dt>{t('Selected platforms')}</dt>
+              <dd>{brief.campaignContext.selectedPlatforms.join(', ')}</dd>
+            </div>
+            <div>
+              <dt>{t('Simulation Profile')}</dt>
+              <dd>{t(profileLabel(brief.campaignContext.simulationProfile))}</dd>
+            </div>
+            <div>
+              <dt>{t('Evidence depth')}</dt>
+              <dd>{t(brief.campaignContext.evidenceDepth)}</dd>
+            </div>
+          </dl>
+          <p className="help-text">{t('Participant allocations')}: {brief.campaignContext.participantAllocations.map((item) => `${item.platform} ${item.syntheticParticipants}`).join('; ')}.</p>
+        </ReportSection>
+
+        <ReportSection title="Current situation">
+          <p>{t(brief.currentSituation.headline)}</p>
+          <p>{t(brief.currentSituation.narrative)}</p>
+        </ReportSection>
+
+        <ReportSection title="Platform findings">
+          <ul className="insight-list">
+            {brief.platformFindings.map((finding) => (
+              <li key={finding.platform}>
+                {finding.platform}: {finding.directionalFit}/100; {finding.syntheticParticipants} {t('Synthetic participants')}. {t(finding.evidenceBasis)}
+              </li>
+            ))}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Synthetic engagement summary">
+          <p>{t('Total synthetic participants')}: {brief.syntheticEngagementSummary.totalSyntheticParticipants}; {t('Average synthetic reaction index')}: {brief.syntheticEngagementSummary.averageSyntheticReactionIndex}/100.</p>
+          <p>{t('Strongest directional fit')}: {brief.syntheticEngagementSummary.strongestDirectionalFit.platform} {brief.syntheticEngagementSummary.strongestDirectionalFit.score}/100.</p>
+          <p>{t('Weakest directional fit')}: {brief.syntheticEngagementSummary.weakestDirectionalFit.platform} {brief.syntheticEngagementSummary.weakestDirectionalFit.score}/100.</p>
+          <p>{t('Top themes')}: {brief.syntheticEngagementSummary.topThemes.map((theme) => t(theme)).join(', ')}.</p>
+          <p>{t('Top concerns')}: {brief.syntheticEngagementSummary.topConcerns.map((concern) => t(concern)).join(' ')}</p>
+        </ReportSection>
+
+        <ReportSection title="Executive KPI snapshot">
+          <ul className="insight-list">
+            {brief.executiveKpiSnapshot.map((item) => (
+              <li key={item.title}>{t(item.title)}: {t(item.value)} — {t(item.detail)}</li>
+            ))}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Evidence">
+          <ul className="insight-list">
+            {brief.evidence.items.map((item) => <li key={item}>{t(item)}</li>)}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Confidence">
+          <p>{t(brief.evidence.confidence)}</p>
+        </ReportSection>
+
+        <ReportSection title="Risks">
+          <ul className="insight-list">
+            {brief.risks.map((risk) => <li key={risk}>{t(risk)}</li>)}
+          </ul>
+        </ReportSection>
+
+        <ReportSection title="Decision limitations">
+          <ul className="insight-list">
+            {brief.limitations.map((limitation) => <li key={limitation}>{t(limitation)}</li>)}
+          </ul>
+        </ReportSection>
+      </div>
+
+      <section className="card" aria-label={t('Decision options')}>
+        <p className="eyebrow">{t('Decision options')}</p>
+        <h3>{t('Decision options')}</h3>
+        <div className="grid two-col">
+          {brief.decisionOptions.map((option) => (
+            <article className="format-card" key={option.label} aria-label={t(option.label)}>
+              <h4>{t(option.label)}</h4>
+              <p><strong>{t('Evidence basis')}:</strong> {t(option.evidenceBasis)}</p>
+              <p><strong>{t('Confidence')}:</strong> {t(option.confidence)}</p>
+              <p><strong>{t('Limitations')}:</strong> {option.limitations.map((item) => t(item)).join(' ')}</p>
+              <p><strong>{t('Blocked actions')}:</strong> {option.blockedActions.map((item) => t(item)).join(', ')}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="report-section-grid">
+        <ReportSection title="Decision blockers">
+          <ul className="insight-list">
+            {brief.decisionBlockers.map((blocker) => <li key={blocker}>{t(blocker)}</li>)}
+          </ul>
+        </ReportSection>
+        <ReportSection title="Recommended next action">
+          <p>{t(brief.recommendedNextAction.action)}</p>
+          <p><strong>{t('Next review step')}:</strong> {t(brief.recommendedNextAction.nextReviewStep)}</p>
+        </ReportSection>
+        <ReportSection title="Synthetic/offline notices">
+          <p>{t(brief.notices.synthetic)}</p>
+          <p>{t(brief.notices.offline)}</p>
+        </ReportSection>
+      </div>
+    </section>
+  );
+}
+
+function profileLabel(profile: SimulationConfiguration['simulationProfile']) {
+  return profile.charAt(0).toUpperCase() + profile.slice(1);
 }
 
 function ReportSection({ title, children }: { title: string; children: ReactNode }) {

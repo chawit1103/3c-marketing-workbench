@@ -574,7 +574,8 @@ describe('M18 Thai-first internationalization', () => {
       'ตรวจทานการส่งออก',
       'หน้าจอนี้แสดงตัวอย่างเนื้อหา Executive JSON และบรีฟ Markdown',
       'เตรียมจากตัวอย่างออฟไลน์ที่ตรวจทานแล้วพร้อมหมายเหตุความปลอดภัย',
-      'ยังไม่รองรับในตอนนี้',
+      'ตัวอย่างตรวจทานที่รองรับ',
+      'เป็นตัวอย่างตรวจทานจากข้อมูลสังเคราะห์/ออฟไลน์เท่านั้น',
       'ความพร้อมในการตัดสินใจ: ต้องให้มนุษย์ตรวจทาน',
       'วัตถุประสงค์',
       'สถานการณ์',
@@ -852,7 +853,8 @@ describe('Creative Comparison workflow', () => {
 
     renderAt('/exports/3c-m15-creative-comparison-reference-workflow');
     expect(screen.getByRole('heading', { name: 'Creative Comparison executive-ready summary' })).toBeInTheDocument();
-    expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/synthetic\/offline fixture/i).length).toBeGreaterThanOrEqual(1);
+    expect(document.body.textContent?.toLowerCase()).not.toMatch(/download|pdf|ppt|powerpoint/);
   });
 });
 
@@ -1216,6 +1218,89 @@ describe('M12 Campaign Workspace trust and validation', () => {
     expect(visibleText).toContain('Report/export upgrade remains out of scope');
   });
 });
+
+describe('M19 PR5 Executive Decision Brief export review', () => {
+  it('renders a cautious executive decision brief in the existing export review surface', () => {
+    renderAt('/exports/sample-run');
+
+    const brief = screen.getByRole('region', { name: 'Executive Decision Brief' });
+    for (const heading of [
+      'Campaign context',
+      'Current situation',
+      'Platform findings',
+      'Evidence',
+      'Confidence',
+      'Risks',
+      'Decision limitations',
+      'Decision options',
+      'Recommended next action',
+      'Synthetic/offline notices',
+    ]) {
+      expect(brief).toHaveTextContent(heading);
+    }
+    for (const required of [
+      'Campaign name or brand',
+      'Selected platforms',
+      'Simulation Profile',
+      'Participant allocations',
+      'Synthetic engagement summary',
+      'Strongest directional fit',
+      'Weakest directional fit',
+      'Top themes',
+      'Top concerns',
+      'Executive KPI snapshot',
+      'Decision blockers',
+      'Next review step',
+    ]) {
+      expect(brief).toHaveTextContent(required);
+    }
+    for (const option of ['Proceed with review', 'Revise message/creative', 'Run another experiment', 'Hold for more evidence']) {
+      const optionCard = within(brief).getByRole('article', { name: option });
+      expect(optionCard).toHaveTextContent('Evidence basis');
+      expect(optionCard).toHaveTextContent('Confidence');
+      expect(optionCard).toHaveTextContent('Limitations');
+      expect(optionCard).toHaveTextContent('Blocked actions');
+      expect(optionCard).toHaveTextContent('launch approval');
+      expect(optionCard).toHaveTextContent('conversion guarantee claims');
+    }
+    expect(brief).toHaveTextContent('Synthetic/offline');
+    expect(brief).toHaveTextContent(/configuration-only/i);
+    expect(brief.textContent?.toLowerCase()).not.toContain('measured engagement');
+    expect(screen.queryByRole('button', { name: /download|pdf|ppt|powerpoint/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /download|pdf|ppt|powerpoint/i })).not.toBeInTheDocument();
+  });
+
+  it('localizes the executive decision brief between Thai and English without mixed-language Thai fragments', () => {
+    renderAt('/exports/sample-run', 'th');
+    const thaiBrief = screen.getByRole('region', { name: 'บรีฟการตัดสินใจสำหรับผู้บริหาร' });
+    expect(thaiBrief).toHaveTextContent('บริบทแคมเปญ');
+    expect(thaiBrief).toHaveTextContent('ทางเลือกการตัดสินใจ');
+    expect(thaiBrief).toHaveTextContent('เดินหน้าตรวจทาน');
+    expect(thaiBrief).toHaveTextContent('หลักฐาน');
+    expect(thaiBrief).toHaveTextContent('ความเชื่อมั่น');
+    expect(thaiBrief).not.toHaveTextContent('Evidence basis');
+    expect(thaiBrief).not.toHaveTextContent('Proceed with review');
+    expect(thaiBrief).not.toHaveTextContent('Run another experiment');
+
+    const thaiExportPage = document.body.textContent ?? '';
+    for (const mixedLanguageFragment of [
+      'Platform differences are configuration-owned planning cues, not field observations.',
+      '3 platforms / 240 synthetic participants — Evidence depth: standard; configuration source: preset.',
+      'LINE leads synthetic reaction index — Average synthetic reaction index 68/100 across selected platforms only.',
+      'สูตร: supported previews filter fixture.exports.formats to JSON and Markdown only.',
+      'snapshot การตั้งค่าที่ส่งแล้ว',
+    ]) {
+      expect(thaiExportPage).not.toContain(mixedLanguageFragment);
+    }
+
+    renderAt('/exports/sample-run', 'en');
+    const englishBrief = screen.getByRole('region', { name: 'Executive Decision Brief' });
+    expect(englishBrief).toHaveTextContent('Campaign context');
+    expect(englishBrief).toHaveTextContent('Proceed with review');
+    expect(englishBrief).toHaveTextContent('Evidence basis');
+  });
+});
+
 
 describe('Campaign Message Test workflow', () => {
   it('is available from the existing workbench area and follows the required step sequence', () => {
@@ -1777,14 +1862,10 @@ describe('Export review', () => {
     }
     expect(formats).not.toHaveTextContent('Data preview (JSON)');
     expect(formats).not.toHaveTextContent('Executive summary preview');
-    expect(formats).toHaveTextContent('Planning only: PDF');
-    expect(formats).toHaveTextContent('Unsupported now; no PDF is generated or downloadable in this frontend-only preview.');
-    expect(formats).toHaveTextContent('Planning only: PowerPoint');
-    expect(formats).toHaveTextContent('Unsupported now; no PowerPoint/PPT file is generated or downloadable in this frontend-only preview.');
-    expect(document.body.textContent?.toLowerCase()).not.toContain('pdf ready');
-    expect(document.body.textContent?.toLowerCase()).not.toContain('powerpoint ready');
-    expect(screen.getByText(/not a download action/i)).toBeInTheDocument();
-    expect(document.body.textContent?.toLowerCase()).not.toContain('downloadable file is ready');
+    expect(formats).toHaveTextContent('Supported review previews');
+    expect(document.body.textContent?.toLowerCase()).not.toMatch(/download|pdf|ppt|powerpoint/);
+    expect(screen.getAllByText(/synthetic\/offline fixture/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/review preview only/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: summaryHeading })).toBeInTheDocument();
     expect(screen.getAllByText(/Executive review:/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Review Assumptions')).toBeInTheDocument();
