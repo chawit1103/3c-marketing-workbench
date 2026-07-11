@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M19 PR5 Executive Decision Brief is implemented on branch `m19-pr5-executive-decision-brief` as a product-owned frontend narrative report inside the existing export review surface. It reuses PR1 assumptions, the PR2 submitted configuration snapshot, the PR3 platform engagement result model, and PR4 executive insights. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M18 Thai-first Internationalization is **closed as GO WITH CONDITIONS** on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. PR6 closeout remains blocked/not started. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, MarketingSimulation change, PDF/PPT/download generation, or runtime/live/measured engagement claim is allowed.
+Status: M19 Synthetic Social Platform Engagement Simulation is **closed as GO WITH CONDITIONS** after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace (merged in PR #34), PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does **not** prove verified SocialSense runtime consumption of selected participant allocations. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, MarketingSimulation change, PDF/PPT/download generation, M20 work, or runtime/live/measured engagement claim is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -82,7 +82,7 @@ Current frontend routes:
 | `/workbench/creative-comparison` | Guided text-only Creative Comparison form and local run action | Implemented M15 vertical slice |
 | `/runs/:runId` | Product Launch, Campaign Message Test, A/B Experiment, or Creative Comparison results dashboard for known generated offline samples; includes M19 PR3 compact synthetic Platform Engagement Result Model and M19 PR4 Executive Insight Dashboard from selected submitted PR2 configuration; unknown IDs show Run unavailable with recovery links | Implemented reusable dashboard pattern + M12 trust guard + M15 Creative Comparison + M19 PR3 result model + M19 PR4 executive insight layer |
 | `/exports/:runId` | Export review for known generated offline samples, including Creative Comparison, the M19 PR3 Platform Engagement Result Model report section, and the M19 PR5 Executive Decision Brief narrative; unknown IDs show Export unavailable with recovery links | Implemented reusable export-review pattern + M17 PR4 report/export readability + M19 PR3 result model + M19 PR5 brief |
-| `/health` | M18 Thai-first Internationalization health, KPI dashboard, language coverage, safety copy quality, and M19 PR5 implemented / PR6 closeout blocked status | Implemented M18 + M19 PR5 status |
+| `/health` | M18 Thai-first Internationalization health, KPI dashboard, language coverage, safety copy quality, and M19 closed GO WITH CONDITIONS status | Implemented M18 + M19 closeout status |
 
 Unknown routes render a not-found state. Unknown run/export IDs render explicit unavailable states instead of Product Launch fallback content. There is no route for settings, auth, backend administration, live data ingestion, or credentials.
 
@@ -107,6 +107,7 @@ Product documentation map:
 - [M19 PR3 Platform Engagement Result Model](docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md)
 - [M19 PR4 Executive Insight Dashboard](docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md)
 - [M19 PR5 Executive Decision Brief](docs/product/M19_PR5_EXECUTIVE_DECISION_BRIEF.md)
+- [M19 Closeout Report](docs/product/M19_CLOSEOUT_REPORT.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
@@ -200,7 +201,7 @@ Install dependencies and maintain the npm lockfile:
 npm install
 ```
 
-M17 PR5 closeout validation commands:
+M19 PR6 closeout validation commands:
 
 ```bash
 npm run test
@@ -211,9 +212,10 @@ python3 scripts/docs_smoke.py
 git diff --check HEAD
 python3 -m unittest discover -s tests -p 'test_*.py'
 PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py
+git status --short --branch
 ```
 
-M17 PR5 closeout branch / PR #27 provided docs/status/smoke closeout history, and PR #28 merged the final status correction to main at `a03ecf236c638d69cd48c37465d70e03579ebc8f` after post-merge validation passed. M17 is CLOSED as GO WITH CONDITIONS for controlled executive review: dashboard/report surfaces are not production launch evidence, and human review plus field evidence are required before launch, budget, or winner decisions. M18 Thai-first Internationalization is closed as GO WITH CONDITIONS. M19 PR1 propagated offline user assumptions, M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34, and M19 PR3 Platform Engagement Result Model is implemented as a configuration-owned offline TypeScript result contract. M19 PR4 Executive Insight Dashboard is implemented as a dashboard insight layer. M19 PR5 Executive Decision Brief implemented; PR6 closeout blocked/not started. No new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, or runtime-consumption claims are allowed.
+M19 PR6 closeout records M19 as CLOSED as GO WITH CONDITIONS for controlled product review. Current evidence supports product-owned configuration-informed synthetic results, not verified SocialSense runtime consumption of selected participant allocations. Recommended next program: SocialSense runtime-consumption integration, not started here. No new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, archive commit, M20 work, or runtime-consumption claims are allowed.
 
 M15 focused validation commands:
 

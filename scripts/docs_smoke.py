@@ -453,6 +453,84 @@ M19_PR5_ALLOWED_CHANGED_PATHS = {
     "src/product/simulationConfig.ts",
 }
 
+REQUIRED_M19_CLOSEOUT_DOCS = [
+    "docs/product/M19_CLOSEOUT_REPORT.md",
+]
+
+REQUIRED_M19_CLOSEOUT_SECTIONS = [
+    "Executive Summary",
+    "Delivered capabilities",
+    "Consumer value",
+    "Review gates",
+    "Validation evidence",
+    "Regression status",
+    "Safety boundaries",
+    "Known limitations",
+    "Technical debt",
+    "Architecture Gate status",
+    "Readiness decision",
+    "Recommended next program",
+    "Required KPI table",
+    "No-M20 boundary",
+]
+
+REQUIRED_M19_CLOSEOUT_KPIS = [
+    "User Input Readiness",
+    "Simulation Configuration Readiness",
+    "Platform Engagement Readiness",
+    "Dashboard Decision Support",
+    "Executive Brief Readiness",
+    "Thai/English Completeness",
+    "Trust",
+    "Transparency",
+    "SocialSense Runtime Consumption",
+    "Overall M19 Readiness",
+]
+
+REQUIRED_M19_CLOSEOUT_PHRASES = [
+    "M19 is CLOSED as GO WITH CONDITIONS",
+    "Readiness decision: GO WITH CONDITIONS",
+    "Recommended next program: SocialSense runtime-consumption integration",
+    "Product-owned configuration-informed synthetic results are distinct from verified SocialSense runtime consumption",
+    "does not claim SocialSense executed the selected participant allocations",
+    "not verified SocialSense runtime consumption of selected allocations",
+    "PR1 user assumptions",
+    "PR2 simulation configuration",
+    "PR3 platform engagement result model",
+    "PR4 executive insight dashboard",
+    "PR5 executive decision brief",
+    "npm run test",
+    "npm run typecheck",
+    "npm run lint",
+    "npm run build",
+    "python3 scripts/docs_smoke.py",
+    "git diff --check HEAD",
+    "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py",
+    "git status --short --branch",
+    "M20 has not started",
+    "no M20 started",
+    "no forbidden implementation-path changes",
+    "Architecture Gate: Not Triggered",
+]
+
+M19_PR6_ALLOWED_CHANGED_PATHS = {
+    "README.md",
+    "AGENTS.md",
+    "scripts/docs_smoke.py",
+    "docs/product/ROADMAP.md",
+    "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+    "docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md",
+    "docs/product/TRANSLATION_STYLE_GUIDE.md",
+    "docs/product/GLOSSARY.md",
+    "docs/product/M19_SYNTHETIC_ENGAGEMENT_PREP.md",
+    "docs/product/M19_PR2_SIMULATION_CONFIGURATION.md",
+    "docs/product/M19_PR3_PLATFORM_ENGAGEMENT_RESULT_MODEL.md",
+    "docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md",
+    "docs/product/M19_PR5_EXECUTIVE_DECISION_BRIEF.md",
+    "docs/product/M19_CLOSEOUT_REPORT.md",
+}
+
 REQUIRED_M18_GLOSSARY_TERMS = [
     "Campaign",
     "Campaign Workspace",
@@ -1199,6 +1277,10 @@ def main() -> None:
             missing_m19_pr5_docs = [path for path in REQUIRED_M19_PR5_DOCS if not (ROOT / path).is_file()]
             if missing_m19_pr5_docs:
                 fail("missing required M19 PR5 executive decision brief docs: " + ", ".join(missing_m19_pr5_docs))
+        if current_branch_name().startswith("m19-pr6-"):
+            missing_m19_closeout_docs = [path for path in REQUIRED_M19_CLOSEOUT_DOCS if not (ROOT / path).is_file()]
+            if missing_m19_closeout_docs:
+                fail("missing required M19 closeout report docs: " + ", ".join(missing_m19_closeout_docs))
 
     missing_frontend = [path for path in EXPECTED_FRONTEND_FILES if not (ROOT / path).is_file()]
     if missing_frontend:
@@ -1276,6 +1358,12 @@ def main() -> None:
         if (ROOT / path).is_file()
     }
     m19_pr5_text = "\n".join(m19_pr5_docs_by_path.values())
+    m19_closeout_docs_by_path = {
+        path: (ROOT / path).read_text(encoding="utf-8")
+        for path in REQUIRED_M19_CLOSEOUT_DOCS
+        if (ROOT / path).is_file()
+    }
+    m19_closeout_text = "\n".join(m19_closeout_docs_by_path.values())
 
     unresolved_links: list[str] = []
     for target in README_LINK_PATTERN.findall(readme):
@@ -2090,6 +2178,76 @@ def main() -> None:
             unexpected_m19_pr5_changes = [path for path in changed_paths if path not in M19_PR5_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr5_changes:
                 fail("M19 PR5 changed unexpected paths: " + ", ".join(unexpected_m19_pr5_changes))
+        elif current_branch_name().startswith("m19-pr6-"):
+            combined_m19_pr6_text = "\n".join([
+                readme,
+                agents,
+                roadmap,
+                health_dashboard,
+                m19_pr2_text,
+                m19_pr3_text,
+                m19_pr4_text,
+                m19_pr5_text,
+                m19_closeout_text,
+                m18_docs_by_path["docs/product/TRANSLATION_STYLE_GUIDE.md"],
+                m18_docs_by_path["docs/product/GLOSSARY.md"],
+                m17_docs_by_path["docs/product/EXECUTIVE_EXPERIENCE_PROGRAM.md"],
+            ])
+            if "](docs/product/M19_CLOSEOUT_REPORT.md)" not in readme:
+                fail("README missing M19 closeout report link")
+            missing_m19_closeout_sections = [
+                section for section in REQUIRED_M19_CLOSEOUT_SECTIONS if f"## {section}" not in m19_closeout_text
+            ]
+            if missing_m19_closeout_sections:
+                fail("M19 closeout report missing sections: " + ", ".join(missing_m19_closeout_sections))
+            missing_m19_closeout_kpis = [
+                kpi for kpi in REQUIRED_M19_CLOSEOUT_KPIS if kpi not in m19_closeout_text
+            ]
+            if missing_m19_closeout_kpis:
+                fail("M19 closeout report missing KPI table rows: " + ", ".join(missing_m19_closeout_kpis))
+            missing_m19_closeout_phrases = [
+                phrase for phrase in REQUIRED_M19_CLOSEOUT_PHRASES if phrase not in combined_m19_pr6_text
+            ]
+            if missing_m19_closeout_phrases:
+                fail("M19 closeout docs missing required truth/readiness/validation phrases: " + ", ".join(missing_m19_closeout_phrases))
+            stale_m19_pr6_hits = [
+                phrase
+                for phrase in [
+                    "PR6 closeout remains blocked/not started",
+                    "PR6 blocked/not started",
+                    "PR6 closeout blocked/not started",
+                    "PR6 closeout remains future",
+                    "PR6 closeout is not started",
+                    "on branch `m19-pr6-program-closeout`",
+                    "on branch `m19-pr5-executive-decision-brief`",
+                    "on branch `m19-pr4-executive-insight-dashboard`",
+                    "on branch `m19-pr3-platform-engagement-model`",
+                    "on the current PR branch",
+                    "on the current branch",
+                    "current PR branch",
+                    "current branch",
+                    "over current PR2 selected platforms/configuration",
+                ]
+                if phrase in combined_m19_pr6_text
+            ]
+            if stale_m19_pr6_hits:
+                fail(
+                    "M19 closeout status docs contain stale PR6 blocked/not-started or merge-stale branch/current-branch wording: "
+                    + ", ".join(stale_m19_pr6_hits)
+                )
+            forbidden_m19_pr6_claims = [
+                "SocialSense executed selected participant allocations as runtime evidence",
+                "verified SocialSense runtime consumption is complete",
+                "runtime consumption verified",
+                "production launch ready",
+                "M20 started automatically",
+            ]
+            m19_pr6_claim_hits = [phrase for phrase in forbidden_m19_pr6_claims if phrase in combined_m19_pr6_text]
+            if m19_pr6_claim_hits:
+                fail("M19 closeout docs contain forbidden runtime/production/M20 claim: " + ", ".join(m19_pr6_claim_hits))
+            unexpected_m19_pr6_changes = [path for path in changed_paths if path not in M19_PR6_ALLOWED_CHANGED_PATHS]
+            if unexpected_m19_pr6_changes:
+                fail("M19 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m19_pr6_changes))
         else:
             forbidden_m19_runtime_paths = [
                 path
@@ -2136,6 +2294,8 @@ def main() -> None:
             print("PASS: M19 PR4 Executive Insight Dashboard docs/source include insight cards, platform comparison, evidence visualization, decision guidance, Thai-first copy, submitted configuration snapshot use, and PR5/report-upgrade boundary")
         if current_branch_name().startswith("m19-pr5-"):
             print("PASS: M19 PR5 Executive Decision Brief docs/source include narrative report sections, cautious decision options, Thai-first copy, offline/synthetic notices, no download/PDF/PPT generation, and PR6 blocked boundary")
+        if current_branch_name().startswith("m19-pr6-"):
+            print("PASS: M19 PR6 closeout docs include M19_CLOSEOUT_REPORT, KPI truth statement, GO WITH CONDITIONS readiness decision, validation commands, next-program recommendation, no-M20 boundary, stale PR6 status guard, and no forbidden implementation-path changes")
     if current_branch_name().startswith("m17-") or "Executive Experience & Marketing Simulation Enhancement" in "\n".join([readme, agents, roadmap, health_dashboard, m17_text]):
         print("PASS: M17 Executive Experience program docs include M17-M19 plan, KPIs, Architecture Gate triggers, PR sequence, and PR1 historical docs-only boundary")
         m17_closeout_report_exists = (ROOT / "docs/product/M17_CLOSEOUT_REPORT.md").is_file()

@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on main at `42bdf1b4c259c0bc553733fe89f6ad065409de4a` after PR #30 merged and post-merge validation passed. Thai is the default UI language, English remains supported, glossary/style-guide artifacts are complete, and the M18 closeout report records fallback review evidence. M19 PR2 configuration-only Simulation Configuration Workspace was merged in PR #34. M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract. M19 PR4 Executive Insight Dashboard is implemented. M19 PR5 Executive Decision Brief is implemented on branch `m19-pr5-executive-decision-brief` as a frontend-only narrative report in the existing export review surface. PR6 closeout remains blocked/not started. No SocialSense, runtime, live measurement, backend, persistence, live API, PDF/PPT, or download changes are included.
+Status: M19 Synthetic Social Platform Engagement Simulation is closed as GO WITH CONDITIONS after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace, PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does not prove verified SocialSense runtime consumption of selected participant allocations. No SocialSense, runtime, live measurement, backend, persistence, live API, PDF/PPT, download, M20, or production-claim changes are included.
 
 
 ## M1 PR4 closeout
@@ -223,7 +223,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Feature Freeze and Demo Readiness | Complete | M16 release readiness | Feature Freeze v0.1, demo script, demo workspace, human dogfooding plan, feedback template, and RC checklist prepare controlled release-candidate readiness without new product capability. |
 | Executive Dashboard & Reporting | Closed as GO WITH CONDITIONS | M17 PR5 closeout + PR #28 final status correction | Executive Experience program started in PR1; PR2 delivered KPI/dashboard cards; PR3 added sentiment comparison, evidence tiers, gaps, limitations, and human-review checklist; PR4 added executive report preview, export format readiness, Executive JSON preview, Markdown briefing preview, explicit format-generation boundaries, assumptions, limitations, synthetic-data notice, safety notice, and Formula/Source/Evidence tier/Confidence copy; PR5 closeout branch / PR #27 merged to `main` at `5cec77a26cffd5255d9051a2743ab20c79512607`; PR #28 merged the final status correction to `main` at `a03ecf236c638d69cd48c37465d70e03579ebc8f`; post-merge validation passed. |
 | Thai-first Internationalization | Closed as GO WITH CONDITIONS | M18 closeout | Thai default, English secondary language, custom frontend i18n resources, language selector, style guide, glossary, safety wording, exact/template-based localization, and tests are complete without backend/SocialSense/runtime dependency changes. |
-| Synthetic Social Platform Engagement Simulation | PR4 implemented; Executive Decision Brief implemented; PR6 blocked/not started | M19 PR2 configuration-only workspace + M19 PR3 result model + M19 PR4 executive insight dashboard | PR4 Executive Insight Dashboard is implemented as a frontend-only insight layer over PR1 assumptions, PR2 submitted configuration snapshots, and PR3 platform engagement results; M19 PR5 Executive Decision Brief is implemented; PR6 closeout remains blocked/not started; no live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production engagement claims. |
+| Synthetic Social Platform Engagement Simulation | Closed as GO WITH CONDITIONS | M19 closeout report + PR1 assumptions + PR2 configuration + PR3 result model + PR4 dashboard + PR5 brief | Controlled product review is ready for product-owned configuration-informed synthetic results. Verified SocialSense runtime consumption of selected participant allocations is not proven; no live social APIs, scraping, production posting, credentials, private data, measured engagement claims, M20 work, or production engagement claims. |
 
 ## M15 Creative Comparison Vertical Slice
 
@@ -315,7 +315,7 @@ Status: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS on m
 | Dashboard Quality | GO WITH CONDITIONS | M17 PR5 closeout | KPI cards, sentiment comparison, evidence tiers, limitations, and human-review checklist are reviewable from fixture evidence; broader field usability remains future. |
 | Report Quality | GO WITH CONDITIONS | M17 PR5 closeout | Executive report preview, Executive JSON preview, Markdown briefing preview, assumptions, limitations, explicit generation boundaries, and human-review copy support management review only. |
 | I18N Readiness | Current implementation | M18 Thai-first i18n | Thai default, English switch, glossary, translation style guide, safety copy, and sample screen coverage are under validation |
-| Simulation Readiness | PR4 implemented; Executive Decision Brief implemented; PR6 blocked/not started | M19 PR2 configuration-only workspace + M19 PR3 product-owned result model + M19 PR4 executive insight dashboard | Configuration-only workspace controls are implemented/merged; deterministic platform engagement results, executive insight dashboard, and Executive Decision Brief are implemented for reviewed offline results; report/export redesign remains out of scope. |
+| Simulation Readiness | PR4 implemented; Executive Decision Brief implemented; PR6 closed as GO WITH CONDITIONS | M19 PR2 configuration-only workspace + M19 PR3 product-owned result model + M19 PR4 executive insight dashboard | Configuration-only workspace controls are implemented/merged; deterministic platform engagement results, executive insight dashboard, and Executive Decision Brief are implemented for reviewed offline results; report/export redesign remains out of scope. |
 | Trust | GO WITH CONDITIONS | M17 PR5 closeout | Synthetic/offline notices, safety boundaries, Low directional confidence, and blocked production claims remain explicit; human review is required. |
 | Transparency | GO WITH CONDITIONS | M17 PR5 closeout | Formula/source/evidence-tier/confidence, assumptions, limitations, evidence gaps, and next evidence steps remain visible. |
 | Release Readiness | GO WITH CONDITIONS | M17 PR5 closeout | Required validation/review gates support controlled review only; not production launch readiness. |
@@ -492,9 +492,9 @@ Future debt to watch:
 
 ## Next milestone
 
-Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; M19 PR4 Executive Insight Dashboard is implemented on the current PR branch. M19 PR5 Executive Decision Brief is implemented; PR6 closeout remains blocked/not started; no backend, SocialSense, or report redesign scope is included.
+Current milestone state after M18 closeout: M18 Thai-first Internationalization is closed as GO WITH CONDITIONS; M19 PR1 and PR2 configuration-only workspace are completed/corrected. M19 PR3 Platform Engagement Result Model is implemented; M19 PR4 Executive Insight Dashboard is implemented. M19 PR5 Executive Decision Brief is implemented; PR6 closeout closes M19 as GO WITH CONDITIONS; no backend, SocialSense, or report redesign scope is included.
 
-Recommended option: keep PR4 bounded to the product-owned Executive Insight Dashboard over reviewed offline results and keep PR5 bounded to the Executive Decision Brief and do not start PR6 closeout until separately approved.
+Recommended next program: SocialSense runtime-consumption integration, not started automatically. Keep PR4/PR5 bounded to product-owned synthetic/offline review surfaces until verified runtime-consumption evidence exists.
 
 Alternative options if priorities change:
 
@@ -532,6 +532,14 @@ Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_
 - Route count, tests/build status, generated fixture readiness, and safety posture are explicit.
 - Dashboard is honest that outputs are generated offline samples, not production predictions.
 
+## M19 closeout — Synthetic Social Platform Engagement Simulation
+
+- Closeout report: `docs/product/M19_CLOSEOUT_REPORT.md`.
+- Status: M19 closed as GO WITH CONDITIONS.
+- Readiness decision: controlled product review ready; live/runtime/production claims not ready.
+- KPI truth statement: product-owned configuration-informed synthetic results are distinct from verified SocialSense runtime consumption. SocialSense runtime consumption of selected participant allocations is not verified.
+- Recommended next program: SocialSense runtime-consumption integration, not started automatically.
+
 ## M19 PR4 Executive Insight Dashboard
 
 - Status: PR4 implemented.
@@ -539,5 +547,5 @@ Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_
 - Inputs: PR1 user-entered assumptions, PR2 submitted Simulation Configuration snapshot, PR3 Platform Engagement Result Model, and existing offline fixture.
 - KPI: Executive Insight Cards, Platform Comparison, Evidence Visualization, and Decision Guidance render with Thai default and English secondary copy.
 - Safety: synthetic/offline, configuration-only, not live, not measured, not a forecast, and not a launch decision.
-- M19 PR5 Executive Decision Brief implemented; PR6 closeout blocked/not started; no report/export redesign.
+- M19 PR5 Executive Decision Brief implemented; M19 PR6 closeout closes the program as GO WITH CONDITIONS; no report/export redesign and no M20 work.
 - Architecture Gate: Not Triggered; no SocialSense changes.
