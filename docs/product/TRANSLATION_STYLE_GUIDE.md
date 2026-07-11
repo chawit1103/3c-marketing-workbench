@@ -1,6 +1,6 @@
 # M18 Translation Style Guide — Thai-first Internationalization
 
-Status: M18 is closed as GO WITH CONDITIONS. This guide governs Thai and English UI copy for 3C Marketing Workbench. M19 PR1 and PR2 configuration-only work are complete, M19 PR3 Platform Engagement Result Model is implemented as product-owned synthetic/offline copy, M19 PR4 Executive Insight Dashboard is implemented, and M19 PR5 Executive Decision Brief is implemented on the current branch. PR6 closeout closes M19 as GO WITH CONDITIONS.
+Status: M18 is closed as GO WITH CONDITIONS. This guide governs Thai and English UI copy for 3C Marketing Workbench. M19 PR1 and PR2 configuration-only work are complete, M19 PR3 Platform Engagement Result Model is implemented as product-owned synthetic/offline copy, M19 PR4 Executive Insight Dashboard is implemented, and M19 PR5 Executive Decision Brief is implemented in PR5. PR6 closeout closes M19 as GO WITH CONDITIONS.
 
 ## Architecture Gate
 

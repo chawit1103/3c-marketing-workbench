@@ -1,6 +1,6 @@
 # M19 Closeout Report — Synthetic Social Platform Engagement Simulation
 
-Status: M19 is CLOSED as GO WITH CONDITIONS on branch `m19-pr6-program-closeout` after PR6 docs/status/smoke closeout preparation.
+Status: M19 is CLOSED as GO WITH CONDITIONS after PR6 docs/status/smoke closeout preparation.
 Program: Synthetic Social Platform Engagement Simulation.
 Scope: docs/status/smoke closeout only; no runtime feature implementation in PR6.
 Architecture Gate: Not Triggered.
@@ -9,7 +9,7 @@ Recommended next program: SocialSense runtime-consumption integration.
 
 ## Executive Summary
 
-M19 is formally closed as GO WITH CONDITIONS for controlled product review. The program delivered a configuration-informed, product-owned synthetic social platform engagement experience across PR1-PR5 and this PR6 closeout records the final status, evidence, boundaries, and next recommended program.
+M19 is formally closed as GO WITH CONDITIONS for controlled product review. The program delivered a configuration-informed, product-owned synthetic social platform engagement experience across PR1-PR5 and PR6 closeout records the final status, evidence, boundaries, and next recommended program.
 
 The product is ready for controlled product dogfooding and executive review of synthetic/offline planning outputs. It is not ready for live/runtime/production claims. The critical truth is that current M19 outputs are product-owned configuration-informed synthetic results. They are not verified SocialSense runtime consumption of selected participant allocations.
 

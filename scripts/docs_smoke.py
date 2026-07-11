@@ -2218,11 +2218,23 @@ def main() -> None:
                     "PR6 closeout blocked/not started",
                     "PR6 closeout remains future",
                     "PR6 closeout is not started",
+                    "on branch `m19-pr6-program-closeout`",
+                    "on branch `m19-pr5-executive-decision-brief`",
+                    "on branch `m19-pr4-executive-insight-dashboard`",
+                    "on branch `m19-pr3-platform-engagement-model`",
+                    "on the current PR branch",
+                    "on the current branch",
+                    "current PR branch",
+                    "current branch",
+                    "over current PR2 selected platforms/configuration",
                 ]
                 if phrase in combined_m19_pr6_text
             ]
             if stale_m19_pr6_hits:
-                fail("M19 closeout status docs contain stale PR6 blocked/not-started wording: " + ", ".join(stale_m19_pr6_hits))
+                fail(
+                    "M19 closeout status docs contain stale PR6 blocked/not-started or merge-stale branch/current-branch wording: "
+                    + ", ".join(stale_m19_pr6_hits)
+                )
             forbidden_m19_pr6_claims = [
                 "SocialSense executed selected participant allocations as runtime evidence",
                 "verified SocialSense runtime consumption is complete",

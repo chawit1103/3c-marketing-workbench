@@ -1,6 +1,6 @@
 # M19 PR4 Executive Insight Dashboard
 
-Status: PR4 implemented on branch `m19-pr4-executive-insight-dashboard`. PR5 is now implemented separately as Executive Decision Brief on branch `m19-pr5-executive-decision-brief`; PR6 closeout closes M19 as GO WITH CONDITIONS.
+Status: PR4 was implemented in M19 PR4. PR5 is implemented separately as Executive Decision Brief in M19 PR5; PR6 closeout closes M19 as GO WITH CONDITIONS.
 
 Architecture Gate: Not Triggered.
 

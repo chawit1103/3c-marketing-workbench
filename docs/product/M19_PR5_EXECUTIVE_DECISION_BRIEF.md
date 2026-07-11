@@ -1,6 +1,6 @@
 # M19 PR5 Executive Decision Brief
 
-Status: PR5 implemented on branch `m19-pr5-executive-decision-brief`. PR6 closeout closes M19 as GO WITH CONDITIONS.
+Status: PR5 was implemented in M19 PR5. PR6 closeout closes M19 as GO WITH CONDITIONS.
 
 Architecture Gate: Not Triggered.
 
@@ -123,6 +123,6 @@ Tests cover that:
 
 ## Current status
 
-PR5 implemented on the current branch. PR6 closeout closes M19 as GO WITH CONDITIONS.
+PR5 was implemented in M19 PR5. PR6 closeout closes M19 as GO WITH CONDITIONS.
 
-No SocialSense changes. No backend. No PDF/PPT/download generation. No PR6 work.
+PR5 made no SocialSense changes, no backend changes, no PDF/PPT/download generation, and no PR6 closeout work.
