@@ -95,6 +95,53 @@ class SocialSenseAdapterSmokeTests(unittest.TestCase):
 
         self.assertNotEqual(raised.exception.code, 0)
 
+    def test_smoke_fails_when_an_otherwise_valid_contract_omits_completion_status(self) -> None:
+        product_result = {
+            "status": "ok",
+            "run_status": "completed",
+            "scenario": "product_launch",
+            "platform_mix": ["LINE", "TikTok"],
+            "exports": {},
+            "safety": {},
+            "provenance": {},
+            "limitations": [],
+            "evidence_gaps": [],
+            "public_sdk_only": True,
+        }
+        consumed_result_without_completion = {
+            "status": "ok",
+            "runtime_status": "consumed_by_runtime",
+            "runtime_consumed": True,
+            "runtime_contract": {
+                "simulation_profile": "product_launch",
+                "selected_platforms": ["Facebook", "LINE", "X"],
+                "per_platform_participant_allocation": {"Facebook": 80, "LINE": 120, "X": 150},
+                "total_synthetic_participants": 350,
+                "evidence_depth": "standard",
+                "evidence_tier": "fixture_offline_aggregate_only",
+                "confidence": {"level": "not_calibrated"},
+            },
+            "provenance": {
+                "fixture_only": True,
+                "live_api_access": False,
+                "credentials_required": False,
+            },
+        }
+
+        with (
+            patch.object(self.smoke, "run_product_launch_simulation", return_value=product_result),
+            patch.object(
+                self.smoke,
+                "run_submitted_simulation_configuration",
+                return_value=consumed_result_without_completion,
+            ),
+            contextlib.redirect_stdout(io.StringIO()),
+            self.assertRaises(SystemExit) as raised,
+        ):
+            self.smoke.main()
+
+        self.assertNotEqual(raised.exception.code, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1271,7 +1271,7 @@ def current_milestone_number() -> int | None:
 
 
 def is_authorized_m20_pr4_context() -> bool:
-    """Accept only the reviewed M20 PR4 contract in branchless CI checkouts."""
+    """Infer authorization from the reviewed M20 PR4 diff, never the checkout name."""
     changed_paths = set(changed_paths_from_main())
     return is_authorized_m20_pr4_changed_paths(changed_paths)
 
