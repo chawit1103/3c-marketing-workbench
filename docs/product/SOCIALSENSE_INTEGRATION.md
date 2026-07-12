@@ -111,6 +111,10 @@ Expected smoke/fixture summary includes:
 - `public_sdk_only: true`
 - a submitted configuration result with `runtime_status: consumed_by_runtime` only after runtime-contract echo verification
 
+## Resolved historical context
+
+The former adapter false negative caused by comparing submitted platform-label order with the SocialSense canonical platform order was resolved in `cd3be65`. It is not a current integration limitation; the adapter now normalizes the documented runtime order before evaluating the public SDK fixture/offline evidence.
+
 ## Current limitations
 
 - PR4 renders one Product Launch vertical slice only.
