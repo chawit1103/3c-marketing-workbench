@@ -301,6 +301,34 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertTrue(result["limitations"])
         self.assertTrue(result["evidence_gaps"])
 
+    def test_configuration_only_output_does_not_echo_sensitive_looking_caller_fields(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+            "apiKey": "not-a-real-secret",
+            "customerEmail": "person@example.test",
+            "privateMetadata": {"internalOnly": "must_not_echo"},
+        }
+
+        self.fake_domain.runtime_contract_override = {}
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertEqual(
+            result["submitted_configuration"],
+            {
+                "simulationProfile": "product_launch",
+                "selectedPlatforms": ["line"],
+                "platformAllocations": {"line": 30},
+                "evidenceDepth": "minimal",
+            },
+        )
+        rendered_result = str(result)
+        for forbidden_value in ("apiKey", "not-a-real-secret", "customerEmail", "person@example.test", "privateMetadata", "must_not_echo"):
+            self.assertNotIn(forbidden_value, rendered_result)
+
     def test_configuration_only_snapshot_drops_unsupported_values_and_invalid_allocations(self) -> None:
         submitted = {
             "simulationProfile": "caller_override",
