@@ -510,10 +510,21 @@ REQUIRED_M19_CLOSEOUT_PHRASES = [
     "python3 -m unittest discover -s tests -p 'test_*.py'",
     "PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py",
     "git status --short --branch",
-    "M20 has not started",
-    "no M20 started",
     "no forbidden implementation-path changes",
     "Architecture Gate: Not Triggered",
+]
+
+REQUIRED_M20_STATUS_PHRASES = [
+    "M20 PR1–PR3 SocialSense work is completed/merged",
+    "M20 PR4 is in progress on this branch as a fixture/offline aggregate-only 3C adapter integration",
+    "it is not merged, production-ready, live-platform-enabled, or a claim of live measurement",
+    "3C uses only the SocialSense public SDK and preserves fail-closed behavior",
+]
+
+STALE_M20_STATUS_PHRASES = [
+    "M20 has not started",
+    "no M20 started",
+    "No M20 work",
 ]
 
 M19_PR6_ALLOWED_CHANGED_PATHS = {
@@ -1406,6 +1417,17 @@ def main() -> None:
     missing_pr4_phrases = [phrase for phrase in REQUIRED_PR4_PHRASES if phrase not in combined_pr4_text]
     if missing_pr4_phrases:
         fail("PR4 docs missing status phrases: " + ", ".join(missing_pr4_phrases))
+
+    missing_m20_status_phrases = [
+        phrase for phrase in REQUIRED_M20_STATUS_PHRASES if phrase not in combined_pr4_text
+    ]
+    if missing_m20_status_phrases:
+        fail("M20 status docs missing current authorized-scope phrases: " + ", ".join(missing_m20_status_phrases))
+    stale_m20_status_phrases = [
+        phrase for phrase in STALE_M20_STATUS_PHRASES if phrase in combined_pr4_text
+    ]
+    if stale_m20_status_phrases:
+        fail("M20 status docs contain stale contradictory phrases: " + ", ".join(stale_m20_status_phrases))
 
     combined_m4_text = "\n".join([readme, agents, m4_text])
     missing_m4_phrases = [phrase for phrase in REQUIRED_M4_PHRASES if phrase not in combined_m4_text]
