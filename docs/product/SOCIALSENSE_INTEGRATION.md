@@ -14,6 +14,8 @@ The adapter loads the Marketing Domain Pack with `load_domain_pack('marketing')`
 
 It does not modify SocialSense, copy SocialSense internals, import `app.civicsense`, or import private SocialSense modules.
 
+For the verified PR3 public SDK signatures, runtime-evidence promotion rule, deterministic hooks, supported fail-closed behavior, and the current adapter-ordering follow-up, see [M20 PR3 SocialSense Public SDK Integration Boundary](M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md).
+
 ## PR4 fixture flow
 
 PR4 uses this cross-repository flow:

@@ -19,6 +19,7 @@ REQUIRED_DOCS = [
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
     "docs/product/SOCIALSENSE_INTEGRATION.md",
     "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
+    "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
     "README.md",
     "AGENTS.md",
 ]
@@ -1308,6 +1309,7 @@ def main() -> None:
     roadmap = (ROOT / "docs/product/ROADMAP.md").read_text(encoding="utf-8")
     health_dashboard = (ROOT / "docs/product/PRODUCT_HEALTH_DASHBOARD.md").read_text(encoding="utf-8")
     integration_doc = (ROOT / "docs/product/SOCIALSENSE_INTEGRATION.md").read_text(encoding="utf-8")
+    m20_sdk_boundary_doc = (ROOT / "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md").read_text(encoding="utf-8")
     adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
     m4_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M4_DOCS}
     m4_text = "\n".join(m4_docs_by_path.values())
@@ -1383,6 +1385,22 @@ def main() -> None:
     missing_pr3_phrases = [phrase for phrase in REQUIRED_PR3_PHRASES if phrase not in combined_pr3_text]
     if missing_pr3_phrases:
         fail("PR3 docs missing status phrases: " + ", ".join(missing_pr3_phrases))
+
+    required_m20_sdk_boundary_phrases = [
+        "from socialsense import create_research_session, export_run, load_domain_pack, run_scenario",
+        "## Public call flow",
+        "## Submitted configuration mapping",
+        "## Executable runtime-evidence signal",
+        "## Deterministic test hooks",
+        "## Supported errors and fail-closed behavior",
+        "Architecture Gate: Not triggered",
+        "No SDK-breaking change, runtime redesign, new service, persistence, auth, live-platform access, or duplicated simulation logic is required.",
+    ]
+    missing_m20_sdk_boundary_phrases = [
+        phrase for phrase in required_m20_sdk_boundary_phrases if phrase not in m20_sdk_boundary_doc
+    ]
+    if missing_m20_sdk_boundary_phrases:
+        fail("M20 public SDK integration boundary missing required contract/safety phrases: " + ", ".join(missing_m20_sdk_boundary_phrases))
 
     combined_pr4_text = "\n".join([readme, agents, integration_doc])
     missing_pr4_phrases = [phrase for phrase in REQUIRED_PR4_PHRASES if phrase not in combined_pr4_text]
