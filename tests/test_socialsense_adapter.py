@@ -325,6 +325,21 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertNotIn("must_not_echo", str(result))
         self.assertNotIn("unsupported", str(result))
 
+    def test_malformed_top_level_configuration_falls_closed_to_an_empty_snapshot(self) -> None:
+        for submitted in (None, [], "not-a-configuration"):
+            with self.subTest(submitted_type=type(submitted).__name__):
+                result = self.adapter.run_submitted_simulation_configuration(
+                    submitted,
+                    export_formats=(),
+                    domain=self.fake_domain,
+                )
+
+                self.assertEqual(result["status"], "configuration_only")
+                self.assertEqual(result["runtime_status"], "configuration_only")
+                self.assertFalse(result["runtime_consumed"])
+                self.assertEqual(result["submitted_configuration"], {})
+                self.assertEqual(self.fake_domain.run_calls, [])
+
     def test_duplicate_platforms_fall_closed_without_runtime_execution_or_partial_snapshot(self) -> None:
         submitted = {
             "simulationProfile": "product_launch",

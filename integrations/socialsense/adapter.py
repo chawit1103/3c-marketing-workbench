@@ -464,7 +464,10 @@ def _configuration_only_fallback(submitted_configuration: Mapping[str, Any]) -> 
     }
 
 
-def _submitted_configuration_snapshot(submitted_configuration: Mapping[str, Any]) -> dict[str, Any]:
+def _submitted_configuration_snapshot(submitted_configuration: Any) -> dict[str, Any]:
+    if not isinstance(submitted_configuration, Mapping):
+        return {}
+
     snapshot: dict[str, Any] = {}
     simulation_profile = submitted_configuration.get("simulationProfile")
     selected_platforms = submitted_configuration.get("selectedPlatforms")
