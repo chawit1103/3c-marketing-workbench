@@ -319,11 +319,31 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
 
         self.assertEqual(result["status"], "configuration_only")
-        self.assertEqual(result["submitted_configuration"], {"selectedPlatforms": ["line"]})
+        self.assertEqual(result["submitted_configuration"], {})
         self.assertNotIn("caller_override", str(result))
         self.assertNotIn("caller_defined", str(result))
         self.assertNotIn("must_not_echo", str(result))
         self.assertNotIn("unsupported", str(result))
+
+    def test_duplicate_platforms_fall_closed_without_runtime_execution_or_partial_snapshot(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line", "line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+            "caller_private_field": "must_not_echo",
+        }
+
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertFalse(result["runtime_consumed"])
+        self.assertEqual(
+            result["submitted_configuration"],
+            {"simulationProfile": "product_launch", "evidenceDepth": "minimal"},
+        )
+        self.assertEqual(self.fake_domain.run_calls, [])
+        self.assertNotIn("caller_private_field", result)
 
     def test_submitted_configuration_falls_closed_when_runtime_contract_is_absent(self) -> None:
         self.fake_domain.runtime_contract_override = {}

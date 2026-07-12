@@ -380,6 +380,8 @@ def _map_submitted_configuration(submitted_configuration: Mapping[str, Any]) -> 
         raise ValueError("Submitted simulation profile or evidence depth is not supported.")
     if not isinstance(selected_platforms, list) or not selected_platforms:
         raise ValueError("Submitted configuration requires selected platforms.")
+    if len({platform for platform in selected_platforms if isinstance(platform, str)}) != len(selected_platforms):
+        raise ValueError("Submitted configuration contains duplicate or unsupported platforms.")
     if not isinstance(allocations, Mapping):
         raise ValueError("Submitted configuration requires platform allocations.")
 
@@ -471,24 +473,27 @@ def _submitted_configuration_snapshot(submitted_configuration: Mapping[str, Any]
 
     if simulation_profile in _SCENARIO_NAMES:
         snapshot["simulationProfile"] = simulation_profile
-    if isinstance(selected_platforms, list):
+    if isinstance(selected_platforms, list) and isinstance(platform_allocations, Mapping):
         accepted_platforms = [
             platform for platform in selected_platforms if isinstance(platform, str) and platform in _PLATFORM_LABELS
         ]
-        if accepted_platforms:
-            snapshot["selectedPlatforms"] = accepted_platforms
-    if isinstance(platform_allocations, Mapping):
-        accepted_platforms = set(snapshot.get("selectedPlatforms", []))
+        has_complete_platform_selection = (
+            bool(accepted_platforms)
+            and len(accepted_platforms) == len(selected_platforms)
+            and len(set(accepted_platforms)) == len(accepted_platforms)
+        )
         accepted_allocations = {
-            platform: allocation
-            for platform, allocation in platform_allocations.items()
-            if isinstance(platform, str)
-            and platform in accepted_platforms
-            and isinstance(allocation, int)
+            platform: platform_allocations.get(platform)
+            for platform in accepted_platforms
+        }
+        has_matching_allocations = all(
+            isinstance(allocation, int)
             and not isinstance(allocation, bool)
             and _MIN_PLATFORM_ALLOCATION <= allocation <= _MAX_PLATFORM_ALLOCATION
-        }
-        if accepted_allocations:
+            for allocation in accepted_allocations.values()
+        )
+        if has_complete_platform_selection and has_matching_allocations:
+            snapshot["selectedPlatforms"] = accepted_platforms
             snapshot["platformAllocations"] = accepted_allocations
     if evidence_depth in _EVIDENCE_DEPTHS:
         snapshot["evidenceDepth"] = evidence_depth

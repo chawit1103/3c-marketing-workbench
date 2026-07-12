@@ -75,11 +75,11 @@ The public SDK supplies deterministic fixture hooks without product-side simulat
 
 The fallback is intentionally non-diagnostic to the product UI: it retains only the allowlisted submitted configuration fields and never fabricates a runtime result or echoes arbitrary caller fields.
 
-## Verified current condition and resolved historical regression
+## Verified runtime evidence and resolved historical regression
 
-The public SDK completes the submitted `product_launch` / Facebook + LINE + X fixture request and returns the full runtime contract. The former 3C adapter false negative caused by comparing submitted label order (`Facebook`, `LINE`, `X`) directly with the runtime canonical order (`LINE`, `Facebook`, `X`) was resolved in `cd3be65`.
+The public SDK completes the submitted `product_launch` / Facebook + LINE + X fixture request and returns the full runtime contract. The former 3C adapter false negative caused by comparing submitted label order (`Facebook`, `LINE`, `X`) directly with the runtime canonical order (`LINE`, `Facebook`, `X`) was resolved in `cd3be65`; it is retained here only as resolved historical context, not as a current defect.
 
-Current adapter evidence comparison normalizes the documented platform order before promotion and still requires the exact fixture/offline aggregate evidence tier plus explicit non-calibrated confidence. This historical regression did not require and must not prompt a SocialSense change or duplicated simulation behavior in 3C.
+The current adapter evidence comparison normalizes the documented platform order before promotion and still requires the exact public-SDK fixture/offline aggregate evidence tier plus explicit non-calibrated confidence. This historical regression did not require and must not prompt a SocialSense change or duplicated simulation behavior in 3C; the integration remains public-SDK-only, offline, and aggregate-only.
 
 ## Architecture decision
 

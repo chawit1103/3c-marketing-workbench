@@ -14,7 +14,7 @@ The adapter loads the Marketing Domain Pack with `load_domain_pack('marketing')`
 
 It does not modify SocialSense, copy SocialSense internals, import `app.civicsense`, or import private SocialSense modules.
 
-For the verified PR3 public SDK signatures, runtime-evidence promotion rule, deterministic hooks, supported fail-closed behavior, and the current adapter-ordering follow-up, see [M20 PR3 SocialSense Public SDK Integration Boundary](M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md).
+For the verified PR3 public SDK signatures, runtime-evidence promotion rule, deterministic hooks, supported fail-closed behavior, and the resolved adapter-ordering regression history, see [M20 PR3 SocialSense Public SDK Integration Boundary](M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md).
 
 ## PR4 fixture flow
 
@@ -116,5 +116,6 @@ Expected smoke/fixture summary includes:
 - PR4 renders one Product Launch vertical slice only.
 - Browser-entered form values are shown as review assumptions beside the generated offline sample; they are not sent to a live SocialSense service.
 - This adapter evidence is local fixture/offline runtime consumption only; it is not live platform measurement, production execution, or a forecast.
+- Runtime evidence is limited to the public SDK fixture/offline contract and remains aggregate-only; it does not establish live platform or production consumption.
 - No backend service, auth, persistence, live API, credentials, customer data, or production campaign workflow.
 - A/B comparison, campaign message test, real workspace persistence, and downloadable report packaging remain future gated work.
