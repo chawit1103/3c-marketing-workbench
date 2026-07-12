@@ -256,6 +256,33 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertEqual(result["runtime_status"], "configuration_only")
         self.assertFalse(result["runtime_consumed"])
 
+    def test_submitted_configuration_falls_closed_for_null_or_invalid_runtime_completion_status(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+        original_run = self.fake_domain.run
+
+        for invalid_status in (None, "failed", 200, {"status": "completed"}):
+            with self.subTest(invalid_status=invalid_status):
+                def run_with_invalid_status(**kwargs: Any) -> dict[str, Any]:
+                    runtime_result = original_run(**kwargs)
+                    runtime_result["status"] = invalid_status
+                    return runtime_result
+
+                self.fake_domain.run = run_with_invalid_status
+                result = self.adapter.run_submitted_simulation_configuration(
+                    submitted,
+                    export_formats=(),
+                    domain=self.fake_domain,
+                )
+
+                self.assertEqual(result["status"], "configuration_only")
+                self.assertEqual(result["runtime_status"], "configuration_only")
+                self.assertFalse(result["runtime_consumed"])
+
     def test_submitted_configuration_falls_closed_when_adapter_result_omits_runtime_completion_status(self) -> None:
         submitted = {
             "simulationProfile": "product_launch",

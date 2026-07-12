@@ -66,6 +66,35 @@ class SocialSenseAdapterSmokeTests(unittest.TestCase):
 
         self.assertNotEqual(raised.exception.code, 0)
 
+    def test_smoke_fails_when_consumption_flags_lack_valid_fixture_contract(self) -> None:
+        product_result = {
+            "status": "ok",
+            "run_status": "completed",
+            "scenario": "product_launch",
+            "platform_mix": ["LINE", "TikTok"],
+            "exports": {},
+            "safety": {},
+            "provenance": {},
+            "limitations": [],
+            "evidence_gaps": [],
+            "public_sdk_only": True,
+        }
+        falsely_consumed_result = {
+            "status": "configuration_only",
+            "runtime_status": "consumed_by_runtime",
+            "runtime_consumed": True,
+        }
+
+        with (
+            patch.object(self.smoke, "run_product_launch_simulation", return_value=product_result),
+            patch.object(self.smoke, "run_submitted_simulation_configuration", return_value=falsely_consumed_result),
+            contextlib.redirect_stdout(io.StringIO()),
+            self.assertRaises(SystemExit) as raised,
+        ):
+            self.smoke.main()
+
+        self.assertNotEqual(raised.exception.code, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
