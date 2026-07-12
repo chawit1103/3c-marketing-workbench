@@ -1197,6 +1197,45 @@ def current_branch_name() -> str:
         return ""
 
 
+M20_PR4_CONTEXT_REQUIRED_PATHS = frozenset(
+    {
+        "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+        "integrations/socialsense/adapter.py",
+        "src/product/simulationConfig.ts",
+    }
+)
+
+M20_PR4_ALLOWED_CHANGED_PATHS = frozenset(
+    {
+        "AGENTS.md",
+        "README.md",
+        "docs/architecture/PRODUCT_ARCHITECTURE.md",
+        "docs/product/3C_PRODUCT_PRINCIPLES.md",
+        "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
+        "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+        "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+        "docs/product/ROADMAP.md",
+        "docs/product/SOCIALSENSE_INTEGRATION.md",
+        "integrations/socialsense/__init__.py",
+        "integrations/socialsense/adapter.py",
+        "scripts/docs_smoke.py",
+        "scripts/socialsense_adapter_smoke.py",
+        "src/App.test.tsx",
+        "src/i18n/translations.ts",
+        "src/product/executiveDecisionBrief.test.ts",
+        "src/product/executiveInsights.test.ts",
+        "src/product/platformEngagement.test.ts",
+        "src/product/platformEngagement.ts",
+        "src/product/simulationConfig.test.ts",
+        "src/product/simulationConfig.ts",
+        "src/views.tsx",
+        "tests/test_docs_smoke_milestone_guards.py",
+        "tests/test_socialsense_adapter.py",
+        "tests/test_socialsense_adapter_smoke.py",
+    }
+)
+
+
 def milestone_number_from_branch(branch_name: str) -> int | None:
     match = re.match(r"m(\d+)-", branch_name)
     return int(match.group(1)) if match else None
@@ -1232,8 +1271,12 @@ def current_milestone_number() -> int | None:
 
 
 def is_authorized_m20_pr4_context() -> bool:
-    """Accept the reviewed M20 contract in branchless CI checkouts as well."""
-    return current_milestone_number() == 20
+    """Accept only the reviewed M20 PR4 contract in branchless CI checkouts."""
+    changed_paths = set(changed_paths_from_main())
+    return bool(changed_paths) and (
+        M20_PR4_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and changed_paths <= M20_PR4_ALLOWED_CHANGED_PATHS
+    )
 
 
 def branch_at_or_after(milestone: int) -> bool:

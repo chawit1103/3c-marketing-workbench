@@ -81,6 +81,20 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertEqual(docs_smoke.current_milestone_number(), 20)
             self.assertTrue(docs_smoke.is_authorized_m20_pr4_context())
 
+    def test_m20_marker_with_unauthorized_runtime_path_is_not_authorized(self) -> None:
+        changed_paths = [
+            "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+            "integrations/socialsense/adapter.py",
+            "src/product/simulationConfig.ts",
+            "backend/runtime.py",
+        ]
+        with (
+            patch.object(docs_smoke, "current_branch_name", return_value="pull/40/merge"),
+            patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+        ):
+            self.assertEqual(docs_smoke.current_milestone_number(), 20)
+            self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
+
     def test_m19_runtime_path_guard_is_not_exempt_without_authorized_m20_context(self) -> None:
         with (
             patch.object(docs_smoke, "current_branch_name", return_value="work"),
