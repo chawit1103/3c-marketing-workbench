@@ -190,6 +190,31 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertEqual(self.fake_domain.run_calls[0]["total_participants"], 350)
         self.assertEqual(self.fake_domain.run_calls[0]["evidence_depth"], "expanded")
 
+    def test_submitted_configuration_accepts_canonical_runtime_platform_order(self) -> None:
+        self.fake_domain.runtime_contract_override = {
+            "simulation_profile": "campaign_response",
+            "selected_platforms": ["LINE", "Facebook", "X"],
+            "per_platform_participant_allocation": {"Facebook": 80, "LINE": 120, "X": 150},
+            "total_synthetic_participants": 350,
+            "evidence_depth": "expanded",
+        }
+        submitted = {
+            "simulationProfile": "campaign_response",
+            "selectedPlatforms": ["facebook", "line", "x"],
+            "platformAllocations": {"facebook": 80, "line": 120, "x": 150},
+            "evidenceDepth": "expanded",
+        }
+
+        result = self.adapter.run_submitted_simulation_configuration(
+            submitted,
+            seed="canonical-order",
+            export_formats=(),
+            domain=self.fake_domain,
+        )
+
+        self.assertEqual(result["runtime_status"], "consumed_by_runtime")
+        self.assertTrue(result["runtime_consumed"])
+
     def test_submitted_configuration_falls_closed_when_runtime_contract_is_absent(self) -> None:
         self.fake_domain.runtime_contract_override = {}
         submitted = {

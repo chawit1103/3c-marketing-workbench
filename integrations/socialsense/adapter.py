@@ -23,6 +23,7 @@ _PLATFORM_LABELS = {
     "youtube": "YouTube",
     "x": "X",
 }
+_CANONICAL_PLATFORM_ORDER = ("LINE", "Facebook", "TikTok", "YouTube", "X", "Reddit")
 _EVIDENCE_DEPTHS = {"minimal", "standard", "expanded"}
 _SCENARIO_NAMES = {"product_launch", "brand_awareness", "campaign_response", "product_feedback", "promotion_response"}
 
@@ -407,7 +408,8 @@ def _has_executable_runtime_evidence(result: Mapping[str, Any], expected: Mappin
         return False
     return (
         runtime_contract.get("simulation_profile") == expected["simulation_profile"]
-        and runtime_contract.get("selected_platforms") == expected["platform_mix"]
+        and _normalize_runtime_platform_order(runtime_contract.get("selected_platforms"))
+        == _normalize_runtime_platform_order(expected["platform_mix"])
         and runtime_contract.get("per_platform_participant_allocation") == expected["participant_allocation"]
         and runtime_contract.get("total_synthetic_participants") == expected["total_participants"]
         and runtime_contract.get("evidence_depth") == expected["evidence_depth"]
@@ -415,6 +417,13 @@ def _has_executable_runtime_evidence(result: Mapping[str, Any], expected: Mappin
         and provenance.get("live_api_access") is False
         and provenance.get("credentials_required") is False
     )
+
+
+def _normalize_runtime_platform_order(platforms: Any) -> list[str] | None:
+    if not isinstance(platforms, list) or not all(isinstance(platform, str) for platform in platforms):
+        return None
+    order = {platform: index for index, platform in enumerate(_CANONICAL_PLATFORM_ORDER)}
+    return sorted(platforms, key=lambda platform: order.get(platform, len(order)))
 
 
 def _configuration_only_fallback(submitted_configuration: Mapping[str, Any]) -> dict[str, Any]:
