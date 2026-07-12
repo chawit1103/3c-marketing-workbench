@@ -123,6 +123,21 @@ class SocialSenseAdapterStaticTests(unittest.TestCase):
                 imported_names.update(alias.name for alias in node.names)
 
         self.assertEqual(imported_names, {"create_research_session", "export_run", "load_domain_pack", "run_scenario"})
+        self.assertFalse(
+            any(
+                isinstance(node, ast.ImportFrom)
+                and node.module
+                and node.module.startswith("socialsense.")
+                for node in ast.walk(tree)
+            )
+        )
+        self.assertFalse(
+            any(
+                isinstance(node, ast.Import)
+                and any(alias.name == "socialsense" or alias.name.startswith("socialsense.") for alias in node.names)
+                for node in ast.walk(tree)
+            )
+        )
         for forbidden in FORBIDDEN_REFERENCES:
             self.assertNotIn(forbidden, source)
 

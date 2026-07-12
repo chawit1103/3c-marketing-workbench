@@ -15,8 +15,8 @@ Repository guidance for agents working in 3C Marketing Workbench.
 - Do not modify SocialSense.
 - Do not modify MarketingSimulation.
 - SocialSense is a dependency boundary: 3C may use only public SDK/runtime surfaces.
-- Allowed SocialSense import for the product adapter: `from socialsense import load_domain_pack`.
-- Allowed runtime calls: `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`.
+- Approved top-level SocialSense public SDK allowlist for the PR4 fixture/offline aggregate adapter: `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack` imported directly from `socialsense`.
+- The adapter may call `load_domain_pack('marketing')`, `create_research_session(...)`, `run_scenario(...)`, and `export_run(...)` only to produce the reviewed executable contract echo; no private/non-public `socialsense.*` module or call is allowed.
 - Product Launch, Campaign Message Test, A/B Experiment, and Creative Comparison fixture generation must go through product-owned scripts and `integrations/socialsense/adapter.py`; do not import private SocialSense modules.
 - M19 PR2 Simulation Configuration is configuration-only: shared controls record profile/platform allocation/evidence-depth intent. M19 PR3 may derive product-owned synthetic/offline platform engagement results from this configuration, but generated results remain offline fixtures and must not claim SocialSense runtime consumption.
 - M19 PR2 SocialSense boundary outcome is B: public APIs are sufficient for configuration-only UI inspection. M19 PR3 stays product-owned and offline over current configuration; no SocialSense public SDK/API/runtime changes are allowed.

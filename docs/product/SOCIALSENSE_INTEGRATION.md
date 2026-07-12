@@ -12,6 +12,8 @@ from socialsense import create_research_session, export_run, load_domain_pack, r
 
 The adapter loads the Marketing Domain Pack with `load_domain_pack('marketing')`, creates a fixture/offline public SDK session, calls `run_scenario(...)`, and uses `export_run(...)` for exports.
 
+The reviewed PR4 allowlist is exactly the top-level public facade functions `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack`. These calls exist to echo the executable fixture/offline aggregate contract; they do not authorize private/non-public `socialsense.*` imports or live execution.
+
 It does not modify SocialSense, copy SocialSense internals, import `app.civicsense`, or import private SocialSense modules.
 
 For the verified PR3 public SDK signatures, runtime-evidence promotion rule, deterministic hooks, supported fail-closed behavior, and the resolved adapter-ordering regression history, see [M20 PR3 SocialSense Public SDK Integration Boundary](M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md).

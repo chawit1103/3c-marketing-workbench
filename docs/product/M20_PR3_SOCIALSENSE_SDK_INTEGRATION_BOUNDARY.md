@@ -12,6 +12,8 @@ The reviewed public import used by the existing 3C adapter is:
 from socialsense import create_research_session, export_run, load_domain_pack, run_scenario
 ```
 
+This is the complete approved top-level public SDK allowlist for PR4: `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack`. It is limited to executable fixture/offline aggregate contract echo and does not permit any private or non-public `socialsense.*` module path.
+
 `ConsumerSDK` exposes equivalent object methods and is public, but 3C should retain the existing function-based adapter call path rather than introduce a second path. 3C must not import `app.civicsense.*`, `socialsense.workbench`, `socialsense.domain_packs`, `socialsense.bridge`, plugins, scenario internals, or exporter internals.
 
 ## Public call flow

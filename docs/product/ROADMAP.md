@@ -139,7 +139,7 @@ Acceptance criteria:
 
 ### PR3 quality gates
 
-- Adapter imports only `from socialsense import load_domain_pack` from the SocialSense public facade.
+- Adapter imports only the approved top-level SocialSense public facade functions `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack`.
 - Contract tests cover input mapping, export wrapper behavior, static forbidden-import checks, and deterministic comparison wrappers.
 - Local smoke runs `product_launch` through SocialSense Marketing Domain Pack with fixture/offline aggregate inputs.
 - Local smoke verifies export status for `json`, `markdown`, and `executive_json`.

@@ -8,14 +8,11 @@ Status: M1 PR1 architecture foundation. This is a docs-only architecture decisio
 
 ## Non-negotiable boundary
 
-3C may consume SocialSense only through public SDK/runtime surfaces:
+3C may consume SocialSense only through the approved top-level public SDK facade for the reviewed fixture/offline aggregate adapter:
 
-- `from socialsense import load_domain_pack`
-- `from socialsense import ConsumerSDK`
-- `DomainPack.run(...)`
-- `DomainPack.export(...)`
-- `DomainPack.runtime_annotation`
-- `DomainPack.dashboard_contract`
+- `from socialsense import create_research_session, export_run, load_domain_pack, run_scenario`
+
+These four functions are the complete PR4 allowlist for executable contract echo. `ConsumerSDK` and direct domain methods are documented historical/public surfaces, but are not authorized adapter imports on this path.
 
 3C must not import SocialSense internals, legacy CivicSense compatibility modules, private workbench classes, exporter internals, validators, or implementation paths.
 
@@ -68,10 +65,10 @@ Notes:
 
 3C Integration Adapter responsibilities:
 
-- Load the Marketing Domain Pack through `load_domain_pack("marketing")` or `ConsumerSDK().load_domain_pack("marketing")`.
-- Submit fixture/offline scenario inputs through `DomainPack.run(...)`.
-- Read `runtime_annotation` and `dashboard_contract`.
-- Request exports through `DomainPack.export(run, format="json" | "markdown" | "executive_json")`.
+- Load the Marketing Domain Pack through `load_domain_pack("marketing")`.
+- Create and run fixture/offline scenarios through `create_research_session(...)` and `run_scenario(...)`.
+- Request exports through `export_run(run, format="json" | "markdown" | "executive_json")`.
+- Read returned runtime/provenance and dashboard contracts as read-only output.
 - Convert SocialSense responses into product view models.
 - Preserve provenance, assumptions, limitations, evidence gaps, and safety boundaries unchanged or stronger.
 

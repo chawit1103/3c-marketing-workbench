@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import re
 import subprocess
 import sys
@@ -1137,6 +1138,13 @@ FORBIDDEN_ADAPTER_CONTENT = [
     "voter_list",
 ]
 
+APPROVED_SOCIALSENSE_IMPORTS = {
+    "create_research_session",
+    "run_scenario",
+    "export_run",
+    "load_domain_pack",
+}
+
 IGNORED_DIRS = {".git", "node_modules", "dist", "coverage", "__pycache__"}
 README_LINK_PATTERN = re.compile(r"\[[^\]]+\]\((?!https?://|mailto:|#)([^)]+)\)")
 
@@ -1547,6 +1555,27 @@ def main() -> None:
     ]
     if "from socialsense import" not in adapter or any(name not in adapter for name in required_public_adapter_imports):
         fail("adapter does not import the required SocialSense public SDK facade")
+    adapter_tree = ast.parse(adapter)
+    imported_names = {
+        alias.name
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.ImportFrom) and node.module == "socialsense"
+        for alias in node.names
+    }
+    private_imports = [
+        node.module
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("socialsense.")
+    ]
+    private_imports.extend(
+        alias.name
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+        if alias.name == "socialsense" or alias.name.startswith("socialsense.")
+    )
+    if imported_names != APPROVED_SOCIALSENSE_IMPORTS or private_imports:
+        fail("adapter SocialSense imports must match the exact approved top-level public SDK allowlist")
     forbidden_adapter_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in adapter]
     if forbidden_adapter_hits:
         fail("adapter references forbidden SocialSense/private/live content: " + ", ".join(forbidden_adapter_hits))

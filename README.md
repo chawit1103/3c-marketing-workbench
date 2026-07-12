@@ -58,8 +58,8 @@ PR4 does not implement backend services, persistence, authentication, live API c
 
 PR3 adds the first safe adapter layer without wiring the UI:
 
-- `integrations/socialsense/adapter.py` imports only `from socialsense import load_domain_pack`;
-- adapter calls only `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`;
+- `integrations/socialsense/adapter.py` imports only the approved top-level public SDK functions `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack` from `socialsense`;
+- adapter calls only the approved public facade functions to produce fixture/offline aggregate contract evidence; private/non-public `socialsense.*` modules remain forbidden;
 - `run_product_launch_simulation(...)` executes an actual SocialSense Marketing Domain Pack `product_launch` fixture in local smoke;
 - `run_campaign_message_test(...)`, `run_message_comparison(...)`, and `export_executive_report(...)` expose adapter-shaped product functions for later workflow wiring;
 - input mapping is limited to aggregate non-sensitive `scenario`, `platform_mix`, `seed`, `assumptions`, and `notes`;

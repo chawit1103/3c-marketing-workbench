@@ -404,7 +404,7 @@ Future target:
 Historical PR4 baseline:
 
 - Product-owned adapter exists at `integrations/socialsense/adapter.py`.
-- Adapter imports only `from socialsense import load_domain_pack` from the SocialSense public SDK facade.
+- Adapter imports only the approved top-level SocialSense public SDK facade functions `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack`.
 - Adapter maps only aggregate `scenario`, `platform_mix`, `seed`, `assumptions`, and `notes`.
 - Local smoke executes SocialSense Marketing Domain Pack `product_launch` and verifies `json`, `markdown`, and `executive_json` export statuses.
 - Provenance, limitations, evidence gaps, human review questions, and safety boundaries are preserved.
