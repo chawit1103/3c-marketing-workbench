@@ -234,6 +234,27 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertEqual(result["runtime_status"], "consumed_by_runtime")
         self.assertTrue(result["runtime_consumed"])
 
+    def test_submitted_configuration_falls_closed_when_runtime_omits_completion_status(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+        original_run = self.fake_domain.run
+
+        def run_without_status(**kwargs: Any) -> dict[str, Any]:
+            runtime_result = original_run(**kwargs)
+            runtime_result.pop("status")
+            return runtime_result
+
+        self.fake_domain.run = run_without_status
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertEqual(result["runtime_status"], "configuration_only")
+        self.assertFalse(result["runtime_consumed"])
+
     def test_submitted_configuration_falls_closed_without_fixture_evidence_tier_and_confidence(self) -> None:
         self.fake_domain.runtime_contract_override = {
             "simulation_profile": "product_launch",

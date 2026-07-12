@@ -38,6 +38,16 @@ describe('M19 PR2 simulation configuration model', () => {
     expect(EVIDENCE_DEPTHS).toEqual(['minimal', 'standard', 'expanded']);
   });
 
+  it('uses the requested canonical profile instead of contaminating non-launch workflows with Product Launch defaults', () => {
+    const config = createDefaultSimulationConfiguration(['Facebook', 'LINE'], 'campaign_response');
+
+    expect(config.simulationProfile).toBe('campaign_response');
+    expect(config.evidenceDepth).toBe('standard');
+    expect(config.platformAllocations.facebook).toBe(150);
+    expect(config.platformAllocations.line).toBe(150);
+    expect(calculateSelectedParticipantTotal(config)).toBe(300);
+  });
+
   it('excludes unselected platforms from totals even when allocation values exist', () => {
     const config = createDefaultSimulationConfiguration(['Facebook', 'LINE']);
     const totalWithUnselectedTikTokPresent = calculateSelectedParticipantTotal({

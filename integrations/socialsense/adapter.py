@@ -239,7 +239,7 @@ def _run_marketing_fixture(
         evidence_depth=evidence_depth,
     )
     run_payload = run_scenario(session=session, domain_pack=marketing)
-    run_status = run_payload.get("status", "completed")
+    run_status = run_payload.get("status")
     export_handle = _store_run_payload(run_payload)
     exports = _export_bundle(run_payload, export_formats)
     marketing_research = run_payload.get("marketing_research", {})

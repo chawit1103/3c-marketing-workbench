@@ -259,7 +259,7 @@ function parseAssumptionPayload(runId?: string): { form: LaunchForm; editedField
     const form = buildRuntimeAssumptionState(parsed.form, config.defaultForm);
     const simulationConfig = parseSimulationConfiguration(
       parsed.simulationConfig,
-      createDefaultSimulationConfiguration(form.platforms),
+      createDefaultSimulationConfiguration(form.platforms, config.simulationProfile),
     );
     const nextEditedFields = new Set<keyof LaunchForm>();
     if (Array.isArray(parsed.editedFields)) {
@@ -320,6 +320,7 @@ type ReferenceFixture = typeof productLaunchFixture | typeof campaignMessageFixt
 
 type WorkflowConfig = {
   key: WorkflowKey;
+  simulationProfile: SimulationProfile;
   objective: string;
   modeLabel: string;
   heading: string;
@@ -406,6 +407,7 @@ const creativeComparisonDefaultForm: LaunchForm = {
 const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
   productLaunch: {
     key: 'productLaunch',
+    simulationProfile: 'product_launch',
     objective: 'Product Launch',
     modeLabel: 'Product Launch mode',
     heading: 'Product Launch Simulation',
@@ -419,6 +421,7 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
   },
   campaignMessageTest: {
     key: 'campaignMessageTest',
+    simulationProfile: 'campaign_response',
     objective: 'Campaign Message Test',
     modeLabel: 'Campaign Message Test mode',
     heading: 'Campaign Message Test',
@@ -432,6 +435,7 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
   },
   abExperiment: {
     key: 'abExperiment',
+    simulationProfile: 'campaign_response',
     objective: 'A/B Experiment',
     modeLabel: 'A/B Experiment mode',
     heading: 'A/B Experiment',
@@ -445,6 +449,7 @@ const workflowConfigs: Record<WorkflowKey, WorkflowConfig> = {
   },
   creativeComparison: {
     key: 'creativeComparison',
+    simulationProfile: 'campaign_response',
     objective: 'Creative Comparison',
     modeLabel: 'Creative Comparison mode',
     heading: 'Creative Comparison',
@@ -1369,10 +1374,10 @@ export function WorkbenchView({ workflow = 'productLaunch' }: { workflow?: Workf
   const [submittedEditedFields, setSubmittedEditedFields] = useState<Set<keyof LaunchForm>>(new Set());
   const [errors, setErrors] = useState<string[]>([]);
   const [simulationConfig, setSimulationConfig] = useState<SimulationConfiguration>(() =>
-    createDefaultSimulationConfiguration(config.defaultForm.platforms),
+    createDefaultSimulationConfiguration(config.defaultForm.platforms, config.simulationProfile),
   );
   const [submittedSimulationConfig, setSubmittedSimulationConfig] = useState<SimulationConfiguration>(() =>
-    createDefaultSimulationConfiguration(config.defaultForm.platforms),
+    createDefaultSimulationConfiguration(config.defaultForm.platforms, config.simulationProfile),
   );
   const form = useMemo<LaunchForm>(() => ({
     ...localizedDefaultForm,
@@ -1691,7 +1696,7 @@ export function RunDashboardView({ runId }: { runId?: string }) {
   const assumptionPayload = parseAssumptionPayload(runId);
   const form = assumptionPayload?.form ?? config.defaultForm;
   const editedFields = assumptionPayload?.editedFields;
-  const simulationConfig = assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration(form.platforms);
+  const simulationConfig = assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration(form.platforms, config.simulationProfile);
   return (
     <Localized>
       <section className="view-stack" aria-labelledby="dashboard-title">
@@ -1721,7 +1726,7 @@ export function ExportReviewView({ runId }: { runId?: string }) {
         <p>Review preview and handoff notes only, based on the synthetic offline fixture.</p>
       </div>
       <FixtureTransparency />
-      <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} simulationConfig={assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration((assumptionPayload?.form ?? config.defaultForm).platforms)} />
+      <ExportReview fixture={config.fixture} objective={config.objective} form={assumptionPayload?.form} simulationConfig={assumptionPayload?.simulationConfig ?? createDefaultSimulationConfiguration((assumptionPayload?.form ?? config.defaultForm).platforms, config.simulationProfile)} />
        </section>
      </Localized>
    );

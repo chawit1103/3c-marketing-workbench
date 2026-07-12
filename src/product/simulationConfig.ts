@@ -103,11 +103,14 @@ export function platformLabelsToKeys(platforms: string[]): PlatformKey[] {
   return platforms.map((platform) => platformKeyByLabel[platform]).filter((platform): platform is PlatformKey => Boolean(platform));
 }
 
-export function createDefaultSimulationConfiguration(selectedPlatformLabels: string[]): SimulationConfiguration {
-  const profile = SIMULATION_PROFILES[DEFAULT_SIMULATION_PROFILE];
+export function createDefaultSimulationConfiguration(
+  selectedPlatformLabels: string[],
+  simulationProfile: SimulationProfile = DEFAULT_SIMULATION_PROFILE,
+): SimulationConfiguration {
+  const profile = SIMULATION_PROFILES[simulationProfile];
   const selectedPlatforms = platformLabelsToKeys(selectedPlatformLabels);
   return {
-    simulationProfile: DEFAULT_SIMULATION_PROFILE,
+    simulationProfile,
     selectedPlatforms: selectedPlatforms.length > 0 ? selectedPlatforms : Object.keys(PLATFORM_LABELS) as PlatformKey[],
     platformAllocations: { ...profile.allocations },
     platformAllocationDrafts: allocationDraftsFromValues(profile.allocations),

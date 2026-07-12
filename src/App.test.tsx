@@ -1428,15 +1428,15 @@ describe('A/B Experiment workflow', () => {
 
 describe('M19 PR2 Simulation Configuration Workspace', () => {
   it.each([
-    ['/workbench', 'Product Launch setup'],
-    ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
-    ['/workbench/ab-experiment', 'A/B Experiment setup'],
-    ['/workbench/creative-comparison', 'Creative Comparison setup'],
-  ])('renders shared simulation configuration summary for %s', (pathname, formName) => {
+    ['/workbench', 'Product Launch setup', 'Product Launch'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test setup', 'Campaign Response'],
+    ['/workbench/ab-experiment', 'A/B Experiment setup', 'Campaign Response'],
+    ['/workbench/creative-comparison', 'Creative Comparison setup', 'Campaign Response'],
+  ])('renders workflow-correct simulation configuration summary for %s', (pathname, formName, profileLabel) => {
     renderAt(pathname);
     const form = screen.getByRole('form', { name: formName });
 
-    expect(within(form).getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Product Launch');
+    expect(within(form).getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent(profileLabel);
     expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Configured for simulation');
     expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Total synthetic participants');
     expect(within(form).getByText('Synthetic participants only; not live platform users.')).toBeInTheDocument();

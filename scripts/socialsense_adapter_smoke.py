@@ -64,6 +64,11 @@ def main() -> None:
         },
     }
     print(json.dumps(summary, indent=2, sort_keys=True))
+    if not (
+        submitted_configuration.get("runtime_consumed") is True
+        and submitted_configuration.get("runtime_status") == "consumed_by_runtime"
+    ):
+        raise SystemExit("Submitted configuration was not consumed by the verified public fixture runtime contract.")
 
 
 if __name__ == "__main__":

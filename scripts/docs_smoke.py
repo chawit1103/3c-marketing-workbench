@@ -1231,6 +1231,11 @@ def current_milestone_number() -> int | None:
     return milestone_number_from_branch(current_branch_name()) or milestone_number_from_changed_paths(changed_paths_from_main())
 
 
+def is_authorized_m20_pr4_context() -> bool:
+    """Accept the reviewed M20 contract in branchless CI checkouts as well."""
+    return current_milestone_number() == 20
+
+
 def branch_at_or_after(milestone: int) -> bool:
     current = current_milestone_number()
     return current is not None and current >= milestone
@@ -2324,7 +2329,7 @@ def main() -> None:
             unexpected_m19_pr6_changes = [path for path in changed_paths if path not in M19_PR6_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr6_changes:
                 fail("M19 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m19_pr6_changes))
-        elif not current_branch_name().startswith("m20-pr4-"):
+        elif not is_authorized_m20_pr4_context():
             forbidden_m19_runtime_paths = [
                 path
                 for path in changed_paths
