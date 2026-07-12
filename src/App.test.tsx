@@ -1442,6 +1442,25 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(within(form).getByText('Synthetic participants only; not live platform users.')).toBeInTheDocument();
   });
 
+  it.each([
+    ['/runs/3c-m5-campaign-message-test-reference-workflow', '/exports/3c-m5-campaign-message-test-reference-workflow'],
+    ['/runs/3c-m7-ab-experiment-reference-workflow', '/exports/3c-m7-ab-experiment-reference-workflow'],
+    ['/runs/3c-m15-creative-comparison-reference-workflow', '/exports/3c-m15-creative-comparison-reference-workflow'],
+  ])('keeps the Campaign Response default out of Product Launch dashboard and export fallbacks for %s', (runPath, exportPath) => {
+    const dashboard = renderAt(runPath);
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+
+    expect(engagement).toHaveTextContent('Total synthetic participants450');
+    expect(engagement).not.toHaveTextContent('Total synthetic participants240');
+    dashboard.unmount();
+
+    renderAt(exportPath);
+    const brief = screen.getByRole('region', { name: 'Executive Decision Brief' });
+    expect(brief).toHaveTextContent('Simulation ProfileCampaign Response');
+    expect(brief).toHaveTextContent('Participant allocations: Facebook 150; TikTok 150; LINE 150.');
+    expect(brief).not.toHaveTextContent('Product Launch');
+  });
+
   it('lets custom allocations change totals while excluding unselected platforms', () => {
     const form = renderWorkbench();
 

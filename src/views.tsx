@@ -2506,7 +2506,7 @@ function ExecutiveDecisionBriefSection({ brief }: { brief: ExecutiveDecisionBrie
 }
 
 function profileLabel(profile: SimulationConfiguration['simulationProfile']) {
-  return profile.charAt(0).toUpperCase() + profile.slice(1);
+  return SIMULATION_PROFILES[profile].label;
 }
 
 function ReportSection({ title, children }: { title: string; children: ReactNode }) {

@@ -1273,10 +1273,27 @@ def current_milestone_number() -> int | None:
 def is_authorized_m20_pr4_context() -> bool:
     """Accept only the reviewed M20 PR4 contract in branchless CI checkouts."""
     changed_paths = set(changed_paths_from_main())
+    return is_authorized_m20_pr4_changed_paths(changed_paths)
+
+
+def is_authorized_m20_pr4_changed_paths(changed_paths: set[str]) -> bool:
+    """Authorize the reviewed M20 PR4 repository diff, not its checkout name."""
     return bool(changed_paths) and (
         M20_PR4_CONTEXT_REQUIRED_PATHS <= changed_paths
         and changed_paths <= M20_PR4_ALLOWED_CHANGED_PATHS
     )
+
+
+def m19_runtime_path_violations(changed_paths: list[str]) -> list[str]:
+    """Keep M19 runtime paths protected unless the whole PR diff is authorized M20 PR4."""
+    changed_path_set = set(changed_paths)
+    if is_authorized_m20_pr4_changed_paths(changed_path_set):
+        return []
+    return [
+        path
+        for path in changed_paths
+        if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
+    ]
 
 
 def branch_at_or_after(milestone: int) -> bool:
@@ -2372,12 +2389,8 @@ def main() -> None:
             unexpected_m19_pr6_changes = [path for path in changed_paths if path not in M19_PR6_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr6_changes:
                 fail("M19 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m19_pr6_changes))
-        elif not is_authorized_m20_pr4_context():
-            forbidden_m19_runtime_paths = [
-                path
-                for path in changed_paths
-                if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
-            ]
+        else:
+            forbidden_m19_runtime_paths = m19_runtime_path_violations(changed_paths)
             if forbidden_m19_runtime_paths:
                 fail("M19 preparation changed runtime/backend/SocialSense paths: " + ", ".join(forbidden_m19_runtime_paths))
         m19_forbidden_claims = [

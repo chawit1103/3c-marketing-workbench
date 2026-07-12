@@ -28,6 +28,7 @@ _EVIDENCE_DEPTHS = {"minimal", "standard", "expanded"}
 _SCENARIO_NAMES = {"product_launch", "brand_awareness", "campaign_response", "product_feedback", "promotion_response"}
 _RUNTIME_EVIDENCE_TIER = "fixture_offline_aggregate_only"
 _NON_CALIBRATED_CONFIDENCE_LEVEL = "not_calibrated"
+_SUCCESSFUL_RUNTIME_STATUSES = ("completed", "ok")
 _MIN_PLATFORM_ALLOCATION = 10
 _MAX_PLATFORM_ALLOCATION = 500
 
@@ -244,7 +245,7 @@ def _run_marketing_fixture(
     exports = _export_bundle(run_payload, export_formats)
     marketing_research = run_payload.get("marketing_research", {})
     return {
-        "status": "ok" if run_status in {"completed", "ok"} else str(run_status),
+        "status": "ok" if run_status in _SUCCESSFUL_RUNTIME_STATUSES else str(run_status),
         "run_status": run_status,
         "export_handle": export_handle,
         "adapter_function": adapter_function,
@@ -414,7 +415,12 @@ def _map_submitted_configuration(submitted_configuration: Mapping[str, Any]) -> 
 def _has_executable_runtime_evidence(result: Mapping[str, Any], expected: Mapping[str, Any]) -> bool:
     runtime_contract = result.get("runtime_contract")
     provenance = result.get("provenance")
-    if result.get("status") != "ok" or not isinstance(runtime_contract, Mapping) or not isinstance(provenance, Mapping):
+    if (
+        result.get("status") != "ok"
+        or result.get("run_status") not in _SUCCESSFUL_RUNTIME_STATUSES
+        or not isinstance(runtime_contract, Mapping)
+        or not isinstance(provenance, Mapping)
+    ):
         return False
     confidence = runtime_contract.get("confidence")
     return (

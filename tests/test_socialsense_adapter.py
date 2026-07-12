@@ -9,6 +9,7 @@ import types
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_PATH = ROOT / "integrations" / "socialsense" / "adapter.py"
@@ -250,6 +251,38 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
 
         self.fake_domain.run = run_without_status
         result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertEqual(result["runtime_status"], "configuration_only")
+        self.assertFalse(result["runtime_consumed"])
+
+    def test_submitted_configuration_falls_closed_when_adapter_result_omits_runtime_completion_status(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+        executable_result_without_completion = {
+            "status": "ok",
+            "runtime_contract": {
+                "simulation_profile": "product_launch",
+                "selected_platforms": ["LINE"],
+                "per_platform_participant_allocation": {"LINE": 30},
+                "total_synthetic_participants": 30,
+                "evidence_depth": "minimal",
+                "evidence_tier": "fixture_offline_aggregate_only",
+                "confidence": {"level": "not_calibrated"},
+            },
+            "provenance": {
+                "fixture_only": True,
+                "live_api_access": False,
+                "credentials_required": False,
+            },
+        }
+
+        with patch.object(self.adapter, "_run_marketing_fixture", return_value=executable_result_without_completion):
+            result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
 
         self.assertEqual(result["status"], "configuration_only")
         self.assertEqual(result["runtime_status"], "configuration_only")
