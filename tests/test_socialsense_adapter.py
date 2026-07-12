@@ -51,6 +51,8 @@ class FakeMarketingDomain:
             "per_platform_participant_allocation": kwargs["participant_allocation"],
             "total_synthetic_participants": kwargs["total_participants"],
             "evidence_depth": kwargs["evidence_depth"],
+            "evidence_tier": "fixture_offline_aggregate_only",
+            "confidence": {"level": "not_calibrated"},
         }
         return {
             "status": "completed",
@@ -197,6 +199,8 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
             "per_platform_participant_allocation": {"Facebook": 80, "LINE": 120, "X": 150},
             "total_synthetic_participants": 350,
             "evidence_depth": "expanded",
+            "evidence_tier": "fixture_offline_aggregate_only",
+            "confidence": {"level": "not_calibrated"},
         }
         submitted = {
             "simulationProfile": "campaign_response",
@@ -214,6 +218,88 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
 
         self.assertEqual(result["runtime_status"], "consumed_by_runtime")
         self.assertTrue(result["runtime_consumed"])
+
+    def test_submitted_configuration_falls_closed_without_fixture_evidence_tier_and_confidence(self) -> None:
+        self.fake_domain.runtime_contract_override = {
+            "simulation_profile": "product_launch",
+            "selected_platforms": ["LINE"],
+            "per_platform_participant_allocation": {"LINE": 30},
+            "total_synthetic_participants": 30,
+            "evidence_depth": "minimal",
+        }
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertFalse(result["runtime_consumed"])
+
+    def test_submitted_configuration_falls_closed_for_mismatched_or_ambiguous_runtime_evidence(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+        compliant_contract = {
+            "simulation_profile": "product_launch",
+            "selected_platforms": ["LINE"],
+            "per_platform_participant_allocation": {"LINE": 30},
+            "total_synthetic_participants": 30,
+            "evidence_depth": "minimal",
+            "evidence_tier": "fixture_offline_aggregate_only",
+            "confidence": {"level": "not_calibrated"},
+        }
+        invalid_evidence = {
+            "mismatched evidence tier": {**compliant_contract, "evidence_tier": "field_calibrated"},
+            "calibrated confidence": {**compliant_contract, "confidence": {"level": "calibrated"}},
+            "ambiguous confidence": {**compliant_contract, "confidence": {}},
+        }
+
+        for evidence_case, runtime_contract in invalid_evidence.items():
+            with self.subTest(evidence_case=evidence_case):
+                self.fake_domain.runtime_contract_override = runtime_contract
+                result = self.adapter.run_submitted_simulation_configuration(
+                    submitted,
+                    export_formats=(),
+                    domain=self.fake_domain,
+                )
+
+                self.assertEqual(result["status"], "configuration_only")
+                self.assertFalse(result["runtime_consumed"])
+
+    def test_configuration_only_output_allowlists_submitted_snapshot_and_metadata(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+            "caller_private_field": {"must_not": "echo"},
+            "runtime_status": "consumed_by_runtime",
+        }
+
+        self.fake_domain.runtime_contract_override = {}
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(
+            result["submitted_configuration"],
+            {
+                "simulationProfile": "product_launch",
+                "selectedPlatforms": ["line"],
+                "platformAllocations": {"line": 30},
+                "evidenceDepth": "minimal",
+            },
+        )
+        self.assertNotIn("caller_private_field", result)
+        self.assertNotIn("runtime_status", result["submitted_configuration"])
+        self.assertEqual(result["provenance"]["source"], "submitted_configuration")
+        self.assertTrue(result["limitations"])
+        self.assertTrue(result["evidence_gaps"])
 
     def test_submitted_configuration_falls_closed_when_runtime_contract_is_absent(self) -> None:
         self.fake_domain.runtime_contract_override = {}

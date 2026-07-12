@@ -64,7 +64,7 @@ M20 PR4 defines the canonical submitted configuration in [ADR-001](ADR-001-SOCIA
 
 Canonical platform keys are `facebook`, `tiktok`, `line`, `youtube`, and `x`; their public labels are Facebook, TikTok, LINE, YouTube, and X. A caller cannot override the submitted scenario with a conflicting runtime scenario.
 
-The adapter marks a result `consumed_by_runtime` only when the executable public runtime contract echoes every mapped value and fixture/offline safety provenance. Invalid configuration, a missing runtime contract, or mismatched fields return the fail-closed `configuration_only` fallback; the adapter does not synthesize runtime results.
+The adapter marks a result `consumed_by_runtime` only when the executable public runtime contract echoes every mapped value, fixture/offline safety provenance, `evidence_tier: fixture_offline_aggregate_only`, and explicit `confidence.level: not_calibrated`. Invalid configuration, missing or mismatched runtime evidence, or ambiguous confidence returns the fail-closed `configuration_only` fallback with only an allowlisted submitted-configuration snapshot plus provenance, limitations, and evidence gaps; the adapter does not synthesize runtime results or echo arbitrary caller fields.
 
 No CRM/customer lists, PII, private messages/groups, voter lists, credentials, scraping, live APIs, microtargeting, persuasion optimization, conversion guarantees, or production campaign claims are introduced.
 

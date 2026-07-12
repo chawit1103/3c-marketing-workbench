@@ -70,16 +70,16 @@ The public SDK supplies deterministic fixture hooks without product-side simulat
 | unsupported consumer mode | raises `ValueError` | does not request unsupported modes |
 | invalid scenario/profile, platform, allocation, total, or evidence depth | raises `ValueError` or `SocialSenseSafetyError` before/while executing the public runtime | returns `configuration_only` without promoting a runtime result |
 | Marketing Domain Pack rejects the scenario | public domain validation fails closed | returns `configuration_only` |
-| missing, malformed, or mismatched runtime contract/provenance | no executable-evidence signal | returns `configuration_only` with `runtime_consumed: false` and reason `executable_runtime_evidence_absent` |
+| missing, malformed, or mismatched runtime contract/provenance, evidence tier, or confidence | no executable-evidence signal | returns `configuration_only` with `runtime_consumed: false`, reason `executable_runtime_evidence_absent`, and an allowlisted submitted-configuration snapshot with provenance, limitations, and evidence gaps |
 | unsupported export format | `export_run(...)` raises `ValueError` | offer only JSON, Markdown, and Executive JSON |
 
-The fallback is intentionally non-diagnostic to the product UI: it retains the submitted configuration and never fabricates a runtime result.
+The fallback is intentionally non-diagnostic to the product UI: it retains only the allowlisted submitted configuration fields and never fabricates a runtime result or echoes arbitrary caller fields.
 
-## Verified current condition and required product follow-up
+## Verified current condition and resolved historical regression
 
-The public SDK itself completes the submitted `product_launch` / Facebook + LINE + X fixture request and returns the full runtime contract. The current 3C real adapter smoke nonetheless reports `configuration_only` for that request because the adapter compares submitted label order (`Facebook`, `LINE`, `X`) directly with the runtime's canonical order (`LINE`, `Facebook`, `X`). This is a 3C adapter false negative, not an SDK limitation or Architecture Gate.
+The public SDK completes the submitted `product_launch` / Facebook + LINE + X fixture request and returns the full runtime contract. The former 3C adapter false negative caused by comparing submitted label order (`Facebook`, `LINE`, `X`) directly with the runtime canonical order (`LINE`, `Facebook`, `X`) was resolved in `cd3be65`.
 
-The adapter evidence comparator must normalize the documented platform order (or compare platform-to-allocation semantics) before promoting a result to `consumed_by_runtime`. The follow-up is tracked separately as a narrow 3C adapter regression fix; it must not alter SocialSense or reimplement canonicalization/simulation behavior in 3C.
+Current adapter evidence comparison normalizes the documented platform order before promotion and still requires the exact fixture/offline aggregate evidence tier plus explicit non-calibrated confidence. This historical regression did not require and must not prompt a SocialSense change or duplicated simulation behavior in 3C.
 
 ## Architecture decision
 

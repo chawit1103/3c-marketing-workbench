@@ -26,6 +26,8 @@ _PLATFORM_LABELS = {
 _CANONICAL_PLATFORM_ORDER = ("LINE", "Facebook", "TikTok", "YouTube", "X", "Reddit")
 _EVIDENCE_DEPTHS = {"minimal", "standard", "expanded"}
 _SCENARIO_NAMES = {"product_launch", "brand_awareness", "campaign_response", "product_feedback", "promotion_response"}
+_RUNTIME_EVIDENCE_TIER = "fixture_offline_aggregate_only"
+_NON_CALIBRATED_CONFIDENCE_LEVEL = "not_calibrated"
 
 
 def run_product_launch_simulation(
@@ -406,6 +408,7 @@ def _has_executable_runtime_evidence(result: Mapping[str, Any], expected: Mappin
     provenance = result.get("provenance")
     if result.get("status") != "ok" or not isinstance(runtime_contract, Mapping) or not isinstance(provenance, Mapping):
         return False
+    confidence = runtime_contract.get("confidence")
     return (
         runtime_contract.get("simulation_profile") == expected["simulation_profile"]
         and _normalize_runtime_platform_order(runtime_contract.get("selected_platforms"))
@@ -413,6 +416,9 @@ def _has_executable_runtime_evidence(result: Mapping[str, Any], expected: Mappin
         and runtime_contract.get("per_platform_participant_allocation") == expected["participant_allocation"]
         and runtime_contract.get("total_synthetic_participants") == expected["total_participants"]
         and runtime_contract.get("evidence_depth") == expected["evidence_depth"]
+        and runtime_contract.get("evidence_tier") == _RUNTIME_EVIDENCE_TIER
+        and isinstance(confidence, Mapping)
+        and confidence.get("level") == _NON_CALIBRATED_CONFIDENCE_LEVEL
         and provenance.get("fixture_only") is True
         and provenance.get("live_api_access") is False
         and provenance.get("credentials_required") is False
@@ -432,6 +438,46 @@ def _configuration_only_fallback(submitted_configuration: Mapping[str, Any]) -> 
         "runtime_status": "configuration_only",
         "runtime_consumed": False,
         "public_sdk_only": PUBLIC_SDK_ONLY,
-        "submitted_configuration": dict(submitted_configuration),
+        "submitted_configuration": _submitted_configuration_snapshot(submitted_configuration),
         "reason": "executable_runtime_evidence_absent",
+        "provenance": {
+            "source": "submitted_configuration",
+            "runtime_evidence": "not_verified",
+            "runtime_consumed": False,
+        },
+        "limitations": [
+            "Submitted configuration is retained for fixture/offline aggregate review only.",
+            "No runtime result is presented without verified public runtime evidence.",
+        ],
+        "evidence_gaps": [
+            "Required public runtime-contract evidence was missing, mismatched, or ambiguous.",
+            "No calibrated confidence or live platform measurement is available.",
+        ],
     }
+
+
+def _submitted_configuration_snapshot(submitted_configuration: Mapping[str, Any]) -> dict[str, Any]:
+    snapshot: dict[str, Any] = {}
+    simulation_profile = submitted_configuration.get("simulationProfile")
+    selected_platforms = submitted_configuration.get("selectedPlatforms")
+    platform_allocations = submitted_configuration.get("platformAllocations")
+    evidence_depth = submitted_configuration.get("evidenceDepth")
+
+    if isinstance(simulation_profile, str):
+        snapshot["simulationProfile"] = simulation_profile
+    if isinstance(selected_platforms, list):
+        snapshot["selectedPlatforms"] = [
+            platform for platform in selected_platforms if isinstance(platform, str) and platform in _PLATFORM_LABELS
+        ]
+    if isinstance(platform_allocations, Mapping):
+        snapshot["platformAllocations"] = {
+            platform: allocation
+            for platform, allocation in platform_allocations.items()
+            if isinstance(platform, str)
+            and platform in _PLATFORM_LABELS
+            and isinstance(allocation, int)
+            and not isinstance(allocation, bool)
+        }
+    if isinstance(evidence_depth, str):
+        snapshot["evidenceDepth"] = evidence_depth
+    return snapshot

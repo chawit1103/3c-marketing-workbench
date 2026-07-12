@@ -17,7 +17,7 @@ The 3C Simulation Configuration workspace needs one submitted configuration cont
 
 The product-owned adapter validates this vocabulary, maps the selected labels and allocation total to the public runtime contract, and invokes the same canonical scenario as the submitted profile. A caller may not override the submitted scenario with a conflicting value.
 
-`configurationSource` and `runtimeStatus` remain product provenance fields. `consumed_by_runtime` is reported only when the public runtime contract echoes every mapped configuration field and fixture/offline safety provenance. Otherwise the adapter fails closed to `configuration_only`.
+`configurationSource` and `runtimeStatus` remain product provenance fields. `consumed_by_runtime` is reported only when the public runtime contract echoes every mapped configuration field, fixture/offline safety provenance, the exact `fixture_offline_aggregate_only` evidence tier, and explicit `not_calibrated` confidence. Otherwise the adapter fails closed to `configuration_only` with only an allowlisted submitted-configuration snapshot and explicit provenance, limitations, and evidence gaps.
 
 ## Consequences
 
