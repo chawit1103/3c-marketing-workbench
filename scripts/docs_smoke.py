@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ast
 import re
 import subprocess
 import sys
@@ -18,6 +19,8 @@ REQUIRED_DOCS = [
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
     "docs/product/SOCIALSENSE_INTEGRATION.md",
+    "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
+    "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
     "README.md",
     "AGENTS.md",
 ]
@@ -508,10 +511,21 @@ REQUIRED_M19_CLOSEOUT_PHRASES = [
     "python3 -m unittest discover -s tests -p 'test_*.py'",
     "PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py",
     "git status --short --branch",
-    "M20 has not started",
-    "no M20 started",
     "no forbidden implementation-path changes",
     "Architecture Gate: Not Triggered",
+]
+
+REQUIRED_M20_STATUS_PHRASES = [
+    "M20 PR1–PR3 SocialSense work is completed/merged",
+    "M20 PR4 is in progress on this branch as a fixture/offline aggregate-only 3C adapter integration",
+    "it is not merged, production-ready, live-platform-enabled, or a claim of live measurement",
+    "3C uses only the SocialSense public SDK and preserves fail-closed behavior",
+]
+
+STALE_M20_STATUS_PHRASES = [
+    "M20 has not started",
+    "no M20 started",
+    "No M20 work",
 ]
 
 M19_PR6_ALLOWED_CHANGED_PATHS = {
@@ -1124,6 +1138,13 @@ FORBIDDEN_ADAPTER_CONTENT = [
     "voter_list",
 ]
 
+APPROVED_SOCIALSENSE_IMPORTS = {
+    "create_research_session",
+    "run_scenario",
+    "export_run",
+    "load_domain_pack",
+}
+
 IGNORED_DIRS = {".git", "node_modules", "dist", "coverage", "__pycache__"}
 README_LINK_PATTERN = re.compile(r"\[[^\]]+\]\((?!https?://|mailto:|#)([^)]+)\)")
 
@@ -1176,6 +1197,45 @@ def current_branch_name() -> str:
         return ""
 
 
+M20_PR4_CONTEXT_REQUIRED_PATHS = frozenset(
+    {
+        "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+        "integrations/socialsense/adapter.py",
+        "src/product/simulationConfig.ts",
+    }
+)
+
+M20_PR4_ALLOWED_CHANGED_PATHS = frozenset(
+    {
+        "AGENTS.md",
+        "README.md",
+        "docs/architecture/PRODUCT_ARCHITECTURE.md",
+        "docs/product/3C_PRODUCT_PRINCIPLES.md",
+        "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
+        "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+        "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+        "docs/product/ROADMAP.md",
+        "docs/product/SOCIALSENSE_INTEGRATION.md",
+        "integrations/socialsense/__init__.py",
+        "integrations/socialsense/adapter.py",
+        "scripts/docs_smoke.py",
+        "scripts/socialsense_adapter_smoke.py",
+        "src/App.test.tsx",
+        "src/i18n/translations.ts",
+        "src/product/executiveDecisionBrief.test.ts",
+        "src/product/executiveInsights.test.ts",
+        "src/product/platformEngagement.test.ts",
+        "src/product/platformEngagement.ts",
+        "src/product/simulationConfig.test.ts",
+        "src/product/simulationConfig.ts",
+        "src/views.tsx",
+        "tests/test_docs_smoke_milestone_guards.py",
+        "tests/test_socialsense_adapter.py",
+        "tests/test_socialsense_adapter_smoke.py",
+    }
+)
+
+
 def milestone_number_from_branch(branch_name: str) -> int | None:
     match = re.match(r"m(\d+)-", branch_name)
     return int(match.group(1)) if match else None
@@ -1208,6 +1268,32 @@ def milestone_number_from_changed_paths(changed_paths: list[str]) -> int | None:
 
 def current_milestone_number() -> int | None:
     return milestone_number_from_branch(current_branch_name()) or milestone_number_from_changed_paths(changed_paths_from_main())
+
+
+def is_authorized_m20_pr4_context() -> bool:
+    """Infer authorization from the reviewed M20 PR4 diff, never the checkout name."""
+    changed_paths = set(changed_paths_from_main())
+    return is_authorized_m20_pr4_changed_paths(changed_paths)
+
+
+def is_authorized_m20_pr4_changed_paths(changed_paths: set[str]) -> bool:
+    """Authorize the reviewed M20 PR4 repository diff, not its checkout name."""
+    return bool(changed_paths) and (
+        M20_PR4_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and changed_paths <= M20_PR4_ALLOWED_CHANGED_PATHS
+    )
+
+
+def m19_runtime_path_violations(changed_paths: list[str]) -> list[str]:
+    """Keep M19 runtime paths protected unless the whole PR diff is authorized M20 PR4."""
+    changed_path_set = set(changed_paths)
+    if is_authorized_m20_pr4_changed_paths(changed_path_set):
+        return []
+    return [
+        path
+        for path in changed_paths
+        if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
+    ]
 
 
 def branch_at_or_after(milestone: int) -> bool:
@@ -1307,6 +1393,7 @@ def main() -> None:
     roadmap = (ROOT / "docs/product/ROADMAP.md").read_text(encoding="utf-8")
     health_dashboard = (ROOT / "docs/product/PRODUCT_HEALTH_DASHBOARD.md").read_text(encoding="utf-8")
     integration_doc = (ROOT / "docs/product/SOCIALSENSE_INTEGRATION.md").read_text(encoding="utf-8")
+    m20_sdk_boundary_doc = (ROOT / "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md").read_text(encoding="utf-8")
     adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
     m4_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M4_DOCS}
     m4_text = "\n".join(m4_docs_by_path.values())
@@ -1383,10 +1470,37 @@ def main() -> None:
     if missing_pr3_phrases:
         fail("PR3 docs missing status phrases: " + ", ".join(missing_pr3_phrases))
 
+    required_m20_sdk_boundary_phrases = [
+        "from socialsense import create_research_session, export_run, load_domain_pack, run_scenario",
+        "## Public call flow",
+        "## Submitted configuration mapping",
+        "## Executable runtime-evidence signal",
+        "## Deterministic test hooks",
+        "## Supported errors and fail-closed behavior",
+        "Architecture Gate: Not triggered",
+        "No SDK-breaking change, runtime redesign, new service, persistence, auth, live-platform access, or duplicated simulation logic is required.",
+    ]
+    missing_m20_sdk_boundary_phrases = [
+        phrase for phrase in required_m20_sdk_boundary_phrases if phrase not in m20_sdk_boundary_doc
+    ]
+    if missing_m20_sdk_boundary_phrases:
+        fail("M20 public SDK integration boundary missing required contract/safety phrases: " + ", ".join(missing_m20_sdk_boundary_phrases))
+
     combined_pr4_text = "\n".join([readme, agents, integration_doc])
     missing_pr4_phrases = [phrase for phrase in REQUIRED_PR4_PHRASES if phrase not in combined_pr4_text]
     if missing_pr4_phrases:
         fail("PR4 docs missing status phrases: " + ", ".join(missing_pr4_phrases))
+
+    missing_m20_status_phrases = [
+        phrase for phrase in REQUIRED_M20_STATUS_PHRASES if phrase not in combined_pr4_text
+    ]
+    if missing_m20_status_phrases:
+        fail("M20 status docs missing current authorized-scope phrases: " + ", ".join(missing_m20_status_phrases))
+    stale_m20_status_phrases = [
+        phrase for phrase in STALE_M20_STATUS_PHRASES if phrase in combined_pr4_text
+    ]
+    if stale_m20_status_phrases:
+        fail("M20 status docs contain stale contradictory phrases: " + ", ".join(stale_m20_status_phrases))
 
     combined_m4_text = "\n".join([readme, agents, m4_text])
     missing_m4_phrases = [phrase for phrase in REQUIRED_M4_PHRASES if phrase not in combined_m4_text]
@@ -1498,8 +1612,35 @@ def main() -> None:
     if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or branch_at_or_after(6))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
-    if "from socialsense import load_domain_pack" not in adapter:
-        fail("adapter does not import SocialSense through the public facade")
+    required_public_adapter_imports = [
+        "create_research_session",
+        "export_run",
+        "load_domain_pack",
+        "run_scenario",
+    ]
+    if "from socialsense import" not in adapter or any(name not in adapter for name in required_public_adapter_imports):
+        fail("adapter does not import the required SocialSense public SDK facade")
+    adapter_tree = ast.parse(adapter)
+    imported_names = {
+        alias.name
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.ImportFrom) and node.module == "socialsense"
+        for alias in node.names
+    }
+    private_imports = [
+        node.module
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("socialsense.")
+    ]
+    private_imports.extend(
+        alias.name
+        for node in ast.walk(adapter_tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+        if alias.name == "socialsense" or alias.name.startswith("socialsense.")
+    )
+    if imported_names != APPROVED_SOCIALSENSE_IMPORTS or private_imports:
+        fail("adapter SocialSense imports must match the exact approved top-level public SDK allowlist")
     forbidden_adapter_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in adapter]
     if forbidden_adapter_hits:
         fail("adapter references forbidden SocialSense/private/live content: " + ", ".join(forbidden_adapter_hits))
@@ -2249,11 +2390,7 @@ def main() -> None:
             if unexpected_m19_pr6_changes:
                 fail("M19 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m19_pr6_changes))
         else:
-            forbidden_m19_runtime_paths = [
-                path
-                for path in changed_paths
-                if path.startswith(("src/", "backend/", "server/", "api/", "auth/", "integrations/socialsense/"))
-            ]
+            forbidden_m19_runtime_paths = m19_runtime_path_violations(changed_paths)
             if forbidden_m19_runtime_paths:
                 fail("M19 preparation changed runtime/backend/SocialSense paths: " + ", ".join(forbidden_m19_runtime_paths))
         m19_forbidden_claims = [

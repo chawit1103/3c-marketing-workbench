@@ -5,6 +5,7 @@ from .adapter import (
     run_campaign_message_test,
     run_message_comparison,
     run_product_launch_simulation,
+    run_submitted_simulation_configuration,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "run_campaign_message_test",
     "run_message_comparison",
     "run_product_launch_simulation",
+    "run_submitted_simulation_configuration",
 ]

@@ -8,14 +8,11 @@ Status: M1 PR1 product foundation. This document defines how the 3C Marketing Wo
 
 SocialSense is the platform dependency. SocialSense owns the simulation engine, Marketing Domain Pack, ConsumerSDK, dashboard/export contracts, safety validation, provenance, and fixture/offline runtime behavior.
 
-3C consumes SocialSense only through its public SDK/runtime boundary:
+3C consumes SocialSense only through the approved top-level public SDK facade for the reviewed fixture/offline aggregate adapter:
 
-- `from socialsense import load_domain_pack`
-- `from socialsense import ConsumerSDK`
-- `DomainPack.run(...)`
-- `DomainPack.export(...)`
-- `DomainPack.runtime_annotation`
-- `DomainPack.dashboard_contract`
+- `from socialsense import create_research_session, export_run, load_domain_pack, run_scenario`
+
+These four functions are the complete PR4 allowlist; private/non-public `socialsense.*` modules and live execution remain forbidden.
 
 ## Target user
 

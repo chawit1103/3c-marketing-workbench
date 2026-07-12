@@ -68,6 +68,45 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertTrue(docs_smoke.branch_before_milestone(7))
             self.assertFalse(docs_smoke.branch_is_milestone(18))
 
+    def test_detached_or_non_m20_checkout_with_authorized_m20_diff_is_exempt_from_m19_runtime_guard(self) -> None:
+        changed_paths = [
+            "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+            "integrations/socialsense/adapter.py",
+            "src/product/simulationConfig.ts",
+        ]
+        for checkout_name in ("", "pull/40/merge"):
+            with (
+                self.subTest(checkout_name=checkout_name),
+                patch.object(docs_smoke, "current_branch_name", return_value=checkout_name),
+                patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+            ):
+                self.assertEqual(docs_smoke.current_milestone_number(), 20)
+                self.assertTrue(docs_smoke.is_authorized_m20_pr4_context())
+                self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), [])
+
+    def test_m20_marker_with_unauthorized_runtime_path_is_not_authorized(self) -> None:
+        changed_paths = [
+            "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+            "integrations/socialsense/adapter.py",
+            "src/product/simulationConfig.ts",
+            "backend/runtime.py",
+        ]
+        with (
+            patch.object(docs_smoke, "current_branch_name", return_value="pull/40/merge"),
+            patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+        ):
+            self.assertEqual(docs_smoke.current_milestone_number(), 20)
+            self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
+
+    def test_m19_runtime_path_guard_remains_enforced_without_authorized_m20_diff(self) -> None:
+        changed_paths = ["src/views.tsx"]
+        with (
+            patch.object(docs_smoke, "current_branch_name", return_value=""),
+            patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+        ):
+            self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
+            self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), changed_paths)
+
 
 if __name__ == "__main__":
     unittest.main()

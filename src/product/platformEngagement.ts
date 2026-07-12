@@ -66,7 +66,6 @@ const platformOffsets: Record<PlatformKey, { reach: number; reaction: number; sh
   tiktok: { reach: 17, reaction: 9, share: 11, commentDivisor: 10 },
   line: { reach: 10, reaction: 13, share: 15, commentDivisor: 12 },
   youtube: { reach: 14, reaction: 6, share: 9, commentDivisor: 14 },
-  instagram: { reach: 15, reaction: 8, share: 10, commentDivisor: 11 },
   x: { reach: 9, reaction: 5, share: 7, commentDivisor: 16 },
 };
 
@@ -93,7 +92,6 @@ const commentsByPlatform: Record<PlatformKey, string> = {
   tiktok: 'Short-form hook feels easy to scan; proof point still needs review.',
   line: 'Chat-friendly reminder works if the offer and timing stay clear.',
   youtube: 'Explainer framing may help, but keep evidence needs visible.',
-  instagram: 'Visual-first framing could work as a small reviewed creative test.',
   x: 'Concise claim needs careful review before broader posting.',
 };
 

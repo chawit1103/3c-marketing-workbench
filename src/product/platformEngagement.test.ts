@@ -58,7 +58,7 @@ describe('M19 PR3 platform engagement result model', () => {
   it('excludes unselected platforms even when allocation values exist', () => {
     const withHiddenAllocation = updatePlatformAllocationDraft(
       createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE']),
-      'instagram',
+      'youtube',
       '500',
     );
     const config = updateSelectedPlatforms(withHiddenAllocation, ['Facebook']);
@@ -66,20 +66,19 @@ describe('M19 PR3 platform engagement result model', () => {
     const result = buildPlatformEngagementResult(config);
 
     expect(result.platforms.map((platform) => platform.platform)).toEqual(['Facebook']);
-    expect(JSON.stringify(result)).not.toContain('Instagram');
+    expect(JSON.stringify(result)).not.toContain('YouTube');
     expect(result.crossPlatformSummary.totalSyntheticParticipants).toBe(80);
   });
 
   it('normalizes malformed transported allocation values before deriving PR3 metrics', () => {
     const config: SimulationConfiguration = {
-      ...createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE', 'Instagram']),
-      selectedPlatforms: ['facebook', 'tiktok', 'line', 'instagram'],
+      ...createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE', 'YouTube']),
+      selectedPlatforms: ['facebook', 'tiktok', 'line', 'youtube'],
       platformAllocations: {
         facebook: -25,
         tiktok: 0,
         line: 999,
         youtube: 500,
-        instagram: 110.6,
         x: 80,
       },
     };
@@ -90,11 +89,11 @@ describe('M19 PR3 platform engagement result model', () => {
       ['facebook', 10],
       ['tiktok', 10],
       ['line', 500],
-      ['instagram', 111],
+      ['youtube', 500],
     ]);
-    expect(result.platforms.map((platform) => platform.platform)).not.toContain('YouTube');
+    expect(result.platforms.map((platform) => platform.platform)).not.toContain('X');
     expect(result.platforms.every((platform) => platform.syntheticCommentCount >= 1)).toBe(true);
-    expect(result.crossPlatformSummary.totalSyntheticParticipants).toBe(631);
+    expect(result.crossPlatformSummary.totalSyntheticParticipants).toBe(1020);
   });
 
   it('includes synthetic comments, themes, cross-platform summary, and offline provenance safety status', () => {

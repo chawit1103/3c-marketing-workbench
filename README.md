@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M19 Synthetic Social Platform Engagement Simulation is **closed as GO WITH CONDITIONS** after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace (merged in PR #34), PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does **not** prove verified SocialSense runtime consumption of selected participant allocations. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, SocialSense change, MarketingSimulation change, PDF/PPT/download generation, M20 work, or runtime/live/measured engagement claim is allowed.
+Status: M19 Synthetic Social Platform Engagement Simulation is **closed as GO WITH CONDITIONS** after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace (merged in PR #34), PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does **not** prove verified SocialSense runtime consumption of selected participant allocations. M20 PR1–PR3 SocialSense work is completed/merged. M20 PR4 is in progress on this branch as a fixture/offline aggregate-only 3C adapter integration; it is not merged, production-ready, live-platform-enabled, or a claim of live measurement. 3C uses only the SocialSense public SDK and preserves fail-closed behavior. Feature Freeze v0.1 remains active for all work outside the authorized M20 PR4 scope: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, MarketingSimulation change, PDF/PPT/download generation, or runtime/live/measured engagement claim is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -58,8 +58,8 @@ PR4 does not implement backend services, persistence, authentication, live API c
 
 PR3 adds the first safe adapter layer without wiring the UI:
 
-- `integrations/socialsense/adapter.py` imports only `from socialsense import load_domain_pack`;
-- adapter calls only `load_domain_pack('marketing')`, `domain.run(...)`, and `domain.export(...)`;
+- `integrations/socialsense/adapter.py` imports only the approved top-level public SDK functions `create_research_session`, `run_scenario`, `export_run`, and `load_domain_pack` from `socialsense`;
+- adapter calls only the approved public facade functions to produce fixture/offline aggregate contract evidence; private/non-public `socialsense.*` modules remain forbidden;
 - `run_product_launch_simulation(...)` executes an actual SocialSense Marketing Domain Pack `product_launch` fixture in local smoke;
 - `run_campaign_message_test(...)`, `run_message_comparison(...)`, and `export_executive_report(...)` expose adapter-shaped product functions for later workflow wiring;
 - input mapping is limited to aggregate non-sensitive `scenario`, `platform_mix`, `seed`, `assumptions`, and `notes`;

@@ -163,7 +163,7 @@ describe('M18 Thai-first internationalization', () => {
   it.each([
     ['/workbench', 'ทำตัวอย่างเปิดตัวสินค้าออฟไลน์ที่ตรวจทานแล้วให้เสร็จในไม่ถึงหนึ่งนาที', 'เปลี่ยนไปที่ การทดลอง A/B'],
     ['/workbench/campaign-message-test', 'ทบทวนข้อความแคมเปญ กลุ่มเป้าหมาย และสัดส่วนแพลตฟอร์ม', 'เปลี่ยนไปที่ การทดลอง A/B'],
-    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ การเปิดตัวสินค้า (Product Launch)'],
+    ['/workbench/ab-experiment', 'เปรียบเทียบตัวเลือก A และ B ด้วยกรอบการเปรียบเทียบที่อนุมัติแล้ว', 'เปลี่ยนไปที่ เปิดตัวผลิตภัณฑ์'],
     ['/workbench/creative-comparison', 'เปรียบเทียบแนวคิดงานสร้างสรรค์แบบข้อความเท่านั้นสองแบบ', 'เปลี่ยนไปที่ การทดลอง A/B'],
   ])('renders Workbench Thai mode without known English smoke blocker fragments for %s', (pathname, thaiHelper, thaiSwitch) => {
     renderAt(pathname, 'th');
@@ -204,11 +204,11 @@ describe('M18 Thai-first internationalization', () => {
     fireEvent.click(within(form).getByLabelText('TikTok'));
     fireEvent.click(within(form).getByLabelText('LINE'));
     fireEvent.click(within(form).getByLabelText('YouTube'));
-    fireEvent.click(within(form).getByLabelText('X / Twitter'));
+    fireEvent.click(within(form).getByLabelText('X'));
     fireEvent.click(within(form).getAllByRole('button', { name: 'รันการจำลองออฟไลน์' }).at(-1)!);
 
     const evidenceSection = screen.getByRole('region', { name: 'ภาพหลักฐาน' });
-    expect(evidenceSection).toHaveTextContent('YouTube, X / Twitter');
+    expect(evidenceSection).toHaveTextContent('YouTube, X');
     expect(evidenceSection).toHaveTextContent('เป็นเพียงตัวอย่างออฟไลน์ที่ตรวจทานแล้ว');
     expect(evidenceSection).toHaveTextContent('ไม่ได้ใช้ API แพลตฟอร์มโซเชียลจริง');
     expect(evidenceSection).not.toHaveTextContent('Reviewed offline sample only');
@@ -1076,9 +1076,9 @@ describe('Product Launch workflow regression', () => {
   it('updates platform mix selection and shows it in the assumptions preview', () => {
     const form = renderWorkbench();
 
-    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
 
-    expect(screen.getByRole('region', { name: 'Current assumptions' })).toHaveTextContent('Facebook, TikTok, LINE, Instagram');
+    expect(screen.getByRole('region', { name: 'Current assumptions' })).toHaveTextContent('Facebook, TikTok, LINE, YouTube');
   });
 
   it('renders marketing-friendly results after run', () => {
@@ -1118,7 +1118,7 @@ describe('Product Launch workflow regression', () => {
     fireEvent.change(within(form).getByLabelText('Campaign Message'), {
       target: { value: 'Launching a campaign focused on warm, practical outcomes.' },
     });
-    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
     const dashboardLink = screen.getByRole('link', { name: 'Open result dashboard' });
@@ -1139,7 +1139,7 @@ describe('Product Launch workflow regression', () => {
     const assumptionsSection = screen.getByText('Your assumptions shown for review').closest('section')!;
     expect(assumptionsSection).toHaveTextContent('Acme Halo');
     expect(assumptionsSection).toHaveTextContent('Launching a campaign focused on warm, practical outcomes.');
-    expect(assumptionsSection).toHaveTextContent('Instagram');
+    expect(assumptionsSection).toHaveTextContent('YouTube');
 
     expect(document.body.textContent).toContain('Safety: offline fixture for planning only; review before using externally.');
     expect(screen.getByText(/The generated sample result is not recalculated/i)).toBeInTheDocument();
@@ -1428,18 +1428,37 @@ describe('A/B Experiment workflow', () => {
 
 describe('M19 PR2 Simulation Configuration Workspace', () => {
   it.each([
-    ['/workbench', 'Product Launch setup'],
-    ['/workbench/campaign-message-test', 'Campaign Message Test setup'],
-    ['/workbench/ab-experiment', 'A/B Experiment setup'],
-    ['/workbench/creative-comparison', 'Creative Comparison setup'],
-  ])('renders shared simulation configuration summary for %s', (pathname, formName) => {
+    ['/workbench', 'Product Launch setup', 'Product Launch'],
+    ['/workbench/campaign-message-test', 'Campaign Message Test setup', 'Campaign Response'],
+    ['/workbench/ab-experiment', 'A/B Experiment setup', 'Campaign Response'],
+    ['/workbench/creative-comparison', 'Creative Comparison setup', 'Campaign Response'],
+  ])('renders workflow-correct simulation configuration summary for %s', (pathname, formName, profileLabel) => {
     renderAt(pathname);
     const form = screen.getByRole('form', { name: formName });
 
-    expect(within(form).getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Balanced');
+    expect(within(form).getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent(profileLabel);
     expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Configured for simulation');
     expect(within(form).getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Total synthetic participants');
     expect(within(form).getByText('Synthetic participants only; not live platform users.')).toBeInTheDocument();
+  });
+
+  it.each([
+    ['/runs/3c-m5-campaign-message-test-reference-workflow', '/exports/3c-m5-campaign-message-test-reference-workflow'],
+    ['/runs/3c-m7-ab-experiment-reference-workflow', '/exports/3c-m7-ab-experiment-reference-workflow'],
+    ['/runs/3c-m15-creative-comparison-reference-workflow', '/exports/3c-m15-creative-comparison-reference-workflow'],
+  ])('keeps the Campaign Response default out of Product Launch dashboard and export fallbacks for %s', (runPath, exportPath) => {
+    const dashboard = renderAt(runPath);
+    const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
+
+    expect(engagement).toHaveTextContent('Total synthetic participants450');
+    expect(engagement).not.toHaveTextContent('Total synthetic participants240');
+    dashboard.unmount();
+
+    renderAt(exportPath);
+    const brief = screen.getByRole('region', { name: 'Executive Decision Brief' });
+    expect(brief).toHaveTextContent('Simulation ProfileCampaign Response');
+    expect(brief).toHaveTextContent('Participant allocations: Facebook 150; TikTok 150; LINE 150.');
+    expect(brief).not.toHaveTextContent('Product Launch');
   });
 
   it('lets custom allocations change totals while excluding unselected platforms', () => {
@@ -1451,7 +1470,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
 
     const summary = within(form).getByRole('region', { name: 'Current Simulation Profile' });
     expect(summary).toHaveTextContent('Current Simulation Profile');
-    expect(summary).toHaveTextContent('Custom');
+    expect(summary).toHaveTextContent('configuration sourcecustom');
     expect(summary).toHaveTextContent('TikTok 80');
     expect(summary).toHaveTextContent('LINE 80');
     expect(summary).not.toHaveTextContent('Facebook 200');
@@ -1481,12 +1500,12 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
   it('keeps simulation configuration localized and stable across language switches', () => {
     const form = renderAt('/workbench', 'th').container.querySelector('form')!;
 
-    expect(screen.getByRole('group', { name: 'โปรไฟล์การจำลอง' })).toHaveTextContent('สมดุล');
+    expect(screen.getByRole('group', { name: 'โปรไฟล์การจำลอง' })).toHaveTextContent('เปิดตัวผลิตภัณฑ์');
     expect(screen.getByRole('region', { name: 'โปรไฟล์การจำลองปัจจุบัน' })).toHaveTextContent('ตั้งค่าเพื่อการจำลอง');
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
     expect(form).toBeInTheDocument();
-    expect(screen.getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Balanced');
+    expect(screen.getByRole('group', { name: 'Simulation Profile' })).toHaveTextContent('Product Launch');
     expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('Configured for simulation');
     expect(screen.getByRole('region', { name: 'Current Simulation Profile' })).toHaveTextContent('configuration only');
   });
@@ -1523,7 +1542,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     fireEvent.click(within(form).getByRole('button', { name: 'รันการจำลองออฟไลน์' }));
 
     const visibleText = document.body.textContent ?? '';
-    expect(screen.getByRole('radio', { name: 'กำหนดเอง' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'เปิดตัวผลิตภัณฑ์' })).toBeChecked();
     expect(visibleText).toContain('Facebook ต้องเป็นจำนวนเต็มระหว่าง 10 ถึง 500');
     expect(visibleText).toContain('ใช้จำนวนเต็มเท่านั้นสำหรับการจัดสรรผู้เข้าร่วมสังเคราะห์');
     expect(visibleText).toContain('แก้จำนวนผู้เข้าร่วมของแพลตฟอร์มที่เลือกก่อนรัน');
@@ -1586,7 +1605,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     const form = renderWorkbench();
 
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
-    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
     fireEvent.click(within(form).getByText('Advanced Simulation Settings'));
     fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
 
@@ -1595,7 +1614,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     expect(engagement).toHaveTextContent('Facebook');
     expect(engagement).toHaveTextContent('TikTok');
     expect(engagement).toHaveTextContent('LINE');
-    expect(engagement).not.toHaveTextContent('Instagram');
+    expect(engagement).not.toHaveTextContent('YouTube');
     expect(engagement).not.toHaveTextContent('Synthetic participants: 200');
 
     for (const linkName of ['Open result dashboard', 'Open export-readiness preview']) {
@@ -1603,7 +1622,7 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
       const payload = JSON.parse(decodeURIComponent(new URL(href, 'http://localhost').searchParams.get('assumptions')!));
       expect(payload.simulationConfig.selectedPlatforms).toEqual(['facebook', 'tiktok', 'line']);
       expect(payload.simulationConfig.platformAllocations.facebook).toBe(80);
-      expect(payload.simulationConfig.selectedPlatforms).not.toContain('instagram');
+      expect(payload.simulationConfig.selectedPlatforms).not.toContain('youtube');
     }
   });
 
@@ -1611,17 +1630,16 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     const payload = encodeURIComponent(JSON.stringify({
       v: 1,
       runId: 'sample-run',
-      form: { platforms: ['Facebook', 'TikTok', 'LINE', 'Instagram'] },
+      form: { platforms: ['Facebook', 'TikTok', 'LINE', 'YouTube'] },
       editedFields: ['platforms'],
       simulationConfig: {
-        simulationProfile: 'custom',
-        selectedPlatforms: ['facebook', 'tiktok', 'line', 'instagram'],
+        simulationProfile: 'product_launch',
+        selectedPlatforms: ['facebook', 'tiktok', 'line', 'youtube'],
         platformAllocations: {
           facebook: -25,
           tiktok: 0,
           line: 999,
           youtube: 500,
-          instagram: 110.6,
           x: 80,
         },
         platformAllocationDrafts: {
@@ -1629,7 +1647,6 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
           tiktok: '0',
           line: '999',
           youtube: '500',
-          instagram: '110.6',
           x: '80',
         },
         evidenceDepth: 'standard',
@@ -1641,27 +1658,27 @@ describe('M19 PR2 Simulation Configuration Workspace', () => {
     renderAt(`/runs/sample-run?assumptions=${payload}`);
 
     const engagement = screen.getByRole('region', { name: 'Platform Engagement Result Model' });
-    expect(engagement).toHaveTextContent('Total synthetic participants631');
+    expect(engagement).toHaveTextContent('Total synthetic participants1020');
     expect(engagement).toHaveTextContent('Facebook');
     expect(engagement).toHaveTextContent('Synthetic participants: 10');
     expect(engagement).toHaveTextContent('TikTok');
     expect(engagement).toHaveTextContent('LINE');
     expect(engagement).toHaveTextContent('Synthetic participants: 500');
-    expect(engagement).toHaveTextContent('Instagram');
-    expect(engagement).toHaveTextContent('Synthetic participants: 111');
-    expect(engagement).not.toHaveTextContent('YouTube');
+    expect(engagement).toHaveTextContent('YouTube');
+    expect(engagement).toHaveTextContent('Synthetic participants: 500');
+    expect(engagement).not.toHaveTextContent('X');
   });
 
   it('carries PR3 platform engagement model into dashboard and export review safely', () => {
     const form = renderWorkbench();
-    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
     const dashboardHref = screen.getByRole('link', { name: 'Open result dashboard' }).getAttribute('href')!;
     const exportHref = screen.getByRole('link', { name: 'Open export-readiness preview' }).getAttribute('href')!;
 
     renderAt(dashboardHref);
-    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('Instagram');
+    expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('YouTube');
     expect(screen.getByRole('region', { name: 'Platform Engagement Result Model' })).toHaveTextContent('320');
 
     renderAt(exportHref);
@@ -1724,7 +1741,7 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     fireEvent.click(within(form).getByLabelText('TikTok'));
     fireEvent.click(within(form).getByRole('button', { name: 'Run offline simulation' }));
 
-    fireEvent.click(within(form).getByLabelText('Instagram'));
+    fireEvent.click(within(form).getByLabelText('YouTube'));
     fireEvent.change(within(form).getByLabelText('Synthetic participants for Facebook'), { target: { value: '200' } });
 
     const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
@@ -1734,7 +1751,7 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('Facebook');
     expect(insights).toHaveTextContent('LINE');
     expect(insights).not.toHaveTextContent('TikTok');
-    expect(insights).not.toHaveTextContent('Instagram');
+    expect(insights).not.toHaveTextContent('YouTube');
     expect(insights).not.toHaveTextContent('Synthetic participants: 200');
   });
 
@@ -1793,17 +1810,16 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     const payload = encodeURIComponent(JSON.stringify({
       v: 1,
       runId: 'sample-run',
-      form: { platforms: ['YouTube', 'Instagram', 'X / Twitter'] },
+      form: { platforms: ['YouTube', 'X'] },
       editedFields: ['platforms'],
       simulationConfig: {
-        simulationProfile: 'custom',
-        selectedPlatforms: ['youtube', 'instagram', 'x'],
+        simulationProfile: 'product_launch',
+        selectedPlatforms: ['youtube', 'x'],
         platformAllocations: {
           facebook: 80,
           tiktok: 80,
           line: 80,
           youtube: 90,
-          instagram: 70,
           x: 50,
         },
         platformAllocationDrafts: {
@@ -1811,7 +1827,6 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
           tiktok: '80',
           line: '80',
           youtube: '90',
-          instagram: '70',
           x: '50',
         },
         evidenceDepth: 'standard',
@@ -1823,14 +1838,14 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     renderAt(`/runs/sample-run?assumptions=${payload}`, 'th');
 
     const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
-    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, Instagram, X / Twitter; สถานะยังเป็นการตั้งค่าเท่านั้น.');
+    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, X; สถานะยังเป็นการตั้งค่าเท่านั้น.');
     expect(thaiInsights).not.toHaveTextContent('Selected platforms:');
     expect(thaiInsights).not.toHaveTextContent('runtimeStatus remains configuration-only');
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
     const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
-    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, Instagram, X / Twitter; runtimeStatus remains configuration-only.');
+    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, X; runtimeStatus remains configuration-only.');
   });
 
   it('does not leak report redesign or export upgrade scope into the result dashboard', () => {

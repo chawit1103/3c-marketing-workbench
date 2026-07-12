@@ -11,11 +11,11 @@ import {
 } from './simulationConfig';
 
 describe('M19 PR2 simulation configuration model', () => {
-  it('defaults to Balanced with deterministic selected-platform allocations and configuration-only runtime status', () => {
+  it('defaults to the product_launch runtime scenario with deterministic selected-platform allocations and configuration-only runtime status', () => {
     const config = createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE']);
 
-    expect(DEFAULT_SIMULATION_PROFILE).toBe('balanced');
-    expect(config.simulationProfile).toBe('balanced');
+    expect(DEFAULT_SIMULATION_PROFILE).toBe('product_launch');
+    expect(config.simulationProfile).toBe('product_launch');
     expect(config.evidenceDepth).toBe('standard');
     expect(config.configurationSource).toBe('preset');
     expect(config.runtimeStatus).toBe('configuration_only');
@@ -27,15 +27,25 @@ describe('M19 PR2 simulation configuration model', () => {
   });
 
   it('documents all deterministic profile presets without claiming higher participant counts improve accuracy', () => {
-    expect(Object.keys(SIMULATION_PROFILES)).toEqual(['quick', 'balanced', 'deep', 'research', 'custom']);
-    expect(SIMULATION_PROFILES.quick.allocations.facebook).toBe(30);
-    expect(SIMULATION_PROFILES.balanced.allocations.line).toBe(80);
-    expect(SIMULATION_PROFILES.deep.allocations.youtube).toBe(150);
-    expect(SIMULATION_PROFILES.research.allocations.x).toBe(250);
-    expect(SIMULATION_PROFILES.custom.description.en).toContain('Manual');
-    expect(SIMULATION_PROFILES.research.description.en.toLowerCase()).not.toContain('accur');
-    expect(SIMULATION_PROFILES.research.description.en.toLowerCase()).not.toContain('confidence');
-    expect(EVIDENCE_DEPTHS).toEqual(['light', 'standard', 'deep', 'research']);
+    expect(Object.keys(SIMULATION_PROFILES)).toEqual(['product_launch', 'brand_awareness', 'campaign_response', 'product_feedback', 'promotion_response']);
+    expect(SIMULATION_PROFILES.product_launch.allocations.facebook).toBe(80);
+    expect(SIMULATION_PROFILES.brand_awareness.allocations.line).toBe(80);
+    expect(SIMULATION_PROFILES.product_feedback.allocations.youtube).toBe(150);
+    expect(SIMULATION_PROFILES.promotion_response.allocations.x).toBe(250);
+    expect(SIMULATION_PROFILES.campaign_response.description.en).toContain('Campaign-response');
+    expect(SIMULATION_PROFILES.product_feedback.description.en.toLowerCase()).not.toContain('accur');
+    expect(SIMULATION_PROFILES.product_feedback.description.en.toLowerCase()).not.toContain('confidence');
+    expect(EVIDENCE_DEPTHS).toEqual(['minimal', 'standard', 'expanded']);
+  });
+
+  it('uses the requested canonical profile instead of contaminating non-launch workflows with Product Launch defaults', () => {
+    const config = createDefaultSimulationConfiguration(['Facebook', 'LINE'], 'campaign_response');
+
+    expect(config.simulationProfile).toBe('campaign_response');
+    expect(config.evidenceDepth).toBe('standard');
+    expect(config.platformAllocations.facebook).toBe(150);
+    expect(config.platformAllocations.line).toBe(150);
+    expect(calculateSelectedParticipantTotal(config)).toBe(300);
   });
 
   it('excludes unselected platforms from totals even when allocation values exist', () => {
@@ -62,7 +72,7 @@ describe('M19 PR2 simulation configuration model', () => {
     const config = createDefaultSimulationConfiguration(['Facebook']);
     const updated = updatePlatformAllocationDraft(config, 'facebook', draftValue);
 
-    expect(updated.simulationProfile).toBe('custom');
+    expect(updated.simulationProfile).toBe('product_launch');
     expect(updated.configurationSource).toBe('custom');
     expect(validateSimulationConfiguration(updated)).toContain(error);
   });
