@@ -37,7 +37,7 @@ const audiencePresets = [
   'Parents',
   'General Consumers',
 ];
-const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'Instagram', 'X / Twitter'];
+const platformOptions = ['Facebook', 'TikTok', 'LINE', 'YouTube', 'X'];
 
 function Localized({ children }: { children: ReactNode }) {
   const { language } = useI18n();
@@ -1226,10 +1226,9 @@ function SimulationConfigurationWorkspace({
     ? 'Runtime evidence is required before this status may be shown.'
     : 'Current execution status: configuration-only (configuration only); current result remains an offline fixture and has not been consumed by the simulation runtime.';
   const evidenceDepthLabel = {
-    light: 'Light',
+    minimal: 'Minimal',
     standard: 'Standard',
-    deep: 'Deep',
-    research: 'Research',
+    expanded: 'Expanded',
   }[config.evidenceDepth];
   const inlineErrors = allocationValidationErrors(config);
 
@@ -1299,7 +1298,7 @@ function SimulationConfigurationWorkspace({
           onChange={(event) => onEvidenceDepthChange(event.target.value as EvidenceDepth)}
         >
           {EVIDENCE_DEPTHS.map((depth) => {
-            const label = { light: 'Light', standard: 'Standard', deep: 'Deep', research: 'Research' }[depth];
+            const label = { minimal: 'Minimal', standard: 'Standard', expanded: 'Expanded' }[depth];
             return <option key={depth} value={depth}>{t(label)}</option>;
           })}
         </select>

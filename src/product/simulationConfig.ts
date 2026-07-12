@@ -1,11 +1,11 @@
-export type SimulationProfile = 'quick' | 'balanced' | 'deep' | 'research' | 'custom';
-export type PlatformKey = 'facebook' | 'tiktok' | 'line' | 'youtube' | 'instagram' | 'x';
-export type EvidenceDepth = 'light' | 'standard' | 'deep' | 'research';
+export type SimulationProfile = 'product_launch' | 'brand_awareness' | 'campaign_response' | 'product_feedback' | 'promotion_response';
+export type PlatformKey = 'facebook' | 'tiktok' | 'line' | 'youtube' | 'x';
+export type EvidenceDepth = 'minimal' | 'standard' | 'expanded';
 export type RuntimeStatus = 'configuration_only' | 'consumed_by_runtime';
 export type ConfigurationSource = 'preset' | 'custom';
 
-export const DEFAULT_SIMULATION_PROFILE: SimulationProfile = 'balanced';
-export const EVIDENCE_DEPTHS: EvidenceDepth[] = ['light', 'standard', 'deep', 'research'];
+export const DEFAULT_SIMULATION_PROFILE: SimulationProfile = 'product_launch';
+export const EVIDENCE_DEPTHS: EvidenceDepth[] = ['minimal', 'standard', 'expanded'];
 export const PLATFORM_ALLOCATION_LIMITS = { min: 10, max: 500 } as const;
 
 export function normalizePlatformAllocation(value: unknown, fallback: number = PLATFORM_ALLOCATION_LIMITS.min): number {
@@ -24,8 +24,7 @@ export const PLATFORM_LABELS: Record<PlatformKey, string> = {
   tiktok: 'TikTok',
   line: 'LINE',
   youtube: 'YouTube',
-  instagram: 'Instagram',
-  x: 'X / Twitter',
+  x: 'X',
 };
 
 const platformKeyByLabel: Record<string, PlatformKey> = Object.fromEntries(
@@ -53,50 +52,50 @@ type ProfileDefinition = {
 };
 
 export const SIMULATION_PROFILES: Record<SimulationProfile, ProfileDefinition> = {
-  quick: {
-    label: 'Quick',
+  product_launch: {
+    label: 'Product Launch',
     description: {
-      th: 'รอบเร็วสำหรับตรวจทานสมมติฐานเบื้องต้น ใช้ผู้เข้าร่วมสังเคราะห์จำนวนน้อย',
-      en: 'Fast review of initial assumptions with a smaller synthetic participant set.',
-    },
-    evidenceDepth: 'light',
-    allocations: { facebook: 30, tiktok: 30, line: 30, youtube: 30, instagram: 30, x: 30 },
-  },
-  balanced: {
-    label: 'Balanced',
-    description: {
-      th: 'ค่าเริ่มต้นที่สมดุลสำหรับการตรวจทานผู้บริหาร โดยยังคงจำกัดภาระงานในเครื่อง',
-      en: 'Default balanced executive review configuration with bounded local workload.',
+      th: 'สถานการณ์เปิดตัวผลิตภัณฑ์สำหรับการตรวจทานสมมติฐานแบบออฟไลน์',
+      en: 'Product-launch scenario for fixture/offline assumption review.',
     },
     evidenceDepth: 'standard',
-    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, instagram: 80, x: 80 },
+    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, x: 80 },
   },
-  deep: {
-    label: 'Deep',
+  brand_awareness: {
+    label: 'Brand Awareness',
     description: {
-      th: 'ตรวจทานละเอียดขึ้นสำหรับหลายแพลตฟอร์ม โดยยังเป็นการตั้งค่าออฟไลน์',
-      en: 'Deeper multi-platform review while remaining offline configuration only.',
-    },
-    evidenceDepth: 'deep',
-    allocations: { facebook: 150, tiktok: 150, line: 150, youtube: 150, instagram: 150, x: 150 },
-  },
-  research: {
-    label: 'Research',
-    description: {
-      th: 'รอบวิจัยสำหรับเตรียมคำถามและช่องว่างหลักฐาน ใช้ข้อมูลสังเคราะห์เท่านั้น',
-      en: 'Research-oriented configuration for questions and evidence gaps using synthetic participants only.',
-    },
-    evidenceDepth: 'research',
-    allocations: { facebook: 250, tiktok: 250, line: 250, youtube: 250, instagram: 250, x: 250 },
-  },
-  custom: {
-    label: 'Custom',
-    description: {
-      th: 'กำหนดจำนวนผู้เข้าร่วมสังเคราะห์เองภายในขอบเขตที่ปลอดภัย',
-      en: 'Manual synthetic participant allocations within safe bounds.',
+      th: 'สถานการณ์การรับรู้แบรนด์สำหรับการตรวจทานแบบออฟไลน์',
+      en: 'Brand-awareness scenario for fixture/offline review.',
     },
     evidenceDepth: 'standard',
-    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, instagram: 80, x: 80 },
+    allocations: { facebook: 80, tiktok: 80, line: 80, youtube: 80, x: 80 },
+  },
+  campaign_response: {
+    label: 'Campaign Response',
+    description: {
+      th: 'สถานการณ์การตอบสนองต่อแคมเปญสำหรับการตรวจทานแบบออฟไลน์',
+      en: 'Campaign-response scenario for fixture/offline review.',
+    },
+    evidenceDepth: 'standard',
+    allocations: { facebook: 150, tiktok: 150, line: 150, youtube: 150, x: 150 },
+  },
+  product_feedback: {
+    label: 'Product Feedback',
+    description: {
+      th: 'สถานการณ์ความคิดเห็นต่อผลิตภัณฑ์สำหรับการตรวจทานแบบออฟไลน์',
+      en: 'Product-feedback scenario for fixture/offline review.',
+    },
+    evidenceDepth: 'expanded',
+    allocations: { facebook: 150, tiktok: 150, line: 150, youtube: 150, x: 150 },
+  },
+  promotion_response: {
+    label: 'Promotion Response',
+    description: {
+      th: 'สถานการณ์การตอบสนองต่อข้อเสนอสำหรับการตรวจทานแบบออฟไลน์',
+      en: 'Promotion-response scenario for fixture/offline review.',
+    },
+    evidenceDepth: 'expanded',
+    allocations: { facebook: 250, tiktok: 250, line: 250, youtube: 250, x: 250 },
   },
 };
 
@@ -126,7 +125,7 @@ export function applySimulationProfile(config: SimulationConfiguration, simulati
     platformAllocations: { ...profile.allocations },
     platformAllocationDrafts: allocationDraftsFromValues(profile.allocations),
     evidenceDepth: profile.evidenceDepth,
-    configurationSource: simulationProfile === 'custom' ? 'custom' : 'preset',
+    configurationSource: 'preset',
     runtimeStatus: 'configuration_only',
   };
 }
@@ -140,7 +139,7 @@ export function updateSelectedPlatforms(config: SimulationConfiguration, selecte
 }
 
 export function updateEvidenceDepth(config: SimulationConfiguration, evidenceDepth: EvidenceDepth): SimulationConfiguration {
-  return { ...config, evidenceDepth, simulationProfile: 'custom', configurationSource: 'custom', runtimeStatus: 'configuration_only' };
+  return { ...config, evidenceDepth, configurationSource: 'custom', runtimeStatus: 'configuration_only' };
 }
 
 export function updatePlatformAllocationDraft(
@@ -155,7 +154,6 @@ export function updatePlatformAllocationDraft(
   }
   return {
     ...config,
-    simulationProfile: 'custom',
     configurationSource: 'custom',
     platformAllocations: nextAllocations,
     platformAllocationDrafts: { ...config.platformAllocationDrafts, [platform]: draftValue },

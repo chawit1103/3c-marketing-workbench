@@ -30,7 +30,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
       'facebook',
       '120',
     );
-    const config = updateEvidenceDepth(updatePlatformAllocationDraft(withCustomFacebook, 'line', '60'), 'deep');
+    const config = updateEvidenceDepth(updatePlatformAllocationDraft(withCustomFacebook, 'line', '60'), 'expanded');
     const platformEngagement = buildPlatformEngagementResult(config);
 
     const result = buildExecutiveInsights({
@@ -55,7 +55,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
       expect.objectContaining({
         title: 'Configuration scope',
         value: '2 platforms / 180 synthetic participants',
-        detail: 'Evidence depth: deep; configuration source: custom.',
+        detail: 'Evidence depth: expanded; configuration source: custom.',
         source: 'submitted simulation configuration',
       }),
       expect.objectContaining({
@@ -80,12 +80,12 @@ describe('M19 PR4 executive insight dashboard model', () => {
   });
 
   it('builds platform comparison from selected PR3 platforms only and submitted configuration snapshot values', () => {
-    const withHiddenInstagram = updatePlatformAllocationDraft(
-      createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE', 'Instagram']),
-      'instagram',
+    const withHiddenYouTube = updatePlatformAllocationDraft(
+      createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE', 'YouTube']),
+      'youtube',
       '500',
     );
-    const submittedConfig = updateSelectedPlatforms(withHiddenInstagram, ['Facebook', 'LINE']);
+    const submittedConfig = updateSelectedPlatforms(withHiddenYouTube, ['Facebook', 'LINE']);
     const platformEngagement = buildPlatformEngagementResult(submittedConfig);
 
     const result = buildExecutiveInsights({
@@ -102,7 +102,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
 
     expect(result.platformComparison.map((platform) => platform.platform)).toEqual(['Facebook', 'LINE']);
     expect(result.platformComparison.map((platform) => platform.syntheticParticipants)).toEqual([80, 80]);
-    expect(JSON.stringify(result.platformComparison)).not.toContain('Instagram');
+    expect(JSON.stringify(result.platformComparison)).not.toContain('YouTube');
     expect(JSON.stringify(result)).not.toContain('500');
     expect(result.platformComparison[0].basis).toBe('submitted configuration snapshot');
   });

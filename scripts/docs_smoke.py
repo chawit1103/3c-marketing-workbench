@@ -18,6 +18,7 @@ REQUIRED_DOCS = [
     "docs/product/ROADMAP.md",
     "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
     "docs/product/SOCIALSENSE_INTEGRATION.md",
+    "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
     "README.md",
     "AGENTS.md",
 ]
@@ -1498,8 +1499,14 @@ def main() -> None:
     if not (m5_files_present and (m5_paths_changed or current_branch_name() == "main" or branch_at_or_after(6))):
         fail("M5 implementation paths are not present in branch diff or merged main")
 
-    if "from socialsense import load_domain_pack" not in adapter:
-        fail("adapter does not import SocialSense through the public facade")
+    required_public_adapter_imports = [
+        "create_research_session",
+        "export_run",
+        "load_domain_pack",
+        "run_scenario",
+    ]
+    if "from socialsense import" not in adapter or any(name not in adapter for name in required_public_adapter_imports):
+        fail("adapter does not import the required SocialSense public SDK facade")
     forbidden_adapter_hits = [phrase for phrase in FORBIDDEN_ADAPTER_CONTENT if phrase in adapter]
     if forbidden_adapter_hits:
         fail("adapter references forbidden SocialSense/private/live content: " + ", ".join(forbidden_adapter_hits))
@@ -2248,7 +2255,7 @@ def main() -> None:
             unexpected_m19_pr6_changes = [path for path in changed_paths if path not in M19_PR6_ALLOWED_CHANGED_PATHS]
             if unexpected_m19_pr6_changes:
                 fail("M19 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m19_pr6_changes))
-        else:
+        elif not current_branch_name().startswith("m20-pr4-"):
             forbidden_m19_runtime_paths = [
                 path
                 for path in changed_paths

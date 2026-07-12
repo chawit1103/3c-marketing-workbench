@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json
 
-from integrations.socialsense import run_product_launch_simulation
+from integrations.socialsense import run_product_launch_simulation, run_submitted_simulation_configuration
 
 
 def main() -> None:
@@ -18,6 +18,17 @@ def main() -> None:
             "Outputs require human executive review before any real world decision.",
         ],
         notes="3C PR3 local adapter smoke for SocialSense Marketing Domain Pack.",
+    )
+    submitted_configuration = run_submitted_simulation_configuration(
+        {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["facebook", "line", "x"],
+            "platformAllocations": {"facebook": 80, "line": 120, "x": 150},
+            "evidenceDepth": "standard",
+        },
+        seed="3c-m20-submitted-settings-smoke",
+        assumptions=["Fixture/offline aggregate submitted-configuration smoke."],
+        notes="3C M20 public SDK runtime-contract smoke.",
     )
     summary = {
         "status": result["status"],
@@ -44,6 +55,13 @@ def main() -> None:
         "limitations_count": len(result.get("limitations", [])),
         "evidence_gaps_count": len(result.get("evidence_gaps", [])),
         "public_sdk_only": result["public_sdk_only"],
+        "submitted_configuration": {
+            "status": submitted_configuration["status"],
+            "runtime_status": submitted_configuration["runtime_status"],
+            "runtime_consumed": submitted_configuration["runtime_consumed"],
+            "platform_mix": submitted_configuration.get("platform_mix", []),
+            "runtime_contract": submitted_configuration.get("runtime_contract", {}),
+        },
     }
     print(json.dumps(summary, indent=2, sort_keys=True))
 

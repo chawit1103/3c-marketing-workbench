@@ -33,7 +33,7 @@ describe('M19 PR5 executive decision brief model', () => {
       '120',
     );
     const withLine = updatePlatformAllocationDraft(withFacebook, 'line', '60');
-    const submittedConfig = updateEvidenceDepth(updateSelectedPlatforms(withLine, ['Facebook', 'LINE']), 'deep');
+    const submittedConfig = updateEvidenceDepth(updateSelectedPlatforms(withLine, ['Facebook', 'LINE']), 'expanded');
     const platformEngagement = buildPlatformEngagementResult(submittedConfig);
     const form = {
       brand: 'Acme Halo',
@@ -62,7 +62,7 @@ describe('M19 PR5 executive decision brief model', () => {
       { label: 'Campaign Message', value: 'Reviewed executive campaign message.' },
     ]));
     expect(brief.campaignContext.selectedPlatforms).toEqual(['Facebook', 'LINE']);
-    expect(brief.campaignContext.simulationProfile).toBe('custom');
+    expect(brief.campaignContext.simulationProfile).toBe('product_launch');
     expect(brief.campaignContext.participantAllocations).toEqual([
       { platform: 'Facebook', syntheticParticipants: 120 },
       { platform: 'LINE', syntheticParticipants: 60 },
