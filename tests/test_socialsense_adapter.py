@@ -273,6 +273,50 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
                 self.assertEqual(result["status"], "configuration_only")
                 self.assertFalse(result["runtime_consumed"])
 
+    def test_submitted_configuration_falls_closed_for_non_boolean_or_contradictory_runtime_provenance(self) -> None:
+        submitted = {
+            "simulationProfile": "product_launch",
+            "selectedPlatforms": ["line"],
+            "platformAllocations": {"line": 30},
+            "evidenceDepth": "minimal",
+        }
+        self.fake_domain.runtime_contract_override = {
+            "simulation_profile": "product_launch",
+            "selected_platforms": ["LINE"],
+            "per_platform_participant_allocation": {"LINE": 30},
+            "total_synthetic_participants": 30,
+            "evidence_depth": "minimal",
+            "evidence_tier": "fixture_offline_aggregate_only",
+            "confidence": {"level": "not_calibrated"},
+        }
+        original_run = self.fake_domain.run
+        invalid_provenance = {
+            "fixture not offline": {"fixture_only": False, "live_api_access": False, "credentials_required": False},
+            "live API enabled": {"fixture_only": True, "live_api_access": True, "credentials_required": False},
+            "credentials required": {"fixture_only": True, "live_api_access": False, "credentials_required": True},
+            "fixture string": {"fixture_only": "true", "live_api_access": False, "credentials_required": False},
+            "live API string": {"fixture_only": True, "live_api_access": "false", "credentials_required": False},
+            "credentials integer": {"fixture_only": True, "live_api_access": False, "credentials_required": 0},
+        }
+
+        for provenance_case, provenance in invalid_provenance.items():
+            with self.subTest(provenance_case=provenance_case):
+                def run_with_provenance(**kwargs: Any) -> dict[str, Any]:
+                    runtime_result = original_run(**kwargs)
+                    runtime_result["provenance"] = provenance
+                    return runtime_result
+
+                self.fake_domain.run = run_with_provenance
+                result = self.adapter.run_submitted_simulation_configuration(
+                    submitted,
+                    export_formats=(),
+                    domain=self.fake_domain,
+                )
+
+                self.assertEqual(result["status"], "configuration_only")
+                self.assertEqual(result["runtime_status"], "configuration_only")
+                self.assertFalse(result["runtime_consumed"])
+
     def test_configuration_only_output_allowlists_submitted_snapshot_and_metadata(self) -> None:
         submitted = {
             "simulationProfile": "product_launch",
