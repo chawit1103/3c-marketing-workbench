@@ -301,6 +301,30 @@ class SocialSenseAdapterMappingTests(unittest.TestCase):
         self.assertTrue(result["limitations"])
         self.assertTrue(result["evidence_gaps"])
 
+    def test_configuration_only_snapshot_drops_unsupported_values_and_invalid_allocations(self) -> None:
+        submitted = {
+            "simulationProfile": "caller_override",
+            "selectedPlatforms": ["line", "unsupported", 42],
+            "platformAllocations": {
+                "line": 9,
+                "tiktok": 30,
+                "unsupported": 100,
+                "x": True,
+                "facebook": 501,
+            },
+            "evidenceDepth": "caller_defined",
+            "caller_private_field": "must_not_echo",
+        }
+
+        result = self.adapter.run_submitted_simulation_configuration(submitted, export_formats=(), domain=self.fake_domain)
+
+        self.assertEqual(result["status"], "configuration_only")
+        self.assertEqual(result["submitted_configuration"], {"selectedPlatforms": ["line"]})
+        self.assertNotIn("caller_override", str(result))
+        self.assertNotIn("caller_defined", str(result))
+        self.assertNotIn("must_not_echo", str(result))
+        self.assertNotIn("unsupported", str(result))
+
     def test_submitted_configuration_falls_closed_when_runtime_contract_is_absent(self) -> None:
         self.fake_domain.runtime_contract_override = {}
         submitted = {

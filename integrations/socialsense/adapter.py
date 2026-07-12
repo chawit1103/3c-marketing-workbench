@@ -28,6 +28,8 @@ _EVIDENCE_DEPTHS = {"minimal", "standard", "expanded"}
 _SCENARIO_NAMES = {"product_launch", "brand_awareness", "campaign_response", "product_feedback", "promotion_response"}
 _RUNTIME_EVIDENCE_TIER = "fixture_offline_aggregate_only"
 _NON_CALIBRATED_CONFIDENCE_LEVEL = "not_calibrated"
+_MIN_PLATFORM_ALLOCATION = 10
+_MAX_PLATFORM_ALLOCATION = 500
 
 
 def run_product_launch_simulation(
@@ -387,7 +389,11 @@ def _map_submitted_configuration(submitted_configuration: Mapping[str, Any]) -> 
         if not isinstance(platform_key, str) or platform_key not in _PLATFORM_LABELS:
             raise ValueError("Submitted configuration contains an unsupported platform.")
         allocation = allocations.get(platform_key)
-        if isinstance(allocation, bool) or not isinstance(allocation, int) or not 10 <= allocation <= 500:
+        if (
+            isinstance(allocation, bool)
+            or not isinstance(allocation, int)
+            or not _MIN_PLATFORM_ALLOCATION <= allocation <= _MAX_PLATFORM_ALLOCATION
+        ):
             raise ValueError("Submitted configuration contains an invalid synthetic participant allocation.")
         platform_label = _PLATFORM_LABELS[platform_key]
         platform_mix.append(platform_label)
@@ -463,21 +469,27 @@ def _submitted_configuration_snapshot(submitted_configuration: Mapping[str, Any]
     platform_allocations = submitted_configuration.get("platformAllocations")
     evidence_depth = submitted_configuration.get("evidenceDepth")
 
-    if isinstance(simulation_profile, str):
+    if simulation_profile in _SCENARIO_NAMES:
         snapshot["simulationProfile"] = simulation_profile
     if isinstance(selected_platforms, list):
-        snapshot["selectedPlatforms"] = [
+        accepted_platforms = [
             platform for platform in selected_platforms if isinstance(platform, str) and platform in _PLATFORM_LABELS
         ]
+        if accepted_platforms:
+            snapshot["selectedPlatforms"] = accepted_platforms
     if isinstance(platform_allocations, Mapping):
-        snapshot["platformAllocations"] = {
+        accepted_platforms = set(snapshot.get("selectedPlatforms", []))
+        accepted_allocations = {
             platform: allocation
             for platform, allocation in platform_allocations.items()
             if isinstance(platform, str)
-            and platform in _PLATFORM_LABELS
+            and platform in accepted_platforms
             and isinstance(allocation, int)
             and not isinstance(allocation, bool)
+            and _MIN_PLATFORM_ALLOCATION <= allocation <= _MAX_PLATFORM_ALLOCATION
         }
-    if isinstance(evidence_depth, str):
+        if accepted_allocations:
+            snapshot["platformAllocations"] = accepted_allocations
+    if evidence_depth in _EVIDENCE_DEPTHS:
         snapshot["evidenceDepth"] = evidence_depth
     return snapshot
