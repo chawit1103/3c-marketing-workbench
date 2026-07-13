@@ -2088,7 +2088,7 @@ function runtimeTraceabilityStepLabel(step: ExecutiveInsights['traceability']['s
   return {
     input: 'User input',
     configuration: 'Submitted configuration',
-    runtime: 'Verified offline configuration check',
+    runtime: 'Offline configuration runtime check',
     result: 'Displayed result',
   }[step];
 }

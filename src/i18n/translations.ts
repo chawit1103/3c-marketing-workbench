@@ -657,7 +657,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'Runtime traceability': 'การตรวจสอบย้อนกลับของระบบจำลอง',
     'User input': 'ข้อมูลที่ผู้ใช้กรอก',
     'Submitted configuration': 'การตั้งค่าที่ส่งแล้ว',
-    'Verified offline configuration check': 'การตรวจสอบการตั้งค่าออฟไลน์ที่ยืนยันแล้ว',
+    'Offline configuration runtime check': 'การตรวจสอบรันไทม์ของการตั้งค่าออฟไลน์',
     'Displayed result': 'ผลลัพธ์ที่แสดง',
     'available': 'พร้อมใช้งาน',
     'matched': 'ตรงกัน',

@@ -1784,6 +1784,20 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption confirms');
   });
 
+  it('renders neutral runtime-check traceability copy for no-browser-run-evidence states in English and Thai', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const englishTraceability = screen.getByRole('region', { name: 'Runtime traceability' });
+    expect(englishTraceability).toHaveTextContent('Offline configuration runtime check: not verified');
+    expect(englishTraceability).not.toHaveTextContent('Verified offline configuration check');
+
+    renderAt('/runs/sample-run', 'th');
+
+    const thaiTraceability = screen.getByRole('region', { name: 'การตรวจสอบย้อนกลับของระบบจำลอง' });
+    expect(thaiTraceability).toHaveTextContent('การตรวจสอบรันไทม์ของการตั้งค่าออฟไลน์: ยังไม่ตรวจสอบ');
+    expect(thaiTraceability).not.toHaveTextContent('การตรวจสอบการตั้งค่าออฟไลน์ที่ยืนยันแล้ว');
+  });
+
   it('keeps runtime traceability help text mutually exclusive in configuration-only and consumed states', () => {
     const configurationOnly = runtimeTraceabilityHelpText({
       runtimeStatus: 'configuration_only',
