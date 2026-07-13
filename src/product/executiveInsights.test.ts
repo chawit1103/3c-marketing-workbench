@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import productLaunchFixture from './fixtures/productLaunchResult.json';
 import { buildExecutiveInsights } from './executiveInsights';
 import { buildPlatformEngagementResult } from './platformEngagement';
+import type { RuntimeEvidence } from './runtimeTraceability';
 import {
   createDefaultSimulationConfiguration,
   updateEvidenceDepth,
@@ -55,7 +56,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
       expect.objectContaining({
         title: 'Configuration scope',
         value: '2 platforms / 180 synthetic participants',
-        detail: 'Evidence depth: expanded; configuration source: custom.',
+        detail: 'Evidence depth: expanded; configuration source: custom; runtime status: configuration-only fallback.',
         source: 'submitted simulation configuration',
       }),
       expect.objectContaining({
@@ -77,6 +78,29 @@ describe('M19 PR4 executive insight dashboard model', () => {
       'synthetic platform engagement result model',
       'offline fixture',
     ]);
+  });
+
+  it('shows runtime-consumed only when generated fixture evidence exactly matches the submitted configuration', () => {
+    const config = createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE']);
+    const result = buildExecutiveInsights({
+      fixture: productLaunchFixture,
+      form: {
+        brand: 'Nimbus Go',
+        campaignMessage: 'Reviewed message',
+        audiences: ['Working Adults'],
+        platforms: ['Facebook', 'TikTok', 'LINE'],
+      },
+      simulationConfig: config,
+      platformEngagement: buildPlatformEngagementResult(config),
+      runtimeEvidence: productLaunchFixture.runtimeEvidence as RuntimeEvidence,
+    });
+
+    expect(result.traceability.runtimeStatus).toBe('consumed_by_runtime');
+    expect(result.evidenceVisualization.find((item) => item.title === 'Configuration status')).toMatchObject({
+      status: 'runtime-consumed',
+      detail: 'Selected platforms match the verified offline configuration contract.',
+    });
+    expect(result.sourceSummary.inputs).toContain('verified offline configuration contract');
   });
 
   it('builds platform comparison from selected PR3 platforms only and submitted configuration snapshot values', () => {

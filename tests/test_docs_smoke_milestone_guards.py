@@ -98,6 +98,25 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertEqual(docs_smoke.current_milestone_number(), 20)
             self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
 
+    def test_authorized_m20_pr5_traceability_diff_is_exempt_from_m19_runtime_guard(self) -> None:
+        changed_paths = [
+            "scripts/docs_smoke.py",
+            "scripts/generate_product_launch_fixture.py",
+            "src/App.test.tsx",
+            "src/i18n/translations.ts",
+            "src/product/executiveDecisionBrief.ts",
+            "src/product/executiveInsights.test.ts",
+            "src/product/executiveInsights.ts",
+            "src/product/fixtures/productLaunchResult.json",
+            "src/product/runtimeTraceability.test.ts",
+            "src/product/runtimeTraceability.ts",
+            "src/views.tsx",
+            "tests/test_docs_smoke_milestone_guards.py",
+        ]
+        with patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths):
+            self.assertTrue(docs_smoke.is_authorized_m20_pr5_context())
+            self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), [])
+
     def test_m19_runtime_path_guard_remains_enforced_without_authorized_m20_diff(self) -> None:
         changed_paths = ["src/views.tsx"]
         with (

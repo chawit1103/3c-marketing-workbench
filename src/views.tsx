@@ -24,6 +24,7 @@ import {
 import { buildExecutiveInsights, type ExecutiveInsights } from './product/executiveInsights';
 import { buildExecutiveDecisionBrief, type ExecutiveDecisionBrief } from './product/executiveDecisionBrief';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
+import type { RuntimeEvidence } from './product/runtimeTraceability';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -1832,6 +1833,7 @@ function ReferenceResults({
   };
   const assumptionRows = useMemo<Array<[string, string, keyof LaunchForm]>>(() => buildAssumptionRows(form), [form]);
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const runtimeEvidence = fixture.runtimeEvidence as RuntimeEvidence | undefined;
   const executiveInsights = useMemo(() => buildExecutiveInsights({
     fixture,
     form: {
@@ -1842,7 +1844,8 @@ function ReferenceResults({
     },
     simulationConfig,
     platformEngagement,
-  }), [fixture, form, simulationConfig, platformEngagement]);
+    runtimeEvidence,
+  }), [fixture, form, simulationConfig, platformEngagement, runtimeEvidence]);
 
   const comparisonMethod = 'comparisonMethod' in fixture ? fixture.comparisonMethod : undefined;
 
@@ -1993,7 +1996,10 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
   const localizeEvidenceDetail = (item: ExecutiveInsights['evidenceVisualization'][number]) => {
     if (item.detailType === 'configurationStatus') {
       const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
-      return `${t('Selected platforms')}: ${selectedLabels}; ${t('runtimeStatus remains configuration-only')}.`;
+      const status = item.status === 'runtime-consumed'
+        ? t('runtimeStatus verified as runtime-consumed')
+        : t('runtimeStatus remains configuration-only');
+      return `${t('Selected platforms')}: ${selectedLabels}; ${status}.`;
     }
     if (item.detailFragments?.length) {
       return item.detailFragments.map((fragment) => t(fragment)).join(' ');
@@ -2005,6 +2011,16 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
       <p className="eyebrow">{t('Executive Insight Dashboard')}</p>
       <h3>{t('Executive insight layer for reviewed offline results')}</h3>
       <p>{t('Built from user review assumptions, submitted simulation configuration, and synthetic platform engagement results only.')}</p>
+      <section className="evidence-critical-card" aria-label={t('Runtime traceability')}>
+        <p className="eyebrow">{t(insights.traceability.statusLabel)}</p>
+        <h4>{t('Runtime traceability')}</h4>
+        <ol className="insight-list">
+          {insights.traceability.steps.map((step) => (
+            <li key={step.key}>{t(runtimeTraceabilityStepLabel(step.key))}: {t(runtimeTraceabilityStepStatus(step.status))}</li>
+          ))}
+        </ol>
+        <p className="help-text">{t('Source')}: {t(insights.traceability.source)}. {t('Runtime consumption confirms an offline configuration echo only; it does not indicate live measurement, field evidence, or production readiness.')}</p>
+      </section>
 
       <section aria-label={t('Executive Insight Cards')}>
         <p className="eyebrow">{t('Executive Insight Cards')}</p>
@@ -2062,6 +2078,25 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
       </section>
     </section>
   );
+}
+
+function runtimeTraceabilityStepLabel(step: ExecutiveInsights['traceability']['steps'][number]['key']): string {
+  return {
+    input: 'User input',
+    configuration: 'Submitted configuration',
+    runtime: 'Verified offline configuration check',
+    result: 'Displayed result',
+  }[step];
+}
+
+function runtimeTraceabilityStepStatus(step: ExecutiveInsights['traceability']['steps'][number]['status']): string {
+  return {
+    available: 'available',
+    matched: 'matched',
+    verified: 'verified',
+    not_verified: 'not verified',
+    offline_fixture: 'offline fixture',
+  }[step];
 }
 
 function PlatformEngagementPanel({ result }: { result: PlatformEngagementResult }) {
@@ -2131,6 +2166,7 @@ function ExportReview(
   const { language, t } = useI18n();
   const sourceSampleInput = form ? formToFixtureSampleInput(form) : fixture.sampleInput;
   const platformEngagement = useMemo(() => buildPlatformEngagementResult(simulationConfig), [simulationConfig]);
+  const runtimeEvidence = fixture.runtimeEvidence as RuntimeEvidence | undefined;
   const executiveInsights = useMemo(() => buildExecutiveInsights({
     fixture,
     form: {
@@ -2141,7 +2177,8 @@ function ExportReview(
     },
     simulationConfig,
     platformEngagement,
-  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement]);
+    runtimeEvidence,
+  }), [fixture, form, sourceSampleInput, simulationConfig, platformEngagement, runtimeEvidence]);
   const executiveDecisionBrief = useMemo(() => buildExecutiveDecisionBrief({
     fixture,
     form: {
@@ -2411,6 +2448,10 @@ function ExecutiveDecisionBriefSection({ brief }: { brief: ExecutiveDecisionBrie
             <div>
               <dt>{t('Evidence depth')}</dt>
               <dd>{t(brief.campaignContext.evidenceDepth)}</dd>
+            </div>
+            <div>
+              <dt>{t('Runtime status')}</dt>
+              <dd>{t(brief.campaignContext.runtimeStatus === 'consumed_by_runtime' ? 'runtime-consumed' : 'configuration-only')}</dd>
             </div>
           </dl>
           <p className="help-text">{t('Participant allocations')}: {brief.campaignContext.participantAllocations.map((item) => `${item.platform} ${item.syntheticParticipants}`).join('; ')}.</p>

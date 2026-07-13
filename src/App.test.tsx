@@ -1727,7 +1727,7 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('Evidence Visualization');
     expect(insights).toHaveTextContent('Decision Guidance');
     expect(insights).toHaveTextContent('synthetic/offline');
-    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('runtime-consumed');
     expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
     expect(document.body.textContent?.toLowerCase()).not.toContain('approve launch');
   });
@@ -1755,19 +1755,19 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).not.toHaveTextContent('Synthetic participants: 200');
   });
 
-  it('shows evidence/provenance/limitations/configuration status without live runtime claims', () => {
+  it('shows evidence/provenance/limitations with verified offline runtime traceability and no live claims', () => {
     renderAt('/runs/sample-run', 'en');
 
     const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
     expect(insights).toHaveTextContent('Provenance');
     expect(insights).toHaveTextContent('synthetic/offline provenance');
     expect(insights).toHaveTextContent('Configuration status');
-    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('runtime-consumed');
     expect(insights).toHaveTextContent('Limitations');
     expect(insights).toHaveTextContent('Evidence gaps');
     expect(insights.textContent?.toLowerCase()).not.toContain('live api access');
-    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption');
-    expect(insights.textContent?.toLowerCase()).not.toContain('consumed by runtime');
+    expect(insights).toHaveTextContent('Runtime traceability');
+    expect(insights.textContent?.toLowerCase()).toContain('offline configuration');
   });
 
   it('keeps decision guidance reviewed and blocks prediction, confidence guarantee, or launch approval wording', () => {

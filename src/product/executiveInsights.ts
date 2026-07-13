@@ -1,5 +1,6 @@
 import type { PlatformEngagementResult } from './platformEngagement';
 import { PLATFORM_LABELS, type SimulationConfiguration } from './simulationConfig';
+import { buildRuntimeTraceability, type RuntimeEvidence, type RuntimeTraceability } from './runtimeTraceability';
 
 export type ExecutiveInsightForm = {
   brand: string;
@@ -57,16 +58,17 @@ export type ExecutiveDecisionGuidance = {
 };
 
 export type ExecutiveInsights = {
-  modelVersion: 'm19-pr4-executive-insight-dashboard-v1';
+  modelVersion: 'm20-pr5-executive-insight-dashboard-v1';
   insightCards: ExecutiveInsightCard[];
   platformComparison: ExecutivePlatformComparison[];
   evidenceVisualization: ExecutiveEvidenceItem[];
   decisionGuidance: ExecutiveDecisionGuidance[];
   sourceSummary: {
     inputs: string[];
-    status: 'synthetic_offline_configuration_only';
+    status: 'synthetic_offline_configuration_only' | 'synthetic_offline_runtime_consumed';
     limitations: string[];
   };
+  traceability: RuntimeTraceability;
 };
 
 export function buildExecutiveInsights({
@@ -74,11 +76,13 @@ export function buildExecutiveInsights({
   form,
   simulationConfig,
   platformEngagement,
+  runtimeEvidence,
 }: {
   fixture: ExecutiveInsightFixture;
   form: ExecutiveInsightForm;
   simulationConfig: SimulationConfiguration;
   platformEngagement: PlatformEngagementResult;
+  runtimeEvidence?: RuntimeEvidence;
 }): ExecutiveInsights {
   const configuredLabels = simulationConfig.selectedPlatforms.map((platform) => PLATFORM_LABELS[platform]);
   const totalParticipants = platformEngagement.crossPlatformSummary.totalSyntheticParticipants;
@@ -86,9 +90,11 @@ export function buildExecutiveInsights({
   const averageReaction = platformEngagement.crossPlatformSummary.averageSyntheticReactionIndex;
   const firstLimitation = fixture.reviewMetadata.limitations[0] ?? 'Synthetic/offline limitation remains visible for executive review.';
   const firstEvidenceGap = fixture.reviewMetadata.evidenceGaps[0] ?? 'Human review evidence gap remains open.';
+  const traceability = buildRuntimeTraceability(simulationConfig, runtimeEvidence);
+  const runtimeConsumed = traceability.runtimeStatus === 'consumed_by_runtime';
 
   return {
-    modelVersion: 'm19-pr4-executive-insight-dashboard-v1',
+    modelVersion: 'm20-pr5-executive-insight-dashboard-v1',
     insightCards: [
       {
         title: 'Review assumption snapshot',
@@ -99,8 +105,8 @@ export function buildExecutiveInsights({
       {
         title: 'Configuration scope',
         value: `${simulationConfig.selectedPlatforms.length} platforms / ${totalParticipants} synthetic participants`,
-        detail: `Evidence depth: ${simulationConfig.evidenceDepth}; configuration source: ${simulationConfig.configurationSource}.`,
-        source: 'submitted simulation configuration',
+        detail: `Evidence depth: ${simulationConfig.evidenceDepth}; configuration source: ${simulationConfig.configurationSource}; runtime status: ${runtimeConsumed ? 'consumed by verified offline configuration check' : 'configuration-only fallback'}.`,
+        source: runtimeConsumed ? 'submitted simulation configuration + verified offline configuration contract' : 'submitted simulation configuration',
       },
       {
         title: 'Platform planning cue',
@@ -132,8 +138,8 @@ export function buildExecutiveInsights({
       },
       {
         title: 'Configuration status',
-        status: 'configuration-only',
-        detail: 'Selected platforms remain configuration-only.',
+        status: runtimeConsumed ? 'runtime-consumed' : 'configuration-only',
+        detail: runtimeConsumed ? 'Selected platforms match the verified offline configuration contract.' : 'Selected platforms remain configuration-only.',
         detailType: 'configurationStatus',
         selectedPlatformLabels: configuredLabels,
       },
@@ -164,8 +170,10 @@ export function buildExecutiveInsights({
       },
       {
         title: 'Configuration review',
-        reviewStatus: 'configuration-only',
-        guidance: 'Check selected platforms, participant allocation, evidence depth, and assumptions before any budget discussion.',
+        reviewStatus: runtimeConsumed ? 'runtime-consumed' : 'configuration-only',
+        guidance: runtimeConsumed
+          ? 'Verified offline configuration check consumed the submitted profile, platforms, allocation, and evidence depth; keep limitations visible before any budget discussion.'
+          : 'Check selected platforms, participant allocation, evidence depth, and assumptions before any budget discussion.',
       },
       {
         title: 'Evidence review',
@@ -174,13 +182,14 @@ export function buildExecutiveInsights({
       },
     ],
     sourceSummary: {
-      inputs: ['reviewed user assumptions', 'submitted simulation configuration', 'synthetic platform engagement result model', 'offline fixture'],
-      status: 'synthetic_offline_configuration_only',
+      inputs: ['reviewed user assumptions', 'submitted simulation configuration', ...(runtimeConsumed ? ['verified offline configuration contract'] : []), 'synthetic platform engagement result model', 'offline fixture'],
+      status: runtimeConsumed ? 'synthetic_offline_runtime_consumed' : 'synthetic_offline_configuration_only',
       limitations: [
         'synthetic/offline provenance only',
-        'configuration-only status',
+        runtimeConsumed ? 'runtime consumed by verified offline configuration contract only' : 'configuration-only status',
         'limitations and evidence gaps remain visible',
       ],
     },
+    traceability,
   };
 }
