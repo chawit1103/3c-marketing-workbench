@@ -210,7 +210,11 @@ export function buildExecutiveDecisionBrief({
     },
     notices: {
       synthetic: 'Synthetic/offline aggregate brief only; not field evidence.',
-      offline: 'Configuration-only offline review; no live service or production campaign system is invoked.',
+      offline: executiveInsights.traceability.runtimeStatus === 'consumed_by_runtime'
+        ? 'Verified fixture/offline runtime evidence is attached; no live service or production campaign system is invoked.'
+        : executiveInsights.traceability.referenceFixtureContractMatch
+          ? 'Reference fixture contract matches the submitted configuration, but runtime consumption is not verified for this browser run; no live service or production campaign system is invoked.'
+          : 'Configuration-only offline review; no live service or production campaign system is invoked.',
     },
   };
 }

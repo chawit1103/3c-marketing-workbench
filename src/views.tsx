@@ -1995,6 +1995,9 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
   };
   const localizeEvidenceDetail = (item: ExecutiveInsights['evidenceVisualization'][number]) => {
     if (item.detailType === 'configurationStatus') {
+      if (item.referenceFixtureContractMatch) {
+        return t(item.detail);
+      }
       const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
       const status = item.status === 'runtime-consumed'
         ? t('runtimeStatus verified as runtime-consumed')

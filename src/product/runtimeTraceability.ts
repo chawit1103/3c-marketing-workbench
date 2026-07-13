@@ -29,7 +29,8 @@ export type RuntimeTraceabilityStep = {
 export type RuntimeTraceability = {
   runtimeStatus: RuntimeStatus;
   statusLabel: 'runtime-consumed' | 'configuration-only';
-  source: 'verified fixture/offline runtime contract' | 'configuration-only fallback';
+  source: 'reference fixture contract match; runtime not verified for this browser run' | 'configuration-only fallback';
+  referenceFixtureContractMatch: boolean;
   steps: RuntimeTraceabilityStep[];
 };
 
@@ -37,16 +38,17 @@ export function buildRuntimeTraceability(
   config: SimulationConfiguration,
   evidence: RuntimeEvidence | undefined,
 ): RuntimeTraceability {
-  if (hasVerifiedRuntimeEvidence(config, evidence)) {
+  if (hasReferenceFixtureContractMatch(config, evidence)) {
     return {
-      runtimeStatus: 'consumed_by_runtime',
-      statusLabel: 'runtime-consumed',
-      source: 'verified fixture/offline runtime contract',
+      runtimeStatus: 'configuration_only',
+      statusLabel: 'configuration-only',
+      source: 'reference fixture contract match; runtime not verified for this browser run',
+      referenceFixtureContractMatch: true,
       steps: [
         { key: 'input', status: 'available' },
         { key: 'configuration', status: 'matched' },
-        { key: 'runtime', status: 'verified' },
-        { key: 'result', status: 'available' },
+        { key: 'runtime', status: 'not_verified' },
+        { key: 'result', status: 'offline_fixture' },
       ],
     };
   }
@@ -55,6 +57,7 @@ export function buildRuntimeTraceability(
     runtimeStatus: 'configuration_only',
     statusLabel: 'configuration-only',
     source: 'configuration-only fallback',
+    referenceFixtureContractMatch: false,
     steps: [
       { key: 'input', status: 'available' },
       { key: 'configuration', status: 'available' },
@@ -64,7 +67,7 @@ export function buildRuntimeTraceability(
   };
 }
 
-function hasVerifiedRuntimeEvidence(config: SimulationConfiguration, evidence: RuntimeEvidence | undefined): boolean {
+function hasReferenceFixtureContractMatch(config: SimulationConfiguration, evidence: RuntimeEvidence | undefined): boolean {
   if (!evidence) {
     return false;
   }

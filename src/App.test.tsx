@@ -1299,6 +1299,15 @@ describe('M19 PR5 Executive Decision Brief export review', () => {
     expect(englishBrief).toHaveTextContent('Proceed with review');
     expect(englishBrief).toHaveTextContent('Evidence basis');
   });
+
+  it('keeps a matching reference-fixture decision brief configuration-only and localized in Thai', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const brief = screen.getByRole('region', { name: 'บรีฟการตัดสินใจสำหรับผู้บริหาร' });
+    expect(brief).toHaveTextContent('สัญญาข้อมูลตัวอย่างอ้างอิงตรงกับการตั้งค่าที่ส่งแล้ว');
+    expect(brief).not.toHaveTextContent('Reference fixture contract matches the submitted configuration');
+    expect(brief).not.toHaveTextContent('runtime-consumed');
+  });
 });
 
 
@@ -1727,7 +1736,8 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('Evidence Visualization');
     expect(insights).toHaveTextContent('Decision Guidance');
     expect(insights).toHaveTextContent('synthetic/offline');
-    expect(insights).toHaveTextContent('runtime-consumed');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).not.toHaveTextContent('runtime-consumed');
     expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
     expect(document.body.textContent?.toLowerCase()).not.toContain('approve launch');
   });
@@ -1755,14 +1765,16 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).not.toHaveTextContent('Synthetic participants: 200');
   });
 
-  it('shows evidence/provenance/limitations with verified offline runtime traceability and no live claims', () => {
+  it('keeps matching reference-fixture dashboard evidence configuration-only without browser-run runtime evidence', () => {
     renderAt('/runs/sample-run', 'en');
 
     const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
     expect(insights).toHaveTextContent('Provenance');
     expect(insights).toHaveTextContent('synthetic/offline provenance');
     expect(insights).toHaveTextContent('Configuration status');
-    expect(insights).toHaveTextContent('runtime-consumed');
+    expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('reference fixture contract');
+    expect(insights).not.toHaveTextContent('runtime-consumed');
     expect(insights).toHaveTextContent('Limitations');
     expect(insights).toHaveTextContent('Evidence gaps');
     expect(insights.textContent?.toLowerCase()).not.toContain('live api access');

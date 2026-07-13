@@ -1254,6 +1254,7 @@ M20_PR5_ALLOWED_CHANGED_PATHS = frozenset(
         "src/App.test.tsx",
         "src/i18n/translations.ts",
         "src/product/executiveDecisionBrief.ts",
+        "src/product/executiveDecisionBrief.test.ts",
         "src/product/executiveInsights.test.ts",
         "src/product/executiveInsights.ts",
         "src/product/fixtures/abExperimentResult.json",

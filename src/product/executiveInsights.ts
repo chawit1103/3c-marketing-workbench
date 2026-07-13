@@ -49,6 +49,7 @@ export type ExecutiveEvidenceItem = {
   detailFragments?: string[];
   detailType?: 'configurationStatus';
   selectedPlatformLabels?: string[];
+  referenceFixtureContractMatch?: boolean;
 };
 
 export type ExecutiveDecisionGuidance = {
@@ -92,6 +93,7 @@ export function buildExecutiveInsights({
   const firstEvidenceGap = fixture.reviewMetadata.evidenceGaps[0] ?? 'Human review evidence gap remains open.';
   const traceability = buildRuntimeTraceability(simulationConfig, runtimeEvidence);
   const runtimeConsumed = traceability.runtimeStatus === 'consumed_by_runtime';
+  const referenceFixtureContractMatch = traceability.referenceFixtureContractMatch;
 
   return {
     modelVersion: 'm20-pr5-executive-insight-dashboard-v1',
@@ -106,7 +108,11 @@ export function buildExecutiveInsights({
         title: 'Configuration scope',
         value: `${simulationConfig.selectedPlatforms.length} platforms / ${totalParticipants} synthetic participants`,
         detail: `Evidence depth: ${simulationConfig.evidenceDepth}; configuration source: ${simulationConfig.configurationSource}; runtime status: ${runtimeConsumed ? 'consumed by verified offline configuration check' : 'configuration-only fallback'}.`,
-        source: runtimeConsumed ? 'submitted simulation configuration + verified offline configuration contract' : 'submitted simulation configuration',
+        source: runtimeConsumed
+          ? 'submitted simulation configuration + verified offline configuration contract'
+          : referenceFixtureContractMatch
+            ? 'submitted simulation configuration + reference fixture contract match (not runtime consumption)'
+            : 'submitted simulation configuration',
       },
       {
         title: 'Platform planning cue',
@@ -139,9 +145,14 @@ export function buildExecutiveInsights({
       {
         title: 'Configuration status',
         status: runtimeConsumed ? 'runtime-consumed' : 'configuration-only',
-        detail: runtimeConsumed ? 'Selected platforms match the verified offline configuration contract.' : 'Selected platforms remain configuration-only.',
+        detail: runtimeConsumed
+          ? 'Selected platforms match the verified offline configuration contract.'
+          : referenceFixtureContractMatch
+            ? 'Selected platforms match a reference fixture contract, but runtime consumption is not verified for this browser run.'
+            : 'Selected platforms remain configuration-only.',
         detailType: 'configurationStatus',
         selectedPlatformLabels: configuredLabels,
+        referenceFixtureContractMatch,
       },
       {
         title: 'Limitations',
@@ -173,7 +184,9 @@ export function buildExecutiveInsights({
         reviewStatus: runtimeConsumed ? 'runtime-consumed' : 'configuration-only',
         guidance: runtimeConsumed
           ? 'Verified offline configuration check consumed the submitted profile, platforms, allocation, and evidence depth; keep limitations visible before any budget discussion.'
-          : 'Check selected platforms, participant allocation, evidence depth, and assumptions before any budget discussion.',
+          : referenceFixtureContractMatch
+            ? 'A reference fixture contract matches the submitted configuration, but runtime consumption is not verified for this browser run; check assumptions before any budget discussion.'
+            : 'Check selected platforms, participant allocation, evidence depth, and assumptions before any budget discussion.',
       },
       {
         title: 'Evidence review',
@@ -182,11 +195,25 @@ export function buildExecutiveInsights({
       },
     ],
     sourceSummary: {
-      inputs: ['reviewed user assumptions', 'submitted simulation configuration', ...(runtimeConsumed ? ['verified offline configuration contract'] : []), 'synthetic platform engagement result model', 'offline fixture'],
+      inputs: [
+        'reviewed user assumptions',
+        'submitted simulation configuration',
+        ...(runtimeConsumed
+          ? ['verified offline configuration contract']
+          : referenceFixtureContractMatch
+            ? ['reference fixture contract match (not runtime consumption)']
+            : []),
+        'synthetic platform engagement result model',
+        'offline fixture',
+      ],
       status: runtimeConsumed ? 'synthetic_offline_runtime_consumed' : 'synthetic_offline_configuration_only',
       limitations: [
         'synthetic/offline provenance only',
-        runtimeConsumed ? 'runtime consumed by verified offline configuration contract only' : 'configuration-only status',
+        runtimeConsumed
+          ? 'runtime consumed by verified offline configuration contract only'
+          : referenceFixtureContractMatch
+            ? 'reference fixture contract match; runtime consumption is not verified for this browser run'
+            : 'configuration-only status',
         'limitations and evidence gaps remain visible',
       ],
     },

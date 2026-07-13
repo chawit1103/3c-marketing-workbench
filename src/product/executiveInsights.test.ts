@@ -80,7 +80,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
     ]);
   });
 
-  it('shows runtime-consumed only when generated fixture evidence exactly matches the submitted configuration', () => {
+  it('keeps a matching reference fixture configuration-only without submitted-run runtime evidence', () => {
     const config = createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE']);
     const result = buildExecutiveInsights({
       fixture: productLaunchFixture,
@@ -95,12 +95,13 @@ describe('M19 PR4 executive insight dashboard model', () => {
       runtimeEvidence: productLaunchFixture.runtimeEvidence as RuntimeEvidence,
     });
 
-    expect(result.traceability.runtimeStatus).toBe('consumed_by_runtime');
+    expect(result.traceability.runtimeStatus).toBe('configuration_only');
+    expect(result.traceability.referenceFixtureContractMatch).toBe(true);
     expect(result.evidenceVisualization.find((item) => item.title === 'Configuration status')).toMatchObject({
-      status: 'runtime-consumed',
-      detail: 'Selected platforms match the verified offline configuration contract.',
+      status: 'configuration-only',
+      detail: 'Selected platforms match a reference fixture contract, but runtime consumption is not verified for this browser run.',
     });
-    expect(result.sourceSummary.inputs).toContain('verified offline configuration contract');
+    expect(result.sourceSummary.inputs).toContain('reference fixture contract match (not runtime consumption)');
   });
 
   it('builds platform comparison from selected PR3 platforms only and submitted configuration snapshot values', () => {

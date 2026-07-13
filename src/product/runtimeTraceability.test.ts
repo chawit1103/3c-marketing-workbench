@@ -24,18 +24,19 @@ const verifiedFixtureEvidence: RuntimeEvidence = {
 };
 
 describe('M20 PR5 runtime traceability', () => {
-  it('promotes status and traces submitted configuration through verified fixture runtime evidence only', () => {
+  it('keeps a matching reference fixture configuration-only without immutable submitted-run evidence', () => {
     const config = createDefaultSimulationConfiguration(['Facebook', 'LINE']);
 
     expect(buildRuntimeTraceability(config, verifiedFixtureEvidence)).toEqual({
-      runtimeStatus: 'consumed_by_runtime',
-      statusLabel: 'runtime-consumed',
-      source: 'verified fixture/offline runtime contract',
+      runtimeStatus: 'configuration_only',
+      statusLabel: 'configuration-only',
+      source: 'reference fixture contract match; runtime not verified for this browser run',
+      referenceFixtureContractMatch: true,
       steps: [
         { key: 'input', status: 'available' },
         { key: 'configuration', status: 'matched' },
-        { key: 'runtime', status: 'verified' },
-        { key: 'result', status: 'available' },
+        { key: 'runtime', status: 'not_verified' },
+        { key: 'result', status: 'offline_fixture' },
       ],
     });
   });
@@ -51,6 +52,7 @@ describe('M20 PR5 runtime traceability', () => {
       runtimeStatus: 'configuration_only',
       statusLabel: 'configuration-only',
       source: 'configuration-only fallback',
+      referenceFixtureContractMatch: false,
       steps: [
         { key: 'input', status: 'available' },
         { key: 'configuration', status: 'available' },

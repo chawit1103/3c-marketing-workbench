@@ -105,6 +105,7 @@ class MilestoneGuardTests(unittest.TestCase):
             "src/App.test.tsx",
             "src/i18n/translations.ts",
             "src/product/executiveDecisionBrief.ts",
+            "src/product/executiveDecisionBrief.test.ts",
             "src/product/executiveInsights.test.ts",
             "src/product/executiveInsights.ts",
             "src/product/fixtures/productLaunchResult.json",
