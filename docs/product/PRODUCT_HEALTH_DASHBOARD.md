@@ -1,6 +1,6 @@
 # Product Health Dashboard
 
-Status: M19 Synthetic Social Platform Engagement Simulation is closed as GO WITH CONDITIONS after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace, PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does not prove verified SocialSense runtime consumption of selected participant allocations. No SocialSense, runtime, live measurement, backend, persistence, live API, PDF/PPT, download, M20, or production-claim changes are included.
+Status: M19 Synthetic Social Platform Engagement Simulation is closed as GO WITH CONDITIONS. M20 PR1–PR5 3C/SocialSense integration work is completed/merged, and PR6 closes M20 as GO WITH CONDITIONS for controlled local fixture/offline aggregate-only review. Public-SDK evidence supports deterministic runtime-contract consumption of mapped aggregate configuration only; it does not support live measurement, private-data use, calibrated confidence, production execution, or a forecast. No M21 is started by this closeout.
 
 
 ## M1 PR4 closeout
@@ -549,3 +549,12 @@ Backlog sources: `docs/product/M11_PRODUCT_BACKLOG.md` and `docs/product/M11_UX_
 - Safety: synthetic/offline, configuration-only, not live, not measured, not a forecast, and not a launch decision.
 - M19 PR5 Executive Decision Brief implemented; M19 PR6 closeout closes the program as GO WITH CONDITIONS; no report/export redesign and no M20 work.
 - Architecture Gate: Not Triggered; no SocialSense changes.
+
+## M20 closeout — SocialSense Runtime Consumption Integration
+
+- Closeout: `docs/product/M20_CLOSEOUT_READINESS_DECISION.md`.
+- 3C merged baseline: `09e6e0b`; SocialSense merged baseline: `dc0aa7a`.
+- Readiness decision: GO WITH CONDITIONS for controlled local fixture/offline aggregate-only review.
+- Evidence: deterministic public-SDK runtime-contract echo for submitted aggregate configuration; fail closed to `configuration_only` if executable evidence is absent or mismatched.
+- Safety: no live APIs, scraping, credentials, CRM/customer data, PII/private data, private messages, voter data, persistence, auth, microtargeting, persuasion optimization, conversion guarantees, or production claims.
+- Architecture Gate: Not Triggered. Do not begin M21 automatically.

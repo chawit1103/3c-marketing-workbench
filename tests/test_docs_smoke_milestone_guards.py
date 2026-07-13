@@ -152,6 +152,15 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
             self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), changed_paths)
 
+    def test_m20_pr6_closeout_path_allowlist_is_docs_and_guard_only(self) -> None:
+        self.assertIn(
+            "docs/product/M20_CLOSEOUT_READINESS_DECISION.md",
+            docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS,
+        )
+        self.assertIn("scripts/docs_smoke.py", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
+        self.assertNotIn("integrations/socialsense/adapter.py", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
+        self.assertNotIn("src/views.tsx", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
+
 
 if __name__ == "__main__":
     unittest.main()

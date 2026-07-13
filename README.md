@@ -2,7 +2,7 @@
 
 3C Marketing Workbench is the official product app for executive marketing scenario work. It provides a safe, UX-first workbench shell for comparing marketing assumptions, reviewing synthetic aggregate scenario outputs, and preparing executive reports after human review.
 
-Status: M19 Synthetic Social Platform Engagement Simulation is **closed as GO WITH CONDITIONS** after PR6 docs/status/smoke closeout preparation. M19 delivered PR1 user assumptions, PR2 configuration-only Simulation Configuration Workspace (merged in PR #34), PR3 product-owned synthetic/offline Platform Engagement Result Model, PR4 Executive Insight Dashboard, and PR5 Executive Decision Brief. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does **not** prove verified SocialSense runtime consumption of selected participant allocations. M20 PR1–PR3 SocialSense work is completed/merged. M20 PR4 is in progress on this branch as a fixture/offline aggregate-only 3C adapter integration; it is not merged, production-ready, live-platform-enabled, or a claim of live measurement. 3C uses only the SocialSense public SDK and preserves fail-closed behavior. Feature Freeze v0.1 remains active for all work outside the authorized M20 PR4 scope: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, MarketingSimulation change, PDF/PPT/download generation, or runtime/live/measured engagement claim is allowed.
+Status: M19 Synthetic Social Platform Engagement Simulation is **closed as GO WITH CONDITIONS**. M20 PR1–PR5 3C/SocialSense integration work is completed/merged, and M20 is **CLOSED as GO WITH CONDITIONS** for controlled local fixture/offline aggregate-only product review. The public-SDK evidence confirms deterministic runtime-contract consumption of mapped aggregate configuration only; it does **not** prove live platform measurement, private-data use, calibrated confidence, production execution, or a forecast. 3C uses only the SocialSense public SDK and preserves fail-closed behavior. Do not begin M21 automatically. Feature Freeze v0.1 remains active: no new workflow, backend, persistence, auth, live API, external service, credential, CRM/customer data, PII/private data, production automation, MarketingSimulation change, PDF/PPT/download generation, or runtime/live/measured engagement claim is allowed.
 
 M7 completed A/B Experiment as an offline reference workflow only, with generated synthetic aggregate fixtures, human review, reusable dashboard/export review, and unchanged primary navigation.
 
@@ -108,6 +108,7 @@ Product documentation map:
 - [M19 PR4 Executive Insight Dashboard](docs/product/M19_PR4_EXECUTIVE_INSIGHT_DASHBOARD.md)
 - [M19 PR5 Executive Decision Brief](docs/product/M19_PR5_EXECUTIVE_DECISION_BRIEF.md)
 - [M19 Closeout Report](docs/product/M19_CLOSEOUT_REPORT.md)
+- [M20 Closeout and Cross-Repository Readiness Decision](docs/product/M20_CLOSEOUT_READINESS_DECISION.md)
 - [M1 PR4 Closeout Report](docs/product/M1_PR4_CLOSEOUT_REPORT.md)
 - [M2 Dogfooding Report](docs/product/M2_DOGFOODING_REPORT.md)
 - [M2.1 UX Friction Burn-down](docs/product/M2_1_UX_FRICTION_BURNDOWN.md)
@@ -215,7 +216,7 @@ PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adap
 git status --short --branch
 ```
 
-M19 PR6 closeout records M19 as CLOSED as GO WITH CONDITIONS for controlled product review. Current evidence supports product-owned configuration-informed synthetic results, not verified SocialSense runtime consumption of selected participant allocations. Recommended next program: SocialSense runtime-consumption integration, not started here. No new workflows, backend endpoints, SocialSense capability, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, archive commit, M20 work, or runtime-consumption claims are allowed.
+M20 PR6 closes the cross-repository integration as GO WITH CONDITIONS for controlled local fixture/offline aggregate-only review. See the [M20 Closeout and Cross-Repository Readiness Decision](docs/product/M20_CLOSEOUT_READINESS_DECISION.md) for merged baselines, validation commands, rollback, safety verification, and the explicit no-M21 decision. No new workflows, backend endpoints, live APIs, external services, persistence, authentication, CRM/customer data, PII/private data, production automation, SocialSense changes, MarketingSimulation changes, or `archive.html` commit are allowed.
 
 M15 focused validation commands:
 
