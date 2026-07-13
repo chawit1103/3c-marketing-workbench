@@ -1236,6 +1236,40 @@ M20_PR4_ALLOWED_CHANGED_PATHS = frozenset(
 )
 
 
+M20_PR5_CONTEXT_REQUIRED_PATHS = frozenset(
+    {
+        "scripts/generate_product_launch_fixture.py",
+        "src/product/fixtures/productLaunchResult.json",
+        "src/views.tsx",
+    }
+)
+
+M20_PR5_ALLOWED_CHANGED_PATHS = frozenset(
+    {
+        "scripts/docs_smoke.py",
+        "scripts/generate_ab_experiment_fixture.py",
+        "scripts/generate_campaign_message_test_fixture.py",
+        "scripts/generate_creative_comparison_fixture.py",
+        "scripts/generate_product_launch_fixture.py",
+        "src/App.test.tsx",
+        "src/i18n/translations.ts",
+        "src/product/executiveDecisionBrief.ts",
+        "src/product/executiveDecisionBrief.test.ts",
+        "src/product/executiveInsights.test.ts",
+        "src/product/executiveInsights.ts",
+        "src/product/fixtures/abExperimentResult.json",
+        "src/product/fixtures/campaignMessageTestResult.json",
+        "src/product/fixtures/creativeComparisonResult.json",
+        "src/product/fixtures/productLaunchResult.json",
+        "src/product/runtimeTraceability.test.ts",
+        "src/product/runtimeTraceability.ts",
+        "src/product/runtimeTraceabilityCopy.ts",
+        "src/views.tsx",
+        "tests/test_docs_smoke_milestone_guards.py",
+    }
+)
+
+
 def milestone_number_from_branch(branch_name: str) -> int | None:
     match = re.match(r"m(\d+)-", branch_name)
     return int(match.group(1)) if match else None
@@ -1284,10 +1318,36 @@ def is_authorized_m20_pr4_changed_paths(changed_paths: set[str]) -> bool:
     )
 
 
+def is_authorized_m20_pr5_context() -> bool:
+    """Infer authorization from the reviewed M20 PR5 traceability diff, never the checkout name."""
+    return is_authorized_m20_pr5_changed_paths(set(changed_paths_from_main()))
+
+
+def is_authorized_m20_pr5_changed_paths(changed_paths: set[str]) -> bool:
+    """Authorize only the reviewed 3C dashboard/report traceability diff."""
+    return bool(changed_paths) and (
+        M20_PR5_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and changed_paths <= M20_PR5_ALLOWED_CHANGED_PATHS
+    )
+
+
+def is_authorized_m20_pr4_pr5_changed_paths(changed_paths: set[str]) -> bool:
+    """Authorize the reviewed stacked M20 PR4 and PR5 diff as one bounded change set."""
+    return bool(changed_paths) and (
+        M20_PR4_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and M20_PR5_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and changed_paths <= M20_PR4_ALLOWED_CHANGED_PATHS | M20_PR5_ALLOWED_CHANGED_PATHS
+    )
+
+
 def m19_runtime_path_violations(changed_paths: list[str]) -> list[str]:
-    """Keep M19 runtime paths protected unless the whole PR diff is authorized M20 PR4."""
+    """Keep M19 runtime paths protected unless the whole PR diff is authorized M20 PR4 or PR5."""
     changed_path_set = set(changed_paths)
-    if is_authorized_m20_pr4_changed_paths(changed_path_set):
+    if (
+        is_authorized_m20_pr4_changed_paths(changed_path_set)
+        or is_authorized_m20_pr5_changed_paths(changed_path_set)
+        or is_authorized_m20_pr4_pr5_changed_paths(changed_path_set)
+    ):
         return []
     return [
         path

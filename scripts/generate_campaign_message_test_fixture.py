@@ -18,6 +18,7 @@ from scripts.generate_product_launch_fixture import (
     sanitize_limitations,
     sanitize_review_list,
     summarize_risks,
+    runtime_traceability_evidence,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,14 +63,16 @@ def main() -> None:
     if not isinstance(artifact, dict):
         raise TypeError("executive_json export did not return a dictionary")
 
-    fixture = build_ui_fixture(run, artifact, markdown_export["artifact"], json_export["artifact"])
+    runtime_evidence = runtime_traceability_evidence("campaign_response", SAMPLE["platforms"], 150)
+    fixture = build_ui_fixture(run, artifact, markdown_export["artifact"], json_export["artifact"], runtime_evidence)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(fixture, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {OUTPUT_PATH.relative_to(ROOT)}")
 
 
 def build_ui_fixture(
-    run: dict[str, Any], executive: dict[str, Any], markdown_artifact: Any, json_artifact: Any
+    run: dict[str, Any], executive: dict[str, Any], markdown_artifact: Any, json_artifact: Any,
+    runtime_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     summary = executive.get("executive_summary", {})
     marketing = executive.get("marketing_research", {})
@@ -84,6 +87,7 @@ def build_ui_fixture(
         "runId": executive.get("workbench_run_id", run.get("export_handle", "campaign-message-sample-run")),
         "objective": "Campaign Message Test",
         "sampleInput": SAMPLE,
+        "runtimeEvidence": runtime_evidence,
         "summary": {
             "headline": "Offline campaign-message test ready for executive review",
             "text": executive_preview(summary),

@@ -76,7 +76,41 @@ describe('M19 PR5 executive decision brief model', () => {
       expect.objectContaining({ title: 'Review readiness' }),
     ]));
     expect(brief.evidence.items.join(' ')).toContain('submitted simulation configuration');
+    expect(brief.campaignContext.runtimeStatus).toBe('configuration_only');
+    expect(brief.notices.offline).toContain('Configuration-only');
     expect(brief.recommendedNextAction.nextReviewStep).toContain('review');
+  });
+
+  it('does not label a runtime-consumed brief as configuration-only', () => {
+    const config = createDefaultSimulationConfiguration(['Facebook', 'LINE']);
+    const platformEngagement = buildPlatformEngagementResult(config);
+    const form = {
+      brand: 'Nimbus Go',
+      campaignMessage: 'Reviewed message',
+      audiences: ['Working Adults'],
+      platforms: ['Facebook', 'LINE'],
+    };
+    const executiveInsights = buildExecutiveInsights({ fixture: productLaunchFixture, form, simulationConfig: config, platformEngagement });
+    const runtimeConsumedInsights = {
+      ...executiveInsights,
+      traceability: {
+        ...executiveInsights.traceability,
+        runtimeStatus: 'consumed_by_runtime' as const,
+        statusLabel: 'runtime-consumed' as const,
+      },
+    };
+
+    const brief = buildExecutiveDecisionBrief({
+      fixture: productLaunchFixture,
+      form,
+      simulationConfig: config,
+      platformEngagement,
+      executiveInsights: runtimeConsumedInsights,
+    });
+
+    expect(brief.campaignContext.runtimeStatus).toBe('consumed_by_runtime');
+    expect(brief.notices.offline).not.toContain('Configuration-only');
+    expect(brief.notices.offline).toContain('Verified fixture/offline runtime evidence');
   });
 
   it('provides exactly four cautious decision options with evidence, confidence, limitations, and blocked actions', () => {

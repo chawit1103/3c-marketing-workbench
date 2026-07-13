@@ -1,6 +1,6 @@
 import type { ExecutiveInsightForm, ExecutiveInsights } from './executiveInsights';
 import type { PlatformEngagementResult } from './platformEngagement';
-import { PLATFORM_LABELS, type SimulationConfiguration } from './simulationConfig';
+import { PLATFORM_LABELS, type RuntimeStatus, type SimulationConfiguration } from './simulationConfig';
 
 type ExecutiveDecisionBriefFixture = {
   summary: {
@@ -50,7 +50,7 @@ export type ExecutiveDecisionBrief = {
     simulationProfile: SimulationConfiguration['simulationProfile'];
     evidenceDepth: SimulationConfiguration['evidenceDepth'];
     configurationSource: SimulationConfiguration['configurationSource'];
-    runtimeStatus: 'configuration_only';
+    runtimeStatus: RuntimeStatus;
     participantAllocations: BriefParticipantAllocation[];
   };
   currentSituation: {
@@ -148,7 +148,7 @@ export function buildExecutiveDecisionBrief({
       simulationProfile: simulationConfig.simulationProfile,
       evidenceDepth: simulationConfig.evidenceDepth,
       configurationSource: simulationConfig.configurationSource,
-      runtimeStatus: 'configuration_only',
+      runtimeStatus: executiveInsights.traceability.runtimeStatus,
       participantAllocations,
     },
     currentSituation: {
@@ -185,6 +185,7 @@ export function buildExecutiveDecisionBrief({
       items: [
         'reviewed user assumptions',
         'submitted simulation configuration',
+        ...(executiveInsights.traceability.runtimeStatus === 'consumed_by_runtime' ? ['verified fixture/offline runtime contract'] : []),
         'synthetic platform engagement result model',
         'executive insights from offline fixture',
       ],
@@ -209,7 +210,11 @@ export function buildExecutiveDecisionBrief({
     },
     notices: {
       synthetic: 'Synthetic/offline aggregate brief only; not field evidence.',
-      offline: 'Configuration-only offline review; no live service or production campaign system is invoked.',
+      offline: executiveInsights.traceability.runtimeStatus === 'consumed_by_runtime'
+        ? 'Verified fixture/offline runtime evidence is attached; no live service or production campaign system is invoked.'
+        : executiveInsights.traceability.referenceFixtureContractMatch
+          ? 'Reference fixture contract matches the submitted configuration, but runtime consumption is not verified for this browser run; no live service or production campaign system is invoked.'
+          : 'Configuration-only offline review; no live service or production campaign system is invoked.',
     },
   };
 }

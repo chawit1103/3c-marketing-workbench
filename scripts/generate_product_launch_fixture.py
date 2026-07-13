@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from integrations.socialsense import export_executive_report, run_product_launch_simulation
+from integrations.socialsense import export_executive_report, run_product_launch_simulation, run_submitted_simulation_configuration
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_PATH = ROOT / "src" / "product" / "fixtures" / "productLaunchResult.json"
@@ -47,14 +47,16 @@ def main() -> None:
     if not isinstance(artifact, dict):
         raise TypeError("executive_json export did not return a dictionary")
 
-    fixture = build_ui_fixture(run, artifact, markdown_export["artifact"], json_export["artifact"])
+    runtime_evidence = runtime_traceability_evidence("product_launch", SAMPLE["platforms"], 80)
+    fixture = build_ui_fixture(run, artifact, markdown_export["artifact"], json_export["artifact"], runtime_evidence)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(fixture, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {OUTPUT_PATH.relative_to(ROOT)}")
 
 
 def build_ui_fixture(
-    run: dict[str, Any], executive: dict[str, Any], markdown_artifact: Any, json_artifact: Any
+    run: dict[str, Any], executive: dict[str, Any], markdown_artifact: Any, json_artifact: Any,
+    runtime_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     summary = executive.get("executive_summary", {})
     marketing = executive.get("marketing_research", {})
@@ -69,6 +71,7 @@ def build_ui_fixture(
         "runId": executive.get("workbench_run_id", run.get("export_handle", "sample-run")),
         "objective": "Product Launch",
         "sampleInput": SAMPLE,
+        "runtimeEvidence": runtime_evidence,
         "summary": {
             "headline": "Offline product-launch simulation ready for executive review",
             "text": executive_preview(summary),
@@ -157,6 +160,51 @@ def build_ui_fixture(
             "liveApiAccess": bool(safety.get("live_api_access")),
             "credentialsRequired": bool(safety.get("credentials_required")),
             "productionReady": bool(safety.get("production_ready")),
+        },
+    }
+
+
+def runtime_traceability_evidence(
+    simulation_profile: str,
+    platforms: list[str],
+    participant_allocation: int,
+) -> dict[str, Any]:
+    platform_keys = {"Facebook": "facebook", "TikTok": "tiktok", "LINE": "line", "YouTube": "youtube", "X": "x"}
+    submitted_configuration = {
+        "simulationProfile": simulation_profile,
+        "selectedPlatforms": [platform_keys[platform] for platform in platforms],
+        "platformAllocations": {platform_keys[platform]: participant_allocation for platform in platforms},
+        "evidenceDepth": "standard",
+    }
+    result = run_submitted_simulation_configuration(
+        submitted_configuration,
+        seed=f"3c-m20-pr5-{simulation_profile}-traceability",
+        assumptions=["Fixture/offline aggregate runtime traceability evidence."],
+        notes="3C M20 PR5 dashboard/report traceability fixture.",
+        export_formats=(),
+    )
+    if result.get("runtime_status") != "consumed_by_runtime" or result.get("runtime_consumed") is not True:
+        raise RuntimeError("Submitted fixture configuration lacks verified public runtime evidence.")
+    runtime_contract = result.get("runtime_contract", {})
+    provenance = result.get("provenance", {})
+    return {
+        "status": result.get("status"),
+        "runStatus": result.get("run_status"),
+        "runtimeStatus": result.get("runtime_status"),
+        "runtimeConsumed": result.get("runtime_consumed"),
+        "runtimeContract": {
+            "simulationProfile": runtime_contract.get("simulation_profile"),
+            "selectedPlatforms": runtime_contract.get("selected_platforms"),
+            "perPlatformParticipantAllocation": runtime_contract.get("per_platform_participant_allocation"),
+            "totalSyntheticParticipants": runtime_contract.get("total_synthetic_participants"),
+            "evidenceDepth": runtime_contract.get("evidence_depth"),
+            "evidenceTier": runtime_contract.get("evidence_tier"),
+            "confidenceLevel": runtime_contract.get("confidence", {}).get("level"),
+        },
+        "provenance": {
+            "fixtureOnly": provenance.get("fixture_only"),
+            "liveApiAccess": provenance.get("live_api_access"),
+            "credentialsRequired": provenance.get("credentials_required"),
         },
     }
 

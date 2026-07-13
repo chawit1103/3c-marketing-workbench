@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 import { translate, translateUi } from './i18n/localize';
 import { safetyLabels } from './product/safety/safetyLabels';
+import { runtimeTraceabilityHelpText } from './product/runtimeTraceabilityCopy';
 
 function renderAt(pathnameWithSearch: string, language: 'th' | 'en' = 'en') {
   cleanup();
@@ -1299,6 +1300,15 @@ describe('M19 PR5 Executive Decision Brief export review', () => {
     expect(englishBrief).toHaveTextContent('Proceed with review');
     expect(englishBrief).toHaveTextContent('Evidence basis');
   });
+
+  it('keeps a matching reference-fixture decision brief configuration-only and localized in Thai', () => {
+    renderAt('/exports/sample-run', 'th');
+
+    const brief = screen.getByRole('region', { name: 'บรีฟการตัดสินใจสำหรับผู้บริหาร' });
+    expect(brief).toHaveTextContent('สัญญาข้อมูลตัวอย่างอ้างอิงตรงกับการตั้งค่าที่ส่งแล้ว');
+    expect(brief).not.toHaveTextContent('Reference fixture contract matches the submitted configuration');
+    expect(brief).not.toHaveTextContent('runtime-consumed');
+  });
 });
 
 
@@ -1728,6 +1738,7 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('Decision Guidance');
     expect(insights).toHaveTextContent('synthetic/offline');
     expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).not.toHaveTextContent('runtime-consumed');
     expect(document.body.textContent?.toLowerCase()).not.toContain('measured engagement lift');
     expect(document.body.textContent?.toLowerCase()).not.toContain('approve launch');
   });
@@ -1755,7 +1766,7 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).not.toHaveTextContent('Synthetic participants: 200');
   });
 
-  it('shows evidence/provenance/limitations/configuration status without live runtime claims', () => {
+  it('keeps matching reference-fixture dashboard evidence configuration-only without browser-run runtime evidence', () => {
     renderAt('/runs/sample-run', 'en');
 
     const insights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
@@ -1763,11 +1774,48 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('synthetic/offline provenance');
     expect(insights).toHaveTextContent('Configuration status');
     expect(insights).toHaveTextContent('configuration-only');
+    expect(insights).toHaveTextContent('reference fixture contract');
+    expect(insights).not.toHaveTextContent('runtime-consumed');
     expect(insights).toHaveTextContent('Limitations');
     expect(insights).toHaveTextContent('Evidence gaps');
     expect(insights.textContent?.toLowerCase()).not.toContain('live api access');
-    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption');
-    expect(insights.textContent?.toLowerCase()).not.toContain('consumed by runtime');
+    expect(insights).toHaveTextContent('Runtime traceability');
+    expect(insights).toHaveTextContent('This browser result is configuration-only. Its submitted configuration matches a reference fixture, but runtime consumption is not verified.');
+    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption confirms');
+  });
+
+  it('renders neutral runtime-check traceability copy for no-browser-run-evidence states in English and Thai', () => {
+    renderAt('/runs/sample-run', 'en');
+
+    const englishTraceability = screen.getByRole('region', { name: 'Runtime traceability' });
+    expect(englishTraceability).toHaveTextContent('Offline configuration runtime check: not verified');
+    expect(englishTraceability).not.toHaveTextContent('Verified offline configuration check');
+
+    renderAt('/runs/sample-run', 'th');
+
+    const thaiTraceability = screen.getByRole('region', { name: 'การตรวจสอบย้อนกลับของระบบจำลอง' });
+    expect(thaiTraceability).toHaveTextContent('การตรวจสอบรันไทม์ของการตั้งค่าออฟไลน์: ยังไม่ตรวจสอบ');
+    expect(thaiTraceability).not.toHaveTextContent('การตรวจสอบการตั้งค่าออฟไลน์ที่ยืนยันแล้ว');
+  });
+
+  it('keeps runtime traceability help text mutually exclusive in configuration-only and consumed states', () => {
+    const configurationOnly = runtimeTraceabilityHelpText({
+      runtimeStatus: 'configuration_only',
+      referenceFixtureContractMatch: true,
+    });
+    const runtimeConsumed = runtimeTraceabilityHelpText({
+      runtimeStatus: 'consumed_by_runtime',
+      referenceFixtureContractMatch: false,
+    });
+
+    expect(configurationOnly).toContain('configuration-only');
+    expect(configurationOnly).toContain('reference fixture');
+    expect(configurationOnly).toContain('not verified');
+    expect(configurationOnly).not.toContain('confirms an offline configuration echo');
+    expect(runtimeConsumed).toContain('confirms an offline configuration echo');
+    expect(runtimeConsumed).not.toContain('configuration-only');
+    expect(translate(configurationOnly, 'th')).toContain('ข้อมูลตัวอย่างอ้างอิง');
+    expect(translate(runtimeConsumed, 'th')).toContain('การสะท้อนค่ากำหนดแบบออฟไลน์');
   });
 
   it('keeps decision guidance reviewed and blocks prediction, confidence guarantee, or launch approval wording', () => {
@@ -1838,14 +1886,14 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     renderAt(`/runs/sample-run?assumptions=${payload}`, 'th');
 
     const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
-    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, X; สถานะยังเป็นการตั้งค่าเท่านั้น.');
+    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, X; ผลลัพธ์ที่แสดงนี้เป็นการตั้งค่าเท่านั้น และยังไม่ยืนยันการใช้โดยระบบจำลอง.');
     expect(thaiInsights).not.toHaveTextContent('Selected platforms:');
-    expect(thaiInsights).not.toHaveTextContent('runtimeStatus remains configuration-only');
+    expect(thaiInsights).not.toHaveTextContent('runtimeStatus');
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
     const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
-    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, X; runtimeStatus remains configuration-only.');
+    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, X; This displayed result is configuration-only; runtime consumption is not verified.');
   });
 
   it('does not leak report redesign or export upgrade scope into the result dashboard', () => {

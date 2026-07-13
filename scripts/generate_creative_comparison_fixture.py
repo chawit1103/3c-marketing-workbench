@@ -21,6 +21,7 @@ from scripts.generate_product_launch_fixture import (
     sanitize_limitations,
     sanitize_review_list,
     summarize_risks,
+    runtime_traceability_evidence,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,7 +74,8 @@ def main() -> None:
     if not isinstance(artifact_a, dict) or not isinstance(artifact_b, dict):
         raise TypeError("executive_json export did not return dictionaries for both creative arms")
 
-    fixture = build_ui_fixture(comparison, arm_a, arm_b, artifact_a, artifact_b, markdown_a["artifact"], json_a["artifact"])
+    runtime_evidence = runtime_traceability_evidence("campaign_response", SAMPLE["platforms"], 150)
+    fixture = build_ui_fixture(comparison, arm_a, arm_b, artifact_a, artifact_b, markdown_a["artifact"], json_a["artifact"], runtime_evidence)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(fixture, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {OUTPUT_PATH.relative_to(ROOT)}")
@@ -87,6 +89,7 @@ def build_ui_fixture(
     executive_b: dict[str, Any],
     markdown_artifact: Any,
     json_artifact: Any,
+    runtime_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     summary_a = executive_a.get("executive_summary", {})
     summary_b = executive_b.get("executive_summary", {})
@@ -100,6 +103,7 @@ def build_ui_fixture(
         "runId": "3c-m15-creative-comparison-reference-workflow",
         "objective": "Creative Comparison",
         "sampleInput": SAMPLE,
+        "runtimeEvidence": runtime_evidence,
         "summary": {
             "headline": "Offline creative comparison ready for executive review",
             "text": "Creative A and Creative B are compared as text-only concepts using the same audience, platform mix, key message, and evidence rules. No winner is selected from synthetic evidence; the result is inconclusive planning input for human creative review.",

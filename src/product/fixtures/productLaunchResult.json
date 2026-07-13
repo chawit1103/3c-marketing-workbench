@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pr4-product-launch-ui-v1",
-  "runId": "workbench-run-0bef4e9865a9",
+  "runId": "workbench-run-235e6cc6c538",
   "objective": "Product Launch",
   "sampleInput": {
     "brand": "Nimbus Go",
@@ -18,6 +18,34 @@
       "TikTok",
       "LINE"
     ]
+  },
+  "runtimeEvidence": {
+    "status": "ok",
+    "runStatus": "completed",
+    "runtimeStatus": "consumed_by_runtime",
+    "runtimeConsumed": true,
+    "runtimeContract": {
+      "simulationProfile": "product_launch",
+      "selectedPlatforms": [
+        "LINE",
+        "Facebook",
+        "TikTok"
+      ],
+      "perPlatformParticipantAllocation": {
+        "LINE": 80,
+        "Facebook": 80,
+        "TikTok": 80
+      },
+      "totalSyntheticParticipants": 240,
+      "evidenceDepth": "standard",
+      "evidenceTier": "fixture_offline_aggregate_only",
+      "confidenceLevel": "not_calibrated"
+    },
+    "provenance": {
+      "fixtureOnly": true,
+      "liveApiAccess": false,
+      "credentialsRequired": false
+    }
   },
   "summary": {
     "headline": "Offline product-launch simulation ready for executive review",
@@ -97,7 +125,7 @@
         "label": "JSON",
         "status": "Available for review",
         "detail": "Prepared from the reviewed offline sample with safety notes attached.",
-        "sizeHint": 11202
+        "sizeHint": 11537
       },
       {
         "label": "Markdown",

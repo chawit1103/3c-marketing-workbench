@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import productLaunchFixture from './fixtures/productLaunchResult.json';
 import { buildExecutiveInsights } from './executiveInsights';
 import { buildPlatformEngagementResult } from './platformEngagement';
+import type { RuntimeEvidence } from './runtimeTraceability';
 import {
   createDefaultSimulationConfiguration,
   updateEvidenceDepth,
@@ -55,7 +56,7 @@ describe('M19 PR4 executive insight dashboard model', () => {
       expect.objectContaining({
         title: 'Configuration scope',
         value: '2 platforms / 180 synthetic participants',
-        detail: 'Evidence depth: expanded; configuration source: custom.',
+        detail: 'Evidence depth: expanded; configuration source: custom; runtime status: configuration-only fallback.',
         source: 'submitted simulation configuration',
       }),
       expect.objectContaining({
@@ -77,6 +78,30 @@ describe('M19 PR4 executive insight dashboard model', () => {
       'synthetic platform engagement result model',
       'offline fixture',
     ]);
+  });
+
+  it('keeps a matching reference fixture configuration-only without submitted-run runtime evidence', () => {
+    const config = createDefaultSimulationConfiguration(['Facebook', 'TikTok', 'LINE']);
+    const result = buildExecutiveInsights({
+      fixture: productLaunchFixture,
+      form: {
+        brand: 'Nimbus Go',
+        campaignMessage: 'Reviewed message',
+        audiences: ['Working Adults'],
+        platforms: ['Facebook', 'TikTok', 'LINE'],
+      },
+      simulationConfig: config,
+      platformEngagement: buildPlatformEngagementResult(config),
+      runtimeEvidence: productLaunchFixture.runtimeEvidence as RuntimeEvidence,
+    });
+
+    expect(result.traceability.runtimeStatus).toBe('configuration_only');
+    expect(result.traceability.referenceFixtureContractMatch).toBe(true);
+    expect(result.evidenceVisualization.find((item) => item.title === 'Configuration status')).toMatchObject({
+      status: 'configuration-only',
+      detail: 'Selected platforms match a reference fixture contract, but runtime consumption is not verified for this browser run.',
+    });
+    expect(result.sourceSummary.inputs).toContain('reference fixture contract match (not runtime consumption)');
   });
 
   it('builds platform comparison from selected PR3 platforms only and submitted configuration snapshot values', () => {

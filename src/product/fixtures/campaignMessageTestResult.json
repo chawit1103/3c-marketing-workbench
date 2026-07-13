@@ -1,6 +1,6 @@
 {
   "schemaVersion": "m5-campaign-message-test-ui-v1",
-  "runId": "workbench-run-bb88f1990c72",
+  "runId": "workbench-run-db806d6ccc2f",
   "objective": "Campaign Message Test",
   "sampleInput": {
     "brand": "Nimbus Go",
@@ -20,6 +20,34 @@
       "TikTok",
       "LINE"
     ]
+  },
+  "runtimeEvidence": {
+    "status": "ok",
+    "runStatus": "completed",
+    "runtimeStatus": "consumed_by_runtime",
+    "runtimeConsumed": true,
+    "runtimeContract": {
+      "simulationProfile": "campaign_response",
+      "selectedPlatforms": [
+        "LINE",
+        "Facebook",
+        "TikTok"
+      ],
+      "perPlatformParticipantAllocation": {
+        "LINE": 150,
+        "Facebook": 150,
+        "TikTok": 150
+      },
+      "totalSyntheticParticipants": 450,
+      "evidenceDepth": "standard",
+      "evidenceTier": "fixture_offline_aggregate_only",
+      "confidenceLevel": "not_calibrated"
+    },
+    "provenance": {
+      "fixtureOnly": true,
+      "liveApiAccess": false,
+      "credentialsRequired": false
+    }
   },
   "summary": {
     "headline": "Offline campaign-message test ready for executive review",
@@ -99,7 +127,7 @@
         "label": "JSON",
         "status": "Available for review",
         "detail": "Prepared from the reviewed offline sample with safety notes attached.",
-        "sizeHint": 11747
+        "sizeHint": 12085
       },
       {
         "label": "Markdown",

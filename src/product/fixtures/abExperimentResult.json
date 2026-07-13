@@ -23,6 +23,34 @@
       "LINE"
     ]
   },
+  "runtimeEvidence": {
+    "status": "ok",
+    "runStatus": "completed",
+    "runtimeStatus": "consumed_by_runtime",
+    "runtimeConsumed": true,
+    "runtimeContract": {
+      "simulationProfile": "campaign_response",
+      "selectedPlatforms": [
+        "LINE",
+        "Facebook",
+        "TikTok"
+      ],
+      "perPlatformParticipantAllocation": {
+        "LINE": 150,
+        "Facebook": 150,
+        "TikTok": 150
+      },
+      "totalSyntheticParticipants": 450,
+      "evidenceDepth": "standard",
+      "evidenceTier": "fixture_offline_aggregate_only",
+      "confidenceLevel": "not_calibrated"
+    },
+    "provenance": {
+      "fixtureOnly": true,
+      "liveApiAccess": false,
+      "credentialsRequired": false
+    }
+  },
   "summary": {
     "headline": "Offline A/B experiment ready for executive review",
     "text": "The offline A/B Experiment sample uses the same objective, audience, platform mix, and criteria for both variants. Variant A is the speed-led clarity hypothesis; Variant B is the trust-proof hypothesis. No winner is selected from synthetic evidence; use this as a planning prompt for human review, not a forecast.",
@@ -138,7 +166,7 @@
         "label": "JSON",
         "status": "Available for review",
         "detail": "Prepared from the reviewed offline sample with safety notes attached.",
-        "sizeHint": 11869
+        "sizeHint": 12207
       },
       {
         "label": "Markdown",
