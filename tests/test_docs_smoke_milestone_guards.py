@@ -111,12 +111,37 @@ class MilestoneGuardTests(unittest.TestCase):
             "src/product/fixtures/productLaunchResult.json",
             "src/product/runtimeTraceability.test.ts",
             "src/product/runtimeTraceability.ts",
+            "src/product/runtimeTraceabilityCopy.ts",
             "src/views.tsx",
             "tests/test_docs_smoke_milestone_guards.py",
         ]
         with patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths):
             self.assertTrue(docs_smoke.is_authorized_m20_pr5_context())
             self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), [])
+
+    def test_stacked_authorized_m20_pr4_pr5_diff_is_exempt_from_m19_runtime_guard(self) -> None:
+        changed_paths = [
+            "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+            "integrations/socialsense/adapter.py",
+            "scripts/docs_smoke.py",
+            "scripts/generate_product_launch_fixture.py",
+            "src/App.test.tsx",
+            "src/i18n/translations.ts",
+            "src/product/executiveDecisionBrief.ts",
+            "src/product/executiveDecisionBrief.test.ts",
+            "src/product/executiveInsights.test.ts",
+            "src/product/executiveInsights.ts",
+            "src/product/fixtures/productLaunchResult.json",
+            "src/product/runtimeTraceability.test.ts",
+            "src/product/runtimeTraceability.ts",
+            "src/product/runtimeTraceabilityCopy.ts",
+            "src/product/simulationConfig.ts",
+            "src/views.tsx",
+            "tests/test_docs_smoke_milestone_guards.py",
+        ]
+
+        self.assertTrue(docs_smoke.is_authorized_m20_pr4_pr5_changed_paths(set(changed_paths)))
+        self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), [])
 
     def test_m19_runtime_path_guard_remains_enforced_without_authorized_m20_diff(self) -> None:
         changed_paths = ["src/views.tsx"]

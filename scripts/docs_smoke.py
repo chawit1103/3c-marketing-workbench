@@ -1263,6 +1263,7 @@ M20_PR5_ALLOWED_CHANGED_PATHS = frozenset(
         "src/product/fixtures/productLaunchResult.json",
         "src/product/runtimeTraceability.test.ts",
         "src/product/runtimeTraceability.ts",
+        "src/product/runtimeTraceabilityCopy.ts",
         "src/views.tsx",
         "tests/test_docs_smoke_milestone_guards.py",
     }
@@ -1330,12 +1331,22 @@ def is_authorized_m20_pr5_changed_paths(changed_paths: set[str]) -> bool:
     )
 
 
+def is_authorized_m20_pr4_pr5_changed_paths(changed_paths: set[str]) -> bool:
+    """Authorize the reviewed stacked M20 PR4 and PR5 diff as one bounded change set."""
+    return bool(changed_paths) and (
+        M20_PR4_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and M20_PR5_CONTEXT_REQUIRED_PATHS <= changed_paths
+        and changed_paths <= M20_PR4_ALLOWED_CHANGED_PATHS | M20_PR5_ALLOWED_CHANGED_PATHS
+    )
+
+
 def m19_runtime_path_violations(changed_paths: list[str]) -> list[str]:
     """Keep M19 runtime paths protected unless the whole PR diff is authorized M20 PR4 or PR5."""
     changed_path_set = set(changed_paths)
     if (
         is_authorized_m20_pr4_changed_paths(changed_path_set)
         or is_authorized_m20_pr5_changed_paths(changed_path_set)
+        or is_authorized_m20_pr4_pr5_changed_paths(changed_path_set)
     ):
         return []
     return [
