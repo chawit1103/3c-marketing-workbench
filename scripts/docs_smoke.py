@@ -21,6 +21,7 @@ REQUIRED_DOCS = [
     "docs/product/SOCIALSENSE_INTEGRATION.md",
     "docs/product/ADR-001-SOCIALSENSE-PUBLIC-SUBMITTED-CONFIGURATION.md",
     "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md",
+    "docs/product/M20_CLOSEOUT_READINESS_DECISION.md",
     "README.md",
     "AGENTS.md",
 ]
@@ -516,17 +517,58 @@ REQUIRED_M19_CLOSEOUT_PHRASES = [
 ]
 
 REQUIRED_M20_STATUS_PHRASES = [
-    "M20 PR1–PR3 SocialSense work is completed/merged",
-    "M20 PR4 is in progress on this branch as a fixture/offline aggregate-only 3C adapter integration",
-    "it is not merged, production-ready, live-platform-enabled, or a claim of live measurement",
+    "M20 PR1–PR5 3C/SocialSense integration work is completed/merged",
+    "M20 is CLOSED as GO WITH CONDITIONS",
     "3C uses only the SocialSense public SDK and preserves fail-closed behavior",
+    "Do not begin M21 automatically",
 ]
 
 STALE_M20_STATUS_PHRASES = [
     "M20 has not started",
     "no M20 started",
     "No M20 work",
+    "M20 PR4 is in progress on this branch",
 ]
+
+REQUIRED_M20_PR6_CLOSEOUT_SECTIONS = [
+    "Executive summary",
+    "Merged repository evidence",
+    "Integration evidence",
+    "Validation evidence",
+    "Review gates",
+    "Safety and architecture verification",
+    "Rollback and recovery",
+    "Known limitations and conditions",
+    "Final readiness decision",
+]
+
+REQUIRED_M20_PR6_CLOSEOUT_PHRASES = [
+    "M20 is CLOSED as GO WITH CONDITIONS",
+    "Readiness decision: GO WITH CONDITIONS",
+    "3C Marketing Workbench",
+    "SocialSense",
+    "09e6e0b",
+    "dc0aa7a",
+    "PYTHONPATH=. pytest -q",
+    "PYTHONPATH=. python scripts/socialsense_consumer_smoke.py",
+    "PYTHONPATH=/Users/chawit/Projects/socialsense:. python3 scripts/socialsense_adapter_smoke.py",
+    "no live platform APIs, scraping, credentials, CRM/customer data, PII/private data",
+    "no duplicated simulation logic in 3C",
+    "Architecture Gate: Not Triggered",
+    "Do not begin M21 automatically",
+]
+
+M20_PR6_ALLOWED_CHANGED_PATHS = frozenset(
+    {
+        "AGENTS.md",
+        "README.md",
+        "docs/product/M20_CLOSEOUT_READINESS_DECISION.md",
+        "docs/product/PRODUCT_HEALTH_DASHBOARD.md",
+        "docs/product/ROADMAP.md",
+        "scripts/docs_smoke.py",
+        "tests/test_docs_smoke_milestone_guards.py",
+    }
+)
 
 M19_PR6_ALLOWED_CHANGED_PATHS = {
     "README.md",
@@ -1269,6 +1311,8 @@ M20_PR5_ALLOWED_CHANGED_PATHS = frozenset(
     }
 )
 
+M20_PR6_CONTEXT_MARKER_PATH = "docs/product/M20_CLOSEOUT_READINESS_DECISION.md"
+
 
 def milestone_number_from_branch(branch_name: str) -> int | None:
     match = re.match(r"m(\d+)-", branch_name)
@@ -1329,6 +1373,21 @@ def is_authorized_m20_pr5_changed_paths(changed_paths: set[str]) -> bool:
         M20_PR5_CONTEXT_REQUIRED_PATHS <= changed_paths
         and changed_paths <= M20_PR5_ALLOWED_CHANGED_PATHS
     )
+
+
+def is_m20_pr6_context() -> bool:
+    """Detect the PR6 closeout from its diff so detached CI cannot bypass the guard."""
+    return is_m20_pr6_changed_paths(set(changed_paths_from_main())) or current_branch_name().startswith("m20-pr6-")
+
+
+def is_m20_pr6_changed_paths(changed_paths: set[str]) -> bool:
+    """Recognize an M20 PR6 candidate from its required closeout artifact, not checkout name."""
+    return M20_PR6_CONTEXT_MARKER_PATH in changed_paths
+
+
+def m20_pr6_path_violations(changed_paths: list[str]) -> list[str]:
+    """Return every path outside the deliberately docs/guard-only M20 PR6 scope."""
+    return [path for path in changed_paths if path not in M20_PR6_ALLOWED_CHANGED_PATHS]
 
 
 def is_authorized_m20_pr4_pr5_changed_paths(changed_paths: set[str]) -> bool:
@@ -1454,6 +1513,7 @@ def main() -> None:
     health_dashboard = (ROOT / "docs/product/PRODUCT_HEALTH_DASHBOARD.md").read_text(encoding="utf-8")
     integration_doc = (ROOT / "docs/product/SOCIALSENSE_INTEGRATION.md").read_text(encoding="utf-8")
     m20_sdk_boundary_doc = (ROOT / "docs/product/M20_PR3_SOCIALSENSE_SDK_INTEGRATION_BOUNDARY.md").read_text(encoding="utf-8")
+    m20_pr6_closeout_doc = (ROOT / "docs/product/M20_CLOSEOUT_READINESS_DECISION.md").read_text(encoding="utf-8")
     adapter = (ROOT / "integrations/socialsense/adapter.py").read_text(encoding="utf-8")
     m4_docs_by_path = {path: (ROOT / path).read_text(encoding="utf-8") for path in REQUIRED_M4_DOCS}
     m4_text = "\n".join(m4_docs_by_path.values())
@@ -1561,6 +1621,25 @@ def main() -> None:
     ]
     if stale_m20_status_phrases:
         fail("M20 status docs contain stale contradictory phrases: " + ", ".join(stale_m20_status_phrases))
+
+    if is_m20_pr6_context():
+        if "](docs/product/M20_CLOSEOUT_READINESS_DECISION.md)" not in readme:
+            fail("README missing M20 closeout readiness decision link")
+        missing_m20_pr6_sections = [
+            section
+            for section in REQUIRED_M20_PR6_CLOSEOUT_SECTIONS
+            if f"## {section}" not in m20_pr6_closeout_doc
+        ]
+        if missing_m20_pr6_sections:
+            fail("M20 PR6 closeout missing sections: " + ", ".join(missing_m20_pr6_sections))
+        missing_m20_pr6_phrases = [
+            phrase for phrase in REQUIRED_M20_PR6_CLOSEOUT_PHRASES if phrase not in m20_pr6_closeout_doc
+        ]
+        if missing_m20_pr6_phrases:
+            fail("M20 PR6 closeout missing required evidence/readiness phrases: " + ", ".join(missing_m20_pr6_phrases))
+        unexpected_m20_pr6_changes = m20_pr6_path_violations(changed_paths_from_main())
+        if unexpected_m20_pr6_changes:
+            fail("M20 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m20_pr6_changes))
 
     combined_m4_text = "\n".join([readme, agents, m4_text])
     missing_m4_phrases = [phrase for phrase in REQUIRED_M4_PHRASES if phrase not in combined_m4_text]
@@ -2485,6 +2564,8 @@ def main() -> None:
         print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, closeout report, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, closed GO WITH CONDITIONS wording, fallback review evidence, and no-M19 wording")
     if branch_at_or_after(19):
         print("PASS: M19 preparation docs include terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, remediation backlog, docs-only boundary, and no runtime/SocialSense changes")
+        if is_m20_pr6_context():
+            print("PASS: M20 PR6 cross-repository closeout includes merged baselines, public-SDK evidence, validation commands, rollback, safety boundaries, GO WITH CONDITIONS readiness, no-M21 decision, and docs-only path guard")
         if current_branch_name().startswith("m19-pr2-"):
             print("PASS: M19 PR2 simulation configuration docs/source include shared presets, selected-platform allocation validation, summary before Run, configuration-only status, and SocialSense boundary Outcome B")
         if current_branch_name().startswith("m19-pr4-"):

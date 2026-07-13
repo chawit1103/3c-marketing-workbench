@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: M19 Synthetic Social Platform Engagement Simulation is closed as GO WITH CONDITIONS after PR6 docs/status/smoke closeout preparation. PR1-PR5 are delivered, and PR6 records the closeout report, readiness decision, KPI truth statement, validation commands, and next-program recommendation. Critical truth: M19 evidence after PR6 closeout preparation proves product-owned configuration-informed synthetic results plus SocialSense adapter smoke/public SDK fixture validation; it does not prove verified SocialSense runtime consumption of selected participant allocations. No SocialSense, runtime, live measurement, backend, persistence, live API, PDF/PPT, download, M20, or production-claim changes are included.
+Status: M19 Synthetic Social Platform Engagement Simulation is closed as GO WITH CONDITIONS. M20 PR1–PR5 3C/SocialSense integration work is completed/merged, and PR6 closes M20 as GO WITH CONDITIONS for controlled local fixture/offline aggregate-only review. The reviewed public-SDK evidence demonstrates deterministic runtime-contract consumption of mapped aggregate configuration, not live measurement, private-data use, calibrated confidence, production execution, or a forecast. No M21 or next capability is started by this closeout.
 
 ## Program
 
@@ -112,6 +112,14 @@ Acceptance criteria:
 - M19 PR2 artifact: `docs/product/M19_PR2_SIMULATION_CONFIGURATION.md` documents the configuration-only shared simulation profile controls, validation, summary before Run, and SocialSense boundary Outcome B.
 - M19 PR3 Platform Engagement Result Model is implemented as a product-owned TypeScript offline result contract; M19 PR4 Executive Insight Dashboard is implemented as a product-owned dashboard insight layer; M19 PR5 Executive Decision Brief is implemented with neutral review-only UI and no PDF/PPT/download product actions; PR6 closeout closes M19 as GO WITH CONDITIONS with no M20 work.
 - Do not add live social APIs, scraping, production posting, credentials, private data, measured engagement claims, or production campaign automation.
+
+### M20: SocialSense Runtime Consumption Integration — Closed as GO WITH CONDITIONS
+
+- 3C PR #40 aligned the adapter to the reviewed public contract; PR #41 added user-visible runtime traceability and fail-closed status.
+- SocialSense PR #20 audited the runtime contract, PR #21 added the fixture/offline aggregate contract, and PR #22 added public-SDK compatibility evidence.
+- Closeout: `docs/product/M20_CLOSEOUT_READINESS_DECISION.md` records both merged baselines, six review gates, rollback, validation commands, safety boundaries, and the final GO WITH CONDITIONS decision.
+- Scope remains deterministic local fixture/offline aggregate-only evidence through the public SDK. It is not live measurement, production execution, private-data use, calibrated confidence, or a forecast.
+- Do not begin M21 automatically. Any breaking SDK change, runtime redesign, new service, external infrastructure, persistence, auth, live access, private data, or non-public import requires an Architecture Gate.
 
 ## Quality gates by PR
 
