@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 import { translate, translateUi } from './i18n/localize';
 import { safetyLabels } from './product/safety/safetyLabels';
+import { runtimeTraceabilityHelpText } from './product/runtimeTraceabilityCopy';
 
 function renderAt(pathnameWithSearch: string, language: 'th' | 'en' = 'en') {
   cleanup();
@@ -1779,7 +1780,28 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     expect(insights).toHaveTextContent('Evidence gaps');
     expect(insights.textContent?.toLowerCase()).not.toContain('live api access');
     expect(insights).toHaveTextContent('Runtime traceability');
-    expect(insights.textContent?.toLowerCase()).toContain('offline configuration');
+    expect(insights).toHaveTextContent('This browser result is configuration-only. Its submitted configuration matches a reference fixture, but runtime consumption is not verified.');
+    expect(insights.textContent?.toLowerCase()).not.toContain('runtime consumption confirms');
+  });
+
+  it('keeps runtime traceability help text mutually exclusive in configuration-only and consumed states', () => {
+    const configurationOnly = runtimeTraceabilityHelpText({
+      runtimeStatus: 'configuration_only',
+      referenceFixtureContractMatch: true,
+    });
+    const runtimeConsumed = runtimeTraceabilityHelpText({
+      runtimeStatus: 'consumed_by_runtime',
+      referenceFixtureContractMatch: false,
+    });
+
+    expect(configurationOnly).toContain('configuration-only');
+    expect(configurationOnly).toContain('reference fixture');
+    expect(configurationOnly).toContain('not verified');
+    expect(configurationOnly).not.toContain('confirms an offline configuration echo');
+    expect(runtimeConsumed).toContain('confirms an offline configuration echo');
+    expect(runtimeConsumed).not.toContain('configuration-only');
+    expect(translate(configurationOnly, 'th')).toContain('ข้อมูลตัวอย่างอ้างอิง');
+    expect(translate(runtimeConsumed, 'th')).toContain('การสะท้อนค่ากำหนดแบบออฟไลน์');
   });
 
   it('keeps decision guidance reviewed and blocks prediction, confidence guarantee, or launch approval wording', () => {
@@ -1850,14 +1872,14 @@ describe('M19 PR4 Executive Insight Dashboard', () => {
     renderAt(`/runs/sample-run?assumptions=${payload}`, 'th');
 
     const thaiInsights = screen.getByRole('region', { name: 'แดชบอร์ดอินไซต์ผู้บริหาร' });
-    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, X; สถานะยังเป็นการตั้งค่าเท่านั้น.');
+    expect(thaiInsights).toHaveTextContent('แพลตฟอร์มที่เลือก: YouTube, X; ผลลัพธ์ที่แสดงนี้เป็นการตั้งค่าเท่านั้น และยังไม่ยืนยันการใช้โดยระบบจำลอง.');
     expect(thaiInsights).not.toHaveTextContent('Selected platforms:');
-    expect(thaiInsights).not.toHaveTextContent('runtimeStatus remains configuration-only');
+    expect(thaiInsights).not.toHaveTextContent('runtimeStatus');
 
     fireEvent.change(screen.getByLabelText('ภาษา'), { target: { value: 'en' } });
 
     const englishInsights = screen.getByRole('region', { name: 'Executive Insight Dashboard' });
-    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, X; runtimeStatus remains configuration-only.');
+    expect(englishInsights).toHaveTextContent('Selected platforms: YouTube, X; This displayed result is configuration-only; runtime consumption is not verified.');
   });
 
   it('does not leak report redesign or export upgrade scope into the result dashboard', () => {

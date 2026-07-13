@@ -25,6 +25,7 @@ import { buildExecutiveInsights, type ExecutiveInsights } from './product/execut
 import { buildExecutiveDecisionBrief, type ExecutiveDecisionBrief } from './product/executiveDecisionBrief';
 import { buildPlatformEngagementResult, type PlatformEngagementResult } from './product/platformEngagement';
 import type { RuntimeEvidence } from './product/runtimeTraceability';
+import { runtimeTraceabilityHelpText } from './product/runtimeTraceabilityCopy';
 import abExperimentFixture from './product/fixtures/abExperimentResult.json';
 import campaignMessageFixture from './product/fixtures/campaignMessageTestResult.json';
 import creativeComparisonFixture from './product/fixtures/creativeComparisonResult.json';
@@ -2000,8 +2001,8 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
       }
       const selectedLabels = item.selectedPlatformLabels?.length ? item.selectedPlatformLabels.join(', ') : t('none');
       const status = item.status === 'runtime-consumed'
-        ? t('runtimeStatus verified as runtime-consumed')
-        : t('runtimeStatus remains configuration-only');
+        ? t('Runtime consumption is verified for this displayed result.')
+        : t('This displayed result is configuration-only; runtime consumption is not verified.');
       return `${t('Selected platforms')}: ${selectedLabels}; ${status}.`;
     }
     if (item.detailFragments?.length) {
@@ -2022,7 +2023,7 @@ function ExecutiveInsightDashboard({ insights }: { insights: ExecutiveInsights }
             <li key={step.key}>{t(runtimeTraceabilityStepLabel(step.key))}: {t(runtimeTraceabilityStepStatus(step.status))}</li>
           ))}
         </ol>
-        <p className="help-text">{t('Source')}: {t(insights.traceability.source)}. {t('Runtime consumption confirms an offline configuration echo only; it does not indicate live measurement, field evidence, or production readiness.')}</p>
+        <p className="help-text">{t('Source')}: {t(insights.traceability.source)}. {t(runtimeTraceabilityHelpText(insights.traceability))}</p>
       </section>
 
       <section aria-label={t('Executive Insight Cards')}>
