@@ -1311,6 +1311,8 @@ M20_PR5_ALLOWED_CHANGED_PATHS = frozenset(
     }
 )
 
+M20_PR6_CONTEXT_MARKER_PATH = "docs/product/M20_CLOSEOUT_READINESS_DECISION.md"
+
 
 def milestone_number_from_branch(branch_name: str) -> int | None:
     match = re.match(r"m(\d+)-", branch_name)
@@ -1371,6 +1373,21 @@ def is_authorized_m20_pr5_changed_paths(changed_paths: set[str]) -> bool:
         M20_PR5_CONTEXT_REQUIRED_PATHS <= changed_paths
         and changed_paths <= M20_PR5_ALLOWED_CHANGED_PATHS
     )
+
+
+def is_m20_pr6_context() -> bool:
+    """Detect the PR6 closeout from its diff so detached CI cannot bypass the guard."""
+    return is_m20_pr6_changed_paths(set(changed_paths_from_main())) or current_branch_name().startswith("m20-pr6-")
+
+
+def is_m20_pr6_changed_paths(changed_paths: set[str]) -> bool:
+    """Recognize an M20 PR6 candidate from its required closeout artifact, not checkout name."""
+    return M20_PR6_CONTEXT_MARKER_PATH in changed_paths
+
+
+def m20_pr6_path_violations(changed_paths: list[str]) -> list[str]:
+    """Return every path outside the deliberately docs/guard-only M20 PR6 scope."""
+    return [path for path in changed_paths if path not in M20_PR6_ALLOWED_CHANGED_PATHS]
 
 
 def is_authorized_m20_pr4_pr5_changed_paths(changed_paths: set[str]) -> bool:
@@ -1605,7 +1622,7 @@ def main() -> None:
     if stale_m20_status_phrases:
         fail("M20 status docs contain stale contradictory phrases: " + ", ".join(stale_m20_status_phrases))
 
-    if current_branch_name().startswith("m20-pr6-"):
+    if is_m20_pr6_context():
         if "](docs/product/M20_CLOSEOUT_READINESS_DECISION.md)" not in readme:
             fail("README missing M20 closeout readiness decision link")
         missing_m20_pr6_sections = [
@@ -1620,9 +1637,7 @@ def main() -> None:
         ]
         if missing_m20_pr6_phrases:
             fail("M20 PR6 closeout missing required evidence/readiness phrases: " + ", ".join(missing_m20_pr6_phrases))
-        unexpected_m20_pr6_changes = [
-            path for path in changed_paths_from_main() if path not in M20_PR6_ALLOWED_CHANGED_PATHS
-        ]
+        unexpected_m20_pr6_changes = m20_pr6_path_violations(changed_paths_from_main())
         if unexpected_m20_pr6_changes:
             fail("M20 PR6 changed forbidden implementation or out-of-scope paths: " + ", ".join(unexpected_m20_pr6_changes))
 
@@ -2549,7 +2564,7 @@ def main() -> None:
         print("PASS: M18 Thai-first i18n docs/source include style guide, glossary, closeout report, KPI tracking, safety wording, language resources, runtime selector, Settings no-route note, Architecture Gate status, closed GO WITH CONDITIONS wording, fallback review evidence, and no-M19 wording")
     if branch_at_or_after(19):
         print("PASS: M19 preparation docs include terminology/glossary addendum, Thai-first copy rules, safety wording checklist, evidence/confidence wording rules, remediation backlog, docs-only boundary, and no runtime/SocialSense changes")
-        if current_branch_name().startswith("m20-pr6-"):
+        if is_m20_pr6_context():
             print("PASS: M20 PR6 cross-repository closeout includes merged baselines, public-SDK evidence, validation commands, rollback, safety boundaries, GO WITH CONDITIONS readiness, no-M21 decision, and docs-only path guard")
         if current_branch_name().startswith("m19-pr2-"):
             print("PASS: M19 PR2 simulation configuration docs/source include shared presets, selected-platform allocation validation, summary before Run, configuration-only status, and SocialSense boundary Outcome B")

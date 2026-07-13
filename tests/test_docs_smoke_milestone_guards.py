@@ -152,14 +152,37 @@ class MilestoneGuardTests(unittest.TestCase):
             self.assertFalse(docs_smoke.is_authorized_m20_pr4_context())
             self.assertEqual(docs_smoke.m19_runtime_path_violations(changed_paths), changed_paths)
 
-    def test_m20_pr6_closeout_path_allowlist_is_docs_and_guard_only(self) -> None:
-        self.assertIn(
+    def test_m20_pr6_closeout_context_is_diff_derived_for_named_detached_and_merge_checkouts(self) -> None:
+        changed_paths = [
+            "README.md",
             "docs/product/M20_CLOSEOUT_READINESS_DECISION.md",
-            docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS,
-        )
-        self.assertIn("scripts/docs_smoke.py", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
-        self.assertNotIn("integrations/socialsense/adapter.py", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
-        self.assertNotIn("src/views.tsx", docs_smoke.M20_PR6_ALLOWED_CHANGED_PATHS)
+            "scripts/docs_smoke.py",
+        ]
+
+        for checkout_name in ("m20-pr6-cross-repo-closeout", "", "pull/42/merge"):
+            with (
+                self.subTest(checkout_name=checkout_name),
+                patch.object(docs_smoke, "current_branch_name", return_value=checkout_name),
+                patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+            ):
+                self.assertTrue(docs_smoke.is_m20_pr6_context())
+                self.assertEqual(docs_smoke.m20_pr6_path_violations(changed_paths), [])
+
+    def test_m20_pr6_path_guard_rejects_runtime_path_in_detached_or_merge_checkout(self) -> None:
+        changed_paths = [
+            "docs/product/M20_CLOSEOUT_READINESS_DECISION.md",
+            "scripts/docs_smoke.py",
+            "src/views.tsx",
+        ]
+
+        for checkout_name in ("", "pull/42/merge"):
+            with (
+                self.subTest(checkout_name=checkout_name),
+                patch.object(docs_smoke, "current_branch_name", return_value=checkout_name),
+                patch.object(docs_smoke, "changed_paths_from_main", return_value=changed_paths),
+            ):
+                self.assertTrue(docs_smoke.is_m20_pr6_context())
+                self.assertEqual(docs_smoke.m20_pr6_path_violations(changed_paths), ["src/views.tsx"])
 
 
 if __name__ == "__main__":
